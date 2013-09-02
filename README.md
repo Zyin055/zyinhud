@@ -1,16 +1,3 @@
 Zyin's HUD
 ==============
-
-Read me
---------------
-
-
-
-*This will be Italic*
-
-**This will be Bold**
-
-- This will be a list item
-- This will be a list item
-
-    Add a indent and this will end up as code
+This is a mod which adds your coordinates, a compass, a clock, calculates distances, shows nearby players, shows unsafe areas, shows potion duration, eating aid, ender pearl aid, potion aid, weapon swapper, an fps counter, displays horse stats, and dynamically displays your equipment's durability. Any one of these features can be disabled. It works in both single player and multiplayer servers.
