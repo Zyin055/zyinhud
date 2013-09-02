@@ -58,6 +58,7 @@ public class AnimalInfo
     public static boolean ShowHorseStatsOverlay;
     public static boolean ShowBreedingTimerForVillagers;
     public static boolean ShowBreedingTimerForHorses;
+    public static boolean ShowHorseAwesomeness;
     public static boolean ShowBreedingTimerForCows;
     public static boolean ShowBreedingTimerForSheep;
     public static boolean ShowBreedingTimerForPigs;
@@ -343,7 +344,7 @@ public class AnimalInfo
         {
         	EntityHorse horse = (EntityHorse)animal;
         	
-        	ArrayList multilineOverlayArrayList = new ArrayList(4);
+        	ArrayList multilineOverlayArrayList = new ArrayList(5);
         	
         	if(ShowHorseStatsOverlay)
         	{
@@ -356,6 +357,9 @@ public class AnimalInfo
         	}
         	if(ShowBreedingTimerForHorses && animalGrowingAge > 0)
         		multilineOverlayArrayList.add(GetTimeUntilBreedAgain(horse));
+        	if(ShowHorseAwesomeness)
+        		multilineOverlayArrayList.add(GetHorseAwesomeness(horse));
+        	
         	
         	String[] multilineOverlayMessage = new String[4];
         	
@@ -439,6 +443,41 @@ public class AnimalInfo
 	    
 	    return minutes + ":" + twoDigitFormat.format(seconds % 60);
 	}
+	
+	/**
+	 * Gets the nicely formatted awesomeness of a horse
+	 * @param horse
+	 * @return "#:##" formatted string
+	 */
+	private static String GetHorseAwesomeness(EntityHorse horse)
+	{
+		/**
+		 * From http://www.minecraftwiki.net/wiki/User:Mgr/Sandbox#Horses
+		 * HP    15-30	
+		 * Jump  0.4-1.0	
+		 * Speed 0.1125-0.3375
+		 */
+		double HPPerfect = 30.0;
+		double HPWorse = 15.0;
+		double HPRange = HPPerfect - HPWorse;
+		double JumpPerfect = 1.0;
+		double JumpWorse = 0.4;
+		double JumpRange = JumpPerfect - JumpWorse;
+		double SpeedPerfect = 0.3375;
+		double SpeedWorse = 0.1125;
+		double SpeedRange = SpeedPerfect - SpeedWorse;
+
+		double horseSpeed = horse.func_110148_a(SharedMonsterAttributes.field_111263_d).func_111125_b();
+		double horseHP = GetEntityMaxHP(horse);
+		double horseJump = horse.func_110215_cj();
+		
+		double perfection = ((horseHP - HPWorse)/HPRange + 
+				(horseSpeed - SpeedWorse)/SpeedRange + 
+				(horseJump - JumpWorse)/JumpRange) / 3.0 * 100;
+		
+	    return FontCodes.DARK_GREEN + decimalFormat.format(perfection) + "%" + FontCodes.WHITE;
+	}
+	
 
     /**
      * Gets a horses speed, colored based on how good it is.
@@ -664,6 +703,17 @@ public class AnimalInfo
     	ShowBreedingTimerForHorses = !ShowBreedingTimerForHorses;
     	return ShowBreedingTimerForHorses;
     }
+    
+    /**
+     * Toggles showing the awesomeness of a horse
+     * @return the new boolean
+     */
+    public static boolean ToggleShowHorseAwesomeness()
+    {
+    	ShowHorseAwesomeness = !ShowHorseAwesomeness;
+    	return ShowHorseAwesomeness;
+    }
+    
     /**
      * Toggles showing the breeding of this type of entity
      * @return the new boolean
