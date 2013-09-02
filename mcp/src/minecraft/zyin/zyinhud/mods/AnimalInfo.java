@@ -453,9 +453,9 @@ public class AnimalInfo
 	{
 		/**
 		 * From http://www.minecraftwiki.net/wiki/User:Mgr/Sandbox#Horses
-		 * HP    15–30	
-		 * Jump  0.4–1.0	
-		 * Speed 0.1125–0.3375
+		 * HP    15-30	
+		 * Jump  0.4-1.0	
+		 * Speed 0.1125-0.3375
 		 */
 		double HPPerfect = 30.0;
 		double HPWorse = 15.0;
