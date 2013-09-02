@@ -594,6 +594,13 @@ public class ZyinHUD
         else
         	p.set(AnimalInfo.ShowBreedingTimerForChickens);
         
+        p = config.get(CATEGORY_ANIMALINFO, "ShowHorseAwesomeness", true);
+        p.comment = "Enable/Disable the percentage a horse is away from a perfect horse.";
+        if(loadSettings)
+        	AnimalInfo.ShowHorseAwesomeness = p.getBoolean(true);
+        else
+        	p.set(AnimalInfo.ShowHorseAwesomeness);
+        
         
         //CATEGORY_ENDERPEARLAID
         p = config.get(CATEGORY_ENDERPEARLAID, "EnableEnderPearlAid", true);
