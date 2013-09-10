@@ -12,15 +12,16 @@ import org.lwjgl.input.Keyboard;
 import zyin.zyinhud.command.CommandFps;
 import zyin.zyinhud.command.CommandZyinHUDOptions;
 import zyin.zyinhud.gui.GuiZyinHUDOptions;
+import zyin.zyinhud.keyhandler.AnimalInfoKeyHandler;
 import zyin.zyinhud.keyhandler.DistanceMeasurerKeyHandler;
 import zyin.zyinhud.keyhandler.EatingAidKeyHandler;
 import zyin.zyinhud.keyhandler.EnderPearlAidKeyHandler;
 import zyin.zyinhud.keyhandler.GuiZyinHUDOptionsKeyHandler;
-import zyin.zyinhud.keyhandler.AnimalInfoKeyHandler;
 import zyin.zyinhud.keyhandler.PlayerLocatorKeyHandler;
 import zyin.zyinhud.keyhandler.PotionAidKeyHandler;
 import zyin.zyinhud.keyhandler.SafeOverlayKeyHandler;
 import zyin.zyinhud.keyhandler.WeaponSwapperKeyHandler;
+import zyin.zyinhud.mods.AnimalInfo;
 import zyin.zyinhud.mods.Clock;
 import zyin.zyinhud.mods.Compass;
 import zyin.zyinhud.mods.Coordinates;
@@ -29,7 +30,6 @@ import zyin.zyinhud.mods.DurabilityInfo;
 import zyin.zyinhud.mods.EatingAid;
 import zyin.zyinhud.mods.EnderPearlAid;
 import zyin.zyinhud.mods.Fps;
-import zyin.zyinhud.mods.AnimalInfo;
 import zyin.zyinhud.mods.InfoLine;
 import zyin.zyinhud.mods.PlayerLocator;
 import zyin.zyinhud.mods.PotionAid;
@@ -42,7 +42,6 @@ import zyin.zyinhud.tickhandler.RenderTickHandler;
 import zyin.zyinhud.util.Localization;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -53,7 +52,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "0.11.6")
+@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "0.11.7")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class ZyinHUD
 {
@@ -64,7 +63,7 @@ public class ZyinHUD
      */
     private static final String DefaultSupportedLanguages = "en_US"; //"en_US, zh_CN";
     
-    //this should match the text used in the en_US.properties file
+    //this should match the text used in the en_US.properties file because its used to grab data from the localization file
     public static final String CATEGORY_MISC = "misc";
     public static final String CATEGORY_INFOLINE = "infoline";
     public static final String CATEGORY_COORDINATES = "coordinates";
@@ -107,12 +106,10 @@ public class ZyinHUD
     protected static String DefaultPotionAidHotkey = "V";
     protected static String DefaultOptionsHotkey = "Z";	//Ctrl + Alt + Z
     
-    
-    //private static Minecraft mc = Minecraft.getMinecraft();
     public static Configuration config = null;
     
-    @Instance("ZyinHUD")
-    public static ZyinHUD instance;
+    //@Instance("ZyinHUD")
+    //public static ZyinHUD instance;
 
     @SidedProxy(clientSide = "zyin.zyinhud.ClientProxy", serverSide = "zyin.zyinhud.CommonProxy")
     public static CommonProxy proxy;
@@ -183,7 +180,7 @@ public class ZyinHUD
     }
     
     /**
-     * Saves every value that could be changed while in game back to the config file.
+     * Saves every value back to the config file.
      */
     public static void SaveConfigSettings()
     {
@@ -453,10 +450,10 @@ public class ZyinHUD
         else
         	p.set(Keyboard.getKeyName(key_G[0].keyCode));
         
-        p = config.get(CATEGORY_EATINGAID, "EatGoldenFood", true);
+        p = config.get(CATEGORY_EATINGAID, "EatGoldenFood", false);
         p.comment = "Enable/Disable using golden apples and golden carrots as food.";
         if(loadSettings)
-        	EatingAid.EatGoldenFood = p.getBoolean(true);
+        	EatingAid.EatGoldenFood = p.getBoolean(false);
         else
         	p.set(EatingAid.EatGoldenFood);
         
@@ -524,6 +521,13 @@ public class ZyinHUD
         else
         	p.set(Keyboard.getKeyName(key_O[0].keyCode));
         
+        p = config.get(CATEGORY_ANIMALINFO, "ShowTextBackgrounds", true);
+        p.comment = "Enable/Disable showing a black background behind text.";
+        if(loadSettings)
+        	AnimalInfo.ShowTextBackgrounds = p.getBoolean(true);
+        else
+        	p.set(AnimalInfo.ShowTextBackgrounds);
+        
         p = config.get(CATEGORY_ANIMALINFO, "ShowHorseStatsOnF3Menu", true);
         p.comment = "Enable/Disable showing the stats of the horse you're riding on the F3 screen.";
         if(loadSettings)
@@ -551,6 +555,20 @@ public class ZyinHUD
         	AnimalInfo.SetNumberOfDecimalsDisplayed(p.getInt(1));
         else
         	p.set(AnimalInfo.GetNumberOfDecimalsDisplayed());
+
+        p = config.get(CATEGORY_ANIMALINFO, "ShowBreedingIcons", true);
+        p.comment = "Enable/Disable showing an icon if the animal is ready to breed.";
+        if(loadSettings)
+        	AnimalInfo.ShowBreedingIcons = p.getBoolean(true);
+        else
+        	p.set(AnimalInfo.ShowBreedingIcons);
+
+        p = config.get(CATEGORY_ANIMALINFO, "ShowBreedingTimers", true);
+        p.comment = "Enable/Disable showing a timer counting down to when the animal is ready to breed again.";
+        if(loadSettings)
+        	AnimalInfo.ShowBreedingTimers = p.getBoolean(true);
+        else
+        	p.set(AnimalInfo.ShowBreedingTimers);
 
         p = config.get(CATEGORY_ANIMALINFO, "ShowBreedingTimerForHorses", true);
         p.comment = "Enable/Disable showing a timer that tells you how long until a horse can breed again.";

@@ -2,6 +2,7 @@ package zyin.zyinhud.tickhandler;
 
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.ForgeSubscribe;
+import zyin.zyinhud.helper.RenderEntityTrackerHelper;
 import zyin.zyinhud.mods.SafeOverlay;
 
 public class RenderTickHandler
@@ -10,6 +11,7 @@ public class RenderTickHandler
 
     private RenderTickHandler()
     {
+    	
     }
 
     /**
@@ -22,5 +24,10 @@ public class RenderTickHandler
     {
         //render unsafe positions (cache calculations are done from this render method)
         SafeOverlay.instance.RenderAllUnsafePositionsMultithreaded(event.partialTicks);
+        
+        //calls other mods that need to render things in the game world nearby entities
+        RenderEntityTrackerHelper.RenderEntityInfo(event.partialTicks);	
     }
+	
+	
 }

@@ -269,7 +269,7 @@ public class DurabilityInfo
     private static String GetDamageString(int currentDamage, int maxDamage)
     {
         if(ShowDamageAsPercentage)
-        	return (int)((double)currentDamage / maxDamage * 100) + "%";
+        	return 100 - (int)((double)currentDamage / maxDamage * 100) + "%";
         else
         	return (maxDamage - currentDamage) + "";
     }

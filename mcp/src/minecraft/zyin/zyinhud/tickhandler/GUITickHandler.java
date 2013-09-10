@@ -2,21 +2,11 @@ package zyin.zyinhud.tickhandler;
 
 import java.util.EnumSet;
 
-import zyin.zyinhud.gui.GuiOptionsOverride;
-import zyin.zyinhud.helper.EntityTrackerHelper;
-import zyin.zyinhud.mods.DurabilityInfo;
-import zyin.zyinhud.mods.AnimalInfo;
-import zyin.zyinhud.mods.InfoLine;
-import zyin.zyinhud.mods.PlayerLocator;
-import zyin.zyinhud.mods.PotionTimers;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.achievement.GuiAchievement;
-import net.minecraft.client.gui.achievement.GuiStats;
+import zyin.zyinhud.gui.GuiOptionsOverride;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 

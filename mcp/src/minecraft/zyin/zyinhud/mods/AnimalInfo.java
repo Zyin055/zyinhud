@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,12 +17,13 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.item.Item;
 
 import org.apache.commons.lang3.text.WordUtils;
-import org.lwjgl.opengl.GL11;
 
 import zyin.zyinhud.util.FontCodes;
 import zyin.zyinhud.util.Localization;
+import zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * Shows information about horses in the F3 menu.
@@ -54,6 +54,9 @@ public class AnimalInfo
     /** The maximum number of modes that is supported */
     public static int NumberOfModes = 2;
 
+    public static boolean ShowTextBackgrounds;
+    public static boolean ShowBreedingIcons;
+    public static boolean ShowBreedingTimers;
     public static boolean ShowHorseStatsOnF3Menu;
     public static boolean ShowHorseStatsOverlay;
     public static boolean ShowBreedingTimerForVillagers;
@@ -72,6 +75,7 @@ public class AnimalInfo
     private static Minecraft mc = Minecraft.getMinecraft();
     private static EntityClientPlayerMP me;
 
+    
     //values above the perfect value are aqua
     //values between the perfect and good values are green
     //values between the good and bad values are white
@@ -80,13 +84,13 @@ public class AnimalInfo
     private static double goodHorseSpeedThreshold = 11;
     private static double badHorseSpeedThreshold = 9.5;		//min: ~7?
     
-    private static double perfectHorseJumpThreshold = 5;	//max: 5.5
+    private static double perfectHorseJumpThreshold = 5;	//max: 5.5?
     private static double goodHorseJumpThreshold = 4;
     private static double badHorseJumpThreshold = 2.5;		//min: 1.2
     
     private static int perfectHorseHPThreshold = 28;		//max: 30
     private static int goodHorseHPThreshold = 24;			
-    private static int badHorseHPThreshold = 20;			//min: ~14?
+    private static int badHorseHPThreshold = 20;			//min: 15
     
     private static final int verticalSpaceBetweenLines = 10;	//space between the overlay lines (because it is more than one line)
     
@@ -140,7 +144,7 @@ public class AnimalInfo
      */
     public static void RenderOntoDebugMenu()
     {
-        //if the player is in the world
+    	//if the player is in the world
         //and not in a menu
         //and F3 is shown
         if (AnimalInfo.Enabled && ShowHorseStatsOnF3Menu &&
@@ -174,20 +178,51 @@ public class AnimalInfo
                     mc.fontRenderer.drawStringWithShadow(horseColor, 1, 170, 0xffffff);
                     mc.fontRenderer.drawStringWithShadow(horseMarking, 1, 180, 0xffffff);
                 }
+                
+
+                /* HORSE TESTING DATA
+                
+                //float horseGrowingAge = horse.func_110254_bY();	//horse age, 0.5 (baby) to 1 (adult)
+                
+                int field_110278_bp = horse.field_110278_bp;		//tail rotation
+                int field_110279_bq = horse.field_110279_bq;		//
+                float func_110258_o = horse.func_110258_o(1f);		//head rotation
+                float func_110223_p = horse.func_110223_p(1f);		//standing up rotation (i.e. when jumping)
+                float func_110201_q = horse.func_110201_q(1f);		//flickers for... idk
+                boolean func_110248_bS = horse.func_110248_bS();	//tamed
+                int getGrowingAge = horse.getGrowingAge();			//baby age if negative, breed-ready if 0, bred if positive
+                boolean func_110256_cu = horse.func_110256_cu();	//is zombie/skeleton horse
+                int func_110265_bP = horse.func_110265_bP();		//type of horse (0=horse, 1=donkey, 2=mule, 3=zombie, 4=skeleton)
+
+                int love = horse.inLove;	//countdown timer starting at ~600 when fed a breeding item
+                //horse.breeding;	//countdown from 60 after breeding initiated
+                
+                
+                mc.fontRenderer.drawStringWithShadow("tail rotation:"+field_110278_bp, 1, 40, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("field_110279_bq:"+field_110279_bq, 1, 50, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("age:"+horseAge, 1, 60, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("head rotation:"+func_110258_o, 1, 70, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("body rotation:"+func_110223_p, 1, 80, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("func_110201_q:"+func_110201_q, 1, 90, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("love:"+love, 1, 100, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("tamed:"+func_110248_bS, 1, 110, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("getGrowingAge:"+getGrowingAge, 1, 120, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("is zombie/skeleton?:"+func_110256_cu, 1, 130, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("horse type:"+func_110265_bP, 1, 140, 0xFFFFFF);
+                */
             }
         }
     }
-
+    
+    
     /**
-     * Renders a horse's speed, hit points, and jump strength on the screen by an entity.
+     * Renders information about an entity into the game world.
      * @param entity
-     * @param x location on the HUD
-     * @param y location on the HUD
-     * @param isEntityBehindUs
+     * @param partialTickTime
      */
-    public static void RenderEntityOverlay(Entity entity, int x, int y, boolean isEntityBehindUs)
+    public static void RenderEntityInfoInWorld(Entity entity, float partialTickTime)
     {
-        if (!(entity instanceof EntityAgeable))
+    	if (!(entity instanceof EntityAgeable))
         {
             return;    //we only care about horses
         }
@@ -199,17 +234,11 @@ public class AnimalInfo
                 (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
                 && !mc.gameSettings.showDebugInfo)
         {
-            if (isEntityBehindUs)
-            {
-                return;
-            }
-            
-            //EntityHorse horse = (EntityHorse)entity;
             EntityAgeable animal = (EntityAgeable)entity;
 
             if (animal.riddenByEntity instanceof EntityClientPlayerMP)
             {
-                return;    //don't render stats of the horse we are currently riding
+                return;    //don't render stats of the horse/animal we are currently riding
             }
 
             //only show entities that are close by
@@ -220,55 +249,84 @@ public class AnimalInfo
             {
                 return;
             }
-
-            String[] multilineOverlayMessage = GetMultilineOverlayMessage(animal);
             
-            if(multilineOverlayMessage == null)
-            	return;
-            
-            //calculate the width of the longest string in the multi-lined overlay message
-            int overlayMessageWidth = 0;
-            for (String overlayMessageLine : multilineOverlayMessage)
+            RenderAnimalOverlay(animal, partialTickTime);
+        }
+    }
+    
+    
+    /**
+     * Renders an overlay in the game world for the specified animal.
+     * @param animal
+     * @param partialTickTime
+     */
+    protected static void RenderAnimalOverlay(EntityAgeable animal, float partialTickTime)
+    {
+    	float x = (float)animal.posX;
+        float y = (float)animal.posY;
+        float z = (float)animal.posZ;
+        
+        //a positive value means the horse has bred recently
+        int animalGrowingAge = animal.getGrowingAge();
+    	
+    	ArrayList multilineOverlayArrayList = new ArrayList(4);
+    	
+    	if(ShowHorseStatsOverlay && animal instanceof EntityHorse)
+    	{
+    		EntityHorse horse = (EntityHorse)animal;
+    		
+    		multilineOverlayArrayList.add(GetHorseSpeedText(horse) + " " + Localization.get("animalinfo.overlay.speed"));
+    		multilineOverlayArrayList.add(GetHorseHPText(horse) + " " + Localization.get("animalinfo.overlay.hp"));
+    		multilineOverlayArrayList.add(GetHorseJumpText(horse) + " " + Localization.get("animalinfo.overlay.jump"));
+    		
+    		if (animalGrowingAge < 0)
+        		multilineOverlayArrayList.add(GetHorseBabyGrowingAgeAsPercent(horse) + "%");
+    	}
+    	else if(ShowBreedingTimers &&
+    			((animal instanceof EntityVillager && ShowBreedingTimerForVillagers) ||
+        		(animal instanceof EntityCow && ShowBreedingTimerForCows) ||
+        		(animal instanceof EntitySheep && ShowBreedingTimerForSheep) ||
+        		(animal instanceof EntityPig && ShowBreedingTimerForPigs) ||
+        		(animal instanceof EntityChicken && ShowBreedingTimerForChickens) ||
+        		(animal instanceof EntityHorse && ShowBreedingTimerForHorses)))
+        {
+            if (animalGrowingAge > 0)	//if the animal has recently bred
             {
-                int thisMessageWidth = mc.fontRenderer.getStringWidth(overlayMessageLine);
-
-                if (thisMessageWidth > overlayMessageWidth)
-                {
-                    overlayMessageWidth = thisMessageWidth;
-                }
-            }
-
-            ScaledResolution res = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-            int width = res.getScaledWidth();
-            int height = res.getScaledHeight();
-            
-            //center the text on the horse
-            x -= overlayMessageWidth / 2;
-            //move the text vertically based on how many lines are displayed
-            y -= (multilineOverlayMessage.length - 3) * 10;
-
-            //don't render text if it is off the screen
-            if (x >= width || x <= 0 - overlayMessageWidth
-                    || y <= 0 - multilineOverlayMessage.length * verticalSpaceBetweenLines || y >= height)
-            {
-                return;
-            }
-
-            //render the overlay message
-            GL11.glDisable(GL11.GL_LIGHTING);
-            int i = 0;
-
-            for (String s : multilineOverlayMessage)
-            {
-                mc.fontRenderer.drawStringWithShadow(s, x, y + i * verticalSpaceBetweenLines, 0xFFFFFF);
-                i++;
+                multilineOverlayArrayList.add(GetTimeUntilBreedAgain(animal));
             }
         }
+    	
+    	String[] multilineOverlayMessage = new String[1];
+        multilineOverlayMessage = (String[])multilineOverlayArrayList.toArray(multilineOverlayMessage);
+        
+        if(multilineOverlayMessage[0] != null)
+        {
+            //render the overlay message
+            ZyinHUDUtil.RenderFloatingText(multilineOverlayMessage, x, y, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+        }
+        
+		if(ShowBreedingIcons && 
+				animalGrowingAge == 0 && 			//animal is an adult
+				animal instanceof EntityAnimal && 	//animal is not a villager
+				((EntityAnimal)animal).inLove == 0)	//animal is not currently mating
+		{
+	        //render the overlay icon
+			if(animal instanceof EntityHorse)
+				ZyinHUDUtil.RenderFloatingIcon(Item.goldenCarrot, x, y + animal.height, z, partialTickTime);
+			else if(animal instanceof EntityCow)
+				ZyinHUDUtil.RenderFloatingIcon(Item.wheat, x, y + animal.height, z, partialTickTime);
+			else if(animal instanceof EntitySheep)
+				ZyinHUDUtil.RenderFloatingIcon(Item.wheat, x, y + animal.height, z, partialTickTime);
+			else if(animal instanceof EntityPig)
+				ZyinHUDUtil.RenderFloatingIcon(Item.carrot, x, y + animal.height, z, partialTickTime);
+			else if(animal instanceof EntityChicken)
+				ZyinHUDUtil.RenderFloatingIcon(Item.seeds, x, y + animal.height, z, partialTickTime);
+		}
     }
 
     /**
      * Gets the status of the Animal Info
-     * @return the string "animals" if the Animal Info is enabled, otherwise "".
+     * @return the string "animals" if Animal Info is enabled, otherwise "".
      */
     public static String CalculateMessageForInfoLine()
     {
@@ -284,131 +342,6 @@ public class AnimalInfo
         {
             return FontCodes.WHITE + "???" + InfoLine.SPACER;
         }
-    }
-
-    protected static String[] GetMultilineOverlayMessage(EntityAgeable animal)
-    {
-        /*
-         * TESTING DATA
-         * 
-        //float horseGrowingAge = horse.func_110254_bY();	//horse age, 0.5 (baby) to 1 (adult)
-        
-        int field_110278_bp = horse.field_110278_bp;		//tail rotation
-        int field_110279_bq = horse.field_110279_bq;		//
-        float func_110258_o = horse.func_110258_o(1f);		//head rotation
-        float func_110223_p = horse.func_110223_p(1f);		//standing up rotation (i.e. when jumping)
-        float func_110201_q = horse.func_110201_q(1f);		//flickers for... idk
-        boolean func_110248_bS = horse.func_110248_bS();	//tamed
-        int getGrowingAge = horse.getGrowingAge();			//baby age if negative, breed-ready if 0, bred if positive
-        boolean func_110256_cu = horse.func_110256_cu();	//is zombie/skeleton horse
-        int func_110265_bP = horse.func_110265_bP();		//type of horse (0=horse, 1=donkey, 2=mule, 3=zombie, 4=skeleton)
-
-        int love = horse.inLove;	//countdown timer starting at ~600 when fed a breeding item
-        //horse.breeding;	//countdown from 60 after breeding initiated
-        
-        
-        mc.fontRenderer.drawStringWithShadow("tail rotation:"+field_110278_bp, 1, 40, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("field_110279_bq:"+field_110279_bq, 1, 50, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("age:"+horseAge, 1, 60, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("head rotation:"+func_110258_o, 1, 70, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("body rotation:"+func_110223_p, 1, 80, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("func_110201_q:"+func_110201_q, 1, 90, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("love:"+love, 1, 100, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("tamed:"+func_110248_bS, 1, 110, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("getGrowingAge:"+getGrowingAge, 1, 120, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("is zombie/skeleton?:"+func_110256_cu, 1, 130, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow("horse type:"+func_110265_bP, 1, 140, 0xFFFFFF);
-        */
-    	
-        int animalGrowingAge = animal.getGrowingAge();
-        
-        if((animal instanceof EntityVillager && ShowBreedingTimerForVillagers) ||
-        		(animal instanceof EntityCow && ShowBreedingTimerForCows) ||
-        		(animal instanceof EntitySheep && ShowBreedingTimerForSheep) ||
-        		(animal instanceof EntityPig && ShowBreedingTimerForPigs) ||
-        		(animal instanceof EntityChicken && ShowBreedingTimerForChickens))
-        {
-            if (animalGrowingAge > 0)
-            {
-                String[] multilineOverlayMessage =
-                {
-                    GetTimeUntilBreedAgain(animal)
-                };
-                return multilineOverlayMessage;
-            }
-            else
-            	return null;
-        }
-        else if(animal instanceof EntityHorse)
-        {
-        	EntityHorse horse = (EntityHorse)animal;
-        	
-        	ArrayList multilineOverlayArrayList = new ArrayList(4);
-        	
-        	if(ShowHorseStatsOverlay)
-        	{
-        		multilineOverlayArrayList.add(GetHorseSpeedText(horse) + " " + Localization.get("animalinfo.overlay.speed"));
-        		multilineOverlayArrayList.add(GetHorseHPText(horse) + " " + Localization.get("animalinfo.overlay.hp"));
-        		multilineOverlayArrayList.add(GetHorseJumpText(horse) + " " + Localization.get("animalinfo.overlay.jump"));
-        		
-        		if (animalGrowingAge < 0)
-            		multilineOverlayArrayList.add(GetHorseBabyGrowingAgeAsPercent(horse) + "%");
-        	}
-        	if(ShowBreedingTimerForHorses && animalGrowingAge > 0)
-        		multilineOverlayArrayList.add(GetTimeUntilBreedAgain(horse));
-        	
-        	String[] multilineOverlayMessage = new String[4];
-        	
-        	return (String[])multilineOverlayArrayList.toArray(multilineOverlayMessage);
-        	/*
-            if (animalGrowingAge < 0)
-            {
-                String[] multilineOverlayMessage =
-                {
-                    GetHorseSpeedText(horse) + " " + Localization.get("animalinfo.overlay.speed"),
-                    GetHorseHPText(horse) + " " + Localization.get("animalinfo.overlay.hp"),
-                    GetHorseJumpText(horse) + " " + Localization.get("animalinfo.overlay.jump"),
-                    GetHorseBabyGrowingAgeAsPercent(horse) + "%"
-                };
-                return multilineOverlayMessage;
-            }
-            else if (animalGrowingAge > 0)
-            {
-            	if(ShowBreedingTimerForHorses)
-            	{
-                    String[] multilineOverlayMessage =
-                    {
-                        GetHorseSpeedText(horse) + " " + Localization.get("animalinfo.overlay.speed"),
-                        GetHorseHPText(horse) + " " + Localization.get("animalinfo.overlay.hp"),
-                        GetHorseJumpText(horse) + " " + Localization.get("animalinfo.overlay.jump"),
-                        GetTimeUntilBreedAgain(horse)
-                    };
-                    return multilineOverlayMessage;
-            	}
-            	else
-            	{
-                    String[] multilineOverlayMessage =
-                    {
-                        GetHorseSpeedText(horse) + " " + Localization.get("animalinfo.overlay.speed"),
-                        GetHorseHPText(horse) + " " + Localization.get("animalinfo.overlay.hp"),
-                        GetHorseJumpText(horse) + " " + Localization.get("animalinfo.overlay.jump")
-                    };
-                    return multilineOverlayMessage;
-            	}
-            }
-            else //if (horseGrowingAge == 0)
-            {
-            	String[] multilineOverlayMessage =
-                {
-                    GetHorseSpeedText(horse) + " " + Localization.get("animalinfo.overlay.speed"),
-                    GetHorseHPText(horse) + " " + Localization.get("animalinfo.overlay.hp"),
-                    GetHorseJumpText(horse) + " " + Localization.get("animalinfo.overlay.jump")
-                };
-                return multilineOverlayMessage;
-            }*/
-        }
-        
-        return null;
     }
 
     /**
@@ -654,6 +587,15 @@ public class AnimalInfo
     	ShowHorseStatsOverlay = !ShowHorseStatsOverlay;
     	return ShowHorseStatsOverlay;
     }
+    /**
+     * Toggle showing black text backgrounds on overlayed text
+     * @return the new text background boolean
+     */
+    public static boolean ToggleShowTextBackgrounds()
+    {
+    	ShowTextBackgrounds = !ShowTextBackgrounds;
+    	return ShowTextBackgrounds;
+    }
 
     /**
      * Toggles showing the breeding of this type of entity
@@ -708,6 +650,24 @@ public class AnimalInfo
     {
     	ShowBreedingTimerForChickens = !ShowBreedingTimerForChickens;
     	return ShowBreedingTimerForChickens;
+    }
+    /**
+     * Toggles showing breeding icons
+     * @return the new boolean
+     */
+    public static boolean ToggleShowBreedingIcons()
+    {
+    	ShowBreedingIcons = !ShowBreedingIcons;
+    	return ShowBreedingIcons;
+    }
+    /**
+     * Toggles showing breeding timers
+     * @return the new boolean
+     */
+    public static boolean ToggleShowBreedingTimers()
+    {
+    	ShowBreedingTimers = !ShowBreedingTimers;
+    	return ShowBreedingTimers;
     }
 
     

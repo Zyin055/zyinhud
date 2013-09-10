@@ -2,9 +2,9 @@ package zyin.zyinhud.gui.buttons;
 
 import zyin.zyinhud.mods.AnimalInfo;
 
-public class GuiHorseInfoHotkeyButton extends GuiHotkeyButton
+public class GuiAnimalInfoHotkeyButton extends GuiHotkeyButton
 {
-	public GuiHorseInfoHotkeyButton(int id, int x, int y, int width,int height, String hotkey)
+	public GuiAnimalInfoHotkeyButton(int id, int x, int y, int width,int height, String hotkey)
 	{
 		super(id, x, y, width, height, hotkey);
 	}

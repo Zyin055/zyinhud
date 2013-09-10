@@ -7,16 +7,17 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import zyin.zyinhud.ZyinHUD;
+import zyin.zyinhud.gui.buttons.GuiAnimalInfoHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiDistanceMeasurerHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiEatingAidHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiEnderPearlAidHotkeyButton;
-import zyin.zyinhud.gui.buttons.GuiHorseInfoHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiNumberSlider;
 import zyin.zyinhud.gui.buttons.GuiPlayerLocatorHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiPotionAidHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiSafeOverlayHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiWeaponSwapperHotkeyButton;
+import zyin.zyinhud.mods.AnimalInfo;
 import zyin.zyinhud.mods.Clock;
 import zyin.zyinhud.mods.Compass;
 import zyin.zyinhud.mods.Coordinates;
@@ -25,7 +26,6 @@ import zyin.zyinhud.mods.DurabilityInfo;
 import zyin.zyinhud.mods.EatingAid;
 import zyin.zyinhud.mods.EnderPearlAid;
 import zyin.zyinhud.mods.Fps;
-import zyin.zyinhud.mods.AnimalInfo;
 import zyin.zyinhud.mods.InfoLine;
 import zyin.zyinhud.mods.PlayerLocator;
 import zyin.zyinhud.mods.PotionAid;
@@ -45,7 +45,7 @@ import zyin.zyinhud.util.Localization;
  * A helper class, GuiHotkeyButton, is to help us assign hotkeys. An additional class is needed but is
  * very lightweight (see existing examples)
  * <p>
- * There are 4 types of buttons we have setup to make:<br>
+ * There are 4 types of buttons we use in this GUI:<br>
  * 1) "Enabled" button<br>
  * 2) "Mode" button<br>
  * 3) "Boolean" button<br>
@@ -263,7 +263,7 @@ public class GuiZyinHUDOptions extends GuiScreen
     	int Y = buttonY;
     	buttonList.add(new GuiButton(301, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Coordinates.Enabled)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(302, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("coordinates.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
+    	buttonList.add(new GuiButton(302, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
     	
     }
     private void DrawCompassButtons()
@@ -293,13 +293,13 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiSafeOverlayHotkeyButton(702, buttonX_column1, Y, buttonWidth_half, buttonHeight, SafeOverlay.Hotkey));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("safeoverlay.drawdistance"), SafeOverlay.minDrawDistance, SafeOverlay.maxDrawDistance, SafeOverlay.instance.getDrawDistance(), true));
+    	buttonList.add(new GuiNumberSlider(703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("safeoverlay.options.drawdistance"), SafeOverlay.minDrawDistance, SafeOverlay.maxDrawDistance, SafeOverlay.instance.getDrawDistance(), true));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(704, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("safeoverlay.transparency"), SafeOverlay.instance.getUnsafeOverlayMinTransparency(), SafeOverlay.instance.getUnsafeOverlayMaxTransparency(), SafeOverlay.instance.getUnsafeOverlayTransparency(), false));
+    	buttonList.add(new GuiNumberSlider(704, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("safeoverlay.options.transparency"), SafeOverlay.instance.getUnsafeOverlayMinTransparency(), SafeOverlay.instance.getUnsafeOverlayMaxTransparency(), SafeOverlay.instance.getUnsafeOverlayTransparency(), false));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(705, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("safeoverlay.displayinnether", SafeOverlay.instance.getDisplayInNether())));
+    	buttonList.add(new GuiButton(705, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.getDisplayInNether())));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(706, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("safeoverlay.seethroughwalls", SafeOverlay.instance.getSeeUnsafePositionsThroughWalls())));
+    	buttonList.add(new GuiButton(706, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.getSeeUnsafePositionsThroughWalls())));
     	
     }
     private void DrawPlayerLocatorButtons()
@@ -309,9 +309,9 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiPlayerLocatorHotkeyButton(802, buttonX_column1, Y, buttonWidth_half, buttonHeight, PlayerLocator.Hotkey));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(803, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("playerlocator.minviewdistance"), PlayerLocator.minViewDistanceCutoff, PlayerLocator.maxViewDistanceCutoff, PlayerLocator.viewDistanceCutoff, true));
+    	buttonList.add(new GuiNumberSlider(803, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("playerlocator.options.minviewdistance"), PlayerLocator.minViewDistanceCutoff, PlayerLocator.maxViewDistanceCutoff, PlayerLocator.viewDistanceCutoff, true));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(804, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("playerlocator.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers)));
+    	buttonList.add(new GuiButton(804, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers)));
     	
     }
     private void DrawAnimalInfoButtons()
@@ -319,28 +319,34 @@ public class GuiZyinHUDOptions extends GuiScreen
     	int Y = buttonY;
     	buttonList.add(new GuiButton(901, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(AnimalInfo.Enabled)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHorseInfoHotkeyButton(902, buttonX_column1, Y, buttonWidth_half, buttonHeight, AnimalInfo.Hotkey));
+    	buttonList.add(new GuiAnimalInfoHotkeyButton(902, buttonX_column1, Y, buttonWidth_half, buttonHeight, AnimalInfo.Hotkey));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(903, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("animalinfo.maxviewdistance"), AnimalInfo.minViewDistanceCutoff, AnimalInfo.maxViewDistanceCutoff, AnimalInfo.viewDistanceCutoff, true));
+    	buttonList.add(new GuiNumberSlider(903, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("animalinfo.options.maxviewdistance"), AnimalInfo.minViewDistanceCutoff, AnimalInfo.maxViewDistanceCutoff, AnimalInfo.viewDistanceCutoff, true));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(904, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("animalinfo.numdecimalsdisplayed"), AnimalInfo.minNumberOfDecimalsDisplayed, AnimalInfo.maxNumberOfDecimalsDisplayed, AnimalInfo.GetNumberOfDecimalsDisplayed(), true));
+    	buttonList.add(new GuiButton(907, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showtextbackground", AnimalInfo.ShowTextBackgrounds)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(905, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.showhorsestatsonf3menu", AnimalInfo.ShowHorseStatsOnF3Menu)));
+    	buttonList.add(new GuiNumberSlider(904, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("animalinfo.options.numdecimalsdisplayed"), AnimalInfo.minNumberOfDecimalsDisplayed, AnimalInfo.maxNumberOfDecimalsDisplayed, AnimalInfo.GetNumberOfDecimalsDisplayed(), true));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(906, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.showhorsestatsoverlay", AnimalInfo.ShowHorseStatsOverlay)));
+    	buttonList.add(new GuiButton(905, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsonf3menu", AnimalInfo.ShowHorseStatsOnF3Menu)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(906, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsoverlay", AnimalInfo.ShowHorseStatsOverlay)));
     	
     	Y = buttonY;
-    	buttonList.add(new GuiButton(910, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.showbreedinghorse", AnimalInfo.ShowBreedingTimerForHorses)));
+    	buttonList.add(new GuiButton(916, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingicons", AnimalInfo.ShowBreedingIcons)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(911, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.showbreedingvillagers", AnimalInfo.ShowBreedingTimerForVillagers)));
+    	buttonList.add(new GuiButton(917, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingtimers", AnimalInfo.ShowBreedingTimers)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(912, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.showbreedingcow", AnimalInfo.ShowBreedingTimerForCows)));
+    	buttonList.add(new GuiButton(910, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedinghorse", AnimalInfo.ShowBreedingTimerForHorses)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(913, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.showbreedingsheep", AnimalInfo.ShowBreedingTimerForSheep)));
+    	buttonList.add(new GuiButton(911, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingvillagers", AnimalInfo.ShowBreedingTimerForVillagers)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(914, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.showbreedingpig", AnimalInfo.ShowBreedingTimerForPigs)));
+    	buttonList.add(new GuiButton(912, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingcow", AnimalInfo.ShowBreedingTimerForCows)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(915, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.showbreedingchicken", AnimalInfo.ShowBreedingTimerForChickens)));
+    	buttonList.add(new GuiButton(913, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingsheep", AnimalInfo.ShowBreedingTimerForSheep)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(914, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingpig", AnimalInfo.ShowBreedingTimerForPigs)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(915, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingchicken", AnimalInfo.ShowBreedingTimerForChickens)));
     	
     }
     private void DrawPotionTimerButtons()
@@ -355,26 +361,26 @@ public class GuiZyinHUDOptions extends GuiScreen
     	buttonList.add(new GuiButton(1101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(DurabilityInfo.Enabled)));
     	Y += buttonHeight + buttonSpacing;
     	
-    	buttonList.add(new GuiButton(1102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.showarmordurability", DurabilityInfo.ShowArmorDurability)));
-    	buttonList.add(new GuiNumberSlider(1103, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.DurabilityDisplayThresholdForArmor, false));
+    	buttonList.add(new GuiButton(1102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showarmordurability", DurabilityInfo.ShowArmorDurability)));
+    	buttonList.add(new GuiNumberSlider(1103, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.DurabilityDisplayThresholdForArmor, false));
     	Y += buttonHeight + buttonSpacing;
     	
-    	buttonList.add(new GuiButton(1105, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.showitemdurability", DurabilityInfo.ShowItemDurability)));
-    	buttonList.add(new GuiNumberSlider(1106, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.DurabilityDisplayThresholdForItem, false));
-    	Y += buttonHeight + buttonSpacing;
-    	
-    	
-    	buttonList.add(new GuiButton(1104, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons)));
-    	buttonList.add(new GuiButton(1110, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage)));
+    	buttonList.add(new GuiButton(1105, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
+    	buttonList.add(new GuiNumberSlider(1106, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.DurabilityDisplayThresholdForItem, false));
     	Y += buttonHeight + buttonSpacing;
     	
     	
-    	buttonList.add(new GuiNumberSlider(1107, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.updatefrequency"), 10, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
+    	buttonList.add(new GuiButton(1104, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons)));
+    	buttonList.add(new GuiButton(1110, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage)));
     	Y += buttonHeight + buttonSpacing;
     	
-    	buttonList.add(new GuiNumberSlider(1108, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, true));
+    	
+    	buttonList.add(new GuiNumberSlider(1107, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 10, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(1109, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, true));
+    	
+    	buttonList.add(new GuiNumberSlider(1108, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, true));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiNumberSlider(1109, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, true));
     	
     }
     private void DrawEnderPearlAidButtons()
@@ -394,9 +400,9 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1303, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUD.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.eatgoldenfood", EatingAid.EatGoldenFood)));
+    	buttonList.add(new GuiButton(1304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1305, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar)));
+    	buttonList.add(new GuiButton(1305, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar)));
     }
     private void DrawPotionAidButtons()
     {
@@ -413,7 +419,7 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiWeaponSwapperHotkeyButton(1502, buttonX_column1, Y, buttonWidth_half, buttonHeight, WeaponSwapper.Hotkey));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1503, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("weaponswapper.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight)));
+    	buttonList.add(new GuiButton(1503, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("weaponswapper.options.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight)));
     }
     
     /**
@@ -427,7 +433,7 @@ public class GuiZyinHUDOptions extends GuiScreen
      * @param modName e.x. "clock", "safeoverlay", "eatingaid"
      * @param mode the current mode the mod is in
      * @param numModes the maximum amount of possible modes
-     * @return a String to put on a button
+     * @return a String to be used as the button label
      */
     private static String GetButtonLabel_Mode(String modName, int mode, int numModes)
     {
@@ -441,8 +447,8 @@ public class GuiZyinHUDOptions extends GuiScreen
     
     /**
      * Helper method to get the text for a button that toggles the mod on and off.
-     * @param enabled the current enabled/disabled status of the mod
-     * @return a color coded String to put on a button
+     * @param enabled the current enabled/disabled boolean status of the mod
+     * @return a color coded String to be used as the button label
      */
     private static String GetButtonLabel_Enabled(boolean enabled)
     {
@@ -457,9 +463,9 @@ public class GuiZyinHUDOptions extends GuiScreen
     
     /**
      * Helper method to get the text for a button that toggles between true and false.
-     * @param localizationString the text to use as the label, from the localization file
+     * @param localizationString the text from the localization file to be used as the label for the button
      * @param bool boolean value to display
-     * @return a String to put on a button
+     * @return a String to be used as the button label
      */
     private static String GetButtonLabel_Boolean(String localizationString, boolean bool)
     {
@@ -620,7 +626,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 302)	//Y Colors
             {
             	Coordinates.ToggleUseYCoordinateColors();
-            	button.displayString = GetButtonLabel_Boolean("coordinates.useycoordinatecolors", Coordinates.UseYCoordinateColors);
+            	button.displayString = GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors);
             }
 
             /////////////////////////////////////////////////////////////////////////
@@ -704,12 +710,12 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 705)	//Show in Nether
             {
             	SafeOverlay.instance.toggleDisplayInNether();
-            	button.displayString = GetButtonLabel_Boolean("safeoverlay.displayinnether", SafeOverlay.instance.getDisplayInNether());
+            	button.displayString = GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.getDisplayInNether());
             }
             else if (button.id == 706)	//X-ray
             {
             	SafeOverlay.instance.toggleSeeUnsafePositionsThroughWalls();
-            	button.displayString = GetButtonLabel_Boolean("safeoverlay.seethroughwalls", SafeOverlay.instance.getSeeUnsafePositionsThroughWalls());
+            	button.displayString = GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.getSeeUnsafePositionsThroughWalls());
             }
             
             /////////////////////////////////////////////////////////////////////////
@@ -738,7 +744,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 804)	//Show distance to players
             {
             	PlayerLocator.ToggleShowDistanceToPlayers();
-            	button.displayString = GetButtonLabel_Boolean("playerlocator.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers);
+            	button.displayString = GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers);
             }
             
             /////////////////////////////////////////////////////////////////////////
@@ -772,43 +778,58 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 905)	//Show on F3 menu
             {
             	AnimalInfo.ToggleShowHorseStatsOnF3Menu();
-            	button.displayString = GetButtonLabel_Boolean("animalinfo.showhorsestatsonf3menu", AnimalInfo.ShowHorseStatsOnF3Menu);
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showhorsestatsonf3menu", AnimalInfo.ShowHorseStatsOnF3Menu);
             }
             else if (button.id == 906)	//Show on F3 menu
             {
             	AnimalInfo.ToggleShowHorseStatsOverlay();
-            	button.displayString = GetButtonLabel_Boolean("animalinfo.showhorsestatsoverlay", AnimalInfo.ShowHorseStatsOverlay);
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showhorsestatsoverlay", AnimalInfo.ShowHorseStatsOverlay);
+            }
+            else if (button.id == 907)	//Show text backgrounds
+            {
+            	AnimalInfo.ToggleShowTextBackgrounds();
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showtextbackground", AnimalInfo.ShowTextBackgrounds);
             }
             
             else if (button.id == 910)	//Toggle showing breeding horses
             {
             	AnimalInfo.ToggleShowBreedingHorses();
-            	button.displayString = GetButtonLabel_Boolean("animalinfo.showbreedinghorse", AnimalInfo.ShowBreedingTimerForHorses);
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedinghorse", AnimalInfo.ShowBreedingTimerForHorses);
             }
             else if (button.id == 911)	//Toggle showing breeding villagers
             {
             	AnimalInfo.ToggleShowBreedingVillagers();
-            	button.displayString = GetButtonLabel_Boolean("animalinfo.showbreedingvillager", AnimalInfo.ShowBreedingTimerForVillagers);
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingvillagers", AnimalInfo.ShowBreedingTimerForVillagers);
             }
             else if (button.id == 912)	//Toggle showing breeding cows
             {
             	AnimalInfo.ToggleShowBreedingCows();
-            	button.displayString = GetButtonLabel_Boolean("animalinfo.showbreedingcow", AnimalInfo.ShowBreedingTimerForCows);
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingcow", AnimalInfo.ShowBreedingTimerForCows);
             }
             else if (button.id == 913)	//Toggle showing breeding sheep
             {
             	AnimalInfo.ToggleShowBreedingSheep();
-            	button.displayString = GetButtonLabel_Boolean("animalinfo.showbreedingsheep", AnimalInfo.ShowBreedingTimerForSheep);
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingsheep", AnimalInfo.ShowBreedingTimerForSheep);
             }
             else if (button.id == 914)	//Toggle showing breeding pig
             {
             	AnimalInfo.ToggleShowBreedingPigs();
-            	button.displayString = GetButtonLabel_Boolean("animalinfo.showbreedingpig", AnimalInfo.ShowBreedingTimerForPigs);
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingpig", AnimalInfo.ShowBreedingTimerForPigs);
             }
             else if (button.id == 915)	//Toggle showing breeding chicken
             {
             	AnimalInfo.ToggleShowBreedingChickens();
-            	button.displayString = GetButtonLabel_Boolean("animalinfo.showbreedingchicken", AnimalInfo.ShowBreedingTimerForChickens);
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingchicken", AnimalInfo.ShowBreedingTimerForChickens);
+            }
+            else if (button.id == 916)	//Toggle showing breeding icons
+            {
+            	AnimalInfo.ToggleShowBreedingIcons();
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingicons", AnimalInfo.ShowBreedingIcons);
+            }
+            else if (button.id == 917)	//Toggle showing breeding timers
+            {
+            	AnimalInfo.ToggleShowBreedingTimers();
+            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingtimers", AnimalInfo.ShowBreedingTimers);
             }
             
             
@@ -844,7 +865,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1102)	//Enable Armor
             {
             	DurabilityInfo.ToggleShowArmorDurability();
-            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.showarmordurability", DurabilityInfo.ShowArmorDurability);
+            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.showarmordurability", DurabilityInfo.ShowArmorDurability);
             }
             else if (button.id == 1103)	//Armor durability threshold slider
             {
@@ -854,12 +875,12 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1104)	//Show armor icons
             {
             	DurabilityInfo.ToggleShowIndividualArmorIcons();
-            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons);
+            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons);
             }
             else if (button.id == 1105)	//Enable Items
             {
             	DurabilityInfo.ToggleShowItemDurability();
-            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.showitemdurability", DurabilityInfo.ShowItemDurability);
+            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability);
             }
             else if (button.id == 1106)	//Item  durability threshold slider
             {
@@ -884,7 +905,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1110)	//Show as Percent
             {
             	DurabilityInfo.ToggleShowDamageAsPercent();
-            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage);
+            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage);
             }
         	
             
@@ -933,12 +954,12 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1304)	//Eat golden food
             {
             	EatingAid.ToggleEatingGoldenFood();
-            	button.displayString = GetButtonLabel_Boolean("eatingaid.eatgoldenfood", EatingAid.EatGoldenFood);
+            	button.displayString = GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood);
             }
             else if (button.id == 1305)	//Prioritize food in hotbar
             {
             	EatingAid.TogglePrioritizeFoodInHotbar();
-            	button.displayString = GetButtonLabel_Boolean("eatingaid.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar);
+            	button.displayString = GetButtonLabel_Boolean("eatingaid.options.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar);
             }
             
             /////////////////////////////////////////////////////////////////////////
@@ -982,7 +1003,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1503)	//Scan hotbar from left to right
             {
             	WeaponSwapper.ToggleScanHotbarFromLeftToRight();
-            	button.displayString = GetButtonLabel_Boolean("weaponswapper.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight);
+            	button.displayString = GetButtonLabel_Boolean("weaponswapper.options.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight);
             }
             
         }

@@ -88,7 +88,7 @@ public class PlayerLocator
      * @param y location on the HUD
      * @param isEntityBehindUs
      */
-    public static void RenderEntityOverlay(Entity entity, int x, int y, boolean isEntityBehindUs)
+    public static void RenderEntityInfoOnHUD(Entity entity, int x, int y, boolean isEntityBehindUs)
     {
         //if(!(entity instanceof EntityCow))	//for single player testing/debugging!
         if (!(entity instanceof EntityOtherPlayerMP))

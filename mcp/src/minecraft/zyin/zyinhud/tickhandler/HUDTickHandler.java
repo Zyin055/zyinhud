@@ -2,15 +2,12 @@ package zyin.zyinhud.tickhandler;
 
 import java.util.EnumSet;
 
-import zyin.zyinhud.helper.EntityTrackerHelper;
-import zyin.zyinhud.mods.DurabilityInfo;
-import zyin.zyinhud.mods.AnimalInfo;
-import zyin.zyinhud.mods.InfoLine;
-import zyin.zyinhud.mods.PlayerLocator;
-import zyin.zyinhud.mods.PotionTimers;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import zyin.zyinhud.helper.HUDEntityTrackerHelper;
+import zyin.zyinhud.mods.AnimalInfo;
+import zyin.zyinhud.mods.DurabilityInfo;
+import zyin.zyinhud.mods.InfoLine;
+import zyin.zyinhud.mods.PotionTimers;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
@@ -21,6 +18,7 @@ public class HUDTickHandler implements ITickHandler
 
     public HUDTickHandler()
     {
+    	
     }
 
     @Override
@@ -47,25 +45,8 @@ public class HUDTickHandler implements ITickHandler
         {
             onRenderTick();
         }
-        else if (type.equals(EnumSet.of(TickType.CLIENT)))
-        {
-            GuiScreen guiScreen = mc.currentScreen;
-
-            if (guiScreen == null)
-            {
-                onTickInGame();
-            }
-            else
-            {
-                onTickInGUI(guiScreen);
-            }
-        }
     }
-
-    protected void onTickInGUI(GuiScreen guiScreen)
-    {
-    }
-
+    
     /**
      * Render any things that need to be rendered onto the user's HUD (on the screen, NOT in the game
      * world - that is done in the RenderWorldLastEvent of RenderTickHandler.java)
@@ -76,11 +57,7 @@ public class HUDTickHandler implements ITickHandler
         DurabilityInfo.RenderOntoHUD();
         PotionTimers.RenderOntoHUD();
         AnimalInfo.RenderOntoDebugMenu();
-        EntityTrackerHelper.RenderAllEntityOverlays();	//PlayerLocator.RenderEntityOverlay(), HorseInfo.RenderEntityOverlay()
+        HUDEntityTrackerHelper.RenderEntityInfo();	//calls other mods that need to render things on the HUD near entities
         renderTickCount++;
-    }
-
-    protected void onTickInGame()
-    {
     }
 }

@@ -415,20 +415,20 @@ public class SafeOverlay
             return;
         }
 
-        long frameTime = System.currentTimeMillis();
         double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTickTime;
         double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTickTime;
         double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTickTime;
         playerPosition = new Position((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
 
-        if (recalculateUnsafePositionsFlag || frameTime - lastGenerate > updateFrequency)
+        if (recalculateUnsafePositionsFlag || System.currentTimeMillis() - lastGenerate > updateFrequency)
         {
             CalculateUnsafePositionsMultithreaded();
         }
 
         GL11.glTranslated(-x, -y, -z);		//go from cartesian x,y,z coordinates to in-world x,y,z coordinates
         GL11.glDisable(GL11.GL_TEXTURE_2D);	//fixes color rendering bug (we aren't rendering textures)
-        //allows for color transparency
+        
+        //BLEND and ALPHA allow for color transparency
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
