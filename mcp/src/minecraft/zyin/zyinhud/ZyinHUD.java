@@ -52,7 +52,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "0.11.7")
+@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "0.11.8")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class ZyinHUD
 {
@@ -126,19 +126,16 @@ public class ZyinHUD
     {
         LoadConfigSettings(event.getSuggestedConfigurationFile());
         
-        Localization.loadLanguages("/lang/zyinhud/", GetSupportedLanguages());
+        Localization.LoadLanguages("/lang/zyinhud/", GetSupportedLanguages());
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
-        proxy.registerRenderers();
-        
         MinecraftForge.EVENT_BUS.register(RenderTickHandler.instance);	//needed for @ForgeSubscribe method subscriptions
 
         TickRegistry.registerTickHandler(new HUDTickHandler(), Side.CLIENT);
         TickRegistry.registerTickHandler(new GUITickHandler(), Side.CLIENT);
-        
         
     	LoadKeyHandlers();
     }
@@ -165,6 +162,11 @@ public class ZyinHUD
     }
 
     
+    
+    /**
+     * Gets a string array of supported languages
+     * @return e.x. ["en_US", "zh_CN"]
+     */
     private String[] GetSupportedLanguages()
     {
     	return SupportedLanguages.replace(" ","").split(",");
@@ -337,19 +339,19 @@ public class ZyinHUD
         else
         	p.set(DurabilityInfo.DurabilityUpdateFrequency);
         
-        p = config.get(CATEGORY_DURABILITYINFO, "DurabilityLocationHorizontal", 20);
+        p = config.get(CATEGORY_DURABILITYINFO, "DurabilityLocationHorizontal", 30);
         p.comment = "The horizontal position of the durability icons. 0 is left, 400 is far right.";
         if(loadSettings)
-        	DurabilityInfo.SetDurabalityHorizontalLocation(p.getInt());
+        	DurabilityInfo.SetHorizontalLocation(p.getInt());
         else
-        	p.set(DurabilityInfo.GetDurabalityHorizontalLocation());
+        	p.set(DurabilityInfo.GetHorizontalLocation());
         
         p = config.get(CATEGORY_DURABILITYINFO, "DurabilityLocationVertical", 20);
         p.comment = "The vertical position of the durability icons. 0 is top, 200 is very bottom.";
         if(loadSettings)
-        	DurabilityInfo.SetDurabalityVerticalLocation(p.getInt());
+        	DurabilityInfo.SetVerticalLocation(p.getInt());
         else
-        	p.set(DurabilityInfo.GetDurabalityVerticalLocation());
+        	p.set(DurabilityInfo.GetVerticalLocation());
         
         
         //CATEGORY_SAFEOVERLAY
@@ -403,6 +405,28 @@ public class ZyinHUD
         	PotionTimers.Enabled = p.getBoolean(true);
         else
         	p.set(PotionTimers.Enabled);
+
+        p = config.get(CATEGORY_POTIONTIMERS, "ShowPotionIcons", true);
+        p.comment = "Enable/Disable showing the status effect of potions next to the timers.";
+        if(loadSettings)
+        	PotionTimers.ShowPotionIcons = p.getBoolean(true);
+        else
+        	p.set(PotionTimers.ShowPotionIcons);
+        
+        p = config.get(CATEGORY_POTIONTIMERS, "PotionTimersLocationHorizontal", 1);
+        p.comment = "The horizontal position of the potion timers. 0 is left, 400 is far right.";
+        if(loadSettings)
+        	PotionTimers.SetHorizontalLocation(p.getInt());
+        else
+        	p.set(PotionTimers.GetHorizontalLocation());
+        
+        p = config.get(CATEGORY_POTIONTIMERS, "PotionTimersLocationVertical", 16);
+        p.comment = "The vertical position of the potion timers. 0 is top, 200 is very bottom.";
+        if(loadSettings)
+        	PotionTimers.SetVerticalLocation(p.getInt());
+        else
+        	p.set(PotionTimers.GetVerticalLocation());
+        
         
         
         //CATEGORY_PLAYERLOCATOR
@@ -426,6 +450,13 @@ public class ZyinHUD
         	PlayerLocator.ShowDistanceToPlayers = p.getBoolean(false);
         else
         	p.set(PlayerLocator.ShowDistanceToPlayers);
+        
+        p = config.get(CATEGORY_PLAYERLOCATOR, "ShowPlayerHealth", false);
+        p.comment = "Show how much health players have by their name.";
+        if(loadSettings)
+        	PlayerLocator.ShowPlayerHealth = p.getBoolean(false);
+        else
+        	p.set(PlayerLocator.ShowPlayerHealth);
         
         p = config.get(CATEGORY_PLAYERLOCATOR, "PlayerLocatorMinViewDistance", 10);
         p.comment = "Stop showing player names when they are this close (distance measured in blocks).";

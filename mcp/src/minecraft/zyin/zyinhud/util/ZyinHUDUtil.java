@@ -14,6 +14,7 @@ import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.BlockWorkbench;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -33,6 +34,7 @@ import org.lwjgl.opengl.GL11;
 public class ZyinHUDUtil
 {
     private static Minecraft mc = Minecraft.getMinecraft();
+    private static GuiIngame gig = new GuiIngame(mc);
 
 	
     /***
@@ -64,10 +66,10 @@ public class ZyinHUDUtil
 	{
         //couldn't find a way to see if a block is 'right click-able' without running the onBlockActivation() method
         //which we don't want to do
-        return block instanceof BlockContainer	//chests, hoppers, dispenser, jukebox, beacon, etc.
+        return block instanceof BlockContainer	//BlockContainer = chests, hoppers, dispenser, jukebox, beacon, etc.
                 || block instanceof BlockButton
                 || block instanceof BlockLever
-                || block instanceof BlockRedstoneLogic
+                || block instanceof BlockRedstoneLogic	//BlockRedstoneLogic = repeaters, comparators, etc.
                 || block instanceof BlockDoor
                 || block instanceof BlockAnvil
                 || block instanceof BlockBed
@@ -83,7 +85,7 @@ public class ZyinHUDUtil
     //private static ResourceLocation saddleResource = GetSaddleResourceLocation();
     
     private static final RenderItem itemRenderer = new RenderItem();
-    private static final TextureManager textureManager = mc.func_110434_K();
+    private static final TextureManager textureManager = mc.getTextureManager();
 	
 	public static void RenderFloatingIcon(Item item, float x, float y, float z, float partialTickTime)
     {
@@ -111,10 +113,10 @@ public class ZyinHUDUtil
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         
-        ResourceLocation resource = textureManager.func_130087_a(new ItemStack(item).getItemSpriteNumber());
+        ResourceLocation resource = textureManager.getResourceLocation(new ItemStack(item).getItemSpriteNumber());
         Icon icon = new ItemStack(item).getIconIndex();
         
-        textureManager.func_110577_a(resource);	//bind texture
+        textureManager.bindTexture(resource);	//bind texture
         itemRenderer.renderIcon(-8, -8, icon, 16, 16);
 
         GL11.glDepthMask(true);
@@ -171,7 +173,7 @@ public class ZyinHUDUtil
         float dz = z-playerZ;
         float distance = (float) Math.sqrt(dx*dx + dy*dy + dz*dz);
         float multiplier = distance / 120f;	//mobs only render ~120 blocks away
-        float scale = 0.7f * multiplier;
+        float scale = 0.45f * multiplier;
         
         GL11.glColor4f(1f, 1f, 1f, 0.5f);
         GL11.glPushMatrix();
@@ -219,7 +221,37 @@ public class ZyinHUDUtil
         GL11.glPopMatrix();
     }
 	
-	
+    
+
+    /**
+     * Draws a texture at the specified 2D coordinates
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param u X coordinate of the texture inside of the .png
+     * @param v Y coordinate of the texture inside of the .png
+     * @param width width of the texture
+     * @param height height of the texture
+     * @param resourceLocation A reference to the texture's ResourceLocation
+     * @param scaler How much to scale the texture by when rendering it
+     */
+    public static void DrawTexture(int x, int y, int u, int v, int width, int height, ResourceLocation resourceLocation, float scaler)
+    {
+        x /= scaler;
+        y /= scaler;
+        
+        GL11.glPushMatrix();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glScalef(scaler, scaler, scaler);
+        
+        //bind inventory texture
+        mc.getTextureManager().bindTexture(resourceLocation);
+        
+        gig.drawTexturedModalRect(x, y, u, v, width, height);
+        
+        GL11.glPopMatrix();
+    }
+    
+    
     private static int GetMaxLengthFromStringArray(String[] text)
     {
     	int width = 0;

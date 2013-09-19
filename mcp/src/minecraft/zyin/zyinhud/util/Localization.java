@@ -15,7 +15,7 @@ public class Localization
      *            - The languages supported. E.g: new String[]{"en_US", "en_AU", "en_UK"}
      * @return The amount of language files loaded successfully.
      */
-    public static int loadLanguages(String languagePath, String[] languageSupported)
+    public static int LoadLanguages(String languagePath, String[] languageSupported)
     {
         int languages = 0;
 

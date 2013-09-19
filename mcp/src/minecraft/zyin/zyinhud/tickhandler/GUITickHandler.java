@@ -49,6 +49,7 @@ public class GUITickHandler implements ITickHandler
         }
     }
     
+    
     /**
      * We override any default GUIs with our custom GUI classes here
      * @param guiScreen
@@ -63,9 +64,5 @@ public class GUITickHandler implements ITickHandler
         {
     		mc.displayGuiScreen(new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings));
         }
-    }
-    
-    protected void onTickInGame()
-    {
     }
 }

@@ -1,20 +1,10 @@
 package zyin.zyinhud.gui;
 
-import zyin.zyinhud.util.Localization;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiControls;
-import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiLanguage;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiSmallButton;
-import net.minecraft.client.gui.GuiSnooper;
-import net.minecraft.client.gui.GuiVideoSettings;
-import net.minecraft.client.gui.ScreenChatOptions;
-import net.minecraft.client.resources.GuiScreenTemporaryResourcePackSelect;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.EnumOptions;
 import net.minecraft.client.settings.GameSettings;
+import zyin.zyinhud.util.Localization;
 
 /**
  * This GUI extends the default GuiOptions screen (when you click on "Options..." in the pause menu)

@@ -43,7 +43,7 @@ public class DistanceMeasurer
     public static final String HotkeyDescription = "ZyinHUD: Distance Measurer";
     
     private static Minecraft mc = Minecraft.getMinecraft();
-    private static String far = Localization.get("distancemeasurer.far");
+    private static String far;
 
     /**
      * Calculates the distance of the block the player is pointing at
@@ -114,7 +114,7 @@ public class DistanceMeasurer
             }
             else
             {
-            	return FontCodes.ORANGE + "["+far+"]" + InfoLine.SPACER;
+            	return FontCodes.ORANGE + "["+Localization.get("distancemeasurer.far")+"]" + InfoLine.SPACER;
             }
         }
 

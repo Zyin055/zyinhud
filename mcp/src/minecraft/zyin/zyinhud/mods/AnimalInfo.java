@@ -180,9 +180,9 @@ public class AnimalInfo
                 }
                 
 
-                /* HORSE TESTING DATA
+                /* //HORSE TESTING DATA
                 
-                //float horseGrowingAge = horse.func_110254_bY();	//horse age, 0.5 (baby) to 1 (adult)
+                //float horseGrowingAge = horse.getHorseSize();	//horse size, 0.5 (baby) to 1 (adult)
                 
                 int field_110278_bp = horse.field_110278_bp;		//tail rotation
                 int field_110279_bq = horse.field_110279_bq;		//
@@ -193,6 +193,7 @@ public class AnimalInfo
                 int getGrowingAge = horse.getGrowingAge();			//baby age if negative, breed-ready if 0, bred if positive
                 boolean func_110256_cu = horse.func_110256_cu();	//is zombie/skeleton horse
                 int func_110265_bP = horse.func_110265_bP();		//type of horse (0=horse, 1=donkey, 2=mule, 3=zombie, 4=skeleton)
+                int armor = horse.func_110241_cb();
 
                 int love = horse.inLove;	//countdown timer starting at ~600 when fed a breeding item
                 //horse.breeding;	//countdown from 60 after breeding initiated
@@ -209,6 +210,7 @@ public class AnimalInfo
                 mc.fontRenderer.drawStringWithShadow("getGrowingAge:"+getGrowingAge, 1, 120, 0xFFFFFF);
                 mc.fontRenderer.drawStringWithShadow("is zombie/skeleton?:"+func_110256_cu, 1, 130, 0xFFFFFF);
                 mc.fontRenderer.drawStringWithShadow("horse type:"+func_110265_bP, 1, 140, 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow("armor equipped:"+armor, 1, 150, 0xFFFFFF);
                 */
             }
         }
@@ -282,7 +284,7 @@ public class AnimalInfo
     		if (animalGrowingAge < 0)
         		multilineOverlayArrayList.add(GetHorseBabyGrowingAgeAsPercent(horse) + "%");
     	}
-    	else if(ShowBreedingTimers &&
+    	if(ShowBreedingTimers &&
     			((animal instanceof EntityVillager && ShowBreedingTimerForVillagers) ||
         		(animal instanceof EntityCow && ShowBreedingTimerForCows) ||
         		(animal instanceof EntitySheep && ShowBreedingTimerForSheep) ||
@@ -291,9 +293,7 @@ public class AnimalInfo
         		(animal instanceof EntityHorse && ShowBreedingTimerForHorses)))
         {
             if (animalGrowingAge > 0)	//if the animal has recently bred
-            {
                 multilineOverlayArrayList.add(GetTimeUntilBreedAgain(animal));
-            }
         }
     	
     	String[] multilineOverlayMessage = new String[1];
@@ -306,9 +306,9 @@ public class AnimalInfo
         }
         
 		if(ShowBreedingIcons && 
-				animalGrowingAge == 0 && 			//animal is an adult
+				animalGrowingAge == 0 && 			//animal is an adult that is ready to breed
 				animal instanceof EntityAnimal && 	//animal is not a villager
-				((EntityAnimal)animal).inLove == 0)	//animal is not currently mating
+				((EntityAnimal)animal).inLove == 0)	//animal is not currently breeding
 		{
 	        //render the overlay icon
 			if(animal instanceof EntityHorse)
@@ -351,7 +351,7 @@ public class AnimalInfo
      */
     private static int GetHorseBabyGrowingAgeAsPercent(EntityHorse horse)
     {
-        float horseGrowingAge = horse.func_110254_bY();	//horse age ranges from 0.5 to 1
+        float horseGrowingAge = horse.getHorseSize();	//horse size ranges from 0.5 to 1
         return (int)((horseGrowingAge - 0.5f) * 2.0f * 100f);
     }
     
@@ -461,7 +461,7 @@ public class AnimalInfo
      */
     private static String GetHorseColoringText(EntityHorse horse)
     {
-        String texture = horse.func_110212_cp()[0];
+        String texture = horse.getVariantTexturePaths()[0];
         
         if(texture == null || texture.isEmpty())
         	return "";
@@ -481,7 +481,7 @@ public class AnimalInfo
      */
     private static String GetHorseMarkingText(EntityHorse horse)
     {
-        String texture = horse.func_110212_cp()[1];
+        String texture = horse.getVariantTexturePaths()[1];
         
         if(texture == null || texture.isEmpty())
         	return "";
@@ -526,7 +526,7 @@ public class AnimalInfo
         //??? = 5.5 blocks (max according to the Wiki)
     	
     	//simulate gravity and air resistance to determine the jump height
-    	double yVelocity = horse.func_110215_cj();	//horses's jump strength attribute
+    	double yVelocity = horse.getHorseJumpStrength();	//horses's jump strength attribute
     	double jumpHeight = 0;
     	while (yVelocity > 0)
     	{
@@ -544,7 +544,7 @@ public class AnimalInfo
      */
     private static int GetEntityMaxHP(EntityLivingBase entity)
     {
-        return (int) entity.func_110148_a(SharedMonsterAttributes.field_111267_a).func_111125_b();
+        return (int) entity.getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue();
     }
 
     /**
@@ -554,7 +554,7 @@ public class AnimalInfo
      */
     private static int GetEntityMaxHearts(EntityLivingBase entity)
     {
-        return (int) Math.round(entity.func_110148_a(SharedMonsterAttributes.field_111267_a).func_111125_b() / 2);
+        return (int) Math.round(entity.getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue() / 2);
     }
 
     /**
@@ -566,7 +566,7 @@ public class AnimalInfo
     {
         //Steve has a movement speed of 0.1 and walks 4.3 blocks per second,
         //so multiply this result by 43 to convert to blocks per second
-        return entity.func_110148_a(SharedMonsterAttributes.field_111263_d).func_111125_b() * 43;
+        return entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue() * 43;
     }
 
     /**

@@ -5,6 +5,7 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.util.Vec3;
 import zyin.zyinhud.mods.PlayerLocator;
 
@@ -30,6 +31,7 @@ public class HUDEntityTrackerHelper
     {
         //EntityClientPlayerMP.class,	//this is the player
         EntityOtherPlayerMP.class
+        //EntityCow.class	//for single player testing/debugging!
     };
 
     /**

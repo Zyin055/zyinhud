@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.item.Item;
@@ -22,6 +23,7 @@ import org.lwjgl.opengl.GL11;
 
 import zyin.zyinhud.util.FontCodes;
 import zyin.zyinhud.util.Localization;
+import zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * The Player Locator checks for nearby players and displays their name on screen wherever they are.
@@ -54,19 +56,26 @@ public class PlayerLocator
     
     /** Shows how far you are from other players next to their name */
     public static boolean ShowDistanceToPlayers;
+    public static boolean ShowPlayerHealth;
     
     private static Minecraft mc = Minecraft.getMinecraft();
     private static final RenderItem itemRenderer = new RenderItem();
-    private static final TextureManager textureManager = mc.func_110434_K();
-    private static EntityClientPlayerMP me;
+    private static final TextureManager textureManager = mc.getTextureManager();
+    private static final ResourceLocation iconsResourceLocation = new ResourceLocation("textures/gui/icons.png");
 
     private static Icon saddleIcon = GetSaddleIcon();
     private static Icon minecartIcon = GetMinecartIcon();
     private static Icon boatIcon = GetBoatIcon();
+    private static Icon horseArmorIronIcon = GetHorseArmorIronIcon();
+    private static Icon horseArmorGoldIcon = GetHorseArmorGoldIcon();
+    private static Icon horseArmorDiamondIcon = GetHorseArmorDiamondIcon();
 
     private static ResourceLocation saddleResource = GetSaddleResourceLocation();
     private static ResourceLocation minecartResource = GetMinecartResourceLocation();
     private static ResourceLocation boatResource = GetBoatResourceLocation();
+    private static ResourceLocation horseArmorIronResource = GetHorseArmorIronResourceLocation();
+    private static ResourceLocation horseArmorGoldResource = GetHorseArmorGoldResourceLocation();
+    private static ResourceLocation horseArmorDiamondResource = GetHorseArmorDiamondResourceLocation();
 
     private static final double pi = Math.PI;
 
@@ -103,10 +112,11 @@ public class PlayerLocator
                 (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
                 && !mc.gameSettings.showDebugInfo)
         {
-            me = mc.thePlayer;
-            EntityOtherPlayerMP otherPlayer = (EntityOtherPlayerMP)entity;	//could also cast as EntityPlayer
+            EntityOtherPlayerMP otherPlayer = (EntityOtherPlayerMP)entity;
+            //EntityCow otherPlayer = (EntityCow)entity;	//for single player testing/debugging!
+            
             //only show entities that are close by
-            double distanceFromMe = me.getDistanceToEntity(otherPlayer);
+            double distanceFromMe = mc.thePlayer.getDistanceToEntity(otherPlayer);
 
             if (distanceFromMe > maxViewDistanceCutoff
                     || distanceFromMe < viewDistanceCutoff
@@ -121,7 +131,8 @@ public class PlayerLocator
             //add distance to this player into the message
             if (ShowDistanceToPlayers)
             {
-                overlayMessage = "" + (int)distanceFromMe + " " + overlayMessage;
+                //overlayMessage = "[" + (int)distanceFromMe + "] " + overlayMessage;
+            	overlayMessage = FontCodes.GRAY + "[" + (int)distanceFromMe + "] " + FontCodes.WHITE + overlayMessage;
             }
 
             //add special effects based on what the other player is doing
@@ -142,6 +153,7 @@ public class PlayerLocator
             ScaledResolution res = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();		//~427
             int height = res.getScaledHeight();		//~240
+            
             //check if the text is attempting to render outside of the screen, and if so, fix it to snap to the edge of the screen.
             x = (x > width) ? width : x;
             x = (x < 0) ? 0 : x;
@@ -155,49 +167,131 @@ public class PlayerLocator
             }
 
             //calculate the color of the overlayMessage based on the distance from me
-            int alpha = (int)(0x11 + 0xEE * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
-            alpha = alpha << 24;	//turns it into the format: 0x##000000
+            int alpha = (int)(0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
             int rgb = 0xFFFFFF;
-            int color = rgb + alpha;	//alpha:r:g:b
+            int color = (alpha << 24) + rgb;	//alpha:r:g:b, (alpha << 24) turns it into the format: 0x##000000
             
             //render the overlay message
             GL11.glDisable(GL11.GL_LIGHTING);
+    		GL11.glEnable(GL11.GL_BLEND);
+    		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            
             mc.fontRenderer.drawStringWithShadow(overlayMessage, x, y, color);
-
+            
             //also render whatever the player is currently riding on
-            if (otherPlayer.ridingEntity instanceof EntityHorse
-                    || otherPlayer.ridingEntity instanceof EntityPig)
+            if (otherPlayer.ridingEntity instanceof EntityHorse)
             {
-            	if(saddleResource == null)
-            		saddleResource = GetSaddleResourceLocation();
-            	if(saddleIcon == null)
-            		saddleIcon = GetSaddleIcon();
-            	
-                textureManager.func_110577_a(saddleResource);	//bind texture
-                itemRenderer.renderIcon(x, y - 2, saddleIcon, 12, 12);
+            	int armor = ((EntityHorse)otherPlayer.ridingEntity).func_110241_cb();
+
+            	if(armor == 0)
+                	RenderSaddleIcon(x, y);
+            	else if(armor == 1)
+                	RenderHorseArmorIronIcon(x, y);
+            	else if(armor == 2)
+                	RenderHorseArmorGoldIcon(x, y);
+            	else if(armor == 3)
+                	RenderHorseArmorDiamondIcon(x, y);
+            }
+            if (otherPlayer.ridingEntity instanceof EntityPig)
+            {
+            	RenderSaddleIcon(x, y);
             }
             else if (otherPlayer.ridingEntity instanceof EntityMinecart)
             {
-            	if(minecartResource == null)
-            		minecartResource = GetMinecartResourceLocation();
-            	if(minecartIcon == null)
-            		minecartIcon = GetMinecartIcon();
-            	
-                textureManager.func_110577_a(minecartResource);	//bind texture
-                itemRenderer.renderIcon(x, y - 2, minecartIcon, 12, 12);
+            	RenderMinecartIcon(x, y);
             }
             else if (otherPlayer.ridingEntity instanceof EntityBoat)
             {
-            	if(boatResource == null)
-            		boatResource = GetBoatResourceLocation();
-            	if(boatIcon == null)
-            		boatIcon = GetBoatIcon();
-            	
-                textureManager.func_110577_a(boatResource);	//bind texture
-                itemRenderer.renderIcon(x, y - 2, boatIcon, 12, 12);
+            	RenderBoatIcon(x, y);
             }
+            
+            //if showing player health is turned on, render the hp and a heart icon under their name
+            if(ShowPlayerHealth)
+            {
+            	//getHealth() = get entity health
+                int hearts = (int)((otherPlayer.getHealth()+1) / 2);
+            	String hpOverlayMessage = hearts + "  ";
+            	
+                int hpOverlayMessageWidth = mc.fontRenderer.getStringWidth(hpOverlayMessage);
+                int offsetX = (overlayMessageWidth - hpOverlayMessageWidth) / 2;
+
+                mc.fontRenderer.drawStringWithShadow(hpOverlayMessage, x+offsetX, y+10, color);
+                
+                GL11.glColor4f(1f, 1f, 1f, ((float)alpha) / 0xFF);
+                ZyinHUDUtil.DrawTexture(x + offsetX + 8, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);	//black outline of the heart icon
+                ZyinHUDUtil.DrawTexture(x + offsetX + 8, y + 9, 52, 0, 9, 9, iconsResourceLocation, 1f);	//red interior of the heart icon
+                GL11.glColor4f(1f, 1f, 1f, 1f);
+            }
+
+    		GL11.glDisable(GL11.GL_BLEND);
         }
     }
+
+	private static void RenderBoatIcon(int x, int y)
+	{
+		if(boatResource == null)
+			boatResource = GetBoatResourceLocation();
+		if(boatIcon == null)
+			boatIcon = GetBoatIcon();
+		
+		textureManager.bindTexture(boatResource);	//bind texture
+		itemRenderer.renderIcon(x, y - 2, boatIcon, 12, 12);
+	}
+
+	private static void RenderMinecartIcon(int x, int y)
+	{
+		if(minecartResource == null)
+			minecartResource = GetMinecartResourceLocation();
+		if(minecartIcon == null)
+			minecartIcon = GetMinecartIcon();
+		
+		textureManager.bindTexture(minecartResource);	//bind texture
+		itemRenderer.renderIcon(x, y - 2, minecartIcon, 12, 12);
+	}
+
+	private static void RenderHorseArmorDiamondIcon(int x, int y)
+	{
+		if(horseArmorDiamondResource == null)
+			horseArmorDiamondResource = GetHorseArmorDiamondResourceLocation();
+		if(horseArmorDiamondIcon == null)
+			horseArmorDiamondIcon = GetHorseArmorDiamondIcon();
+		
+		textureManager.bindTexture(horseArmorDiamondResource);	//bind texture
+		itemRenderer.renderIcon(x, y - 2, horseArmorDiamondIcon, 12, 12);
+	}
+
+	private static void RenderHorseArmorGoldIcon(int x, int y)
+	{
+		if(horseArmorGoldResource == null)
+			horseArmorGoldResource = GetHorseArmorGoldResourceLocation();
+		if(horseArmorGoldIcon == null)
+			horseArmorGoldIcon = GetHorseArmorGoldIcon();
+		
+		textureManager.bindTexture(horseArmorGoldResource);	//bind texture
+		itemRenderer.renderIcon(x, y - 2, horseArmorGoldIcon, 12, 12);
+	}
+
+	private static void RenderHorseArmorIronIcon(int x, int y)
+	{
+		if(horseArmorIronResource == null)
+			horseArmorIronResource = GetHorseArmorIronResourceLocation();
+		if(horseArmorIronIcon == null)
+			horseArmorIronIcon = GetHorseArmorIronIcon();
+		
+		textureManager.bindTexture(horseArmorIronResource);	//bind texture
+		itemRenderer.renderIcon(x, y - 2, horseArmorIronIcon, 12, 12);
+	}
+
+	private static void RenderSaddleIcon(int x, int y)
+	{
+		if(saddleResource == null)
+			saddleResource = GetSaddleResourceLocation();
+		if(saddleIcon == null)
+			saddleIcon = GetSaddleIcon();
+		
+		textureManager.bindTexture(saddleResource);	//bind texture
+		itemRenderer.renderIcon(x, y - 2, saddleIcon, 12, 12);
+	}
 
     /*
     public static double AngleBetweenTwoVectors(Vec3 a, Vec3 b)
@@ -227,6 +321,14 @@ public class PlayerLocator
     	return sign * angle;
     }
     */
+    
+    
+    
+    
+    
+    
+    
+    
 
     /**
      * Gets the status of the Player Locator
@@ -261,7 +363,7 @@ public class PlayerLocator
     		Mode = 0;
     	return Mode;
     }
-    
+
     /**
      * Toggle showing the distance to players
      * @return The new Clock mode
@@ -271,10 +373,20 @@ public class PlayerLocator
     	ShowDistanceToPlayers = !ShowDistanceToPlayers;
     	return ShowDistanceToPlayers;
     }
+    
+    /**
+     * Toggle showing the players health
+     * @return The new Clock mode
+     */
+    public static boolean ToggleShowPlayerHealth()
+    {
+    	ShowPlayerHealth = !ShowPlayerHealth;
+    	return ShowPlayerHealth;
+    }
 
     private static ResourceLocation GetSaddleResourceLocation()
     {
-    	return textureManager.func_130087_a(new ItemStack(Item.saddle).getItemSpriteNumber());
+    	return textureManager.getResourceLocation(new ItemStack(Item.saddle).getItemSpriteNumber());
     }
     private static Icon GetSaddleIcon()
     {
@@ -282,7 +394,7 @@ public class PlayerLocator
     }
     private static ResourceLocation GetMinecartResourceLocation()
     {
-    	return textureManager.func_130087_a(new ItemStack(Item.minecartEmpty).getItemSpriteNumber());
+    	return textureManager.getResourceLocation(new ItemStack(Item.minecartEmpty).getItemSpriteNumber());
     }
     private static Icon GetMinecartIcon()
     {
@@ -290,10 +402,35 @@ public class PlayerLocator
     }
     private static ResourceLocation GetBoatResourceLocation()
     {
-    	return textureManager.func_130087_a(new ItemStack(Item.boat).getItemSpriteNumber());
+    	return textureManager.getResourceLocation(new ItemStack(Item.boat).getItemSpriteNumber());
     }
     private static Icon GetBoatIcon()
     {
     	return new ItemStack(Item.boat).getIconIndex();
+    }
+    
+    private static ResourceLocation GetHorseArmorIronResourceLocation()
+    {
+    	return textureManager.getResourceLocation(new ItemStack(Item.horseArmorIron).getItemSpriteNumber());
+    }
+    private static Icon GetHorseArmorIronIcon()
+    {
+    	return new ItemStack(Item.horseArmorIron).getIconIndex();
+    }
+    private static ResourceLocation GetHorseArmorGoldResourceLocation()
+    {
+    	return textureManager.getResourceLocation(new ItemStack(Item.horseArmorGold).getItemSpriteNumber());
+    }
+    private static Icon GetHorseArmorGoldIcon()
+    {
+    	return new ItemStack(Item.horseArmorGold).getIconIndex();
+    }
+    private static ResourceLocation GetHorseArmorDiamondResourceLocation()
+    {
+    	return textureManager.getResourceLocation(new ItemStack(Item.horseArmorDiamond).getItemSpriteNumber());
+    }
+    private static Icon GetHorseArmorDiamondIcon()
+    {
+    	return new ItemStack(Item.horseArmorDiamond).getIconIndex();
     }
 }

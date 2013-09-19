@@ -25,8 +25,8 @@ public class RenderTickHandler
         //render unsafe positions (cache calculations are done from this render method)
         SafeOverlay.instance.RenderAllUnsafePositionsMultithreaded(event.partialTicks);
         
-        //calls other mods that need to render things in the game world nearby entities
-        RenderEntityTrackerHelper.RenderEntityInfo(event.partialTicks);	
+        //calls other mods that need to render things in the game world nearby other entities
+        RenderEntityTrackerHelper.RenderEntityInfo(event.partialTicks);
     }
 	
 	

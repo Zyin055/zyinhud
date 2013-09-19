@@ -14,7 +14,6 @@ import zyin.zyinhud.gui.buttons.GuiEnderPearlAidHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiNumberSlider;
 import zyin.zyinhud.gui.buttons.GuiPlayerLocatorHotkeyButton;
-import zyin.zyinhud.gui.buttons.GuiPotionAidHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiSafeOverlayHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiWeaponSwapperHotkeyButton;
 import zyin.zyinhud.mods.AnimalInfo;
@@ -312,6 +311,8 @@ public class GuiZyinHUDOptions extends GuiScreen
     	buttonList.add(new GuiNumberSlider(803, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("playerlocator.options.minviewdistance"), PlayerLocator.minViewDistanceCutoff, PlayerLocator.maxViewDistanceCutoff, PlayerLocator.viewDistanceCutoff, true));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(804, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(805, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showplayerhealth", PlayerLocator.ShowPlayerHealth)));
     	
     }
     private void DrawAnimalInfoButtons()
@@ -353,6 +354,15 @@ public class GuiZyinHUDOptions extends GuiScreen
     {
     	int Y = buttonY;
     	buttonList.add(new GuiButton(1001, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(PotionTimers.Enabled)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1002, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons)));
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiNumberSlider(1003, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), true));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiNumberSlider(1004, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), true));
     	
     }
     private void DrawDurabilityInfoButtons()
@@ -375,12 +385,12 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	
     	
-    	buttonList.add(new GuiNumberSlider(1107, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 10, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
+    	buttonList.add(new GuiNumberSlider(1107, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 100, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
     	Y += buttonHeight + buttonSpacing;
     	
-    	buttonList.add(new GuiNumberSlider(1108, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, true));
+    	buttonList.add(new GuiNumberSlider(1108, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, true));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(1109, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, true));
+    	buttonList.add(new GuiNumberSlider(1109, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, true));
     	
     }
     private void DrawEnderPearlAidButtons()
@@ -408,8 +418,6 @@ public class GuiZyinHUDOptions extends GuiScreen
     {
     	int Y = buttonY;
     	buttonList.add(new GuiButton(1401, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(PotionAid.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiPotionAidHotkeyButton(1402, buttonX_column1, Y, buttonWidth_half, buttonHeight, PotionAid.Hotkey));
     	
     }
     private void DrawWeaponSwapButtons()
@@ -746,6 +754,11 @@ public class GuiZyinHUDOptions extends GuiScreen
             	PlayerLocator.ToggleShowDistanceToPlayers();
             	button.displayString = GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers);
             }
+            else if (button.id == 805)	//Show players health
+            {
+            	PlayerLocator.ToggleShowPlayerHealth();
+            	button.displayString = GetButtonLabel_Boolean("playerlocator.options.showplayerhealth", PlayerLocator.ShowPlayerHealth);
+            }
             
             /////////////////////////////////////////////////////////////////////////
             // Horse Info
@@ -847,6 +860,21 @@ public class GuiZyinHUDOptions extends GuiScreen
             	PotionTimers.ToggleEnabled();
             	button.displayString = GetButtonLabel_Enabled(PotionTimers.Enabled);
             }
+            else if (button.id == 1002)	//Show potion icons
+            {
+            	PotionTimers.ToggleShowPotionIcons();
+            	button.displayString = GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons);
+            }
+            else if (button.id == 1003)	//Horizontal location
+            {
+            	int value = ((GuiNumberSlider)button).GetValueAsInteger();
+            	PotionTimers.SetHorizontalLocation(value);
+            }
+            else if (button.id == 1004)	//Vertical location
+            {
+            	int value = ((GuiNumberSlider)button).GetValueAsInteger();
+            	PotionTimers.SetVerticalLocation(value);
+            }
             
             /////////////////////////////////////////////////////////////////////////
             // Durability Info
@@ -895,12 +923,12 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1108)	//Horizontal location
             {
             	int value = ((GuiNumberSlider)button).GetValueAsInteger();
-            	DurabilityInfo.SetDurabalityHorizontalLocation(value);
+            	DurabilityInfo.SetHorizontalLocation(value);
             }
             else if (button.id == 1109)	//Vertical location
             {
             	int value = ((GuiNumberSlider)button).GetValueAsInteger();
-            	DurabilityInfo.SetDurabalityVerticalLocation(value);
+            	DurabilityInfo.SetVerticalLocation(value);
             }
             else if (button.id == 1110)	//Show as Percent
             {
