@@ -169,14 +169,14 @@ public class AnimalInfo
                 String horseColor = Localization.get("animalinfo.debug.color") + " " + coloring;
                 String horseMarking = Localization.get("animalinfo.debug.markings") + " " + marking;
                 
-                mc.fontRenderer.drawStringWithShadow(horseSpeedMessage, 1, 130, 0xffffff);
-                mc.fontRenderer.drawStringWithShadow(horseJumpMessage, 1, 140, 0xffffff);
-                mc.fontRenderer.drawStringWithShadow(horseHPMessage, 1, 150, 0xffffff);
+                mc.fontRenderer.drawStringWithShadow(horseSpeedMessage, 2, 130, 0xffffff);
+                mc.fontRenderer.drawStringWithShadow(horseJumpMessage, 2, 140, 0xffffff);
+                mc.fontRenderer.drawStringWithShadow(horseHPMessage, 2, 150, 0xffffff);
                 
                 if(!coloring.isEmpty())	//not a donkey
                 {
-                    mc.fontRenderer.drawStringWithShadow(horseColor, 1, 170, 0xffffff);
-                    mc.fontRenderer.drawStringWithShadow(horseMarking, 1, 180, 0xffffff);
+                    mc.fontRenderer.drawStringWithShadow(horseColor, 2, 170, 0xffffff);
+                    mc.fontRenderer.drawStringWithShadow(horseMarking, 2, 180, 0xffffff);
                 }
                 
 

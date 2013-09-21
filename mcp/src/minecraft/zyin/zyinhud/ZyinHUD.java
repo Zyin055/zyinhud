@@ -52,7 +52,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "0.11.8")
+@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.0.0")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class ZyinHUD
 {
@@ -458,10 +458,10 @@ public class ZyinHUD
         else
         	p.set(PlayerLocator.ShowPlayerHealth);
         
-        p = config.get(CATEGORY_PLAYERLOCATOR, "PlayerLocatorMinViewDistance", 10);
+        p = config.get(CATEGORY_PLAYERLOCATOR, "PlayerLocatorMinViewDistance", 0);
         p.comment = "Stop showing player names when they are this close (distance measured in blocks).";
         if(loadSettings)
-        	PlayerLocator.viewDistanceCutoff = p.getInt(10);
+        	PlayerLocator.viewDistanceCutoff = p.getInt(0);
         else
         	p.set(PlayerLocator.viewDistanceCutoff);
         
@@ -668,12 +668,12 @@ public class ZyinHUD
         else
         	p.set(Clock.Enabled);
         
-        p = config.get(CATEGORY_CLOCK, "ClockMode", 0);
+        p = config.get(CATEGORY_CLOCK, "ClockMode", 1);
         p.comment = "Set the clock mode:" + config.NEW_LINE +
         			"0 = standard Minecraft time in game" + config.NEW_LINE +
         			"1 = countdown timer till morning/night.";
         if(loadSettings)
-        	Clock.Mode = p.getInt(0);
+        	Clock.Mode = p.getInt(1);
         else
         	p.set(Clock.Mode);
 

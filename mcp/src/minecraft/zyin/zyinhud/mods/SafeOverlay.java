@@ -165,6 +165,8 @@ public class SafeOverlay
     @ForgeSubscribe
     public void onPlayerInteractEvent(PlayerInteractEvent event)
     {
+    	//THIS EVENT IS NOT FIRED ON SMP SERVERS
+    	
         if (event.action != Action.RIGHT_CLICK_BLOCK)
         {
             return;    //can only place blocks by right clicking
@@ -174,8 +176,6 @@ public class SafeOverlay
         int y = event.y;
         int z = event.z;
         int blockClickedId = mc.theWorld.getBlockId(x, y, z);
-        //System.out.println("block clicked at ("+x+","+y+","+z+")");
-        //System.out.println("block clicked ID:"+blockClickedId);
         int blockFace = event.face;	// Bottom = 0, Top = 1, Sides = 2-5
 
         if (blockFace == 0)
@@ -204,8 +204,6 @@ public class SafeOverlay
         }
 
         int blockPlacedId = mc.theWorld.getBlockId(x, y, z);
-        //System.out.println("block placed at ("+x+","+y+","+z+")");
-        //System.out.println("block placed ID:"+blockPlacedId);
 
         if (blockPlacedId != 0)	//if it's not an Air block
         {
@@ -467,15 +465,23 @@ public class SafeOverlay
 
         if (blockAbove != null)	//if block above is not an Air block
         {
-        	//Minecraft bug: the Y-bounds for stacked snow blocks changes based on the last on you looked at
-            if (blockAbove instanceof BlockSnow
-                    || blockAbove instanceof BlockRailBase
+        	
+            if (blockAbove instanceof BlockRailBase
                     || blockAbove instanceof BlockBasePressurePlate
                     || blockAbove instanceof BlockCarpet)
             {
                 //is there a spawnable block on top of this one?
                 //if so, then render the mark higher up to match its height
                 boundingBoxMaxY = 1 + blockAbove.getBlockBoundsMaxY();
+            }
+            else if (blockAbove instanceof BlockSnow)
+            {
+            	//mobs only spawn on snow blocks that are stacked 1 high (when metadata = 0)
+            	
+            	//Minecraft bug: the Y-bounds for stacked snow blocks is bugged and changes based on the last one you looked at
+                int snowMetadata = mc.theWorld.getBlockMetadata(position.x, position.y+1, position.z);
+                if(snowMetadata == 0)
+                	boundingBoxMaxY = 1 + 0.125;
             }
         }
         
@@ -511,25 +517,12 @@ public class SafeOverlay
     protected void CalculateUnsafePositionsMultithreaded()
     {
         unsafePositionCache.clear();
-        //List<Thread> threads = Collections.synchronizedList(new ArrayList<Thread>(drawDistance*2+1));
 
         for (int y = -drawDistance; y < drawDistance; y++)
         {
             safeCalculatorThreads.add(new SafeCalculatorThread(y));
         }
-
-        /*
-        for(Thread t : threads)
-        {
-        	try
-        	{
-        		t.join();
-        	}
-        	catch (InterruptedException e)
-        	{
-        		e.printStackTrace();
-        	}
-        }*/
+        
         recalculateUnsafePositionsFlag = false;
         cachePosition = playerPosition;
         lastGenerate = System.currentTimeMillis();

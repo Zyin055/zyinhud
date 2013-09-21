@@ -146,7 +146,7 @@ public class PlayerLocator
             }
             if (otherPlayer.isRiding())	//this doesn't work on some servers
             {
-                overlayMessage = RidingMessagePrefix + overlayMessage;		//space for the saddle icon
+                overlayMessage = RidingMessagePrefix + overlayMessage;		//space for the saddle and horse armor icons
             }
 
             int overlayMessageWidth = mc.fontRenderer.getStringWidth(overlayMessage);	//the width in pixels of the message
@@ -182,15 +182,17 @@ public class PlayerLocator
             if (otherPlayer.ridingEntity instanceof EntityHorse)
             {
             	int armor = ((EntityHorse)otherPlayer.ridingEntity).func_110241_cb();
-
-            	if(armor == 0)
-                	RenderSaddleIcon(x, y);
-            	else if(armor == 1)
+            	
+            	//armor == 0 when no horse armor is equipped
+            	
+            	if(armor == 1)
                 	RenderHorseArmorIronIcon(x, y);
             	else if(armor == 2)
                 	RenderHorseArmorGoldIcon(x, y);
             	else if(armor == 3)
                 	RenderHorseArmorDiamondIcon(x, y);
+            	else if(((EntityHorse)otherPlayer.ridingEntity).isHorseSaddled())
+                	RenderSaddleIcon(x, y);
             }
             if (otherPlayer.ridingEntity instanceof EntityPig)
             {
@@ -208,18 +210,17 @@ public class PlayerLocator
             //if showing player health is turned on, render the hp and a heart icon under their name
             if(ShowPlayerHealth)
             {
-            	//getHealth() = get entity health
-                int hearts = (int)((otherPlayer.getHealth()+1) / 2);
-            	String hpOverlayMessage = hearts + "  ";
+                int numHearts = (int)((otherPlayer.getHealth()+1) / 2);
+            	String hpOverlayMessage = numHearts + "";
             	
                 int hpOverlayMessageWidth = mc.fontRenderer.getStringWidth(hpOverlayMessage);
-                int offsetX = (overlayMessageWidth - hpOverlayMessageWidth) / 2;
+                int offsetX = (overlayMessageWidth - hpOverlayMessageWidth - 9) / 2;
 
                 mc.fontRenderer.drawStringWithShadow(hpOverlayMessage, x+offsetX, y+10, color);
                 
                 GL11.glColor4f(1f, 1f, 1f, ((float)alpha) / 0xFF);
-                ZyinHUDUtil.DrawTexture(x + offsetX + 8, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);	//black outline of the heart icon
-                ZyinHUDUtil.DrawTexture(x + offsetX + 8, y + 9, 52, 0, 9, 9, iconsResourceLocation, 1f);	//red interior of the heart icon
+                ZyinHUDUtil.DrawTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);	//black outline of the heart icon
+                ZyinHUDUtil.DrawTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 52, 0, 9, 9, iconsResourceLocation, 1f);	//red interior of the heart icon
                 GL11.glColor4f(1f, 1f, 1f, 1f);
             }
 
