@@ -19,26 +19,11 @@ public class HUDEntityTrackerHelper
 
     private static final double pi = Math.PI;
 
-    public static int maxOverlayMessagesRendered = 200;	//Renders only the first nearest X entities
-
-    /**
-     * The list of entities that the EntitryTrackerHelper will track.
-     * The class must exactly match the entity's class, don't use a parent class like EntityPlayer.
-     * <p>
-     * Entities must be added to this list in order for new mods to track it.
-     */
-    private static Class[] trackedEntities =
-    {
-        //EntityClientPlayerMP.class,	//this is the player
-        EntityOtherPlayerMP.class
-        //EntityCow.class	//for single player testing/debugging!
-    };
 
     /**
      * Send information about the positions of entities to mods that need this information.
      * <p>
-     * Place new rendering methods in this function, in addition to adding the mod's mode
-     * check at the start of RenderEntityInfo().
+     * Place new rendering methods for mods in this function.
      * @param entity
      * @param x location on the HUD
      * @param y location on the HUD
@@ -47,46 +32,29 @@ public class HUDEntityTrackerHelper
     private static void RenderEntityInfoOnHUD(Entity entity, int x, int y, boolean isEntityBehindUs)
     {
         PlayerLocator.RenderEntityInfoOnHUD(entity, x, y, isEntityBehindUs);
-        //AnimalInfo.RenderEntityInfoOnHUD(entity, x, y, isEntityBehindUs);
     }
     
 
     /**
-     * Calculates the on-screen (x,y) positions of entities and renders various overlays on them.
+     * Calculates the on-screen (x,y) positions of entities and renders various overlays over them.
      */
     public static void RenderEntityInfo()
     {
-        if (PlayerLocator.Mode == 1
+    	PlayerLocator.numOverlaysRendered = 0;
+    	
+        if (PlayerLocator.Enabled && PlayerLocator.Mode == 1
                 && mc.inGameHasFocus)
         {
             me = mc.thePlayer;
-            int i = 0;
-
-            //iterate over all the loaded Entity objects and find just the players
+        	
+            //iterate over all the loaded Entity objects and find just the entities we are tracking
             for (Object object : mc.theWorld.loadedEntityList)
             {
-                if (i > maxOverlayMessagesRendered)
-                {
-                    break;
-                }
-
-                //only track entities that we are tracking (i.e. players, horses)
-                boolean trackingThisEntity = false;
-
-                for (Class trackedEntity : trackedEntities)
-                {
-                    if (trackedEntity.getName().equals(object.getClass().getName()))
-                    {
-                        trackingThisEntity = true;
-                        break;
-                    }
-                }
-
-                if (!trackingThisEntity)
-                {
-                    continue;
-                }
-
+                //only track entities that we are tracking (i.e. other players)
+            	//if(!(object instanceof EntityCow)) //for single player testing
+                if(!(object instanceof EntityOtherPlayerMP))
+                	continue;
+                
                 Entity entity = (Entity)object;
                 
                 //start calculating the angles needed to render the overlay message onto the screen in (x,y) coordinates
@@ -161,7 +129,6 @@ public class HUDEntityTrackerHelper
                 }
 
                 RenderEntityInfoOnHUD(entity, x, y, entityIsBehindUs);
-                i++;
             }
         }
     }

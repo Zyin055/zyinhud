@@ -13,10 +13,11 @@ import zyin.zyinhud.command.CommandFps;
 import zyin.zyinhud.command.CommandZyinHUDOptions;
 import zyin.zyinhud.gui.GuiZyinHUDOptions;
 import zyin.zyinhud.keyhandler.AnimalInfoKeyHandler;
+import zyin.zyinhud.keyhandler.CoordinatesKeyHandler;
 import zyin.zyinhud.keyhandler.DistanceMeasurerKeyHandler;
 import zyin.zyinhud.keyhandler.EatingAidKeyHandler;
 import zyin.zyinhud.keyhandler.EnderPearlAidKeyHandler;
-import zyin.zyinhud.keyhandler.GuiZyinHUDOptionsKeyHandler;
+import zyin.zyinhud.keyhandler.ZyinHUDOptionsKeyHandler;
 import zyin.zyinhud.keyhandler.PlayerLocatorKeyHandler;
 import zyin.zyinhud.keyhandler.PotionAidKeyHandler;
 import zyin.zyinhud.keyhandler.SafeOverlayKeyHandler;
@@ -52,7 +53,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.0.0")
+@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.0.1")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class ZyinHUD
 {
@@ -85,6 +86,7 @@ public class ZyinHUD
     
     //Key bindings
     protected static KeyBinding[] key_K;
+    protected static KeyBinding[] key_TAB;
     protected static KeyBinding[] key_L;
     protected static KeyBinding[] key_P;
     protected static KeyBinding[] key_G;
@@ -97,6 +99,7 @@ public class ZyinHUD
     
     //default hotkeys
     protected static String DefaultDistanceMeasurerHotkey = "K";
+    protected static String DefaultCoordinatesHotkey = "TAB";	//if chat gui is open
     protected static String DefaultSafeOverlayHotkey = "L";
     protected static String DefaultPlayerLocatorHotkey = "P";
     protected static String DefaultEatingAidHotkey = "G";
@@ -256,12 +259,26 @@ public class ZyinHUD
         else
         	p.set(Coordinates.Enabled);
         
+        p = config.get(CATEGORY_COORDINATES, "CoordinatesHotkey", DefaultCoordinatesHotkey);
+        p.comment = "Default: "+DefaultCoordinatesHotkey;
+        if(loadSettings)
+        	Coordinates.Hotkey = p.getString();
+        else
+        	p.set(Keyboard.getKeyName(key_TAB[0].keyCode));
+        
         p = config.get(CATEGORY_COORDINATES, "UseYCoordinateColors", true);
         p.comment = "Color code the Y (height) coordinate based on what ores can spawn at that level.";
         if(loadSettings)
         	Coordinates.UseYCoordinateColors = p.getBoolean(true);
         else
         	p.set(Coordinates.UseYCoordinateColors);
+        
+        p = config.get(CATEGORY_COORDINATES, "CoordinatesChatStringFormat", Coordinates.DefaultChatStringFormat);
+        p.comment = "The format used when sending your coordiantes in a chat message by pressing '" + Coordinates.Hotkey + "'. {x}{y}{z} are replaced with actual coordiantes.";
+        if(loadSettings)
+        	Coordinates.ChatStringFormat = p.getString();
+        else
+        	p.set(Coordinates.ChatStringFormat);
         
         
         //CATEGORY_COMPASS
@@ -321,16 +338,16 @@ public class ZyinHUD
         p = config.get(CATEGORY_DURABILITYINFO, "DurabilityDisplayThresholdForArmor", 0.1);
         p.comment = "Display when armor gets damaged less than this fraction of its durability.";
         if(loadSettings)
-        	DurabilityInfo.DurabilityDisplayThresholdForArmor = (float)p.getDouble(0.1);
+        	DurabilityInfo.SetDurabilityDisplayThresholdForArmor((float)p.getDouble(0.1));
         else
-        	p.set(DurabilityInfo.DurabilityDisplayThresholdForArmor);
+        	p.set(DurabilityInfo.GetDurabilityDisplayThresholdForArmor());
         
         p = config.get(CATEGORY_DURABILITYINFO, "DurabilityDisplayThresholdForItem", 0.1);
         p.comment = "Display when an item gets damaged less than this fraction of its durability.";
         if(loadSettings)
-        	DurabilityInfo.DurabilityDisplayThresholdForItem = (float)p.getDouble(0.1);
+        	DurabilityInfo.SetDurabilityDisplayThresholdForItem((float)p.getDouble(0.1));
         else
-        	p.set(DurabilityInfo.DurabilityDisplayThresholdForItem);
+        	p.set(DurabilityInfo.GetDurabilityDisplayThresholdForItem());
         
         p = config.get(CATEGORY_DURABILITYINFO, "DurabilityUpdateFrequency", 1000);
         p.comment = "Update the the durability info display every XX ms.";
@@ -412,6 +429,20 @@ public class ZyinHUD
         	PotionTimers.ShowPotionIcons = p.getBoolean(true);
         else
         	p.set(PotionTimers.ShowPotionIcons);
+
+        p = config.get(CATEGORY_POTIONTIMERS, "UsePotionColors", true);
+        p.comment = "Enable/Disable using the potion type to determine the text color.";
+        if(loadSettings)
+        	PotionTimers.UsePotionColors = p.getBoolean(true);
+        else
+        	p.set(PotionTimers.UsePotionColors);
+
+        p = config.get(CATEGORY_POTIONTIMERS, "PotionScale", 1.0);
+        p.comment = "How large the potion timers are rendered, 1.0 being the normal size.";
+        if(loadSettings)
+        	PotionTimers.PotionScale = (float)p.getDouble(1.0);
+        else
+        	p.set(PotionTimers.PotionScale);
         
         p = config.get(CATEGORY_POTIONTIMERS, "PotionTimersLocationHorizontal", 1);
         p.comment = "The horizontal position of the potion timers. 0 is left, 400 is far right.";
@@ -712,6 +743,11 @@ public class ZyinHUD
         hotkey = (hotkey == 0) ? Keyboard.getKeyIndex(DefaultDistanceMeasurerHotkey) : hotkey;
         key_K = new KeyBinding[] {new KeyBinding(DistanceMeasurer.HotkeyDescription, hotkey)};
         KeyBindingRegistry.registerKeyBinding(new DistanceMeasurerKeyHandler(key_K, repeatFalse));
+        
+        hotkey = GetKeyboardKeyFromString(Coordinates.Hotkey);
+        hotkey = (hotkey == 0) ? Keyboard.getKeyIndex(DefaultCoordinatesHotkey) : hotkey;
+        key_TAB = new KeyBinding[] {new KeyBinding(Coordinates.HotkeyDescription, hotkey)};
+        KeyBindingRegistry.registerKeyBinding(new CoordinatesKeyHandler(key_TAB, repeatFalse));
 
         hotkey = GetKeyboardKeyFromString(SafeOverlay.Hotkey);
         hotkey = (hotkey == 0) ? Keyboard.getKeyIndex(DefaultSafeOverlayHotkey) : hotkey;
@@ -751,7 +787,7 @@ public class ZyinHUD
         hotkey = GetKeyboardKeyFromString(GuiZyinHUDOptions.Hotkey);
         hotkey = (hotkey == 0) ? Keyboard.getKeyIndex(DefaultOptionsHotkey) : hotkey;
         key_Z = new KeyBinding[] {new KeyBinding(GuiZyinHUDOptions.HotkeyDescription, hotkey)};
-        KeyBindingRegistry.registerKeyBinding(new GuiZyinHUDOptionsKeyHandler(key_Z, repeatFalse));
+        KeyBindingRegistry.registerKeyBinding(new ZyinHUDOptionsKeyHandler(key_Z, repeatFalse));
         
 
     }

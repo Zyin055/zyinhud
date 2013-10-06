@@ -10,6 +10,8 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import zyin.zyinhud.gui.GuiZyinHUDOptions;
+import zyin.zyinhud.util.Localization;
 import zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
@@ -34,6 +36,8 @@ public class PotionTimers
     private static final ResourceLocation inventoryResourceLocation = new ResourceLocation("textures/gui/container/inventory.png");
     
     public static boolean ShowPotionIcons;
+    public static boolean UsePotionColors;
+    public static float PotionScale;
 
     protected static final int[] blinkingThresholds = {3 * 20, 6 * 20, 16 * 20};	//the time at which blinking starts
     protected static final int[] blinkingSpeed = {5, 10, 20};					//how often the blinking occurs
@@ -48,17 +52,23 @@ public class PotionTimers
     public static void RenderOntoHUD()
     {
         //if the player is in the world
-        //and not in a menu
+        //and not in a menu (except for chat and the custom Options menu)
         //and F3 not shown
         if (PotionTimers.Enabled &&
-                (mc.inGameHasFocus || mc.currentScreen == null || (mc.currentScreen instanceof GuiChat))
-                && !mc.gameSettings.showDebugInfo)
+                mc.inGameHasFocus ||
+                (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiZyinHUDOptions && ((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("potiontimers.name")))) &&
+        		!mc.gameSettings.showDebugInfo)
         {
             Collection potionEffects = mc.thePlayer.getActivePotionEffects();	//key:potionId, value:potionEffect
             Iterator it = potionEffects.iterator();
             
             int x = potionLocX;
             int y = potionLocY;
+            
+            x /= PotionScale;
+            y /= PotionScale;
+            GL11.glScalef(PotionScale, PotionScale, PotionScale);
+            
 
             int i = 0;
             while (it.hasNext())
@@ -95,8 +105,14 @@ public class PotionTimers
 	protected static void DrawPotionDuration(int x, int y, Potion potion, PotionEffect potionEffect)
 	{
 		String durationString = Potion.getDurationString(potionEffect);
-		int colorInt = potion.getLiquidColor();
 		int potionDuration = potionEffect.getDuration();	//goes down by 20 ticks per second
+		int colorInt = 0xFFFFFF;
+		
+		if(UsePotionColors)
+			colorInt = potion.getLiquidColor();
+		
+		
+		
 
         mc.fontRenderer.setUnicodeFlag(true);
 		
@@ -147,7 +163,7 @@ public class PotionTimers
     
     
 
-    
+
     /**
      * Toggles showing potion icons
      * @return 
@@ -156,6 +172,16 @@ public class PotionTimers
     {
     	ShowPotionIcons = !ShowPotionIcons;
     	return ShowPotionIcons;
+    }
+    
+    /**
+     * Toggles using potion colors
+     * @return 
+     */
+    public static boolean ToggleUsePotionColors()
+    {
+    	UsePotionColors = !UsePotionColors;
+    	return UsePotionColors;
     }
     
     /**

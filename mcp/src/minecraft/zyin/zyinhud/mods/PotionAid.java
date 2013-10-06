@@ -37,7 +37,7 @@ public class PotionAid
     	return Enabled;
     }
     public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Potion Aid";
+    public static final String HotkeyDescription = "Zyin's HUD: Potion Aid";
     
     private Minecraft mc = Minecraft.getMinecraft();
     private Timer timer = new Timer();

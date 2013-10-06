@@ -21,11 +21,18 @@ public class Coordinates
     	return Enabled;
     }
     
+    public static String Hotkey;
+    public static final String HotkeyDescription = "Zyin's HUD: Chat Coordinates";
+
+    public static String DefaultChatStringFormat = "[{x}, {y}, {z}]";
+    public static String ChatStringFormat;
+    
     /** Use colors to show what ores spawn at the elevation level */
     public static boolean UseYCoordinateColors;
     
     private static Minecraft mc = Minecraft.getMinecraft();
-
+    
+    
     private static final int oreBoundaries[] =
     {
         5,	//nothing below 5
@@ -51,9 +58,9 @@ public class Coordinates
     {
         if(Coordinates.Enabled)
         {
-            int coordX = (int) Math.floor(mc.thePlayer.posX);
-            int coordY = (int) Math.floor(mc.thePlayer.posY);
-            int coordZ = (int) Math.floor(mc.thePlayer.posZ);
+            int coordX = GetXCoordinate();
+            int coordY = GetYCoordinate();
+            int coordZ = GetZCoordinate();
             String yColor = FontCodes.WHITE;
 
             if (UseYCoordinateColors)
@@ -73,6 +80,19 @@ public class Coordinates
         }
 
         return "";
+    }
+
+    public static int GetXCoordinate()
+    {
+    	return (int) Math.floor(mc.thePlayer.posX);
+    }
+    public static int GetYCoordinate()
+    {
+    	return (int) Math.floor(mc.thePlayer.posY);
+    }
+    public static int GetZCoordinate()
+    {
+    	return (int) Math.floor(mc.thePlayer.posZ);
     }
 
     /**

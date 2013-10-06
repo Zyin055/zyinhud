@@ -35,7 +35,7 @@ public class EatingAid
     }
     
     public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Eating Aid";
+    public static final String HotkeyDescription = "Zyin's HUD: Eating Aid";
     
 	/**
 	 * 0=basic<br>

@@ -8,12 +8,14 @@ import org.lwjgl.opengl.GL11;
 
 import zyin.zyinhud.ZyinHUD;
 import zyin.zyinhud.gui.buttons.GuiAnimalInfoHotkeyButton;
+import zyin.zyinhud.gui.buttons.GuiCoordinatesHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiDistanceMeasurerHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiEatingAidHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiEnderPearlAidHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiNumberSlider;
 import zyin.zyinhud.gui.buttons.GuiPlayerLocatorHotkeyButton;
+import zyin.zyinhud.gui.buttons.GuiPotionAidHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiSafeOverlayHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiWeaponSwapperHotkeyButton;
 import zyin.zyinhud.mods.AnimalInfo;
@@ -61,7 +63,7 @@ import zyin.zyinhud.util.Localization;
 public class GuiZyinHUDOptions extends GuiScreen
 {
 	public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Options";
+    public static final String HotkeyDescription = "Zyin's HUD: Options";
 	
 	protected GuiScreen parentGuiScreen;
     
@@ -131,6 +133,7 @@ public class GuiZyinHUDOptions extends GuiScreen
     
     private GuiHotkeyButton currentlySelectedHotkeyButton;
     private GuiButton currentlySelectedTabButton = null;
+    private String currentlySelectedTabButtonColor = FontCodes.YELLOW;
     
 
     public GuiZyinHUDOptions(GuiScreen parentGuiScreen)
@@ -144,19 +147,21 @@ public class GuiZyinHUDOptions extends GuiScreen
      */
     public void initGui()
     {
-        //tabbed button variables
-        tabbedButtonSpacing = 0;
-        tabbedButtonWidth = (int)(width*0.31);
-        tabbedButtonHeight = 14;
-        tabbedButtonX = (int)(width*0.03);
-        tabbedButtonY = (int)(height*0.16);
-        
         //button variables
     	buttonSpacing = 2;
-    	buttonWidth_half = (int)(width*0.30);
+    	buttonWidth_half = 130;
     	buttonWidth_full = buttonWidth_half*2 + buttonSpacing*2;
+    	
+        //tabbed button variables
+        tabbedButtonSpacing = 0;
+        tabbedButtonWidth = 130;
+        tabbedButtonHeight = 14;
+        tabbedButtonX = width/2 - (tabbedButtonWidth + buttonWidth_full)/2;
+        tabbedButtonY = (int)(height*0.16);
+
+        //button variables
     	buttonHeight = 20;
-        buttonX_column1 = tabbedButtonWidth + tabbedButtonX + tabbedButtonX;
+        buttonX_column1 = tabbedButtonWidth + tabbedButtonX + buttonSpacing*2;
     	buttonX_column2 = buttonX_column1 + buttonWidth_half + buttonSpacing*2;
     	buttonY = (int)(height*0.17);
     	
@@ -165,6 +170,7 @@ public class GuiZyinHUDOptions extends GuiScreen
     	pagingButtonHeight = 14;
     	
         screenTitle = Localization.get("gui.options.title");
+        
         DrawAllButtons();
     }
 
@@ -200,9 +206,9 @@ public class GuiZyinHUDOptions extends GuiScreen
     		int xOffset = -strWidth;
     		int yOffset = -(lineHeight * (text.length - i));
 
-            GL11.glEnable (GL11.GL_BLEND);	//for transparent text
+            GL11.glEnable(GL11.GL_BLEND);	//for transparent text
         	fontRenderer.drawStringWithShadow(text[i], x + xOffset, y + yOffset, 0x22ffffff);
-            GL11.glDisable (GL11.GL_BLEND);
+            GL11.glDisable(GL11.GL_BLEND);
     	}
     }
     private void DrawMiscButtons()
@@ -213,7 +219,6 @@ public class GuiZyinHUDOptions extends GuiScreen
     }
     private void DrawTabbedButtons()
     {
-		
 		//make the paging controls
 		GuiButton pagingPrev = new GuiButton(10, tabbedButtonX, tabbedButtonY-pagingButtonHeight, pagingButtonWidth, pagingButtonHeight, "<");
 		GuiButton pagingNext = new GuiButton(11, tabbedButtonX+tabbedButtonWidth-pagingButtonWidth+1, tabbedButtonY-pagingButtonHeight, pagingButtonWidth, pagingButtonHeight, ">");
@@ -261,6 +266,8 @@ public class GuiZyinHUDOptions extends GuiScreen
     {
     	int Y = buttonY;
     	buttonList.add(new GuiButton(301, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Coordinates.Enabled)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiCoordinatesHotkeyButton(303, buttonX_column1, Y, buttonWidth_half, buttonHeight, Coordinates.Hotkey));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(302, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
     	
@@ -357,7 +364,9 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1002, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons)));
     	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1005, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors)));
     	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiNumberSlider(1006, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("potiontimers.options.potionscale"), 1.0f, 4.0f, PotionTimers.PotionScale, false));
     	Y += buttonHeight + buttonSpacing;
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiNumberSlider(1003, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), true));
@@ -372,11 +381,11 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	
     	buttonList.add(new GuiButton(1102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showarmordurability", DurabilityInfo.ShowArmorDurability)));
-    	buttonList.add(new GuiNumberSlider(1103, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.DurabilityDisplayThresholdForArmor, false));
+    	buttonList.add(new GuiNumberSlider(1103, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForArmor(), false));
     	Y += buttonHeight + buttonSpacing;
     	
     	buttonList.add(new GuiButton(1105, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
-    	buttonList.add(new GuiNumberSlider(1106, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.DurabilityDisplayThresholdForItem, false));
+    	buttonList.add(new GuiNumberSlider(1106, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), false));
     	Y += buttonHeight + buttonSpacing;
     	
     	
@@ -418,6 +427,8 @@ public class GuiZyinHUDOptions extends GuiScreen
     {
     	int Y = buttonY;
     	buttonList.add(new GuiButton(1401, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(PotionAid.Enabled)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiPotionAidHotkeyButton(1402, buttonX_column1, Y, buttonWidth_half, buttonHeight, PotionAid.Hotkey));
     	
     }
     private void DrawWeaponSwapButtons()
@@ -554,7 +565,7 @@ public class GuiZyinHUDOptions extends GuiScreen
                     currentlySelectedHotkeyButton = null;
                     
                     //show this button as selected by changing it's color
-            		clickedButton.displayString = FontCodes.YELLOW + clickedButton.displayString;
+            		clickedButton.displayString = currentlySelectedTabButtonColor + clickedButton.displayString;
             	}
             }
 
@@ -635,6 +646,10 @@ public class GuiZyinHUDOptions extends GuiScreen
             {
             	Coordinates.ToggleUseYCoordinateColors();
             	button.displayString = GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors);
+            }
+            else if (button.id == 303)	//Hotkey
+            {
+            	HotkeyButtonClicked((GuiHotkeyButton)button);
             }
 
             /////////////////////////////////////////////////////////////////////////
@@ -865,6 +880,16 @@ public class GuiZyinHUDOptions extends GuiScreen
             	PotionTimers.ToggleShowPotionIcons();
             	button.displayString = GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons);
             }
+            else if (button.id == 1005)	//Show potion colors
+            {
+            	PotionTimers.ToggleUsePotionColors();
+            	button.displayString = GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors);
+            }
+            else if (button.id == 1006)	//Potion scale slider
+            {
+            	float value = ((GuiNumberSlider)button).GetValueAsFloat();
+            	PotionTimers.PotionScale = value;
+            }
             else if (button.id == 1003)	//Horizontal location
             {
             	int value = ((GuiNumberSlider)button).GetValueAsInteger();
@@ -898,7 +923,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1103)	//Armor durability threshold slider
             {
             	float value = ((GuiNumberSlider)button).GetValueAsFloat();
-            	DurabilityInfo.DurabilityDisplayThresholdForArmor = value;
+            	DurabilityInfo.SetDurabilityDisplayThresholdForArmor(value);
             }
             else if (button.id == 1104)	//Show armor icons
             {
@@ -913,7 +938,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1106)	//Item  durability threshold slider
             {
             	float value = ((GuiNumberSlider)button).GetValueAsFloat();
-            	DurabilityInfo.DurabilityDisplayThresholdForItem = value;
+            	DurabilityInfo.SetDurabilityDisplayThresholdForItem(value);
             }
             else if (button.id == 1107)	//Update frequency
             {
@@ -1090,6 +1115,19 @@ public class GuiZyinHUDOptions extends GuiScreen
     			return button;
     	}
     	return null;
+    }
+    
+    /**
+     * Determines if a button tab (buttons on the left part of the screen) is selected.
+     * @param buttonTabLabel Localized name of this button tab as displayed on the button itself
+     * @return
+     */
+    public boolean IsButtonTabSelected(String buttonTabLabel)
+    {
+    	if(currentlySelectedTabButton != null)
+    		return currentlySelectedTabButton.displayString.replace(currentlySelectedTabButtonColor,"").equals(buttonTabLabel);
+    	else
+    		return false;
     }
     
     /**

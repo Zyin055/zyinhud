@@ -16,6 +16,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import zyin.zyinhud.gui.GuiZyinHUDOptions;
+import zyin.zyinhud.util.Localization;
 import zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
@@ -43,9 +45,7 @@ public class DurabilityInfo
     public static boolean ShowArmorDurability;
     public static boolean ShowItemDurability;
     public static int DurabilityUpdateFrequency;
-    public static float DurabilityDisplayThresholdForArmor;
-    public static float DurabilityDisplayThresholdForItem;
-    public static boolean ShowIndividualArmorIcons;
+	public static boolean ShowIndividualArmorIcons;
     public static boolean ShowDamageAsPercentage;
 	
 
@@ -69,6 +69,9 @@ public class DurabilityInfo
     protected static int equipmentLocX = 20 + armorDurabilityIconX;
     protected static int equipmentLocY = 20;
 
+    private static float durabilityDisplayThresholdForArmor;
+    private static float durabilityDisplayThresholdForItem;
+
     private static ArrayList<ItemStack> damagedItemsList = new ArrayList<ItemStack>(13);	//used to push items into the list of broken equipment to render
     private static final RenderItem itemRenderer = new RenderItem();
 
@@ -83,11 +86,12 @@ public class DurabilityInfo
     public static void RenderOntoHUD()
     {
         //if the player is in the world
-        //and not in a menu
+        //and not in a menu (except for chat and the custom Options menu)
         //and F3 not shown
         if (DurabilityInfo.Enabled &&
-                (mc.inGameHasFocus || mc.currentScreen == null || (mc.currentScreen instanceof GuiChat))
-                && !mc.gameSettings.showDebugInfo)
+                mc.inGameHasFocus ||
+                (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiZyinHUDOptions && ((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("durabilityinfo.name")))) &&
+        		!mc.gameSettings.showDebugInfo)
         {
             //don't waste time recalculating things every tick
         	if(System.currentTimeMillis() - lastGenerate > DurabilityUpdateFrequency)
@@ -195,8 +199,9 @@ public class DurabilityInfo
         //if the player is in the world
         //and not in a menu
         //and not typing
-        if ((mc.inGameHasFocus || mc.currentScreen == null || (mc.currentScreen instanceof GuiChat))
-                && !mc.gameSettings.keyBindPlayerList.pressed)
+        if (mc.inGameHasFocus ||
+        		(mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiZyinHUDOptions && ((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("durabilityinfo.name")))) &&
+                !mc.gameSettings.keyBindPlayerList.pressed)
         {
             damagedItemsList.clear();
             CalculateDurabilityIconsForItems();
@@ -227,7 +232,7 @@ public class DurabilityInfo
                     int maxDamage = itemStack.getMaxDamage();
 
                     if (maxDamage != 0 &&
-                    		(1-(double)itemDamage / maxDamage) <= DurabilityDisplayThresholdForItem)
+                    		(1-(double)itemDamage / maxDamage) <= durabilityDisplayThresholdForItem)
                     {
                         damagedItemsList.add(itemStack);
                     }
@@ -254,13 +259,35 @@ public class DurabilityInfo
                 int maxDamage = armorStack.getMaxDamage();
 
                 if (maxDamage != 0 &&
-                        (1-(double)itemDamage / maxDamage) <= DurabilityDisplayThresholdForArmor)
+                        (1-(double)itemDamage / maxDamage) <= durabilityDisplayThresholdForArmor)
                 {
                     damagedItemsList.add(armorStack);
                 }
             }
         }
     }
+    
+    public static float GetDurabilityDisplayThresholdForArmor()
+    {
+		return durabilityDisplayThresholdForArmor;
+	}
+
+	public static void SetDurabilityDisplayThresholdForArmor(float durabilityDisplayThreshold)
+	{
+		durabilityDisplayThresholdForArmor = durabilityDisplayThreshold;
+		CalculateDurabilityIcons();
+	}
+
+    public static float GetDurabilityDisplayThresholdForItem()
+    {
+		return durabilityDisplayThresholdForItem;
+	}
+
+	public static void SetDurabilityDisplayThresholdForItem(float durabilityDisplayThreshold)
+	{
+		durabilityDisplayThresholdForItem = durabilityDisplayThreshold;
+		CalculateDurabilityIcons();
+	}
     
     private static String GetDamageString(int currentDamage, int maxDamage)
     {

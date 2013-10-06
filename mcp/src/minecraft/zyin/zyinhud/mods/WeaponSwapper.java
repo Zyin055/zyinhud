@@ -25,7 +25,7 @@ public class WeaponSwapper
     }
     
     public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Weapon Swapper";
+    public static final String HotkeyDescription = "Zyin's HUD: Weapon Swapper";
 	
     public static boolean ScanHotbarForWeaponsFromLeftToRight;
     

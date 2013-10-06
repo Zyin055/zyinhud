@@ -14,12 +14,12 @@ import net.minecraft.client.settings.KeyBinding;
 import cpw.mods.fml.client.registry.KeyBindingRegistry.KeyHandler;
 import cpw.mods.fml.common.TickType;
 
-public class GuiZyinHUDOptionsKeyHandler extends KeyHandler
+public class ZyinHUDOptionsKeyHandler extends KeyHandler
 {
     private Minecraft mc = Minecraft.getMinecraft();
     private EnumSet tickTypes = EnumSet.of(TickType.CLIENT);
 
-    public GuiZyinHUDOptionsKeyHandler(KeyBinding[] keyBindings, boolean[] repeatings)
+    public ZyinHUDOptionsKeyHandler(KeyBinding[] keyBindings, boolean[] repeatings)
     {
         super(keyBindings, repeatings);
     }

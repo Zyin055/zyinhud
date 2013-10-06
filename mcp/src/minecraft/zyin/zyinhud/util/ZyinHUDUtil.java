@@ -1,5 +1,7 @@
 package zyin.zyinhud.util;
 
+import java.lang.reflect.Field;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAnvil;
 import net.minecraft.block.BlockBed;
@@ -14,7 +16,9 @@ import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.BlockWorkbench;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -187,8 +191,15 @@ public class ZyinHUDUtil
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         
+        int textWidth = 0;
+        for (String thisMessage : text)
+        {
+            int thisMessageWidth = mc.fontRenderer.getStringWidth(thisMessage);
+
+            if (thisMessageWidth > textWidth)
+            	textWidth = thisMessageWidth;
+        }
         
-        int textWidth = GetMaxLengthFromStringArray(text);
         int lineHeight = 10;
         
         if(renderBlackBox)
@@ -243,7 +254,6 @@ public class ZyinHUDUtil
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glScalef(scaler, scaler, scaler);
         
-        //bind inventory texture
         mc.getTextureManager().bindTexture(resourceLocation);
         
         gig.drawTexturedModalRect(x, y, u, v, width, height);
@@ -251,20 +261,49 @@ public class ZyinHUDUtil
         GL11.glPopMatrix();
     }
     
-    
-    private static int GetMaxLengthFromStringArray(String[] text)
-    {
-    	int width = 0;
-        for (String thisMessage : text)
-        {
-            int thisMessageWidth = mc.fontRenderer.getStringWidth(thisMessage);
 
-            if (thisMessageWidth > width)
-            {
-                width = thisMessageWidth;
-            }
-        }
-        return width;
+    
+    /**
+     * Gets the protected text box field from a GuiChat window using reflection.
+     * @param guiChat
+     * @return null if field 'inputField' could not be found
+     */
+    public static GuiTextField GetFieldByReflection_inputField(GuiChat guiChat)
+    {
+		Field field = null;
+		try
+		{
+			//this is the deobfuscated field name - works in single player (and maybe forge servers?)
+		     field = guiChat.getClass().getDeclaredField("inputField");
+		}
+		catch(NoSuchFieldException e){}
+		
+		if(field == null)
+		{
+			try
+			{
+				//this field obfuscated field name - it was obtained from the /mcp/conf/fields.csv file
+			    field = guiChat.getClass().getDeclaredField("field_73901_a");
+			}
+			catch(NoSuchFieldException e){}
+		}
+		
+		if(field != null)
+		{
+			field.setAccessible(true);
+		    GuiTextField inputField = null;
+		    try
+			{
+		    	 inputField = (GuiTextField) field.get(guiChat);
+			}
+		    catch (IllegalArgumentException e){}
+		    catch (IllegalAccessException e){}
+		
+		    return inputField;
+		}
+		
+		return null;
     }
+    
 	
 }

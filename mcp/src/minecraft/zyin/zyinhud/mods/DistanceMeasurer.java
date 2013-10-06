@@ -40,7 +40,7 @@ public class DistanceMeasurer
     public static int NumberOfModes = 3;
     
     public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Distance Measurer";
+    public static final String HotkeyDescription = "Zyin's HUD: Distance Measurer";
     
     private static Minecraft mc = Minecraft.getMinecraft();
     private static String far;

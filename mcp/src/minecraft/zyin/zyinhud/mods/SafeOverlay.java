@@ -32,6 +32,7 @@ import net.minecraft.block.BlockWall;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -61,7 +62,7 @@ public class SafeOverlay
     	return Enabled;
     }
     public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Safe Overlay";
+    public static final String HotkeyDescription = "Zyin's HUD: Safe Overlay";
     
 	/**
 	 * 0=off<br>
@@ -277,6 +278,41 @@ public class SafeOverlay
         //This is the entry point for the thread after start() is called.
         public void run()
         {
+            
+            Position pos = new Position();
+
+            for (int x = -drawDistance; x < drawDistance; x++)
+            for (int z = -drawDistance; z < drawDistance; z++)
+            {
+                pos.x = playerPosition.x + x;
+                pos.y = playerPosition.y + y;
+                pos.z = playerPosition.z + z;
+                
+                if(CanMobsSpawnAtPosition(pos))
+                {
+                	unsafePositionCache.add(new Position(pos));
+                }
+            }
+        }
+    }
+/*
+    class SafeCalculatorThread extends Thread
+    {
+    	//this is the y-coordinate this thread is responsible for calculating
+        private int y;
+
+        SafeCalculatorThread(int y)
+        {
+            super("Safe Overlay Calculator Thread at y=" + y);
+            this.y = y;
+
+            //Start the thread
+            start();
+        }
+
+        //This is the entry point for the thread after start() is called.
+        public void run()
+        {
             Position pos = new Position();
 
             for (int x = -drawDistance; x < drawDistance; x++)
@@ -292,7 +328,7 @@ public class SafeOverlay
                 }
             }
         }
-    }
+    }*/
     
     /**
      * Determines if any mob can spawn at a position. Works very well at detecting
@@ -362,7 +398,7 @@ public class SafeOverlay
         {
             CalculateUnsafePositionsMultithreaded();
         }
-
+        
         GL11.glPushMatrix();
         GL11.glTranslated(-x, -y, -z);		//go from cartesian x,y,z coordinates to in-world x,y,z coordinates
         GL11.glDisable(GL11.GL_TEXTURE_2D);	//fixes color rendering bug (we aren't rendering textures)
@@ -382,33 +418,18 @@ public class SafeOverlay
 
         GL11.glBegin(GL11.GL_LINES);	//begin drawing lines defined by 2 vertices
 
-        //wait for all the threads to finish calculation before rendering the unsafe positions
-        for (Thread t : safeCalculatorThreads)
-        {
-            try
-            {
-                t.join();
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        
-
         //render unsafe areas
         for (Position position : unsafePositionCache)
         {
-            RenderUnsafeMarker(position);
+        	RenderUnsafeMarker(position);
         }
         
-
         GL11.glEnd();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);	//puts blending back to normal, fixes bad HD texture rendering
         GL11.glPopMatrix();
     }
-
+    
     /**
      * Renders an unsafe marker ("X" icon) at the position with colors depending on the Positions light levels.
      * It also takes into account the block above this position and relocates the mark vertically if needed.
@@ -525,6 +546,20 @@ public class SafeOverlay
         
         recalculateUnsafePositionsFlag = false;
         cachePosition = playerPosition;
+
+        //wait for all the threads to finish calculation before rendering the unsafe positions
+        for (Thread t : safeCalculatorThreads)
+        {
+            try
+            {
+                t.join();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        
         lastGenerate = System.currentTimeMillis();
     }
 

@@ -22,7 +22,7 @@ public class EnderPearlAid
     	return Enabled;
     }
     public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Ender Pearl Aid";
+    public static final String HotkeyDescription = "Zyin's HUD: Ender Pearl Aid";
     
     /**
      * Makes the player throw an ender pearl if there is one on their hotbar.

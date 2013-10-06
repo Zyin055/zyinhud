@@ -43,7 +43,7 @@ public class AnimalInfo
     	return Enabled;
     }
     public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Animal Info";
+    public static final String HotkeyDescription = "Zyin's HUD: Animal Info";
     
 	/**
 	 * 0=off<br>
@@ -98,6 +98,8 @@ public class AnimalInfo
     public static int viewDistanceCutoff = 8;		//how far away we will render the overlay
     public static int minViewDistanceCutoff = 0;
     public static int maxViewDistanceCutoff = 120;
+    
+    public static final int maxNumberOfOverlays = 200;	//render only the first nearest 50 overlays
 
     private static DecimalFormat decimalFormat = GetDecimalFormat();
     private static DecimalFormat twoDigitFormat = new DecimalFormat("00");
@@ -228,6 +230,8 @@ public class AnimalInfo
         {
             return;    //we only care about horses
         }
+    	
+    	int i = 0;
 
         //if the player is in the world
         //and not looking at a menu
@@ -236,6 +240,9 @@ public class AnimalInfo
                 (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
                 && !mc.gameSettings.showDebugInfo)
         {
+        	if(i > maxNumberOfOverlays)
+        		return;
+        	
             EntityAgeable animal = (EntityAgeable)entity;
 
             if (animal.riddenByEntity instanceof EntityClientPlayerMP)
@@ -253,6 +260,7 @@ public class AnimalInfo
             }
             
             RenderAnimalOverlay(animal, partialTickTime);
+            i++;
         }
     }
     

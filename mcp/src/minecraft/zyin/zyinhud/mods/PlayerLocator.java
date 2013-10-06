@@ -1,14 +1,12 @@
 package zyin.zyinhud.mods;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityCow;
@@ -43,7 +41,7 @@ public class PlayerLocator
     	return Enabled;
     }
     public static String Hotkey;
-    public static final String HotkeyDescription = "ZyinHUD: Player Locator";
+    public static final String HotkeyDescription = "Zyin's HUD: Player Locator";
 
 	/**
 	 * 0=off<br>
@@ -79,15 +77,17 @@ public class PlayerLocator
 
     private static final double pi = Math.PI;
 
-    private static final String SprintingMessagePrefix = "";
-    private static final String SneakingMessagePrefix = FontCodes.ITALICS;
-    private static final String RidingMessagePrefix = "    ";	//space for the saddle/minecart/boat icon
+    private static final String sprintingMessagePrefix = "";
+    private static final String sneakingMessagePrefix = FontCodes.ITALICS;
+    private static final String ridingMessagePrefix = "    ";	//space for the saddle/minecart/boat/horse armor icon
 
     /** Don't render players that are closer than this */
     public static int viewDistanceCutoff = 10;
     public static int minViewDistanceCutoff = 0;
     public static int maxViewDistanceCutoff = 120;	//realistic max distance the game will render entities: up to ~115 blocks away
-    
+
+    public static final int maxNumberOfOverlays = 50;	//render only the first nearest 50 players
+    public static int numOverlaysRendered;
 
 
     /**
@@ -99,6 +99,9 @@ public class PlayerLocator
      */
     public static void RenderEntityInfoOnHUD(Entity entity, int x, int y, boolean isEntityBehindUs)
     {
+    	if(numOverlaysRendered > maxNumberOfOverlays)
+    		return;
+    	
         //if(!(entity instanceof EntityCow))	//for single player testing/debugging!
         if (!(entity instanceof EntityOtherPlayerMP))
         {
@@ -138,15 +141,15 @@ public class PlayerLocator
             //add special effects based on what the other player is doing
             if (otherPlayer.isSprinting())
             {
-                overlayMessage = SprintingMessagePrefix + overlayMessage;	//nothing
+                overlayMessage = sprintingMessagePrefix + overlayMessage;	//nothing
             }
             if (otherPlayer.isSneaking())
             {
-                overlayMessage = SneakingMessagePrefix + overlayMessage;	//italics
+                overlayMessage = sneakingMessagePrefix + overlayMessage;	//italics
             }
             if (otherPlayer.isRiding())	//this doesn't work on some servers
             {
-                overlayMessage = RidingMessagePrefix + overlayMessage;		//space for the saddle and horse armor icons
+                overlayMessage = ridingMessagePrefix + overlayMessage;		//space for the saddle and horse armor icons
             }
 
             int overlayMessageWidth = mc.fontRenderer.getStringWidth(overlayMessage);	//the width in pixels of the message
@@ -154,17 +157,14 @@ public class PlayerLocator
             int width = res.getScaledWidth();		//~427
             int height = res.getScaledHeight();		//~240
             
+            //center the text horizontally over the entity
+            x -= overlayMessageWidth/2;
+            
             //check if the text is attempting to render outside of the screen, and if so, fix it to snap to the edge of the screen.
-            x = (x > width) ? width : x;
+            x = (x > width - overlayMessageWidth) ? width - overlayMessageWidth : x;
             x = (x < 0) ? 0 : x;
             y = (y > height - 10) ? height - 10 : y;
             y = (y < 10) ? 10 : y;	//use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
-
-            //don't let the text go off the right side of the screen
-            if (x > width - overlayMessageWidth)
-            {
-                x = width - overlayMessageWidth;
-            }
 
             //calculate the color of the overlayMessage based on the distance from me
             int alpha = (int)(0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
@@ -225,9 +225,11 @@ public class PlayerLocator
             }
 
     		GL11.glDisable(GL11.GL_BLEND);
+    		numOverlaysRendered++;
         }
     }
-
+    
+    
 	private static void RenderBoatIcon(int x, int y)
 	{
 		if(boatResource == null)
@@ -297,13 +299,7 @@ public class PlayerLocator
     /*
     public static double AngleBetweenTwoVectors(Vec3 a, Vec3 b)
     {
-        double crossX = a.yCoord * b.zCoord - a.zCoord * b.yCoord;
-        double crossY = a.zCoord * b.xCoord - a.xCoord * b.zCoord;
-        double crossZ = a.xCoord * b.yCoord - a.yCoord * b.xCoord;
-        double cross = Math.sqrt(crossX * crossX + crossY * crossY + crossZ * crossZ);
-        double dot = a.xCoord * b.xCoord + a.yCoord * b.yCoord + a.zCoord + b.zCoord;
-
-        return Math.atan2(cross, dot);
+        return Math.acos(a.dotProduct(b) / (a.lengthVector() * b.lengthVector()));
     }
     public static double SignedAngleBetweenTwoVectors(Vec3 a, Vec3 b)
     {
@@ -322,11 +318,6 @@ public class PlayerLocator
     	return sign * angle;
     }
     */
-    
-    
-    
-    
-    
     
     
     
@@ -350,8 +341,6 @@ public class PlayerLocator
             return FontCodes.WHITE + "???" + InfoLine.SPACER;
         }
     }
-    
-
     
     /**
      * Increments the Clock mode
@@ -409,7 +398,6 @@ public class PlayerLocator
     {
     	return new ItemStack(Item.boat).getIconIndex();
     }
-    
     private static ResourceLocation GetHorseArmorIronResourceLocation()
     {
     	return textureManager.getResourceLocation(new ItemStack(Item.horseArmorIron).getItemSpriteNumber());
