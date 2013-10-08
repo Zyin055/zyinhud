@@ -53,7 +53,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.0.1")
+@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.0.2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class ZyinHUD
 {
@@ -86,7 +86,7 @@ public class ZyinHUD
     
     //Key bindings
     protected static KeyBinding[] key_K;
-    protected static KeyBinding[] key_TAB;
+    protected static KeyBinding[] key_F1;
     protected static KeyBinding[] key_L;
     protected static KeyBinding[] key_P;
     protected static KeyBinding[] key_G;
@@ -99,7 +99,7 @@ public class ZyinHUD
     
     //default hotkeys
     protected static String DefaultDistanceMeasurerHotkey = "K";
-    protected static String DefaultCoordinatesHotkey = "TAB";	//if chat gui is open
+    protected static String DefaultCoordinatesHotkey = "F1";	//if chat gui is open
     protected static String DefaultSafeOverlayHotkey = "L";
     protected static String DefaultPlayerLocatorHotkey = "P";
     protected static String DefaultEatingAidHotkey = "G";
@@ -264,7 +264,7 @@ public class ZyinHUD
         if(loadSettings)
         	Coordinates.Hotkey = p.getString();
         else
-        	p.set(Keyboard.getKeyName(key_TAB[0].keyCode));
+        	p.set(Keyboard.getKeyName(key_F1[0].keyCode));
         
         p = config.get(CATEGORY_COORDINATES, "UseYCoordinateColors", true);
         p.comment = "Color code the Y (height) coordinate based on what ores can spawn at that level.";
@@ -746,8 +746,8 @@ public class ZyinHUD
         
         hotkey = GetKeyboardKeyFromString(Coordinates.Hotkey);
         hotkey = (hotkey == 0) ? Keyboard.getKeyIndex(DefaultCoordinatesHotkey) : hotkey;
-        key_TAB = new KeyBinding[] {new KeyBinding(Coordinates.HotkeyDescription, hotkey)};
-        KeyBindingRegistry.registerKeyBinding(new CoordinatesKeyHandler(key_TAB, repeatFalse));
+        key_F1 = new KeyBinding[] {new KeyBinding(Coordinates.HotkeyDescription, hotkey)};
+        KeyBindingRegistry.registerKeyBinding(new CoordinatesKeyHandler(key_F1, repeatFalse));
 
         hotkey = GetKeyboardKeyFromString(SafeOverlay.Hotkey);
         hotkey = (hotkey == 0) ? Keyboard.getKeyIndex(DefaultSafeOverlayHotkey) : hotkey;

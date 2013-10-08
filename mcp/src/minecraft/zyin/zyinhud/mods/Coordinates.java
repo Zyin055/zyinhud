@@ -23,8 +23,10 @@ public class Coordinates
     
     public static String Hotkey;
     public static final String HotkeyDescription = "Zyin's HUD: Chat Coordinates";
-
+    
+    /** The default chat format String which replaces "{x}", "{y}", and "{z}" with coordinates */
     public static String DefaultChatStringFormat = "[{x}, {y}, {z}]";
+    /** A String which replaces "{x}", "{y}", and "{z}" with coordinates */
     public static String ChatStringFormat;
     
     /** Use colors to show what ores spawn at the elevation level */

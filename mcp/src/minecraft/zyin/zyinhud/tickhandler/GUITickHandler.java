@@ -4,6 +4,7 @@ import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 import zyin.zyinhud.gui.GuiOptionsOverride;
@@ -56,11 +57,19 @@ public class GUITickHandler implements ITickHandler
      */
     protected void onTickInGUI(GuiScreen guiScreen)
     {
+    	if(guiScreen != null)
+    	{
+    		System.out.println("guiScreen:"+guiScreen.toString());
+    		if(mc.theWorld == null)
+    		System.out.println("mc.theWorld null");
+    	}
+    	
+    	
     	if (guiScreen instanceof GuiOptionsOverride)
         {
     		//don't do anything if we're looking at the new override screen
         }
-    	else if (guiScreen instanceof GuiOptions)
+    	else if (guiScreen instanceof GuiOptions && mc.theWorld != null)
         {
     		mc.displayGuiScreen(new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings));
         }
