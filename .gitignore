@@ -1,4 +1,9 @@
 *
 !mcp/eclipse/Minecraft/bin/assets
+!mcp/eclipse/Minecraft/bin/assets/*
 !mcp/eclipse/Minecraft/bin/lang
+!mcp/eclipse/Minecraft/bin/lang/*
 !mcp/src/minecraft/zyin
+!mcp/src/minecraft/zyin/*
+!mcp/src/minecraft/zyin/*/*
+!mcp/src/minecraft/zyin/*/*/*
