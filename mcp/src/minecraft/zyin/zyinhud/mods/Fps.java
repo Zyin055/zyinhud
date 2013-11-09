@@ -55,6 +55,7 @@ public class Fps
         @Override
         public void run()
         {
+        	//we could also parse the mc.debug string and acquire the FPS that way
             currentRenderTickCount = HUDTickHandler.renderTickCount;
             currentFps = currentRenderTickCount - lastRenderTickCount;
             lastRenderTickCount = HUDTickHandler.renderTickCount;

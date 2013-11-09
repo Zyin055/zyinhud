@@ -17,6 +17,7 @@ import zyin.zyinhud.keyhandler.CoordinatesKeyHandler;
 import zyin.zyinhud.keyhandler.DistanceMeasurerKeyHandler;
 import zyin.zyinhud.keyhandler.EatingAidKeyHandler;
 import zyin.zyinhud.keyhandler.EnderPearlAidKeyHandler;
+import zyin.zyinhud.keyhandler.QuickDepositKeyHandler;
 import zyin.zyinhud.keyhandler.ZyinHUDOptionsKeyHandler;
 import zyin.zyinhud.keyhandler.PlayerLocatorKeyHandler;
 import zyin.zyinhud.keyhandler.PotionAidKeyHandler;
@@ -35,6 +36,7 @@ import zyin.zyinhud.mods.InfoLine;
 import zyin.zyinhud.mods.PlayerLocator;
 import zyin.zyinhud.mods.PotionAid;
 import zyin.zyinhud.mods.PotionTimers;
+import zyin.zyinhud.mods.QuickDeposit;
 import zyin.zyinhud.mods.SafeOverlay;
 import zyin.zyinhud.mods.WeaponSwapper;
 import zyin.zyinhud.tickhandler.GUITickHandler;
@@ -53,7 +55,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.0.2")
+@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.1.0")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class ZyinHUD
 {
@@ -81,7 +83,8 @@ public class ZyinHUD
     public static final String CATEGORY_ENDERPEARLAID = "enderpearlaid";
     public static final String CATEGORY_CLOCK = "clock";
     public static final String CATEGORY_POTIONAID = "potionaid";
-
+    public static final String CATEGORY_QUICKDEPOSIT = "quickdeposit";
+    
     public static String SupportedLanguages;
     
     //Key bindings
@@ -95,6 +98,7 @@ public class ZyinHUD
     protected static KeyBinding[] key_C;
     protected static KeyBinding[] key_V;
     protected static KeyBinding[] key_Z;
+    protected static KeyBinding[] key_X;
     
     
     //default hotkeys
@@ -108,6 +112,7 @@ public class ZyinHUD
     protected static String DefaultEnderPearlAidHotkey = "C";
     protected static String DefaultPotionAidHotkey = "V";
     protected static String DefaultOptionsHotkey = "Z";	//Ctrl + Alt + Z
+    protected static String DefaultQuickDepositHotkey = "X";
     
     public static Configuration config = null;
     
@@ -227,6 +232,7 @@ public class ZyinHUD
         config.addCustomCategoryComment(CATEGORY_ENDERPEARLAID, "Ender Pearl Aid makes it easier to quickly throw ender pearls.");
         config.addCustomCategoryComment(CATEGORY_CLOCK, "Clock shows you time relevant to Minecraft time.");
         config.addCustomCategoryComment(CATEGORY_POTIONAID, "Potion Aid helps you quickly drink potions based on your circumstance.");
+        config.addCustomCategoryComment(CATEGORY_QUICKDEPOSIT, "Quick Stack allows you to inteligently deposit every item in your inventory quickly into a chest.");
         
         
         //CATEGORY_MISC
@@ -241,7 +247,7 @@ public class ZyinHUD
         else
         	p.set(Keyboard.getKeyName(key_Z[0].keyCode));
         
-        
+
         //CATEGORY_INFOLINE
         p = config.get(CATEGORY_INFOLINE, "EnableInfoLine", true);
         p.comment = "Enable/Disable the entire info line in the top left part of the screen. This includes the clock, coordinates, compass, mod status, etc.";
@@ -249,6 +255,13 @@ public class ZyinHUD
         	InfoLine.Enabled = p.getBoolean(true);
         else
         	p.set(InfoLine.Enabled);
+        
+        p = config.get(CATEGORY_INFOLINE, "ShowBiome", false);
+        p.comment = "Enable/Disable showing what biome you are in on the info line.";
+        if(loadSettings)
+        	InfoLine.ShowBiome = p.getBoolean(false);
+        else
+        	p.set(InfoLine.ShowBiome);
         
         
         //CATEGORY_COORDINATES
@@ -279,6 +292,15 @@ public class ZyinHUD
         	Coordinates.ChatStringFormat = p.getString();
         else
         	p.set(Coordinates.ChatStringFormat);
+        
+        p = config.get(CATEGORY_COORDINATES, "CoordinatesMode", 0);
+        p.comment = "Set the coordinates display mode:" + config.NEW_LINE +
+					"0 = [x, z, y]" + config.NEW_LINE +
+					"1 = [x, y, z]";
+        if(loadSettings)
+        	Coordinates.Mode = p.getInt(0);
+        else
+        	p.set(Coordinates.Mode);
         
         
         //CATEGORY_COMPASS
@@ -379,6 +401,15 @@ public class ZyinHUD
         else
         	p.set(SafeOverlay.Enabled);
         
+        p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayMode", 0);
+        p.comment = "Set the safe overlay by default to:" + config.NEW_LINE +
+					"0 = off" + config.NEW_LINE +
+					"1 = on";
+        if(loadSettings)
+        	SafeOverlay.Mode = p.getInt(0);
+        else
+        	p.set(SafeOverlay.Mode);
+        
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayHotkey", DefaultSafeOverlayHotkey);
         p.comment = "Default: "+DefaultSafeOverlayHotkey;
         if(loadSettings)
@@ -443,6 +474,13 @@ public class ZyinHUD
         	PotionTimers.PotionScale = (float)p.getDouble(1.0);
         else
         	p.set(PotionTimers.PotionScale);
+
+        p = config.get(CATEGORY_POTIONTIMERS, "HidePotionEffectsInInventory", false);
+        p.comment = "Enable/Disable hiding the default potion effects when you open your inventory.";
+        if(loadSettings)
+        	PotionTimers.HidePotionEffectsInInventory = p.getBoolean(false);
+        else
+        	p.set(PotionTimers.HidePotionEffectsInInventory);
         
         p = config.get(CATEGORY_POTIONTIMERS, "PotionTimersLocationHorizontal", 1);
         p.comment = "The horizontal position of the potion timers. 0 is left, 400 is far right.";
@@ -467,6 +505,15 @@ public class ZyinHUD
         	PlayerLocator.Enabled = p.getBoolean(true);
         else
         	p.set(PlayerLocator.Enabled);
+        
+        p = config.get(CATEGORY_PLAYERLOCATOR, "PlayerLocatorMode", 0);
+        p.comment = "Set the player locator by default to:" + config.NEW_LINE +
+					"0 = off" + config.NEW_LINE +
+					"1 = on";
+        if(loadSettings)
+        	PlayerLocator.Mode = p.getInt(0);
+        else
+        	p.set(PlayerLocator.Mode);
         
         p = config.get(CATEGORY_PLAYERLOCATOR, "PlayerLocatorHotkey", DefaultPlayerLocatorHotkey);
         p.comment = "Default: "+DefaultPlayerLocatorHotkey;
@@ -575,6 +622,15 @@ public class ZyinHUD
         	AnimalInfo.Enabled = p.getBoolean(true);
         else
         	p.set(AnimalInfo.Enabled);
+        
+        p = config.get(CATEGORY_ANIMALINFO, "AnimalInfoMode", 0);
+        p.comment = "Set the animal info mode by default to:" + config.NEW_LINE +
+					"0 = off" + config.NEW_LINE +
+					"1 = on";
+        if(loadSettings)
+        	AnimalInfo.Mode = p.getInt(0);
+        else
+        	p.set(AnimalInfo.Mode);
         
         p = config.get(CATEGORY_ANIMALINFO, "AnimalInfoHotkey", DefaultAnimalInfoHotkey);
         p.comment = "Default: "+DefaultAnimalInfoHotkey;
@@ -725,6 +781,71 @@ public class ZyinHUD
         	p.set(Keyboard.getKeyName(key_V[0].keyCode));
         
         
+        //CATEGORY_QUICKDEPOSIT
+        p = config.get(CATEGORY_QUICKDEPOSIT, "EnableQuickDeposit", true);
+        p.comment = ".";
+        if(loadSettings)
+        	QuickDeposit.Enabled = p.getBoolean(true);
+        else
+        	p.set(QuickDeposit.Enabled);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "QuickDepositHotkey", DefaultQuickDepositHotkey);
+        p.comment = "Default: "+DefaultQuickDepositHotkey;
+        if(loadSettings)
+        	QuickDeposit.Hotkey = p.getString();
+        else
+        	p.set(Keyboard.getKeyName(key_X[0].keyCode));
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "IgnoreItemsInHotbar", false);
+        p.comment = "Determines if items in your hotbar will be deposited into chests when '"+QuickDeposit.Hotkey+"' is pressed.";
+        if(loadSettings)
+        	QuickDeposit.IgnoreItemsInHotbar = p.getBoolean(false);
+        else
+        	p.set(QuickDeposit.IgnoreItemsInHotbar);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "CloseChestAfterDepositing", false);
+        p.comment = "Closes the chest GUI after you deposit your items in it. Allows quick and easy depositing of all your items into multiple chests.";
+        if(loadSettings)
+        	QuickDeposit.CloseChestAfterDepositing = p.getBoolean(false);
+        else
+        	p.set(QuickDeposit.CloseChestAfterDepositing);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistTorch", false);
+        p.comment = "Stop Quick Deposit from putting torches in chests?";
+        if(loadSettings)
+        	QuickDeposit.BlacklistTorch = p.getBoolean(false);
+        else
+        	p.set(QuickDeposit.BlacklistTorch);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistArrow", false);
+        p.comment = "Stop Quick Deposit from putting arrows in chests?";
+        if(loadSettings)
+        	QuickDeposit.BlacklistArrow = p.getBoolean(false);
+        else
+        	p.set(QuickDeposit.BlacklistArrow);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistEnderPearl", false);
+        p.comment = "Stop Quick Deposit from putting ender pearls in chests?";
+        if(loadSettings)
+        	QuickDeposit.BlacklistEnderPearl = p.getBoolean(false);
+        else
+        	p.set(QuickDeposit.BlacklistEnderPearl);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistFood", false);
+        p.comment = "Stop Quick Deposit from putting food in chests?";
+        if(loadSettings)
+        	QuickDeposit.BlacklistFood = p.getBoolean(false);
+        else
+        	p.set(QuickDeposit.BlacklistFood);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistWaterBucket", false);
+        p.comment = "Stop Quick Deposit from putting water buckets in chests?";
+        if(loadSettings)
+        	QuickDeposit.BlacklistWaterBucket = p.getBoolean(false);
+        else
+        	p.set(QuickDeposit.BlacklistWaterBucket);
+
+        
 
         config.save();
     }
@@ -788,6 +909,11 @@ public class ZyinHUD
         hotkey = (hotkey == 0) ? Keyboard.getKeyIndex(DefaultOptionsHotkey) : hotkey;
         key_Z = new KeyBinding[] {new KeyBinding(GuiZyinHUDOptions.HotkeyDescription, hotkey)};
         KeyBindingRegistry.registerKeyBinding(new ZyinHUDOptionsKeyHandler(key_Z, repeatFalse));
+
+        hotkey = GetKeyboardKeyFromString(QuickDeposit.Hotkey);
+        hotkey = (hotkey == 0) ? Keyboard.getKeyIndex(DefaultQuickDepositHotkey) : hotkey;
+        key_X = new KeyBinding[] {new KeyBinding(QuickDeposit.HotkeyDescription, hotkey)};
+        KeyBindingRegistry.registerKeyBinding(new QuickDepositKeyHandler(key_X, repeatFalse));
         
 
     }

@@ -3,16 +3,20 @@ package zyin.zyinhud.mods;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import zyin.zyinhud.gui.GuiZyinHUDOptions;
 import zyin.zyinhud.util.Localization;
 import zyin.zyinhud.util.ZyinHUDUtil;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 /**
  * Potion Timers displays the remaining time left on any potion effects the user has.
@@ -38,6 +42,7 @@ public class PotionTimers
     public static boolean ShowPotionIcons;
     public static boolean UsePotionColors;
     public static float PotionScale;
+    public static boolean HidePotionEffectsInInventory;
 
     protected static final int[] blinkingThresholds = {3 * 20, 6 * 20, 16 * 20};	//the time at which blinking starts
     protected static final int[] blinkingSpeed = {5, 10, 20};					//how often the blinking occurs
@@ -161,8 +166,28 @@ public class PotionTimers
     	ZyinHUDUtil.DrawTexture(x, y, u, v, width, height, inventoryResourceLocation, scaler);
     }
     
+    /**
+     * Disables the potion effects from rendering by telling the Gui that the player has no potion effects applied.
+     * Uses reflection to grab the class's private variable.
+     * @param guiScreen the screen the player is looking at which extends InventoryEffectRenderer
+     */
+    public static void DisableInventoryPotionEffects(InventoryEffectRenderer guiScreen)
+    {
+    	if(PotionTimers.Enabled && HidePotionEffectsInInventory)
+    	{
+    		//Note for future Forge versions: field "field_74222_o" will probably be renamed to something like "playerHasPotionEffects"
+	    	boolean playerHasPotionEffects = ObfuscationReflectionHelper.getPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer)guiScreen, "field_74222_o");
+	    	
+	    	if(playerHasPotionEffects)
+	    	{
+	    		int guiLeftPx = (guiScreen.width - 176) / 2;
+	    		
+	    		ObfuscationReflectionHelper.setPrivateValue(GuiContainer.class, (GuiContainer)guiScreen, guiLeftPx, "field_74198_m","guiLeft");
+	        	ObfuscationReflectionHelper.setPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer)guiScreen, false, "field_74222_o");
+	    	}
+    	}
+    }
     
-
 
     /**
      * Toggles showing potion icons
@@ -182,6 +207,16 @@ public class PotionTimers
     {
     	UsePotionColors = !UsePotionColors;
     	return UsePotionColors;
+    }
+    
+    /**
+     * Toggles hiding potion effects in the players inventory
+     * @return 
+     */
+    public static boolean ToggleHidePotionEffectsInInventory()
+    {
+    	HidePotionEffectsInInventory = !HidePotionEffectsInInventory;
+    	return HidePotionEffectsInInventory;
     }
     
     /**

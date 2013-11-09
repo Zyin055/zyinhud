@@ -1,16 +1,27 @@
 package zyin.zyinhud.util;
 
-import java.awt.event.InputEvent;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.lwjgl.opengl.GL11;
+
+import zyin.zyinhud.mods.QuickDeposit;
+
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMerchant;
+import net.minecraft.client.gui.inventory.GuiBrewingStand;
+import net.minecraft.client.gui.inventory.GuiFurnace;
+import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.village.MerchantRecipe;
+import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 
 /**
@@ -206,10 +217,10 @@ public class InventoryUtil
 
 	
 	/**
-	 * Swaps 2 items in your inventory.
+	 * Swaps 2 items in your inventory GUI.
 	 * @param srcIndex
 	 * @param destIndex
-	 * @return
+	 * @return true if the items were successfully swapped
 	 */
 	public static boolean Swap(int srcIndex, int destIndex)
 	{
@@ -222,11 +233,10 @@ public class InventoryUtil
 	    ItemStack destStack = ((Slot)inventorySlots.get(destIndex)).getStack();
 	    
 	    
-
 	    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
 	    if(handStack != null)
 	    {
-	    	int emptyIndex = GetFirstEmptyIndex();
+	    	int emptyIndex = GetFirstEmptyIndexInInventory();
 	    	if(emptyIndex < 0)
 	    		emptyIndex = 1;	//use the crafting area
 	    	
@@ -282,7 +292,609 @@ public class InventoryUtil
 			return true;
 	    }
 	}
+	
+	/**
+	 * Deposits all items in the players inventory, including any item being held on the cursor, into the chest
+	 * as long as there is a matching item already in the chest.
+	 * <br>
+	 * <br>Only works with single chest, double chest, donkey/mules, hopper, dropper, and dispenser. For other containers,
+	 * use their specific methods: DepositAllMatchingItemsInMerchant(), DepositAllMatchingItemsInFurance(), and
+	 * DepositAllMatchingItemsInBrewingStand().
+	 * @param ignoreItemsInHotbar if true, won't deposit items that are in the player's hotbar
+	 * @return true if operation completed successfully, false if some items were left behind (aka there was a full chest)
+	 */
+	public static boolean DepositAllMatchingItemsInContainer(boolean ignoreItemsInHotbar)
+	{
+	    //check to see if the player is holding an item
+	    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+	    if(handStack != null)
+	    {
+	    	int emptyIndex;
+	    	//if we can't deposit this item being held in the cursor, put it down in our inventory
+		    if(!QuickDeposit.IsAllowedToBeDepositedInContainer(handStack))
+		    {
+		    	emptyIndex = GetFirstEmptyIndexInContainerInventory();
+	    		if(emptyIndex < 0)
+	    			return false;
+	    		else
+	    			LeftClickContainerSlot(emptyIndex);
+		    }
+		    //if we can deposit this item being held in the cursor, put it in the chest
+		    else
+		    {
+		    	emptyIndex = GetFirstItemIndexInContainer(handStack);
+		    	if(emptyIndex < 0)
+		    	{
+		    		emptyIndex = GetFirstEmptyIndexInContainerInventory();
+		    		if(emptyIndex < 0)
+		    			return false;
+		    		else
+		    			LeftClickContainerSlot(emptyIndex);
+		    	}
+		    	else
+		    	{
+		    		LeftClickContainerSlot(emptyIndex);
+			    	
+			    	//keep putting into next available slot until we deposit all the items in this stack
+				    handStack = mc.thePlayer.inventory.getItemStack();
+				    while(handStack != null)
+				    {
+				    	emptyIndex = GetFirstEmptyIndexInContainer(handStack);
+				    	if(emptyIndex < 0)
+				    		return false;
+				    	
+				    	LeftClickContainerSlot(emptyIndex);
+					    handStack = mc.thePlayer.inventory.getItemStack();
+				    }
+		    	}
+		    }
+	    }
+	    
+	    
+		List chestSlots = mc.thePlayer.openContainer.inventorySlots;
+	    
+    	int numDisplayedSlots = mc.thePlayer.openContainer.inventorySlots.size();
+	    
+	    int numInventorySlots = 36;
+	    int numChestSlots = numDisplayedSlots - numInventorySlots;
+	    
+	    int iStart = numChestSlots;
+	    int iEnd = numDisplayedSlots;
+	    
+	    if(ignoreItemsInHotbar)
+	    	iEnd -= 9;
+	    
+	    //iterate over the player's inventory and deposit items as needed
+	    for(int i = iStart; i < iEnd; i++)
+	    {
+	    	Slot slot = (Slot)chestSlots.get(i);
+			ItemStack itemStack = slot.getStack();
+			if(itemStack != null)
+			{
+			    int itemIndex = GetFirstItemIndexInContainer(itemStack);
+			    
+			    //if the item exists in the chest
+			    if(itemIndex >= 0)
+			    {
+			    	DepositItemInContainer(i, itemIndex);
+			    }
+			}
+	    }
+	    return true;
+	}
+	
+	/**
+	 * Moves an item from the players inventory to a chest or horse inventory. It assumes that no ItemStack is being held on the cursor.
+	 * @param srcIndex player inventory slot: single chest = 28-63, double chest = 55-90
+	 * @param destIndex chest slot: single chest = 0-27, double chest = 0-54
+	 * @return true if an item was successfully moved
+	 */
+	public static boolean DepositItemInContainer(int srcIndex, int destIndex)
+	{
+		//horse chest = 53 big
+	    //single chest = 63 big
+	    //double chest = 90 big
+	    //the last 4 rows (9*4=36) are the player's inventory
+	    int numDisplayedSlots = mc.thePlayer.openContainer.inventorySlots.size();
+	    
+	    int numInventorySlots = 36;
+	    int numContainerSlots = numDisplayedSlots - numInventorySlots;
+	    
+	    //check parameters for valid values
+		if(numContainerSlots == 53 && (srcIndex < 18 || srcIndex > 53))
+			return false;
+		if(numContainerSlots == 63 && (srcIndex < 28 || srcIndex > 63))
+			return false;
+		if(numContainerSlots == 90 && (srcIndex < 55 || srcIndex > 90))
+			return false;
+		if(numContainerSlots == 53 && (destIndex < 0 || destIndex > 17))
+			return false;
+		if(numContainerSlots == 63 && (destIndex < 0 || destIndex > 27))
+			return false;
+		if(numContainerSlots == 90 && (destIndex < 0 || destIndex > 54))
+			return false;
+	    
+	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
+	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
+	    
 
+	    if(!QuickDeposit.IsAllowedToBeDepositedInContainer(srcStack))
+	    	return true;
+	    
+	    
+	    //there are 4 cases we need to handle:
+	    //1: src = null, dest = null
+	    if(srcStack == null && destStack == null)
+	    {
+	    	return false;
+	    }
+	    //2: src = null, dest = item
+	    else if(srcStack == null && destStack != null)
+	    {
+			return false;
+	    }
+	    //3: src = item, dest = null
+	    else if(srcStack != null && destStack == null)
+	    {
+	    	LeftClickContainerSlot(srcIndex);
+		    LeftClickContainerSlot(destIndex);
+			return true;
+	    }
+	    //4: src = item, dest = item
+	    else// if(srcStack != null && destStack != null)
+	    {
+	    	//if the 2 items are of different item types
+	    	if(srcStack.itemID != destStack.itemID)
+	    	{
+		    	return false;
+	    	}
+	    	//if the 2 items are the same, stack as much as we can into the spot then place the leftovers in a new slot
+	    	else// if(srcStack.itemID == destStack.itemID)
+	    	{
+	    		//there are 3 cases we need to handle:
+	    		//1: dest is a full stack
+	    		if(destStack.stackSize == destStack.getMaxStackSize())
+	    		{
+	    			//put this in the next available slot
+	    			int emptyIndex = GetFirstEmptyIndexInContainer(destStack);
+	    			if(emptyIndex < 0)
+			    	{
+			    		return false;
+			    	}
+	    			
+			    	LeftClickContainerSlot(srcIndex);
+				    LeftClickContainerSlot(emptyIndex);
+				    
+				    //keep putting into next available slot until we deposit all the items in this stack
+				    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+				    while(handStack != null)
+				    {
+				    	emptyIndex = GetFirstEmptyIndexInContainer(destStack);
+				    	if(emptyIndex < 0)
+				    	{
+				    		LeftClickContainerSlot(srcIndex);
+				    		return false;
+				    	}
+				    	
+				    	LeftClickContainerSlot(emptyIndex);
+					    handStack = mc.thePlayer.inventory.getItemStack();
+				    }
+				    
+				    return true;
+	    		}
+	    		//2: if the combined stacks overflow past the stack limit
+	    		else if(srcStack.stackSize + destStack.stackSize > destStack.getMaxStackSize())
+	    		{
+	    			int emptyIndex = GetFirstEmptyIndexInContainer(destStack);
+	    			if(emptyIndex < 0)
+			    	{
+			    		LeftClickContainerSlot(destIndex);
+			    		LeftClickContainerSlot(srcIndex);
+			    		return false;
+			    	}
+	    			
+			    	LeftClickContainerSlot(srcIndex);
+				    LeftClickContainerSlot(destIndex);
+
+				    //keep putting into next available slot until we deposit all the items in this stack
+				    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+				    while(handStack != null)
+				    {
+				    	emptyIndex = GetFirstEmptyIndexInContainer(destStack);
+				    	if(emptyIndex < 0)
+				    	{
+				    		LeftClickContainerSlot(srcIndex);
+				    		return false;
+				    	}
+
+				    	LeftClickContainerSlot(emptyIndex);
+					    handStack = mc.thePlayer.inventory.getItemStack();
+				    }
+
+				    return true;
+	    		}
+	    		//3: if the combined stacks fit into one slot
+	    		else
+	    		{
+			    	LeftClickContainerSlot(srcIndex);
+				    LeftClickContainerSlot(destIndex);
+				    
+				    return true;
+	    		}
+	    	}
+	    }
+	}
+	
+	/**
+	 * Deposits all items in the players inventory, including any item being held on the cursor, into the chest
+	 * as long as there is a matching item already in the chest.
+	 * @return
+	 */
+	public static boolean DepositAllMatchingItemsInMerchant()
+	{
+	    if(!(mc.currentScreen instanceof GuiMerchant))
+	    	return false;
+	    
+	    //villager container = 39 big
+	    //slot 0 = left buy slot
+	    //slot 1 = right buy slot
+	    //slot 2 = sell slot
+	    //the last 4 rows (9*4=36) are the player's inventory
+	    int numDisplayedSlots = mc.thePlayer.openContainer.inventorySlots.size();
+	    
+	    int numInventorySlots = 36;
+	    int numMerchantSlots = numDisplayedSlots - numInventorySlots;
+	    
+	    GuiMerchant guiMerchant = ((GuiMerchant)mc.currentScreen);
+	    MerchantRecipeList merchantRecipeList = guiMerchant.getIMerchant().getRecipes(mc.thePlayer);
+
+        if (merchantRecipeList == null || merchantRecipeList.isEmpty())
+        	return false;
+        
+    	int currentRecipeIndex = ZyinHUDUtil.GetFieldByReflection(GuiMerchant.class, guiMerchant, "currentRecipeIndex","field_70473_e");
+        MerchantRecipe merchantRecipe = (MerchantRecipe)merchantRecipeList.get(currentRecipeIndex);
+        
+        ItemStack buyingItemStack1 = merchantRecipe.getItemToBuy();
+        ItemStack buyingItemStack2 = merchantRecipe.getSecondItemToBuy();
+        
+        //check if we have an item in our cursor
+        ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+        if(handStack != null)
+        {
+        	if(buyingItemStack1 != null && handStack.isItemEqual(buyingItemStack1))
+		    {
+        		LeftClickContainerSlot(0);
+		    }
+			else if(buyingItemStack2 != null && handStack.isItemEqual(buyingItemStack2))
+		    {
+				LeftClickContainerSlot(1);
+		    }
+        }
+        
+        List merchantSlots = mc.thePlayer.openContainer.inventorySlots;
+        
+        int iStart = numMerchantSlots;	//villagers have 3 container slots
+        int iEnd = numDisplayedSlots;
+        
+        //find items in our inventory that match the items the villager is selling
+	    for(int i = iStart; i < iEnd; i++)
+	    {
+	    	Slot slot = (Slot)merchantSlots.get(i);
+			ItemStack itemStack = slot.getStack();
+			if(itemStack != null)
+			{
+				if(buyingItemStack1 != null && itemStack.isItemEqual(buyingItemStack1))
+			    {
+					DepositItemInMerchant(i, 0);
+			    }
+				else if(buyingItemStack2 != null && itemStack.isItemEqual(buyingItemStack2))
+			    {
+					DepositItemInMerchant(i, 1);
+			    }
+			}
+	    }
+		
+		return true;
+	}
+	
+	private static boolean DepositItemInMerchant(int srcIndex, int destIndex)
+	{
+		if(destIndex < 0 || destIndex > 1)
+			return false;
+		if(srcIndex < 3 || srcIndex > 39)
+			return false;
+		
+	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
+	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
+		
+		//there are 4 cases we need to handle:
+	    //1: src = null, dest = null
+	    if(srcStack == null && destStack == null)
+	    {
+	    	return false;
+	    }
+	    //2: src = null, dest = item
+	    else if(srcStack == null && destStack != null)
+	    {
+			return false;
+	    }
+	    //3: src = item, dest = null
+	    else if(srcStack != null && destStack == null)
+	    {
+	    	LeftClickContainerSlot(srcIndex);
+		    LeftClickContainerSlot(destIndex);
+			return true;
+	    }
+	    //4: src = item, dest = item
+	    else// if(srcStack != null && destStack != null)
+	    {
+	    	if(destStack.isItemEqual(srcStack))
+	    	{
+		    	LeftClickContainerSlot(srcIndex);
+			    LeftClickContainerSlot(destIndex);
+			    
+			    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+			    if(handStack != null)
+			    {
+			    	LeftClickContainerSlot(srcIndex);
+			    }
+			    return true;
+	    	}
+	    	return false;
+	    }
+	}
+	
+	
+	public static boolean DepositAllMatchingItemsInFurance()
+	{
+	    if(!(mc.currentScreen instanceof GuiFurnace))
+	    	return false;
+	    
+	    //furance container = 39 big
+	    //slot 0 = input
+	    //slot 1 = fuel
+	    //slot 2 = output
+	    //the last 4 rows (9*4=36) are the player's inventory
+	    int numDisplayedSlots = mc.thePlayer.openContainer.inventorySlots.size();
+	    
+	    int numInventorySlots = 36;
+	    int numFurnaceSlots = numDisplayedSlots - numInventorySlots;
+	    
+	    List furanceSlots = mc.thePlayer.openContainer.inventorySlots;
+
+	    ItemStack inputStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
+	    ItemStack fueldStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
+	    
+	    //check to see if we have an item in our cursor
+	    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+        if(handStack != null)
+        {
+        	if(inputStack != null && handStack.isItemEqual(inputStack))
+		    {
+				LeftClickContainerSlot(0);
+		    }
+			else if(fueldStack != null && handStack.isItemEqual(fueldStack))
+		    {
+				LeftClickContainerSlot(1);
+		    }
+        }
+	    
+        int iStart = numFurnaceSlots;	//furances have 3 container slots
+        int iEnd = numDisplayedSlots;
+        
+        //find items in our inventory that match the items in the furance fuel/input slot
+	    for(int i = iStart; i < iEnd; i++)
+	    {
+	    	Slot slot = (Slot)furanceSlots.get(i);
+			ItemStack itemStack = slot.getStack();
+			if(itemStack != null)
+			{
+				if(inputStack != null && itemStack.isItemEqual(inputStack))
+			    {
+					DepositItemInFurance(i, 0);
+			    }
+				else if(fueldStack != null && itemStack.isItemEqual(fueldStack))
+			    {
+					DepositItemInFurance(i, 1);
+			    }
+			}
+	    }
+	    
+	    
+	    return false;
+	}
+	
+	private static boolean DepositItemInFurance(int srcIndex, int destIndex)
+	{
+		if(destIndex < 0 || destIndex > 1)
+			return false;
+		if(srcIndex < 3 || srcIndex > 39)
+			return false;
+		
+	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
+	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
+		
+		//there are 4 cases we need to handle:
+	    //1: src = null, dest = null
+	    if(srcStack == null && destStack == null)
+	    {
+	    	return false;
+	    }
+	    //2: src = null, dest = item
+	    else if(srcStack == null && destStack != null)
+	    {
+			return false;
+	    }
+	    //3: src = item, dest = null
+	    else if(srcStack != null && destStack == null)
+	    {
+	    	LeftClickContainerSlot(srcIndex);
+		    LeftClickContainerSlot(destIndex);
+			return true;
+	    }
+	    //4: src = item, dest = item
+	    else// if(srcStack != null && destStack != null)
+	    {
+	    	if(destStack.isItemEqual(srcStack))
+	    	{
+		    	LeftClickContainerSlot(srcIndex);
+			    LeftClickContainerSlot(destIndex);
+			    
+			    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+			    if(handStack != null)
+			    {
+			    	LeftClickContainerSlot(srcIndex);
+			    }
+			    return true;
+	    	}
+	    	return false;
+	    }
+	}
+
+	
+	public static boolean DepositAllMatchingItemsInBrewingStand()
+	{
+	    if(!(mc.currentScreen instanceof GuiBrewingStand))
+	    	return false;
+	    
+	    //brewing stand container = 40 big
+	    //slot 0 = input
+	    //slot 1 = output 1
+	    //slot 2 = output 2
+	    //slot 3 = output 3
+	    //the last 4 rows (9*4=36) are the player's inventory
+	    int numDisplayedSlots = mc.thePlayer.openContainer.inventorySlots.size();
+	    
+	    int numInventorySlots = 36;
+	    int numFurnaceSlots = numDisplayedSlots - numInventorySlots;
+	    
+	    List brewingStandSlots = mc.thePlayer.openContainer.inventorySlots;
+
+	    ItemStack inputStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(3)).getStack();
+	    ItemStack outputStack1 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
+	    ItemStack outputStack2 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
+	    ItemStack outputStack3 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(2)).getStack();
+	    
+	    //check to see if we have an item in our cursor
+	    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+        if(handStack != null)
+        {
+        	if(inputStack != null && handStack.isItemEqual(inputStack))
+		    {
+				LeftClickContainerSlot(3);
+		    }
+        	else if(handStack.getItemDamage() == 0 && Item.potion.itemID == handStack.itemID)
+			{
+				//if handStack is a "Water Bottle"
+				//then deposit the water bottle in an empty output slot
+				if(outputStack1 == null)
+				{
+					LeftClickContainerSlot(0);
+					outputStack1 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
+				}
+				else if(outputStack2 == null)
+				{
+					LeftClickContainerSlot(1);
+					outputStack2 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
+				}
+				else if(outputStack3 == null)
+				{
+					LeftClickContainerSlot(2);
+					outputStack3 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(2)).getStack();
+				}
+		    }
+        }
+	    
+        int iStart = numFurnaceSlots;	//furances have 3 container slots
+        int iEnd = numDisplayedSlots;
+        
+        //find items in our inventory that match the items in the furance fuel/input slot
+	    for(int i = iStart; i < iEnd; i++)
+	    {
+	    	Slot slot = (Slot)brewingStandSlots.get(i);
+			ItemStack itemStack = slot.getStack();
+			if(itemStack != null)
+			{
+				if(inputStack != null && itemStack.isItemEqual(inputStack))
+			    {
+					DepositItemInBrewingStand(i, 3);
+			    }
+				else if(itemStack.getItemDamage() == 0 && Item.potion.itemID == itemStack.itemID)
+				{
+					//if itemStack is a "Water Bottle"
+					//then deposit the water bottle in an empty output slot
+					if(outputStack1 == null)
+					{
+						DepositItemInBrewingStand(i, 0);
+						outputStack1 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
+						continue;
+					}
+					else if(outputStack2 == null)
+					{
+						DepositItemInBrewingStand(i, 1);
+						outputStack2 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
+						continue;
+					}
+					else if(outputStack3 == null)
+					{
+						DepositItemInBrewingStand(i, 2);
+						outputStack3 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(2)).getStack();
+						continue;
+					}
+			    }
+			}
+	    }
+	    
+	    return true;
+	}
+	
+
+	private static boolean DepositItemInBrewingStand(int srcIndex, int destIndex)
+	{
+		if(destIndex < 0 || destIndex > 3)
+			return false;
+		if(srcIndex < 5 || srcIndex > 39)
+			return false;
+		
+	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
+	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
+		
+		//there are 4 cases we need to handle:
+	    //1: src = null, dest = null
+	    if(srcStack == null && destStack == null)
+	    {
+	    	return false;
+	    }
+	    //2: src = null, dest = item
+	    else if(srcStack == null && destStack != null)
+	    {
+			return false;
+	    }
+	    //3: src = item, dest = null
+	    else if(srcStack != null && destStack == null)
+	    {
+	    	LeftClickContainerSlot(srcIndex);
+		    LeftClickContainerSlot(destIndex);
+			return true;
+	    }
+	    //4: src = item, dest = item
+	    else// if(srcStack != null && destStack != null)
+	    {
+	    	if(destStack.isItemEqual(srcStack))
+	    	{
+		    	LeftClickContainerSlot(srcIndex);
+			    LeftClickContainerSlot(destIndex);
+			    
+			    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
+			    if(handStack != null)
+			    {
+			    	LeftClickContainerSlot(srcIndex);
+			    }
+			    return true;
+	    	}
+	    	return false;
+	    }
+	}
 	
 	/**
 	 * Gets the index of an item class in your inventory.
@@ -344,7 +956,7 @@ public class InventoryUtil
 	 * Gets the index in your inventory of the first empty slot.
 	 * @return 9-44, -1 if no empty spot
 	 */
-	private static int GetFirstEmptyIndex()
+	private static int GetFirstEmptyIndexInInventory()
 	{
 		List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
 
@@ -354,6 +966,128 @@ public class InventoryUtil
     		Slot slot = (Slot)inventorySlots.get(i);
 			ItemStack itemStack = slot.getStack();
 			if(itemStack != null)
+			{
+                return i;
+			}
+        }
+
+        return -1;
+	}
+
+	/**
+	 * Gets the index in the chest's player's inventory (bottom section of gui) of the first empty slot.
+	 * @return 27,54-63,90, -1 if no empty spot
+	 */
+	private static int GetFirstEmptyIndexInContainerInventory()
+	{
+		List containerSlots = mc.thePlayer.openContainer.inventorySlots;
+		
+	    int numDisplayedSlots = containerSlots.size();
+	    
+	    int numInventorySlots = 36;
+	    int numContainerSlots = numDisplayedSlots - numInventorySlots;
+	    
+	    int iStart = numContainerSlots;
+	    int iEnd = numDisplayedSlots;
+
+		//iterate over the player's inventory (16,27,54-53,63,90)
+    	for (int i = iStart; i <= iEnd-1; i++)
+        {
+    		Slot slot = (Slot)containerSlots.get(i);
+			ItemStack itemStack = slot.getStack();
+			if(itemStack == null)
+			{
+                return i;
+			}
+        }
+
+        return -1;
+	}
+	
+	/**
+	 * Gets the index in the chest's inventory (top section of gui) of the first empty slot.
+	 * @return 0,1-15,27,54. -1 if no empty spot
+	 */
+	private static int GetFirstEmptyIndexInContainer()
+	{
+		return GetFirstEmptyIndexInContainer(null);
+	}
+
+	/**
+	 * Gets the index in the chest's inventory (top section of gui) of the first empty slot.
+	 * It prioritizes slots with partially filled stacks of items with 'itemID'.
+	 * @param itemID an itemID to count as an empty spot
+	 * @return 0,1-15,27,54. -1 if no empty spot
+	 */
+	private static int GetFirstEmptyIndexInContainer(ItemStack itemStackToMatch)
+	{
+		List containerSlots = mc.thePlayer.openContainer.inventorySlots;
+		
+	    int numDisplayedSlots = containerSlots.size();
+	    
+	    int numInventorySlots = 36;
+	    int numContainerSlots = numDisplayedSlots - numInventorySlots;
+	    
+	    int iStart = 0;
+	    int iEnd = numContainerSlots;
+	    
+	    if(mc.currentScreen instanceof GuiScreenHorseInventory)
+	    	iStart = 2;	//the first index is the saddle slot, second index is the armor slot
+
+	    int firstEmptyIndex = -1;
+	    int firstEmptyMatchingItemIdStack = -1;
+
+		//iterate over the chest's inventory (0,1-15,27,54)
+    	for (int i = iStart; i <= iEnd-1; i++)
+        {
+    		Slot slot = (Slot)containerSlots.get(i);
+			ItemStack itemStack = slot.getStack();
+			if(itemStack == null && firstEmptyIndex == -1)
+			{
+				firstEmptyIndex = i;
+			}
+			else if(itemStack != null && itemStackToMatch != null 
+					&& itemStack.isItemEqual(itemStackToMatch) 
+					&& itemStack.stackSize < itemStack.getMaxStackSize() 
+					&& firstEmptyMatchingItemIdStack == -1)
+			{
+				firstEmptyMatchingItemIdStack = i;
+				break;
+			}
+        }
+    	
+    	if(firstEmptyMatchingItemIdStack != -1)
+    		return firstEmptyMatchingItemIdStack;
+    	else
+    		return firstEmptyIndex;
+	}
+	
+	/**
+	 * Determines if an item exists in a container's (chest, horse, etc) inventory (top section of gui) and returns its location
+	 * @param itemID the item to search for
+	 * @return 0-27,54, -1 if no item found
+	 */
+	private static int GetFirstItemIndexInContainer(ItemStack itemStackToMatch)
+	{
+		List chestSlots = mc.thePlayer.openContainer.inventorySlots;
+		
+	    int numDisplayedSlots = chestSlots.size();
+
+	    int numInventorySlots = 36;
+	    int numContainerSlots = numDisplayedSlots - numInventorySlots;
+	    
+	    int iStart = 0;
+	    int iEnd = numContainerSlots;
+	    
+	    if(mc.currentScreen instanceof GuiScreenHorseInventory)
+	    	iStart = 2;	//the first index is the saddle slot, second index is the armor slot - skip these
+
+	    //iterate over the chest's inventory (0,1-16,27,54)
+    	for (int i = iStart; i <= iEnd-1; i++)
+        {
+    		Slot slot = (Slot)chestSlots.get(i);
+			ItemStack itemStack = slot.getStack();
+			if(itemStack != null && itemStack.isItemEqual(itemStackToMatch))
 			{
                 return i;
 			}
@@ -402,22 +1136,25 @@ public class InventoryUtil
 
 	
     /**
-     * Simulates a left click as if your inventory screen was open at the specified item slot index.
+     * Simulates a left click as if your inventory GUI screen was open at the specified item slot index.
      * @param itemIndex the item Slot index
      */
-    private static void LeftClickInventorySlot(int itemIndex)
+	private static void LeftClickInventorySlot(int itemIndex)
     {
         SendInventoryClick(itemIndex, false, false);
     }
-
-    //private void RightClickInventorySlot(int index)
-    //{
-    //    SendInventoryClick(index, true, false);
-    //}
-
+    
+	/**
+	 * Simulates a left click as if a chest GUI screen was open at the specified item slot index.
+     * @param itemIndex the item Slot index
+	 */
+    private static void LeftClickContainerSlot(int itemIndex)
+    {
+    	SendContainerClick(itemIndex, false, false);
+    }
     
     /**
-     * Simulates a left click if your inventory screen was open at the specified item slot index.
+     * Simulates a left click if your inventory GUI screen was open at the specified item slot index.
      * @param itemIndex the item Slot index
      * @param rightClick is right click held?
      * @param shiftHold is shift held?
@@ -429,6 +1166,25 @@ public class InventoryUtil
         
         playerController.windowClick(
         		mc.thePlayer.inventoryContainer.windowId,
+        		itemIndex,
+        		(rightClick) ? 1 : 0,
+				(shiftHold) ? 1 : 0,
+				mc.thePlayer);
+    }
+    
+    /**
+     * Simulates a left click as if a chest GUI screen was open at the specified item slot index.
+     * @param itemIndex the item Slot index
+     * @param rightClick is right click held?
+     * @param shiftHold is shift held?
+     */
+    private static void SendContainerClick(int itemIndex, boolean rightClick, boolean shiftHold)
+    {
+        if (itemIndex < 0 || itemIndex > 90)
+        	return;
+        
+        playerController.windowClick(
+        		mc.thePlayer.openContainer.windowId,
         		itemIndex,
         		(rightClick) ? 1 : 0,
 				(shiftHold) ? 1 : 0,

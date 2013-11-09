@@ -4,16 +4,18 @@ import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.InventoryEffectRenderer;
 import zyin.zyinhud.gui.GuiOptionsOverride;
+import zyin.zyinhud.mods.PotionTimers;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
 public class GUITickHandler implements ITickHandler
 {
     private static Minecraft mc = Minecraft.getMinecraft();
+    private static boolean firstTickInGuiScreen = false;
 
     public GUITickHandler()
     {
@@ -41,12 +43,8 @@ public class GUITickHandler implements ITickHandler
     {
         if (type.equals(EnumSet.of(TickType.CLIENT)))
         {
-            GuiScreen guiScreen = mc.currentScreen;
-
-            if (guiScreen != null)
-            {
-                onTickInGUI(guiScreen);
-            }
+        	if(mc.currentScreen != null)
+        		onTickInGUI(mc.currentScreen);
         }
     }
     
@@ -57,14 +55,6 @@ public class GUITickHandler implements ITickHandler
      */
     protected void onTickInGUI(GuiScreen guiScreen)
     {
-    	if(guiScreen != null)
-    	{
-    		System.out.println("guiScreen:"+guiScreen.toString());
-    		if(mc.theWorld == null)
-    		System.out.println("mc.theWorld null");
-    	}
-    	
-    	
     	if (guiScreen instanceof GuiOptionsOverride)
         {
     		//don't do anything if we're looking at the new override screen
@@ -73,5 +63,9 @@ public class GUITickHandler implements ITickHandler
         {
     		mc.displayGuiScreen(new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings));
         }
+    	else if (guiScreen instanceof InventoryEffectRenderer)
+    	{
+    		PotionTimers.DisableInventoryPotionEffects((InventoryEffectRenderer)guiScreen);
+    	}
     }
 }

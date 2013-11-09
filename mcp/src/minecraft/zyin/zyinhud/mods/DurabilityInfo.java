@@ -197,7 +197,7 @@ public class DurabilityInfo
     protected static void CalculateDurabilityIcons()
     {
         //if the player is in the world
-        //and not in a menu
+        //and not in a menu (except for chat and the custom Options menu)
         //and not typing
         if (mc.inGameHasFocus ||
         		(mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiZyinHUDOptions && ((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("durabilityinfo.name")))) &&

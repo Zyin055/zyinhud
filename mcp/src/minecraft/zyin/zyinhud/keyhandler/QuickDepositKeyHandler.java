@@ -2,23 +2,19 @@ package zyin.zyinhud.keyhandler;
 
 import java.util.EnumSet;
 
-import zyin.zyinhud.ZyinHUD;
-import zyin.zyinhud.mods.DistanceMeasurer;
-import zyin.zyinhud.util.InventoryUtil;
-import zyin.zyinhud.util.ZyinHUDUtil;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.settings.KeyBinding;
+import zyin.zyinhud.mods.QuickDeposit;
 import cpw.mods.fml.client.registry.KeyBindingRegistry.KeyHandler;
 import cpw.mods.fml.common.TickType;
 
-public class DistanceMeasurerKeyHandler extends KeyHandler
+public class QuickDepositKeyHandler extends KeyHandler
 {
     private Minecraft mc = Minecraft.getMinecraft();
     private EnumSet tickTypes = EnumSet.of(TickType.CLIENT);
 
-    public DistanceMeasurerKeyHandler(KeyBinding[] keyBindings, boolean[] repeatings)
+    public QuickDepositKeyHandler(KeyBinding[] keyBindings, boolean[] repeatings)
     {
         super(keyBindings, repeatings);
     }
@@ -26,7 +22,7 @@ public class DistanceMeasurerKeyHandler extends KeyHandler
     @Override
     public String getLabel()
     {
-        return "Distance Measurer Key Handler";
+        return "Quick Deposit Key Handler";
     }
 
     @Override
@@ -36,14 +32,14 @@ public class DistanceMeasurerKeyHandler extends KeyHandler
         {
             return;    //this fixes an issue with the method being called twice
         }
-        
-        if (mc.currentScreen != null)
+
+        if (!(mc.currentScreen instanceof GuiContainer))
         {
-            return;    //don't activate if the user is looking at a GUI
+            return;    //don't activate if the user isn't looking at a chest
         }
         
-        if(DistanceMeasurer.Enabled)
-        	DistanceMeasurer.ToggleMode();
+        if (QuickDeposit.Enabled)
+        	QuickDeposit.QuickDepositItemsInChest();
     }
 
     @Override

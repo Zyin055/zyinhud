@@ -21,6 +21,15 @@ public class Coordinates
     	return Enabled;
     }
     
+	/**
+	 * 0=[x, z, y]<br>
+	 * 1=[x, y, z]<br>
+	 */
+    public static int Mode = 0;
+
+    /** The maximum number of modes that is supported */
+    public static int NumberOfModes = 2;
+    
     public static String Hotkey;
     public static final String HotkeyDescription = "Zyin's HUD: Chat Coordinates";
     
@@ -54,7 +63,7 @@ public class Coordinates
 
     /**
      * Calculates the players coordinates
-     * @return "(x, z, y)" coordinates formatted string if the Coordinates are enabled, otherwise "".
+     * @return coordinates string if the Coordinates are enabled, otherwise "".
      */
     public static String CalculateMessageForInfoLine()
     {
@@ -63,7 +72,7 @@ public class Coordinates
             int coordX = GetXCoordinate();
             int coordY = GetYCoordinate();
             int coordZ = GetZCoordinate();
-            String yColor = FontCodes.WHITE;
+            String yColor = "";
 
             if (UseYCoordinateColors)
             {
@@ -77,7 +86,14 @@ public class Coordinates
                 }
             }
 
-            String coordinatesString = FontCodes.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + FontCodes.WHITE + "]";
+            String coordinatesString;
+            if(Mode == 0)
+            	coordinatesString = FontCodes.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + FontCodes.WHITE + "]";
+            else if(Mode == 1)
+            	coordinatesString = FontCodes.WHITE + "[" + coordX + ", " + yColor + coordY + FontCodes.WHITE + ", " + coordZ + "]";
+            else
+            	coordinatesString = FontCodes.WHITE + "[??, ??, ??]";
+            
             return coordinatesString + InfoLine.SPACER;
         }
 
@@ -106,5 +122,16 @@ public class Coordinates
     	UseYCoordinateColors = !UseYCoordinateColors;
     	return UseYCoordinateColors;
     }
-    
+
+    /**
+     * Increments the Distance Measurer mode
+     * @return The new Distance Measurer mode
+     */
+    public static int ToggleMode()
+    {
+    	Mode++;
+    	if(Mode >= NumberOfModes)
+    		Mode = 0;
+    	return Mode;
+    }
 }

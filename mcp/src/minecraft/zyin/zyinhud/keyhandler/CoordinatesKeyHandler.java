@@ -1,6 +1,5 @@
 package zyin.zyinhud.keyhandler;
 
-import java.lang.reflect.Field;
 import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;
@@ -42,8 +41,8 @@ public class CoordinatesKeyHandler extends KeyHandler
         	coordinateString = coordinateString.replace("{x}", Integer.toString(Coordinates.GetXCoordinate()));
         	coordinateString = coordinateString.replace("{y}", Integer.toString(Coordinates.GetYCoordinate()));
         	coordinateString = coordinateString.replace("{z}", Integer.toString(Coordinates.GetZCoordinate()));
-
-        	GuiTextField inputField = ZyinHUDUtil.GetFieldByReflection_inputField((GuiChat)mc.currentScreen);
+        	
+        	GuiTextField inputField = ZyinHUDUtil.GetFieldByReflection(GuiChat.class, (GuiChat)mc.currentScreen, "inputField","field_73901_a");
         	
         	if(inputField != null)
         	{

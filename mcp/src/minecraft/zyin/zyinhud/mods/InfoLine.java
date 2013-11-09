@@ -1,8 +1,11 @@
 package zyin.zyinhud.mods;
 
+import zyin.zyinhud.util.FontCodes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.chunk.Chunk;
 
 /**
  * The Info Line consists of everything that gets displayed in the top-left portion
@@ -24,7 +27,9 @@ public class InfoLine
     	return Enabled;
     }
     private static Minecraft mc = Minecraft.getMinecraft();
-
+    
+    public static boolean ShowBiome;
+    
     /**
      * The padding string that is inserted between different elements of the Info Line
      */
@@ -52,12 +57,13 @@ public class InfoLine
             String coordinates = Coordinates.CalculateMessageForInfoLine();
             String compass = Compass.CalculateMessageForInfoLine();
             String distance = DistanceMeasurer.CalculateMessageForInfoLine();
+            String biome = ShowBiome ? CalculateBiomeForInfoLine() : "";
             String fps = Fps.CalculateMessageForInfoLine();
             String safe = SafeOverlay.CalculateMessageForInfoLine();
             String players = PlayerLocator.CalculateMessageForInfoLine();
-            String horse = AnimalInfo.CalculateMessageForInfoLine();
+            String animals = AnimalInfo.CalculateMessageForInfoLine();
             
-            String message = clock + coordinates + compass + distance + fps + safe + players + horse;
+            String message = clock + coordinates + compass + distance + biome + fps + safe + players + animals;
             mc.fontRenderer.drawStringWithShadow(message, 1, 1, 0xffffff);
         }
 
@@ -65,6 +71,19 @@ public class InfoLine
         {
             RenderNotification(notificationMessage);
         }
+    }
+    
+    protected static String CalculateBiomeForInfoLine()
+    {
+    	//System.out.println(mc.debugInfoRenders());
+    	
+    	int xCoord = MathHelper.floor_double(mc.thePlayer.posX);
+        int yCoord = MathHelper.floor_double(mc.thePlayer.posZ);
+        
+    	Chunk chunk = mc.theWorld.getChunkFromBlockCoords(xCoord, yCoord);
+    	String biome = chunk.getBiomeGenForWorldCoords(xCoord & 15, yCoord & 15, mc.theWorld.getWorldChunkManager()).biomeName;
+    	
+    	return FontCodes.WHITE + biome + " ";
     }
 
     /**
@@ -113,4 +132,14 @@ public class InfoLine
         notificationTimer = notificationStartTime - System.currentTimeMillis() + notificationDuration;	//counts down from 1000 to 0
     }
     
+
+    /**
+     * Toggles showing the biome in the Info Line
+     * @return The state it was changed to
+     */
+    public static boolean ToggleShowBiome()
+    {
+    	ShowBiome = !ShowBiome;
+    	return ShowBiome;
+    }
 }

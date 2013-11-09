@@ -16,6 +16,7 @@ import zyin.zyinhud.gui.buttons.GuiHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiNumberSlider;
 import zyin.zyinhud.gui.buttons.GuiPlayerLocatorHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiPotionAidHotkeyButton;
+import zyin.zyinhud.gui.buttons.GuiQuickDepositHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiSafeOverlayHotkeyButton;
 import zyin.zyinhud.gui.buttons.GuiWeaponSwapperHotkeyButton;
 import zyin.zyinhud.mods.AnimalInfo;
@@ -31,6 +32,7 @@ import zyin.zyinhud.mods.InfoLine;
 import zyin.zyinhud.mods.PlayerLocator;
 import zyin.zyinhud.mods.PotionAid;
 import zyin.zyinhud.mods.PotionTimers;
+import zyin.zyinhud.mods.QuickDeposit;
 import zyin.zyinhud.mods.SafeOverlay;
 import zyin.zyinhud.mods.WeaponSwapper;
 import zyin.zyinhud.util.FontCodes;
@@ -88,7 +90,8 @@ public class GuiZyinHUDOptions extends GuiScreen
     		Localization.get("enderpearlaid.name"),
     		Localization.get("eatingaid.name"),
     		Localization.get("potionaid.name"),
-    		Localization.get("weaponswapper.name")};
+    		Localization.get("weaponswapper.name"),
+    		Localization.get("quickdeposit.name")};
     
     protected int[] tabbedButtonIDs = {
     		100,
@@ -105,7 +108,8 @@ public class GuiZyinHUDOptions extends GuiScreen
     		1200,
     		1300,
     		1400,
-    		1500};
+    		1500,
+    		1600};
     
     /** The current tab page. It is 0 indexed. */
     protected static int tabbedPage = 0;
@@ -183,32 +187,47 @@ public class GuiZyinHUDOptions extends GuiScreen
     }
     
     /**
-     * Text that is rendered only on the main screen. It is not rendered when a tab is selected.
+     * Other misc text that is rendered on various screens
      */
     private void DrawMiscText()
     {
-    	int x = (int) (width - width*0.05);
-    	int y = (int) (height / 6 + 158);
-    	int lineHeight = 10;
-    	
-    	String[] text = {
-    			ZyinHUD.GetName(),
-    			"v." + ZyinHUD.GetVersion(),
-    			"",
-    			"To reset values to their default",
-    			"setting, delete it in the configuration",
-    			"file at /.minecraft/config/ZyinHUD.cfg"
-    			};
-    	
-    	for(int i = 0; i < text.length; i++)
+    	if(currentlySelectedTabButton == null)
     	{
-        	int strWidth = fontRenderer.getStringWidth(text[i]);
-    		int xOffset = -strWidth;
-    		int yOffset = -(lineHeight * (text.length - i));
+        	int x = (int) (width - width*0.05);
+        	int y = (int) (height / 6 + 158);
+        	int lineHeight = 10;
+        	
+        	String[] text = {
+        			ZyinHUD.GetName(),
+        			"v." + ZyinHUD.GetVersion(),
+        			"",
+        			"To reset values to their default",
+        			"setting, delete it in the configuration",
+        			"file at /.minecraft/config/ZyinHUD.cfg",
+        			"",
+        			"Found a bug? Want an enhancement? Submit",
+        			"it to my GitHub at github.com/Zyin055/zyinhud"
+        			};
+        	
+        	for(int i = 0; i < text.length; i++)
+        	{
+            	int strWidth = fontRenderer.getStringWidth(text[i]);
+        		int xOffset = -strWidth;
+        		int yOffset = -(lineHeight * (text.length - i));
 
-            GL11.glEnable(GL11.GL_BLEND);	//for transparent text
-        	fontRenderer.drawStringWithShadow(text[i], x + xOffset, y + yOffset, 0x22ffffff);
-            GL11.glDisable(GL11.GL_BLEND);
+                GL11.glEnable(GL11.GL_BLEND);	//for transparent text
+            	fontRenderer.drawStringWithShadow(text[i], x + xOffset, y + yOffset, 0x22ffffff);
+                GL11.glDisable(GL11.GL_BLEND);
+        	}
+    	}
+    	else if(currentlySelectedTabButton.id == 1600)	//Quick Deposit
+    	{
+    		String text = FontCodes.UNDERLINE + Localization.get("quickdeposit.options.blacklist");
+    		
+        	int x = buttonX_column2 + buttonWidth_half/2 - mc.fontRenderer.getStringWidth(text)/2;
+        	int y = buttonY - buttonHeight/2 - mc.fontRenderer.FONT_HEIGHT/2 + 3;
+        	
+        	fontRenderer.drawStringWithShadow(text, x, y, 0xffffff);
     	}
     }
     private void DrawMiscButtons()
@@ -253,6 +272,9 @@ public class GuiZyinHUDOptions extends GuiScreen
     {
     	int Y = buttonY;
     	buttonList.add(new GuiButton(101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
+    	
     }
     private void DrawClockButtons()
     {
@@ -268,6 +290,8 @@ public class GuiZyinHUDOptions extends GuiScreen
     	buttonList.add(new GuiButton(301, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Coordinates.Enabled)));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiCoordinatesHotkeyButton(303, buttonX_column1, Y, buttonWidth_half, buttonHeight, Coordinates.Hotkey));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUD.CATEGORY_COORDINATES, Coordinates.Mode, Coordinates.NumberOfModes)));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(302, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
     	
@@ -366,8 +390,9 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1005, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(1006, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("potiontimers.options.potionscale"), 1.0f, 4.0f, PotionTimers.PotionScale, false));
+    	buttonList.add(new GuiButton(1007, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.hidepotioneffectsininventory", PotionTimers.HidePotionEffectsInInventory)));
     	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiNumberSlider(1006, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("potiontimers.options.potionscale"), 1.0f, 4.0f, PotionTimers.PotionScale, false));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiNumberSlider(1003, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), true));
     	Y += buttonHeight + buttonSpacing;
@@ -439,6 +464,31 @@ public class GuiZyinHUDOptions extends GuiScreen
     	buttonList.add(new GuiWeaponSwapperHotkeyButton(1502, buttonX_column1, Y, buttonWidth_half, buttonHeight, WeaponSwapper.Hotkey));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1503, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("weaponswapper.options.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight)));
+    }
+    private void DrawQuickDepositButtons()
+    {
+    	int Y = buttonY;
+    	buttonList.add(new GuiButton(1601, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(QuickDeposit.Enabled)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiQuickDepositHotkeyButton(1602, buttonX_column1, Y, buttonWidth_half, buttonHeight, QuickDeposit.Hotkey));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1603, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.ignoreitemsinhotbar", QuickDeposit.IgnoreItemsInHotbar)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1604, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.closechestafterdepositing", QuickDeposit.CloseChestAfterDepositing)));
+    	
+    	Y = buttonY;
+    	//Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1605, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklisttorch", QuickDeposit.BlacklistTorch)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1606, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistarrow", QuickDeposit.BlacklistArrow)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1607, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistfood", QuickDeposit.BlacklistFood)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1608, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistenderpearl", QuickDeposit.BlacklistEnderPearl)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1609, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistwaterbucket", QuickDeposit.BlacklistWaterBucket)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1610, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
     }
     
     /**
@@ -607,6 +657,11 @@ public class GuiZyinHUDOptions extends GuiScreen
             	InfoLine.ToggleEnabled();
             	button.displayString = GetButtonLabel_Enabled(InfoLine.Enabled);
             }
+            else if (button.id == 102)	//Show Biome
+            {
+            	InfoLine.ToggleShowBiome();
+            	button.displayString = GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome);
+            }
             
             /////////////////////////////////////////////////////////////////////////
             // Clock
@@ -650,6 +705,11 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 303)	//Hotkey
             {
             	HotkeyButtonClicked((GuiHotkeyButton)button);
+            }
+            else if (button.id == 304)	//Mode
+            {
+            	Coordinates.ToggleMode();
+            	button.displayString = GetButtonLabel_Mode(ZyinHUD.CATEGORY_COORDINATES, Coordinates.Mode, Coordinates.NumberOfModes);
             }
 
             /////////////////////////////////////////////////////////////////////////
@@ -885,6 +945,11 @@ public class GuiZyinHUDOptions extends GuiScreen
             	PotionTimers.ToggleUsePotionColors();
             	button.displayString = GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors);
             }
+            else if (button.id == 1007)	//Hide default potion effects in inveotyr
+            {
+            	PotionTimers.ToggleHidePotionEffectsInInventory();
+            	button.displayString = GetButtonLabel_Boolean("potiontimers.options.hidepotioneffectsininventory", PotionTimers.HidePotionEffectsInInventory);
+            }
             else if (button.id == 1006)	//Potion scale slider
             {
             	float value = ((GuiNumberSlider)button).GetValueAsFloat();
@@ -1059,6 +1124,68 @@ public class GuiZyinHUDOptions extends GuiScreen
             	button.displayString = GetButtonLabel_Boolean("weaponswapper.options.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight);
             }
             
+            
+            /////////////////////////////////////////////////////////////////////////
+            // Quick Deposit
+            /////////////////////////////////////////////////////////////////////////
+            
+            else if (button.id == 1600)
+            {
+            	screenTitle = Localization.get("quickdeposit.name");
+            	DrawQuickDepositButtons();
+            }
+            else if (button.id == 1601)	//Enabled/Disabled
+            {
+            	QuickDeposit.ToggleEnabled();
+            	button.displayString = GetButtonLabel_Enabled(QuickDeposit.Enabled);
+            }
+            else if (button.id == 1602)	//Hotkey
+            {
+            	HotkeyButtonClicked((GuiHotkeyButton)button);
+            }
+            else if (button.id == 1603)	//Ignore hotbar
+            {
+            	QuickDeposit.ToggleIgnoreItemsInHotbar();
+            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.ignoreitemsinhotbar", QuickDeposit.IgnoreItemsInHotbar);
+            }
+            else if (button.id == 1604)	//Closes chest
+            {
+            	QuickDeposit.ToggleCloseChestAfterDepositing();
+            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.closechestafterdepositing", QuickDeposit.CloseChestAfterDepositing);
+            }
+            else if (button.id == 1605)	//Blacklist torches
+            {
+            	QuickDeposit.ToggleBlacklistTorch();
+            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklisttorch", QuickDeposit.BlacklistTorch);
+            }
+            else if (button.id == 1606)	//Blacklist arrows
+            {
+            	QuickDeposit.ToggleBlacklistArrow();
+            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistarrow", QuickDeposit.BlacklistArrow);
+            }
+            else if (button.id == 1607)	//Blacklist food
+            {
+            	QuickDeposit.ToggleBlacklistFood();
+            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistfood", QuickDeposit.BlacklistFood);
+            }
+            else if (button.id == 1608)	//Blacklist ender pearls
+            {
+            	QuickDeposit.ToggleBlacklistEnderPearl();
+            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistenderpearl", QuickDeposit.BlacklistEnderPearl);
+            }
+            else if (button.id == 1609)	//Blacklist water buckets
+            {
+            	QuickDeposit.ToggleBlacklistWaterBucket();
+            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistwaterbucket", QuickDeposit.BlacklistWaterBucket);
+            }
+            else if (button.id == 1610)	//Blacklist clock/compass
+            {
+            	QuickDeposit.ToggleBlacklistClockCompass();
+            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass);
+            }
+            
+            
+            
         }
     }
     
@@ -1169,8 +1296,7 @@ public class GuiZyinHUDOptions extends GuiScreen
         drawDefaultBackground();
         drawCenteredString(fontRenderer, screenTitle, width / 2, 15, 0xFFFFFF);
         
-        if(currentlySelectedTabButton == null)
-        	DrawMiscText();
+        DrawMiscText();
         
         super.drawScreen(par1, par2, par3);
     }
