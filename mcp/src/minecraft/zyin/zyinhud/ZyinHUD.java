@@ -17,12 +17,12 @@ import zyin.zyinhud.keyhandler.CoordinatesKeyHandler;
 import zyin.zyinhud.keyhandler.DistanceMeasurerKeyHandler;
 import zyin.zyinhud.keyhandler.EatingAidKeyHandler;
 import zyin.zyinhud.keyhandler.EnderPearlAidKeyHandler;
-import zyin.zyinhud.keyhandler.QuickDepositKeyHandler;
-import zyin.zyinhud.keyhandler.ZyinHUDOptionsKeyHandler;
 import zyin.zyinhud.keyhandler.PlayerLocatorKeyHandler;
 import zyin.zyinhud.keyhandler.PotionAidKeyHandler;
+import zyin.zyinhud.keyhandler.QuickDepositKeyHandler;
 import zyin.zyinhud.keyhandler.SafeOverlayKeyHandler;
 import zyin.zyinhud.keyhandler.WeaponSwapperKeyHandler;
+import zyin.zyinhud.keyhandler.ZyinHUDOptionsKeyHandler;
 import zyin.zyinhud.mods.AnimalInfo;
 import zyin.zyinhud.mods.Clock;
 import zyin.zyinhud.mods.Compass;
@@ -39,9 +39,6 @@ import zyin.zyinhud.mods.PotionTimers;
 import zyin.zyinhud.mods.QuickDeposit;
 import zyin.zyinhud.mods.SafeOverlay;
 import zyin.zyinhud.mods.WeaponSwapper;
-import zyin.zyinhud.tickhandler.GUITickHandler;
-import zyin.zyinhud.tickhandler.HUDTickHandler;
-import zyin.zyinhud.tickhandler.RenderTickHandler;
 import zyin.zyinhud.util.Localization;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
@@ -52,10 +49,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.1.0")
+@Mod(modid = "ZyinHUD", name = "Zyin's HUD", version = "1.1.0.1")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class ZyinHUD
 {
@@ -118,7 +113,7 @@ public class ZyinHUD
     
     //@Instance("ZyinHUD")
     //public static ZyinHUD instance;
-
+    
     @SidedProxy(clientSide = "zyin.zyinhud.ClientProxy", serverSide = "zyin.zyinhud.CommonProxy")
     public static CommonProxy proxy;
     
@@ -140,10 +135,8 @@ public class ZyinHUD
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
-        MinecraftForge.EVENT_BUS.register(RenderTickHandler.instance);	//needed for @ForgeSubscribe method subscriptions
-
-        TickRegistry.registerTickHandler(new HUDTickHandler(), Side.CLIENT);
-        TickRegistry.registerTickHandler(new GUITickHandler(), Side.CLIENT);
+    	//needed for @ForgeSubscribe method subscriptions
+    	MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
         
     	LoadKeyHandlers();
     }
@@ -246,7 +239,6 @@ public class ZyinHUD
         	GuiZyinHUDOptions.Hotkey = p.getString();
         else
         	p.set(Keyboard.getKeyName(key_Z[0].keyCode));
-        
 
         //CATEGORY_INFOLINE
         p = config.get(CATEGORY_INFOLINE, "EnableInfoLine", true);
@@ -262,6 +254,21 @@ public class ZyinHUD
         	InfoLine.ShowBiome = p.getBoolean(false);
         else
         	p.set(InfoLine.ShowBiome);
+
+        p = config.get(CATEGORY_INFOLINE, "InfoLineLocationVertical", 1);
+        p.comment = "The vertical position of the info line. 1 is top, 200 is very bottom.";
+        if(loadSettings)
+        	InfoLine.SetVerticalLocation(p.getInt());
+        else
+        	p.set(InfoLine.GetVerticalLocation());
+
+        p = config.get(CATEGORY_INFOLINE, "InfoLineLocationHorizontal", 1);
+        p.comment = "The horizontal position of the info line. 1 is left, 400 is far right.";
+        if(loadSettings)
+        	InfoLine.SetHorizontalLocation(p.getInt());
+        else
+        	p.set(InfoLine.GetHorizontalLocation());
+        
         
         
         //CATEGORY_COORDINATES

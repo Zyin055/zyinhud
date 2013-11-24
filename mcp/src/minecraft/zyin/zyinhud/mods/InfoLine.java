@@ -1,6 +1,8 @@
 package zyin.zyinhud.mods;
 
+import zyin.zyinhud.gui.GuiZyinHUDOptions;
 import zyin.zyinhud.util.FontCodes;
+import zyin.zyinhud.util.Localization;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
@@ -34,11 +36,14 @@ public class InfoLine
      * The padding string that is inserted between different elements of the Info Line
      */
     public static final String SPACER = " ";
+    public static int infoLineLocX = 1;
+    public static int infoLineLocY = 1;
 
     private static final int notificationDuration = 1200;	//measured in milliseconds
     private static long notificationTimer = 0;				//timer that goes from notificationDuration to 0
     private static long notificationStartTime;
     private static String notificationMessage = "";
+    
 
     /**
      * Renders the on screen message consisting of everything that gets put into the top let message area,
@@ -50,8 +55,9 @@ public class InfoLine
         //and not looking at a menu
         //and F3 not pressed
         if (InfoLine.Enabled &&
-                (mc.inGameHasFocus || mc.currentScreen == null || (mc.currentScreen instanceof GuiChat))
-                && !mc.gameSettings.showDebugInfo)
+                mc.inGameHasFocus ||
+        		(mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui())) &&
+                !mc.gameSettings.showDebugInfo)
         {
             String clock = Clock.CalculateMessageForInfoLine();
             String coordinates = Coordinates.CalculateMessageForInfoLine();
@@ -64,7 +70,7 @@ public class InfoLine
             String animals = AnimalInfo.CalculateMessageForInfoLine();
             
             String message = clock + coordinates + compass + distance + biome + fps + safe + players + animals;
-            mc.fontRenderer.drawStringWithShadow(message, 1, 1, 0xffffff);
+            mc.fontRenderer.drawStringWithShadow(message, infoLineLocX, infoLineLocY, 0xffffff);
         }
 
         if (notificationTimer > 0)
@@ -134,6 +140,21 @@ public class InfoLine
     
 
     /**
+     * Checks to see if the Info Line, Clock, Coordinates, Compass, or FPS tabs are selected in GuiZyinHUDOptions
+     * @return
+     */
+    private static boolean TabIsSelectedInOptionsGui()
+    {
+    	return mc.currentScreen instanceof GuiZyinHUDOptions &&
+    		(((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("infoline.name")) ||
+			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("clock.name")) ||
+			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("coordinates.name")) ||
+			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("compass.name")) ||
+			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("fps.name")));
+    }
+    
+
+    /**
      * Toggles showing the biome in the Info Line
      * @return The state it was changed to
      */
@@ -141,5 +162,57 @@ public class InfoLine
     {
     	ShowBiome = !ShowBiome;
     	return ShowBiome;
+    }
+    
+
+    
+    /**
+     * Gets the horizontal location where the potion timers are rendered.
+     * @return
+     */
+    public static int GetHorizontalLocation()
+    {
+    	return infoLineLocX;
+    }
+    
+    /**
+     * Sets the horizontal location where the potion timers are rendered.
+     * @param x
+     * @return the new x location
+     */
+    public static int SetHorizontalLocation(int x)
+    {
+    	if(x < 0)
+    		x = 0;
+    	else if(x > mc.displayWidth)
+    		x = mc.displayWidth;
+    	
+    	infoLineLocX = x;
+    	return infoLineLocX;
+    }
+    
+    /**
+     * Gets the vertical location where the potion timers are rendered.
+     * @return
+     */
+    public static int GetVerticalLocation()
+    {
+    	return infoLineLocY;
+    }
+
+    /**
+     * Sets the vertical location where the potion timers are rendered.
+     * @param y
+     * @return the new y location
+     */
+    public static int SetVerticalLocation(int y)
+    {
+    	if(y < 0)
+    		y = 0;
+    	else if(y > mc.displayHeight)
+    		y = mc.displayHeight;
+    	
+    	infoLineLocY = y;
+    	return infoLineLocY;
     }
 }

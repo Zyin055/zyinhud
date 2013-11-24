@@ -56,7 +56,7 @@ import zyin.zyinhud.util.Localization;
  * See existing examples on how to use these.
  * <p>
  * We are able to access this screen by using a hotkey (Ctrl + Alt + Z), or navigating through the
- * default options window. We put an additional button into the Options window by using the GUITickHandler
+ * default options window. We put an additional button into the Options window by using the ZyinHUDRenderer
  * class and replacing the normal GuiOptions class with our custom OverrideGuiOptions class.
  * <p>
  * In order to get the GuiNumberSlider to work when we click and drag it, we override and modify 3 methods:
@@ -274,6 +274,14 @@ public class GuiZyinHUDOptions extends GuiScreen
     	buttonList.add(new GuiButton(101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
+
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiNumberSlider(103, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("infoline.options.offsetx"), 1, width - 25, InfoLine.GetHorizontalLocation(), true));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiNumberSlider(104, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), true));
     	
     }
     private void DrawClockButtons()
@@ -661,6 +669,16 @@ public class GuiZyinHUDOptions extends GuiScreen
             {
             	InfoLine.ToggleShowBiome();
             	button.displayString = GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome);
+            }
+            else if (button.id == 103)	//Horizontal location
+            {
+            	int value = ((GuiNumberSlider)button).GetValueAsInteger();
+            	InfoLine.SetHorizontalLocation(value);
+            }
+            else if (button.id == 104)	//Vertical location
+            {
+            	int value = ((GuiNumberSlider)button).GetValueAsInteger();
+            	InfoLine.SetVerticalLocation(value);
             }
             
             /////////////////////////////////////////////////////////////////////////

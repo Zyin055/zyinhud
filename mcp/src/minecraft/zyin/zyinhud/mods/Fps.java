@@ -1,9 +1,6 @@
 package zyin.zyinhud.mods;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import zyin.zyinhud.tickhandler.HUDTickHandler;
+import net.minecraft.client.Minecraft;
 import zyin.zyinhud.util.FontCodes;
 import zyin.zyinhud.util.Localization;
 
@@ -21,44 +18,20 @@ public class Fps
     	Enabled = !Enabled;
     	return Enabled;
     }
-    private static int currentFps = 0;
 
-    private static final Timer timer = new Timer();
-
-    public static final Fps instance = new Fps();
-
-    private Fps()
-    {
-        timer.scheduleAtFixedRate(new FpsTimerTask(), 0, 1000);    //recalculate once every 1000 ms
-    }
+    private static Minecraft mc = Minecraft.getMinecraft();
+    public static String currentFps = "0";
 
     public static String CalculateMessageForInfoLine()
     {
         if (Fps.Enabled)
         {
-            return FontCodes.WHITE + currentFps + " " + Localization.get("fps.infoline") + InfoLine.SPACER;
+            currentFps = mc.debug.substring(0, mc.debug.indexOf(' '));
+        	return FontCodes.WHITE + currentFps + " " + Localization.get("fps.infoline") + InfoLine.SPACER;
         }
         else
         {
             return "";
-        }
-    }
-
-    /**
-     * Helper TimeTask class which runs once every second to determine the amount of render ticks elapsed.
-     */
-    class FpsTimerTask extends TimerTask
-    {
-        private int currentRenderTickCount = 0;
-        private int lastRenderTickCount = 0;
-
-        @Override
-        public void run()
-        {
-        	//we could also parse the mc.debug string and acquire the FPS that way
-            currentRenderTickCount = HUDTickHandler.renderTickCount;
-            currentFps = currentRenderTickCount - lastRenderTickCount;
-            lastRenderTickCount = HUDTickHandler.renderTickCount;
         }
     }
 }

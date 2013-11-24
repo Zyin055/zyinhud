@@ -228,7 +228,7 @@ public class AnimalInfo
     {
     	if (!(entity instanceof EntityAgeable))
         {
-            return;    //we only care about horses
+            return;    //we only care about ageable entities
         }
     	
     	int i = 0;

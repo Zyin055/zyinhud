@@ -10,7 +10,7 @@ import zyin.zyinhud.util.Localization;
  * This GUI extends the default GuiOptions screen (when you click on "Options..." in the pause menu)
  * by adding additional buttons.
  * <p>
- * This is able to replace the default one by utilizing a hook in the GUITickHandler class.
+ * This is able to replace the default one by utilizing an event in the ZyinHUDRenderer class.
  */
 public class GuiOptionsOverride extends GuiOptions
 {
@@ -27,7 +27,6 @@ public class GuiOptionsOverride extends GuiOptions
     {
     	super.initGui();
     	this.buttonList.add(new GuiButton(123456, this.width / 2 + 5, this.height / 6 + 59, 150, 20, Localization.get("gui.override.options.buttons.options")));
-
     }
     
     /**
@@ -37,14 +36,12 @@ public class GuiOptionsOverride extends GuiOptions
     {
     	super.actionPerformed(par1GuiButton);
     	
-        if (par1GuiButton.enabled)
+        if (par1GuiButton.id == 123456)
         {
-            if (par1GuiButton.id == 123456)
-            {
-                this.mc.gameSettings.saveOptions();
-                this.mc.displayGuiScreen(new GuiZyinHUDOptions(this));
-            }
+            this.mc.gameSettings.saveOptions();
+            this.mc.displayGuiScreen(new GuiZyinHUDOptions(this));
         }
+        
     }
 }
 

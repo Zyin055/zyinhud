@@ -61,7 +61,7 @@ public class PotionTimers
         //and F3 not shown
         if (PotionTimers.Enabled &&
                 mc.inGameHasFocus ||
-                (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiZyinHUDOptions && ((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("potiontimers.name")))) &&
+                (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui())) &&
         		!mc.gameSettings.showDebugInfo)
         {
             Collection potionEffects = mc.thePlayer.getActivePotionEffects();	//key:potionId, value:potionEffect
@@ -186,6 +186,17 @@ public class PotionTimers
 	        	ObfuscationReflectionHelper.setPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer)guiScreen, false, "field_74222_o");
 	    	}
     	}
+    }
+    
+    
+    /**
+     * Checks to see if the Potion Timers tab is selected in GuiZyinHUDOptions
+     * @return
+     */
+    private static boolean TabIsSelectedInOptionsGui()
+    {
+    	return mc.currentScreen instanceof GuiZyinHUDOptions &&
+    		(((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("potiontimers.name")));
     }
     
 

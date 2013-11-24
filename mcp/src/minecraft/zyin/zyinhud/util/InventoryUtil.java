@@ -1183,12 +1183,19 @@ public class InventoryUtil
         if (itemIndex < 0 || itemIndex > 90)
         	return;
         
-        playerController.windowClick(
+        try
+        {
+        	playerController.windowClick(
         		mc.thePlayer.openContainer.windowId,
         		itemIndex,
         		(rightClick) ? 1 : 0,
 				(shiftHold) ? 1 : 0,
 				mc.thePlayer);
+        }
+        catch(Exception e)
+        {
+        	//Sometimes netManager in NetClientHandler.addToSendQueue() will throw a null pointer exception for an unknown reason
+        }
     }
     
     

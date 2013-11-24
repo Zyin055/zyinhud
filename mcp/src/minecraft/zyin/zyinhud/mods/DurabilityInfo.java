@@ -90,7 +90,7 @@ public class DurabilityInfo
         //and F3 not shown
         if (DurabilityInfo.Enabled &&
                 mc.inGameHasFocus ||
-                (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiZyinHUDOptions && ((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("durabilityinfo.name")))) &&
+                (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui())) &&
         		!mc.gameSettings.showDebugInfo)
         {
             //don't waste time recalculating things every tick
@@ -265,6 +265,17 @@ public class DurabilityInfo
                 }
             }
         }
+    }
+    
+
+    /**
+     * Checks to see if the Durability Info tab is selected in GuiZyinHUDOptions
+     * @return
+     */
+    private static boolean TabIsSelectedInOptionsGui()
+    {
+    	return mc.currentScreen instanceof GuiZyinHUDOptions &&
+    		(((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("durabilityinfo.name")));
     }
     
     public static float GetDurabilityDisplayThresholdForArmor()
