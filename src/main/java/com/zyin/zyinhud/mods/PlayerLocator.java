@@ -88,8 +88,8 @@ public class PlayerLocator
     	if(numOverlaysRendered > maxNumberOfOverlays)
     		return;
     	
-        if(!(entity instanceof EntityCow))	//for single player testing/debugging!
-        // if (!(entity instanceof EntityOtherPlayerMP))
+        //if(!(entity instanceof EntityCow))	//for single player testing/debugging!
+        if (!(entity instanceof EntityOtherPlayerMP))
         {
             return;    //we only care about other players
         }
@@ -101,8 +101,8 @@ public class PlayerLocator
                 (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
                 && !mc.gameSettings.showDebugInfo)
         {
-            //EntityOtherPlayerMP otherPlayer = (EntityOtherPlayerMP)entity;
-            EntityCow otherPlayer = (EntityCow)entity;	//for single player testing/debugging!
+            EntityOtherPlayerMP otherPlayer = (EntityOtherPlayerMP)entity;
+            //EntityCow otherPlayer = (EntityCow)entity;	//for single player testing/debugging!
             
             //only show entities that are close by
             double distanceFromMe = mc.thePlayer.getDistanceToEntity(otherPlayer);
@@ -114,8 +114,8 @@ public class PlayerLocator
                 return;
             }
             
-            //String otherPlayerName = otherPlayer.getDisplayName();
-            String otherPlayerName = otherPlayer.toString();
+            //String otherPlayerName = otherPlayer.toString();	//for single player testing/debugging!
+            String otherPlayerName = otherPlayer.getDisplayName();
             String overlayMessage = otherPlayerName;
 
             //add distance to this player into the message

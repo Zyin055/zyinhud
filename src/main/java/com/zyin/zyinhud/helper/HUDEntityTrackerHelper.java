@@ -51,8 +51,8 @@ public class HUDEntityTrackerHelper
             for (Object object : mc.theWorld.loadedEntityList)
             {
                 //only track entities that we are tracking (i.e. other players)
-            	if(!(object instanceof EntityCow)) //for single player testing
-                //if(!(object instanceof EntityOtherPlayerMP))
+            	//if(!(object instanceof EntityCow))	//for single player testing/debugging!
+                if(!(object instanceof EntityOtherPlayerMP))
                 	continue;
                 
                 Entity entity = (Entity)object;

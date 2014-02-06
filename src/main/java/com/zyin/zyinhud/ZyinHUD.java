@@ -56,7 +56,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ZyinHUD
 {
     public static final String MODID = "zyinhud";
-    public static final String MODVERSION = "1.1.1";
+    public static final String MODVERSION = "1.1.2";
     public static final String MODNAME = "Zyin's HUD";
     
     //this should match the text used in the en_US.properties file because its used to grab data from the localization file
