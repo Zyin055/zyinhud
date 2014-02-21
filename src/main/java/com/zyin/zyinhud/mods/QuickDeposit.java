@@ -91,13 +91,11 @@ public class QuickDeposit
     	}
     	else	//single chest, double chest, donkey/mules, hopper, dropper, dispenser
     	{
-        	InventoryUtil.DepositAllMatchingItemsInContainer(IgnoreItemsInHotbar);
+    		InventoryUtil.DepositAllMatchingItemsInContainer(IgnoreItemsInHotbar);
         	
         	if(CloseChestAfterDepositing)
         		mc.thePlayer.closeScreen();
     	}
-    	
-    	
     }
     
     /**

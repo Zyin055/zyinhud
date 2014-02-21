@@ -319,7 +319,7 @@ public class AnimalInfo
 				!((EntityAnimal)animal).isInLove())	//animal is not currently breeding
 		{
 	        //render the overlay icon
-			if(animal instanceof EntityHorse)
+			if(animal instanceof EntityHorse && ((EntityHorse)animal).isTame())
 				ZyinHUDUtil.RenderFloatingIcon(Items.golden_carrot, x, y + animal.height, z, partialTickTime);
 			else if(animal instanceof EntityCow)
 				ZyinHUDUtil.RenderFloatingIcon(Items.wheat, x, y + animal.height, z, partialTickTime);

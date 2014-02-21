@@ -1,6 +1,12 @@
 package com.zyin.zyinhud;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
 import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
@@ -17,9 +23,13 @@ import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import cpw.mods.fml.common.gameevent.InputEvent.MouseInputEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ZyinHUDKeyHandlers
 {
+	public static ZyinHUDKeyHandlers instance = new ZyinHUDKeyHandlers();
+	
     private KeyBinding key_animalInfo = new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, AnimalInfoKeyHandler.Hotkey, ZyinHUD.MODNAME);
     private KeyBinding key_coordinates = new KeyBinding(CoordinatesKeyHandler.HotkeyDescription, CoordinatesKeyHandler.Hotkey, ZyinHUD.MODNAME);
     private KeyBinding key_distanceMeasurer = new KeyBinding(DistanceMeasurerKeyHandler.HotkeyDescription, DistanceMeasurerKeyHandler.Hotkey, ZyinHUD.MODNAME);
@@ -50,6 +60,8 @@ public class ZyinHUDKeyHandlers
 	@SubscribeEvent
 	public void KeyInputEvent(KeyInputEvent event) 
 	{
+		//KeyInputEvent will not fire when looking at a GuiScreen - 1.7.2
+		
 		if(key_animalInfo.getIsKeyPressed())
 			AnimalInfoKeyHandler.Pressed(event);
 		if(key_coordinates.getIsKeyPressed())
@@ -64,8 +76,8 @@ public class ZyinHUDKeyHandlers
 			PlayerLocatorKeyHandler.Pressed(event);
 		if(key_potionAid.getIsKeyPressed())
 			PotionAidKeyHandler.Pressed(event);
-		if(key_quickDeposit.getIsKeyPressed())
-			QuickDepositKeyHandler.Pressed(event);
+		//if(key_quickDeposit.getIsKeyPressed())
+			//QuickDepositKeyHandler.Pressed(event);	//THIS WILL NOT FIRE ON A GuiScreen
 		if(key_safeOverlay.getIsKeyPressed())
 			SafeOverlayKeyHandler.Pressed(event);
 		if(key_weaponSwapper.getIsKeyPressed())
@@ -73,4 +85,10 @@ public class ZyinHUDKeyHandlers
 		if(key_zyinHUDOptions.getIsKeyPressed())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
 	}
+	
+    @SubscribeEvent
+    public void ClientTickEvent(ClientTickEvent event)
+    {
+    	QuickDepositKeyHandler.QuickDepositTickEvent(event);	//to overcome the GuiScreen + KeyInputEvent limitation
+    }
 }

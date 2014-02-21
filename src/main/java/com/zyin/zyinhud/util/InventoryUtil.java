@@ -145,7 +145,7 @@ public class InventoryUtil
 	 * @param itemSlotIndex 36-44
 	 * @return true if the item was used.
 	 */
-	private static boolean UseItemInHotbar(int itemSlotIndex)
+	public static boolean UseItemInHotbar(int itemSlotIndex)
 	{
 		if(itemSlotIndex < 36 || itemSlotIndex > 44)
 			return false;

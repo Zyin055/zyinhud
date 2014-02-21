@@ -47,6 +47,8 @@ public class EatingAid
     
     /** Such as golden carrots, golden apples */
     public static boolean EatGoldenFood;
+    /** Such as raw chicken/porkchop/beef */
+    public static boolean EatRawFood;
     public static boolean PrioritizeFoodInHotbar;
     
     
@@ -278,7 +280,7 @@ public class EatingAid
             {
                 ItemFood food = (ItemFood)item;
                 float saturation = food.func_150906_h(itemStack);
-                
+
                 if (item.equals(Items.golden_carrot)
                         || item.equals(Items.golden_apple))
                 {
@@ -294,6 +296,17 @@ public class EatingAid
                          || item.equals(Items.spider_eye))
                 {
                 	saturation = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
+                }
+                else if (item.equals(Items.chicken)
+                        || item.equals(Items.porkchop)
+                        || item.equals(Items.beef))
+                {
+                    if (!EatRawFood)
+                    {
+                        continue;
+                    }
+
+                    saturation = 0.0003f;	//setting the saturation value low will make it unappealing to the food selection algorithm
                 }
                 
                 if(saturation > bestFoodMatchSaturation)
@@ -347,7 +360,7 @@ public class EatingAid
             {
                 ItemFood food = (ItemFood)item;
                 int foodNeeded = 20 - foodLevel;	//amount of hunger needed to be full
-                int eat = food.func_150905_g(itemStack);		//amount of hunger restored by eating this food
+                int eat = food.func_150905_g(itemStack);	//amount of hunger restored by eating this food
                 int overeat = foodNeeded - eat;
                 overeat = (overeat > 0) ? 0 : Math.abs(overeat);	//positive number, amount we would overeat by eating this food
 
@@ -366,6 +379,17 @@ public class EatingAid
                         || item.equals(Items.spider_eye))
                 {
                     overeat = 998;	//setting the overeat value high will make it unappealing to the food selection algorithm
+                }
+                else if (item.equals(Items.chicken)
+                        || item.equals(Items.porkchop)
+                        || item.equals(Items.beef))
+                {
+                    if (!EatRawFood)
+                    {
+                        continue;
+                    }
+
+                    overeat = 997;	//setting the overeat value high will make it unappealing to the food selection algorithm
                 }
                 
                 //this food is better if we overeat less, or the overeat is the same but it heals more hunger
@@ -395,6 +419,16 @@ public class EatingAid
     {
     	EatGoldenFood = !EatGoldenFood;
     	return EatGoldenFood;
+    }
+    
+    /**
+     * Toggles the whether you eat raw (uncooked) food or not
+     * @return The state it was changed to
+     */
+    public static boolean ToggleEatingRawFood()
+    {
+    	EatRawFood = !EatRawFood;
+    	return EatRawFood;
     }
     
     /**

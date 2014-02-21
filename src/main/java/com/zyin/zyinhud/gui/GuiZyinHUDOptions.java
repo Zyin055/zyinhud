@@ -101,7 +101,7 @@ public class GuiZyinHUDOptions extends GuiScreen
     		Localization.get("eatingaid.name"),
     		Localization.get("potionaid.name"),
     		Localization.get("weaponswapper.name"),
-    		Localization.get("quickdeposit.name") + FontCodes.RED + " *broken*" + FontCodes.WHITE};
+    		Localization.get("quickdeposit.name")};
     
     protected int[] tabbedButtonIDs = {
     		100,
@@ -284,8 +284,9 @@ public class GuiZyinHUDOptions extends GuiScreen
     	buttonList.add(new GuiButton(101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
-
     	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(105, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("infoline.options.showcansnow", InfoLine.ShowCanSnow)));
+    	
     	Y += buttonHeight + buttonSpacing;
     	Y += buttonHeight + buttonSpacing;
     	Y += buttonHeight + buttonSpacing;
@@ -462,6 +463,8 @@ public class GuiZyinHUDOptions extends GuiScreen
     	buttonList.add(new GuiButton(1303, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUD.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes)));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1306, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatrawfood", EatingAid.EatRawFood)));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1305, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar)));
     }
@@ -678,6 +681,11 @@ public class GuiZyinHUDOptions extends GuiScreen
             {
             	InfoLine.ToggleShowBiome();
             	button.displayString = GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome);
+            }
+            else if (button.id == 105)	//Show if it can snow
+            {
+            	InfoLine.ToggleShowCanSnow();
+            	button.displayString = GetButtonLabel_Boolean("infoline.options.showcansnow", InfoLine.ShowCanSnow);
             }
             else if (button.id == 103)	//Horizontal location
             {
@@ -1097,6 +1105,11 @@ public class GuiZyinHUDOptions extends GuiScreen
             	button.displayString = GetButtonLabel_Mode(ZyinHUD.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes);
             }
             else if (button.id == 1304)	//Eat golden food
+            {
+            	EatingAid.ToggleEatingGoldenFood();
+            	button.displayString = GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood);
+            }
+            else if (button.id == 1306)	//Eat raw food
             {
             	EatingAid.ToggleEatingGoldenFood();
             	button.displayString = GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood);

@@ -1,6 +1,5 @@
 package com.zyin.zyinhud;
 
-import java.awt.event.KeyListener;
 import java.io.File;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -56,7 +55,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ZyinHUD
 {
     public static final String MODID = "zyinhud";
-    public static final String MODVERSION = "1.1.2";
+    public static final String MODVERSION = "1.1.3";
     public static final String MODNAME = "Zyin's HUD";
     
     //this should match the text used in the en_US.properties file because its used to grab data from the localization file
@@ -100,12 +99,18 @@ public class ZyinHUD
     }
 	
     
-    
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
     	//needed for @SubscribeEvent method subscriptions
     	MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
+    	
+    	
+    	
+    	
+    	FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
+    	
+    	
         
     	//load all our Key Handlers
     	FMLCommonHandler.instance().bus().register(new ZyinHUDKeyHandlers());
@@ -212,6 +217,13 @@ public class ZyinHUD
         p.comment = "Enable/Disable showing what biome you are in on the info line.";
         if(loadSettings)
         	InfoLine.ShowBiome = p.getBoolean(false);
+        else
+        	p.set(InfoLine.ShowBiome);
+        
+        p = config.get(CATEGORY_INFOLINE, "ShowCanSnow", false);
+        p.comment = "Enable/Disable showing if it can snow at the player's feet on the info line.";
+        if(loadSettings)
+        	InfoLine.ShowCanSnow = p.getBoolean(false);
         else
         	p.set(InfoLine.ShowBiome);
 
@@ -533,6 +545,13 @@ public class ZyinHUD
         else
         	p.set(EatingAid.EatGoldenFood);
         
+        p = config.get(CATEGORY_EATINGAID, "EatRawFood", false);
+        p.comment = "Enable/Disable eating raw chicken, beef, and porkchops.";
+        if(loadSettings)
+        	EatingAid.EatRawFood = p.getBoolean(false);
+        else
+        	p.set(EatingAid.EatRawFood);
+        
         p = config.get(CATEGORY_EATINGAID, "PrioritizeFoodInHotbar", false);
         p.comment = "Use food that is in your hotbar before looking for food in your main inventory.";
         if(loadSettings)
@@ -825,15 +844,6 @@ public class ZyinHUD
      */
     public static int GetKeyboardKeyFromString(String key)
     {
-    	System.out.println("TEST: key = " + key);
-    	System.out.println("TEST: key = " + key);
-    	System.out.println("TEST: key = " + key);
-    	System.out.println("TEST: key = " + key);
-    	System.out.println("TEST: key = " + key);
-    	System.out.println("TEST: key = " + key);
-    	System.out.println("TEST: key = " + key);
-    	System.out.println("TEST: key = " + key);
-    	System.out.println("TEST: key = " + key);
     	key = key.trim();
     	int keyIndex = Keyboard.getKeyIndex(key.toUpperCase());
     	if(keyIndex == 0)

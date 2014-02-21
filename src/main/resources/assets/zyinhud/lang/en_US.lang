@@ -36,7 +36,8 @@ eatingaid.name=Eating Aid
 eatingaid.mode.0=Basic
 eatingaid.mode.1=Intelligent
 eatingaid.nofood=No food
-eatingaid.options.eatgoldenfood=Eat Gold Food: 
+eatingaid.options.eatgoldenfood=Eat Golden Food: 
+eatingaid.options.eatrawfood=Eat Uncooked Food: 
 eatingaid.options.prioritizefoodinhotbar=Prioritize Food in Hotbar: 
 
 enderpearlaid.name=Ender Pearl Aid
@@ -90,6 +91,9 @@ animalinfo.debug.markings=Horse Markings:
 
 infoline.name=Info Line
 infoline.options.showbiome=Show Biome: 
+infoline.options.showcansnow=Show if it can snow: 
+infoline.options.offsetx=Offset X: 
+infoline.options.offsety=Offset Y: 
 
 playerlocator.name=Player Locator
 playerlocator.infoline=players

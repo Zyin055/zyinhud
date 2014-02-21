@@ -3,7 +3,10 @@ package com.zyin.zyinhud.mods;
 import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -155,7 +158,8 @@ public class DurabilityInfo
 	protected static void DrawItemIcon(ItemStack toolStack, int horizontalPosition, int verticalSpacer)
 	{
 		//render the item with enchant effect
-		itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, toolStack, horizontalPosition, verticalSpacer);
+		//itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, toolStack, horizontalPosition, verticalSpacer);	//TODO: 1.6 broke
+		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, toolStack, horizontalPosition, verticalSpacer);
 		
 		//render the item's durability bar
 		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, toolStack, horizontalPosition, verticalSpacer);

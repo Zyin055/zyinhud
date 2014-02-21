@@ -1,12 +1,23 @@
 package com.zyin.zyinhud.mods;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 
 /**
@@ -29,8 +40,9 @@ public class InfoLine
     	return Enabled;
     }
     private static Minecraft mc = Minecraft.getMinecraft();
-    
+
     public static boolean ShowBiome;
+    public static boolean ShowCanSnow;
     
     /**
      * The padding string that is inserted between different elements of the Info Line
@@ -38,6 +50,8 @@ public class InfoLine
     public static final String SPACER = " ";
     public static int infoLineLocX = 1;
     public static int infoLineLocY = 1;
+
+    private static final RenderItem itemRenderer = new RenderItem();
 
     private static final int notificationDuration = 1200;	//measured in milliseconds
     private static long notificationTimer = 0;				//timer that goes from notificationDuration to 0
@@ -50,7 +64,7 @@ public class InfoLine
      * including coordinates and the state of things that can be activated
      */
     public static void RenderOntoHUD()
-    {//System.out.println("mc.inGameHasFocus="+mc.inGameHasFocus);
+    {
         //if the player is in the world
         //and not looking at a menu
         //and F3 not pressed
@@ -58,18 +72,39 @@ public class InfoLine
                 (mc.inGameHasFocus || (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui()))) &&
                 !mc.gameSettings.showDebugInfo)
         {
+        	String infoLineMessage = "";
+        	
             String clock = Clock.CalculateMessageForInfoLine();
-            String coordinates = Coordinates.CalculateMessageForInfoLine();
-            String compass = Compass.CalculateMessageForInfoLine();
-            String distance = DistanceMeasurer.CalculateMessageForInfoLine();
-            String biome = ShowBiome ? CalculateBiomeForInfoLine() : "";
-            String fps = Fps.CalculateMessageForInfoLine();
-            String safe = SafeOverlay.CalculateMessageForInfoLine();
-            String players = PlayerLocator.CalculateMessageForInfoLine();
-            String animals = AnimalInfo.CalculateMessageForInfoLine();
+            infoLineMessage = infoLineMessage + clock;
             
-            String message = clock + coordinates + compass + distance + biome + fps + safe + players + animals;
-            mc.fontRenderer.drawStringWithShadow(message, infoLineLocX, infoLineLocY, 0xffffff);
+            String coordinates = Coordinates.CalculateMessageForInfoLine();
+            infoLineMessage = infoLineMessage + coordinates;
+            
+            String compass = Compass.CalculateMessageForInfoLine(infoLineMessage);
+            infoLineMessage = infoLineMessage + compass;
+            
+            String distance = DistanceMeasurer.CalculateMessageForInfoLine();
+            infoLineMessage = infoLineMessage + distance;
+            
+            String fps = Fps.CalculateMessageForInfoLine();
+            infoLineMessage = infoLineMessage + fps;
+            
+            String snow = ShowCanSnow ? CalculateCanSnowForInfoLine(infoLineMessage) : "";
+            infoLineMessage = infoLineMessage + snow;
+            
+            String biome = ShowBiome ? CalculateBiomeForInfoLine() : "";
+            infoLineMessage = infoLineMessage + biome;
+            
+            String safe = SafeOverlay.CalculateMessageForInfoLine();
+            infoLineMessage = infoLineMessage + safe;
+            
+            String players = PlayerLocator.CalculateMessageForInfoLine();
+            infoLineMessage = infoLineMessage + players;
+            
+            String animals = AnimalInfo.CalculateMessageForInfoLine();
+            infoLineMessage = infoLineMessage + animals;
+            
+            mc.fontRenderer.drawStringWithShadow(infoLineMessage, infoLineLocX, infoLineLocY, 0xffffff);
         }
 
         if (notificationTimer > 0)
@@ -78,17 +113,67 @@ public class InfoLine
         }
     }
     
+    private static void renderGlint(int par1, int par2, int par3, int par4, int par5)
+    {
+        for (int j1 = 0; j1 < 2; ++j1)
+        {
+            OpenGlHelper.glBlendFunc(772, 1, 0, 0);
+            float f = 0.00390625F;
+            float f1 = 0.00390625F;
+            float f2 = (float)(Minecraft.getSystemTime() % (long)(3000 + j1 * 1873)) / (3000.0F + (float)(j1 * 1873)) * 256.0F;
+            float f3 = 0.0F;
+            Tessellator tessellator = Tessellator.instance;
+            float f4 = 4.0F;
+
+            if (j1 == 1)
+            {
+                f4 = -1.0F;
+            }
+
+            tessellator.startDrawingQuads();
+            tessellator.addVertexWithUV((double)(par2 + 0), (double)(par3 + par5), (double)itemRenderer.zLevel, (double)((f2 + (float)par5 * f4) * f), (double)((f3 + (float)par5) * f1));
+            tessellator.addVertexWithUV((double)(par2 + par4), (double)(par3 + par5), (double)itemRenderer.zLevel, (double)((f2 + (float)par4 + (float)par5 * f4) * f), (double)((f3 + (float)par5) * f1));
+            tessellator.addVertexWithUV((double)(par2 + par4), (double)(par3 + 0), (double)itemRenderer.zLevel, (double)((f2 + (float)par4) * f), (double)((f3 + 0.0F) * f1));
+            tessellator.addVertexWithUV((double)(par2 + 0), (double)(par3 + 0), (double)itemRenderer.zLevel, (double)((f2 + 0.0F) * f), (double)((f3 + 0.0F) * f1));
+            tessellator.draw();
+        }
+    }
+    
+    protected static String CalculateCanSnowForInfoLine(String infoLineMessageUpToThisPoint)
+    {
+    	int xCoord = MathHelper.floor_double(mc.thePlayer.posX);
+        int yCoord = MathHelper.floor_double(mc.thePlayer.posY) - 1;
+        int zCoord = MathHelper.floor_double(mc.thePlayer.posZ);
+        
+    	boolean canSnowAtPlayersFeet = mc.theWorld.canSnowAtBody(xCoord, yCoord, zCoord, false);
+    	
+    	if(canSnowAtPlayersFeet)
+    	{
+    		float scaler = 0.66f;
+    		GL11.glScalef(scaler, scaler, scaler);
+    		
+    		int x = (int)(mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint) / scaler);
+    		int y = (int)(-1);
+    		
+    		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.snowball), x, y);
+    		
+    		GL11.glDisable(GL11.GL_LIGHTING);
+    		GL11.glScalef(1/scaler, 1/scaler, 1/scaler);
+    		
+        	return "  ";
+    	}
+    	return "";
+    }
+    
     protected static String CalculateBiomeForInfoLine()
     {
-    	//System.out.println(mc.debugInfoRenders());
-    	
     	int xCoord = MathHelper.floor_double(mc.thePlayer.posX);
-        int yCoord = MathHelper.floor_double(mc.thePlayer.posZ);
+        int zCoord = MathHelper.floor_double(mc.thePlayer.posZ);
         
-    	Chunk chunk = mc.theWorld.getChunkFromBlockCoords(xCoord, yCoord);
-    	String biome = chunk.getBiomeGenForWorldCoords(xCoord & 15, yCoord & 15, mc.theWorld.getWorldChunkManager()).biomeName;
+    	Chunk chunk = mc.theWorld.getChunkFromBlockCoords(xCoord, zCoord);
+    	String biomeName = chunk.getBiomeGenForWorldCoords(xCoord & 15, zCoord & 15, mc.theWorld.getWorldChunkManager()).biomeName;
     	
-    	return FontCodes.WHITE + biome + " ";
+    	return FontCodes.WHITE + biomeName + " ";
     }
 
     /**
@@ -151,7 +236,7 @@ public class InfoLine
 			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("compass.name")) ||
 			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("fps.name")));
     }
-    
+
 
     /**
      * Toggles showing the biome in the Info Line
@@ -161,6 +246,16 @@ public class InfoLine
     {
     	ShowBiome = !ShowBiome;
     	return ShowBiome;
+    }
+
+    /**
+     * Toggles showing if it is possible for snow to fall at the player's feet in the Info Line
+     * @return The state it was changed to
+     */
+    public static boolean ToggleShowCanSnow()
+    {
+    	ShowCanSnow = !ShowCanSnow;
+    	return ShowCanSnow;
     }
     
 
