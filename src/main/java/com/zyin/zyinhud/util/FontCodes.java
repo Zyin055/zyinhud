@@ -13,8 +13,8 @@ public class FontCodes
     public static final String DARK_GREEN = "\2472";
     public static final String DARK_AQUA = "\2473";
     public static final String DARK_RED = "\2474";
-    public static final String PURPLE = "\2475";
-    public static final String ORANGE = "\2476";
+    public static final String DARK_PURPLE = "\2475";
+    public static final String GOLD = "\2476";
     public static final String GRAY = "\2477";
     public static final String DARK_GREY = "\2478";
     public static final String BLUE = "\2479";
@@ -26,6 +26,7 @@ public class FontCodes
     public static final String WHITE = "\247f";
 
     //font styles
+    public static final String OBFUSCATED = "\247k";
     public static final String BOLD = "\247l";
     public static final String STRIKETHROUGH = "\247m";
     public static final String UNDERLINE = "\247n";

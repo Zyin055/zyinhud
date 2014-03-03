@@ -19,8 +19,6 @@ public class DistanceMeasurerKeyHandler
     
 	public static void Pressed(KeyInputEvent event) 
 	{
-		System.out.println("key_distanceMeasurer PRESSED.");
-
 		if (mc.currentScreen != null)
         {
             return;    //don't activate if the user is looking at a GUI

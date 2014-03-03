@@ -1,7 +1,11 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiTextField;
+
 import com.zyin.zyinhud.util.FontCodes;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * The Coordinates calculates the player's position.
@@ -95,6 +99,24 @@ public class Coordinates
         }
 
         return "";
+    }
+    
+    public static void PasteCoordinatesIntoChat()
+    {
+    	if(mc.currentScreen != null && mc.currentScreen instanceof GuiChat)
+    	{
+        	String coordinateString = Coordinates.ChatStringFormat;
+        	coordinateString = coordinateString.replace("{x}", Integer.toString(Coordinates.GetXCoordinate()));
+        	coordinateString = coordinateString.replace("{y}", Integer.toString(Coordinates.GetYCoordinate()));
+        	coordinateString = coordinateString.replace("{z}", Integer.toString(Coordinates.GetZCoordinate()));
+        	
+        	GuiTextField inputField = ZyinHUDUtil.GetFieldByReflection(GuiChat.class, (GuiChat)mc.currentScreen, "inputField","field_146415_a");
+        	
+        	if(inputField != null)
+        	{
+        		inputField.writeText(coordinateString);
+        	}
+    	}
     }
 
     public static int GetXCoordinate()

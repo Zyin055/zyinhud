@@ -93,7 +93,7 @@ public class DistanceMeasurer
                 {
                 	double farthestHorizontalDistance = Math.max(Math.abs(deltaX), Math.abs(deltaZ));
                     double farthestDistance = Math.max(Math.abs(deltaY), farthestHorizontalDistance);
-                    return FontCodes.ORANGE + "[" + String.format("%1$,.1f", farthestDistance) + "]" + InfoLine.SPACER;
+                    return FontCodes.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]" + InfoLine.SPACER;
                 }
                 else if (Mode == 2)	//2=complex
                 {
@@ -101,16 +101,16 @@ public class DistanceMeasurer
                     String x = String.format("%1$,.1f", deltaX);
                     String y = String.format("%1$,.1f", deltaY);
                     String z = String.format("%1$,.1f", deltaZ);
-                    return FontCodes.ORANGE + "[" + x + ", " + z + ", " + y + " (" + String.format("%1$,.1f", delta) + ")]" + InfoLine.SPACER;
+                    return FontCodes.GOLD + "[" + x + ", " + z + ", " + y + " (" + String.format("%1$,.1f", delta) + ")]" + InfoLine.SPACER;
                 }
                 else
                 {
-                	return FontCodes.ORANGE + "[???]" + InfoLine.SPACER;
+                	return FontCodes.GOLD + "[???]" + InfoLine.SPACER;
                 }
             }
             else
             {
-            	return FontCodes.ORANGE + "["+Localization.get("distancemeasurer.far")+"]" + InfoLine.SPACER;
+            	return FontCodes.GOLD + "["+Localization.get("distancemeasurer.far")+"]" + InfoLine.SPACER;
             }
         }
 

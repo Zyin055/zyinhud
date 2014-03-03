@@ -7,6 +7,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.ZyinHUD;
+import com.zyin.zyinhud.ZyinHUDConfig;
 import com.zyin.zyinhud.gui.buttons.GuiAnimalInfoHotkeyButton;
 import com.zyin.zyinhud.gui.buttons.GuiCoordinatesHotkeyButton;
 import com.zyin.zyinhud.gui.buttons.GuiDistanceMeasurerHotkeyButton;
@@ -72,7 +73,7 @@ import com.zyin.zyinhud.util.Localization;
  * In order to get the GuiNumberSlider to work when we click and drag it, we override and modify 3 methods:
  * mouseClicked(), mouseMovedOrUp(), and actionPerformed_MouseUp().
  */
-public class GuiZyinHUDOptions extends GuiScreen
+public class GuiZyinHUDOptions extends GuiTooltipScreen
 {
 	public static String Hotkey;
     public static final String HotkeyDescription = "Zyin's HUD: Options";
@@ -280,8 +281,11 @@ public class GuiZyinHUDOptions extends GuiScreen
     
     private void DrawInfoLineButtons()
     {
+    	this.zLevel = 0f;
+    	
     	int Y = buttonY;
     	buttonList.add(new GuiButton(101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
+    	//buttonList.add(new GuiTooltipButton(101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled), "test1\ntest2\ntest3\ntest444\ntest5"));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
     	Y += buttonHeight + buttonSpacing;
@@ -294,13 +298,14 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiNumberSlider(104, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), true));
     	
+    	this.zLevel = 0f;
     }
     private void DrawClockButtons()
     {
     	int Y = buttonY;
     	buttonList.add(new GuiButton(201, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Clock.Enabled)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(202, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUD.CATEGORY_CLOCK, Clock.Mode, Clock.NumberOfModes)));
+    	buttonList.add(new GuiButton(202, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_CLOCK, Clock.Mode, Clock.NumberOfModes)));
     	
     }
     private void DrawCoordinatesButtons()
@@ -310,7 +315,7 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiCoordinatesHotkeyButton(303, buttonX_column1, Y, buttonWidth_half, buttonHeight, Keyboard.getKeyName(CoordinatesKeyHandler.Hotkey)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUD.CATEGORY_COORDINATES, Coordinates.Mode, Coordinates.NumberOfModes)));
+    	buttonList.add(new GuiButton(304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_COORDINATES, Coordinates.Mode, Coordinates.NumberOfModes)));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(302, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
     	
@@ -460,7 +465,7 @@ public class GuiZyinHUDOptions extends GuiScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiEatingAidHotkeyButton(1302, buttonX_column1, Y, buttonWidth_half, buttonHeight, Keyboard.getKeyName(EatingAidKeyHandler.Hotkey)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1303, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUD.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes)));
+    	buttonList.add(new GuiButton(1303, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes)));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood)));
     	Y += buttonHeight + buttonSpacing;
@@ -645,7 +650,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             
             if (button.id == 1)	//Save and Exit
             {
-            	ZyinHUD.SaveConfigSettings();
+            	ZyinHUDConfig.SaveConfigSettings();
                 mc.displayGuiScreen(parentGuiScreen);
             }
 
@@ -715,7 +720,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 202)	//Mode
             {
             	Clock.ToggleMode();
-            	button.displayString = GetButtonLabel_Mode(ZyinHUD.CATEGORY_CLOCK, Clock.Mode, Clock.NumberOfModes);
+            	button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_CLOCK, Clock.Mode, Clock.NumberOfModes);
             }
 
             /////////////////////////////////////////////////////////////////////////
@@ -744,7 +749,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 304)	//Mode
             {
             	Coordinates.ToggleMode();
-            	button.displayString = GetButtonLabel_Mode(ZyinHUD.CATEGORY_COORDINATES, Coordinates.Mode, Coordinates.NumberOfModes);
+            	button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_COORDINATES, Coordinates.Mode, Coordinates.NumberOfModes);
             }
 
             /////////////////////////////////////////////////////////////////////////
@@ -1102,7 +1107,7 @@ public class GuiZyinHUDOptions extends GuiScreen
             else if (button.id == 1303)	//Eating Mode
             {
             	EatingAid.ToggleMode();
-            	button.displayString = GetButtonLabel_Mode(ZyinHUD.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes);
+            	button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes);
             }
             else if (button.id == 1304)	//Eat golden food
             {
@@ -1228,6 +1233,29 @@ public class GuiZyinHUDOptions extends GuiScreen
             
         }
     }
+    
+
+	protected String GetButtonTooltip(int buttonId)
+	{
+		switch (buttonId)
+		{
+			case 202: return Localization.get("clock.options.mode.tooltip");
+			case 303: return Localization.get("compass.options.hotkey.tooltip");
+			case 702: return Localization.get("safeoverlay.options.hotkey.tooltip");
+			case 907: return Localization.get("animalinfo.options.showtextbackground.tooltip");
+			case 905: return Localization.get("animalinfo.options.showhorsestatsonf3menu.tooltip");
+			case 906: return Localization.get("animalinfo.options.showhorsestatsoverlay.tooltip");
+			case 916: return Localization.get("animalinfo.options.showbreedingicons.tooltip");
+			case 917: return Localization.get("animalinfo.options.showbreedingtimers.tooltip");
+			case 1007: return Localization.get("potiontimers.options.hidepotioneffectsininventory.tooltip");
+			case 1103: return Localization.get("durabilityinfo.options.armordurabilitythreshold.tooltip");
+			case 1106: return Localization.get("durabilityinfo.options.itemdurabilitythreshold.tooltip");
+			case 1303: return Localization.get("eatingaid.options.mode.tooltip");
+			case 1603: return Localization.get("quickdeposit.options.ignoreitemsinhotbar.tooltip");
+			case 1604: return Localization.get("quickdeposit.options.closechestafterdepositing.tooltip");
+			default: return null;
+		}
+	}
     
     /**
      * Helper method to keep track of any GuiHotkeyButtons we've clicked.

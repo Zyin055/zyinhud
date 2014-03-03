@@ -35,28 +35,6 @@ public class ZyinHUDRenderer
     @SubscribeEvent
     public void RenderGameOverlayEvent(RenderGameOverlayEvent event)
     {
-    	/*
-    	
-    	//works:
-    	 * TEXT
-    	 * ALL
-    	 * BOSSHEALTH
-    	 * CROSSHAIRS
-    	 * EXPERIENCE
-    	 * HELMET
-    	 * PORTAL
-    	
-    	//doesnt work:
-    	 * AIR
-    	 * ARMOR
-    	 * FOOD
-    	 * HEALTH
-    	 * HEALTHMOUNT
-    	 * HOTBAR
-    	 * JUMPBAR
-    	 
-    	 */
-    	
     	//render everything onto the screen
     	if(event.type == RenderGameOverlayEvent.ElementType.TEXT)
     	{

@@ -7,6 +7,7 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.settings.KeyBinding;
 
 import com.zyin.zyinhud.mods.Coordinates;
@@ -16,8 +17,9 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
-public class CoordinatesKeyHandler// extends KeyHandler
+public class CoordinatesKeyHandler
 {
     private static Minecraft mc = Minecraft.getMinecraft();
     
@@ -28,19 +30,38 @@ public class CoordinatesKeyHandler// extends KeyHandler
     
 	public static void Pressed(KeyInputEvent event) 
 	{
+		Coordinates.PasteCoordinatesIntoChat();
+	}
+	
+
+    
+    private static boolean keyDown = false;
+    
+	public static void CoordinatesTickEvent(ClientTickEvent event)
+    {
 		if(mc.currentScreen != null && mc.currentScreen instanceof GuiChat)
     	{
-        	String coordinateString = Coordinates.ChatStringFormat;
-        	coordinateString = coordinateString.replace("{x}", Integer.toString(Coordinates.GetXCoordinate()));
-        	coordinateString = coordinateString.replace("{y}", Integer.toString(Coordinates.GetYCoordinate()));
-        	coordinateString = coordinateString.replace("{z}", Integer.toString(Coordinates.GetZCoordinate()));
-        	
-        	GuiTextField inputField = ZyinHUDUtil.GetFieldByReflection(GuiChat.class, (GuiChat)mc.currentScreen, "inputField","field_146415_a");
-        	
-        	if(inputField != null)
-        	{
-        		inputField.writeText(coordinateString);
-        	}
+    		if(Keyboard.getEventKey() == CoordinatesKeyHandler.Hotkey)
+    		{
+    			if(Keyboard.getEventKeyState())
+    			{
+    				if(keyDown == false)
+    					OnKeyDown();
+    	            keyDown = true;
+    	        }
+    	        else
+    	        {
+    				//if(keyDown == true)
+    					//OnKeyUp();
+    	            keyDown = false;
+    	        }
+    		}
+    		
     	}
+    }
+
+	private static void OnKeyDown()
+	{
+        Pressed(null);
 	}
 }

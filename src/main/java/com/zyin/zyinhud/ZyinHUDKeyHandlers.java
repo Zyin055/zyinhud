@@ -28,9 +28,9 @@ import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ZyinHUDKeyHandlers
 {
-	public static ZyinHUDKeyHandlers instance = new ZyinHUDKeyHandlers();
+    public static final ZyinHUDKeyHandlers instance = new ZyinHUDKeyHandlers();
 	
-    private KeyBinding key_animalInfo = new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, AnimalInfoKeyHandler.Hotkey, ZyinHUD.MODNAME);
+	private KeyBinding key_animalInfo = new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, AnimalInfoKeyHandler.Hotkey, ZyinHUD.MODNAME);
     private KeyBinding key_coordinates = new KeyBinding(CoordinatesKeyHandler.HotkeyDescription, CoordinatesKeyHandler.Hotkey, ZyinHUD.MODNAME);
     private KeyBinding key_distanceMeasurer = new KeyBinding(DistanceMeasurerKeyHandler.HotkeyDescription, DistanceMeasurerKeyHandler.Hotkey, ZyinHUD.MODNAME);
     private KeyBinding key_eatingAid = new KeyBinding(EatingAidKeyHandler.HotkeyDescription, EatingAidKeyHandler.Hotkey, ZyinHUD.MODNAME);
@@ -62,33 +62,39 @@ public class ZyinHUDKeyHandlers
 	{
 		//KeyInputEvent will not fire when looking at a GuiScreen - 1.7.2
 		
+		//if 2 KeyBindings have the same hotkey, only 1 will be flagged as "pressed" in getIsKeyPressed(),
+		//which one ends up getting pressed in that scenario is undetermined
+		
 		if(key_animalInfo.getIsKeyPressed())
 			AnimalInfoKeyHandler.Pressed(event);
-		if(key_coordinates.getIsKeyPressed())
-			CoordinatesKeyHandler.Pressed(event);
-		if(key_distanceMeasurer.getIsKeyPressed())
+		//else if(key_coordinates.getIsKeyPressed())
+			//CoordinatesKeyHandler.Pressed(event);		//THIS WILL NOT FIRE ON A GuiScreen
+		else if(key_distanceMeasurer.getIsKeyPressed())
 			DistanceMeasurerKeyHandler.Pressed(event);
-		if(key_eatingAid.getIsKeyPressed())
+		else if(key_eatingAid.getIsKeyPressed())
 			EatingAidKeyHandler.Pressed(event);
-		if(key_enderPearlAid.getIsKeyPressed())
+		else if(key_enderPearlAid.getIsKeyPressed())
 			EnderPearlAidKeyHandler.Pressed(event);
-		if(key_playerLocator.getIsKeyPressed())
+		else if(key_playerLocator.getIsKeyPressed())
 			PlayerLocatorKeyHandler.Pressed(event);
-		if(key_potionAid.getIsKeyPressed())
+		else if(key_potionAid.getIsKeyPressed())
 			PotionAidKeyHandler.Pressed(event);
-		//if(key_quickDeposit.getIsKeyPressed())
+		//else if(key_quickDeposit.getIsKeyPressed())
 			//QuickDepositKeyHandler.Pressed(event);	//THIS WILL NOT FIRE ON A GuiScreen
-		if(key_safeOverlay.getIsKeyPressed())
+		else if(key_safeOverlay.getIsKeyPressed())
 			SafeOverlayKeyHandler.Pressed(event);
-		if(key_weaponSwapper.getIsKeyPressed())
+		else if(key_weaponSwapper.getIsKeyPressed())
 			WeaponSwapperKeyHandler.Pressed(event);
-		if(key_zyinHUDOptions.getIsKeyPressed())
+		else if(key_zyinHUDOptions.getIsKeyPressed())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
 	}
 	
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
     {
-    	QuickDepositKeyHandler.QuickDepositTickEvent(event);	//to overcome the GuiScreen + KeyInputEvent limitation
+    	//This to tick handler is to overcome the GuiScreen + KeyInputEvent limitation
+    	
+    	QuickDepositKeyHandler.QuickDepositTickEvent(event);
+    	CoordinatesKeyHandler.CoordinatesTickEvent(event);
     }
 }

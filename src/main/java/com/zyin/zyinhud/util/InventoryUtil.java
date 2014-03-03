@@ -359,6 +359,10 @@ public class InventoryUtil
 	    int numInventorySlots = 36;
 	    int numChestSlots = numDisplayedSlots - numInventorySlots;
 	    
+	    //some 3rd party mods have containers with no slots (such as Pixelmon)
+	    if(numChestSlots <= 0)
+	    	return false;
+	    
 	    int iStart = numChestSlots;
 	    int iEnd = numDisplayedSlots;
 	    
