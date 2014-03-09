@@ -8,6 +8,7 @@ key.zyinhud.potionaid=Potion Aid
 key.zyinhud.quickdeposit=Quick Deposit
 key.zyinhud.safeoverlay=Safe Overlay
 key.zyinhud.weaponswapper=Weapon Swap
+key.zyinhud.itemselector=Item Selector
 key.zyinhud.zyinhudoptions=Zyin's HUD Options
 
 clock.name=Clock
@@ -138,7 +139,10 @@ safeoverlay.distance.default=default
 
 weaponswapper.name=Weapon Swapper
 weaponswapper.noweaponsinhotbar=No weapons in hotbar
-weaponswapper.options.scanhotbarforweaponsfromlefttoright=Search Hotbar Left to Right: 
+weaponswapper.options.scanhotbarforweaponsfromlefttoright=Search Hotbar Left to Right:
+
+itemselector.name=Item Selector
+itemselector.options.ticks=Ticks until confirm:
 
 quickdeposit.name=Quick Deposit
 quickdeposit.options.ignoreitemsinhotbar=Ignore Hotbar: 

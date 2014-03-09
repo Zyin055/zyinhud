@@ -55,7 +55,8 @@ public class ZyinHUD
     {
     	//needed for @SubscribeEvent method subscriptions
     	MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
-    	
+    	MinecraftForge.EVENT_BUS.register(ZyinHUDKeyHandlers.instance);
+
     	
     	//load all our Key Handlers
     	FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);

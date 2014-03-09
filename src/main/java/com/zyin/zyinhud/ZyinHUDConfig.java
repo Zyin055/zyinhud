@@ -1,39 +1,12 @@
 package com.zyin.zyinhud;
 
-import java.io.File;
-
+import com.zyin.zyinhud.keyhandlers.*;
+import com.zyin.zyinhud.mods.*;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-
 import org.lwjgl.input.Keyboard;
 
-import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
-import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
-import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
-import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
-import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
-import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
-import com.zyin.zyinhud.mods.AnimalInfo;
-import com.zyin.zyinhud.mods.Clock;
-import com.zyin.zyinhud.mods.Compass;
-import com.zyin.zyinhud.mods.Coordinates;
-import com.zyin.zyinhud.mods.DistanceMeasurer;
-import com.zyin.zyinhud.mods.DurabilityInfo;
-import com.zyin.zyinhud.mods.EatingAid;
-import com.zyin.zyinhud.mods.EnderPearlAid;
-import com.zyin.zyinhud.mods.Fps;
-import com.zyin.zyinhud.mods.InfoLine;
-import com.zyin.zyinhud.mods.PlayerLocator;
-import com.zyin.zyinhud.mods.PotionAid;
-import com.zyin.zyinhud.mods.PotionTimers;
-import com.zyin.zyinhud.mods.QuickDeposit;
-import com.zyin.zyinhud.mods.SafeOverlay;
-import com.zyin.zyinhud.mods.WeaponSwapper;
+import java.io.File;
 
 /**
  * This class is responsible for interacting with the configuration file.
@@ -52,6 +25,7 @@ public class ZyinHUDConfig
     public static final String CATEGORY_PLAYERLOCATOR = "playerlocator";
     public static final String CATEGORY_EATINGAID = "eatingaid";
     public static final String CATEGORY_WEAPONSWAP = "weaponswap";
+    public static final String CATEGORY_ITEMSELECTOR = "itemselector";
     public static final String CATEGORY_FPS = "fps";
     public static final String CATEGORY_ANIMALINFO = "horseinfo";
     public static final String CATEGORY_ENDERPEARLAID = "enderpearlaid";
@@ -108,6 +82,7 @@ public class ZyinHUDConfig
         config.addCustomCategoryComment(CATEGORY_PLAYERLOCATOR, "Player Locator gives you a radar-like ability to easily see where other people are.");
         config.addCustomCategoryComment(CATEGORY_EATINGAID, "Eating Aid makes eating food quick and easy.");
         config.addCustomCategoryComment(CATEGORY_WEAPONSWAP, "Weapon Swap allows you to quickly select your sword and bow.");
+        config.addCustomCategoryComment(CATEGORY_ITEMSELECTOR, "Item Selector allows you to conveniently swap your currently selected hotbar item with something in your inventory.");
         config.addCustomCategoryComment(CATEGORY_FPS, "FPS shows your frames per second without having to go into the F3 menu.");
         config.addCustomCategoryComment(CATEGORY_ANIMALINFO, "Animal Info gives you information about horse stats, such as speed and jump height.");
         config.addCustomCategoryComment(CATEGORY_ENDERPEARLAID, "Ender Pearl Aid makes it easier to quickly throw ender pearls.");
@@ -510,6 +485,29 @@ public class ZyinHUDConfig
         	WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight = p.getBoolean(true);
         else
         	p.set(WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight);
+
+
+        //CATEGORY_ITEMSELECTOR
+        p = config.get(CATEGORY_ITEMSELECTOR, "EnableItemSelector", true);
+        p.comment = "Enables mousewheel scrolling whilst holding a hotkey (default="+ItemSelectorKeyHandler.DefaultHotkey+") to swap the selected item with an inventory item.";
+        if(loadSettings)
+            ItemSelector.Enabled = p.getBoolean(true);
+        else
+            p.set(ItemSelector.Enabled);
+
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorHotkey", ItemSelectorKeyHandler.DefaultHotkeyString);
+        p.comment = "Default: " + ItemSelectorKeyHandler.DefaultHotkeyString;
+        if(loadSettings)
+            ItemSelectorKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
+        else
+            p.set(Keyboard.getKeyName(ItemSelectorKeyHandler.Hotkey));
+
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorTimeout", true);
+        p.comment = "Specifies how many ticks until the item selector confirms your choice and performs the item swap.";
+        if(loadSettings)
+            ItemSelector.setTimeout( p.getInt(ItemSelector.defaultTimeout) );
+        else
+            p.set( ItemSelector.getTimeout() );
         
         
         //CATEGORY_FPS
