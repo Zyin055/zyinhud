@@ -4,3 +4,4 @@ build/
 .nb-*
 eclipse/
 *.iml
+/classes/
