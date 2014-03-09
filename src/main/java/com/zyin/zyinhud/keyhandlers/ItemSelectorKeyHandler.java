@@ -9,8 +9,8 @@ public class ItemSelectorKeyHandler
 {
     public static final String HotkeyDescription = "key.zyinhud.itemselector";
 
-    public static String DefaultHotkeyString = "LSHIFT";
-    public static int    DefaultHotkey       = Keyboard.KEY_LSHIFT;
+    public static String DefaultHotkeyString = "LMENU";
+    public static int    DefaultHotkey       = Keyboard.KEY_LMENU;
     public static int    Hotkey              = Keyboard.KEY_NONE;	//this is updated when the config file is loaded
 
     static Minecraft mc = Minecraft.getMinecraft();

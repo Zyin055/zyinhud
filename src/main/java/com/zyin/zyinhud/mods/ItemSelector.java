@@ -1,7 +1,9 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
@@ -37,9 +39,9 @@ public class ItemSelector
     }
 
     protected static int timeout;
-    public static final int defaultTimeout = 500;
+    public static final int defaultTimeout = 100;
     public static final int minTimeout     = 10;
-    public static final int maxTimeout     = 5000;
+    public static final int maxTimeout     = 500;
 
     public static int getTimeout()
     {
@@ -73,6 +75,26 @@ public class ItemSelector
             currentInventory = mc.thePlayer.inventory.mainInventory.clone();
         }
 
+        int memory = slotMemory[currentSlot];
+
+        for (int i = 0; i < 28; i++)
+        {
+            if (direction == prevDirection || prevDirection == 0)
+                memory += direction;
+
+            if (memory < 9 || memory >= 36)
+                memory = direction == 1
+                        ? 9 : 35;
+
+            if (currentInventory[memory] != null)
+            {
+                targetSlot = memory;
+                break;
+            }
+        }
+
+        slotMemory[currentSlot] = targetSlot;
+
         prevDirection = direction;
         ticksToShow   = timeout;
         selecting     = true;
@@ -103,18 +125,13 @@ public class ItemSelector
         int invWidth     = 182;
         int invHeight    = 22 * 3;
         int originX      = (screenWidth / 2) - (invWidth / 2);
-        int originZ      = screenHeight - invHeight - 32;
+        int originZ      = screenHeight - invHeight - 48;
+
+        String labelText   = currentInventory[targetSlot].getDisplayName();
+        int    labelWidth  = mc.fontRenderer.getStringWidth(labelText);
+        mc.fontRenderer.drawString(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRenderer.FONT_HEIGHT - 2, 0xFFFFAA00, true);
 
         GL11.glEnable(GL11.GL_BLEND);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
-        mc.getTextureManager().bindTexture(widgetTexture);
-
-        // Draws the inventory background
-        for (int i = 0; i < 3; i++)
-            mc.ingameGUI.drawTexturedModalRect(originX, originZ + (i * 22), 0, 0, 182, 22);
-
-        // Draws the selection
-        mc.ingameGUI.drawTexturedModalRect(originX - 1 + (1 * 20), originZ - 1, 0, 22, 24, 22);
         GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
         RenderHelper.enableGUIStandardItemLighting();
 
@@ -122,6 +139,14 @@ public class ItemSelector
         for (int z = 0; z < 3; z++)
         for (int x = 0; x < 9; x++)
         {
+            // Draws the selection
+            if (idx + 9 == targetSlot)
+            {
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
+                mc.getTextureManager().bindTexture(widgetTexture);
+                mc.ingameGUI.drawTexturedModalRect(originX + (x * 20) - 1, originZ + (z * 22) - 1, 0, 22, 24, 24);
+            }
+
             ItemStack itemStack = currentInventory[idx + 9];
 
             if (itemStack != null)
@@ -162,11 +187,22 @@ public class ItemSelector
     static void selectItem()
     {
         // Check if what was actually selected still exists in player's inventory
+        if (mc.thePlayer.inventory.mainInventory[targetSlot] != null)
+        {
+            EntityClientPlayerMP player     = mc.thePlayer;
+            PlayerControllerMP   controller = mc.playerController;
+
+            controller.windowClick(player.inventoryContainer.windowId, currentSlot + 36, 0, 0, player);
+            controller.windowClick(player.inventoryContainer.windowId, targetSlot, 0, 0, player);
+            controller.windowClick(player.inventoryContainer.windowId, currentSlot + 36, 0, 0, player);
+        }
+
         done();
     }
 
     static void done()
     {
+        targetSlot       = 0;
         currentSlot      = 0;
         currentInventory = null;
 
