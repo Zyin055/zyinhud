@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.EXTRescaleNormal;
 import org.lwjgl.opengl.GL11;
 
@@ -95,14 +96,25 @@ public class ItemSelector
             return;
 
         ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+        ResourceLocation widgetTexture    = new ResourceLocation("textures/gui/widgets.png");
+
         int screenWidth  = scaledresolution.getScaledWidth();
         int screenHeight = scaledresolution.getScaledHeight();
-        int invWidth     = 20 * 9;
-        int invHeight    = 20 * 3;
+        int invWidth     = 182;
+        int invHeight    = 22 * 3;
         int originX      = (screenWidth / 2) - (invWidth / 2);
         int originZ      = screenHeight - invHeight - 32;
 
         GL11.glEnable(GL11.GL_BLEND);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
+        mc.getTextureManager().bindTexture(widgetTexture);
+
+        // Draws the inventory background
+        for (int i = 0; i < 3; i++)
+            mc.ingameGUI.drawTexturedModalRect(originX, originZ + (i * 22), 0, 0, 182, 22);
+
+        // Draws the selection
+        mc.ingameGUI.drawTexturedModalRect(originX - 1 + (1 * 20), originZ - 1, 0, 22, 24, 22);
         GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
         RenderHelper.enableGUIStandardItemLighting();
 
@@ -115,8 +127,8 @@ public class ItemSelector
             if (itemStack != null)
             {
                 float anim = itemStack.animationsToGo - partialTicks;
-                int   dimX = originX + (x * 20);
-                int   dimZ = originZ + (z * 20);
+                int   dimX = originX + (x * 20) + 3;
+                int   dimZ = originZ + (z * 22) + 3;
 
                 if (anim > 0.0F)
                 {
