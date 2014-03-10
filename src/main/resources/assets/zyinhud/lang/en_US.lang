@@ -142,6 +142,9 @@ weaponswapper.noweaponsinhotbar=No weapons in hotbar
 weaponswapper.options.scanhotbarforweaponsfromlefttoright=Search Hotbar Left to Right:
 
 itemselector.name=Item Selector
+itemselector.error.emptyslot=That slot no longer has an item
+itemselector.error.enchant=Unable to swap enchanted items
+itemselector.error.empty=Inventory has no selectable items
 itemselector.options.ticks=Ticks until confirm:
 
 quickdeposit.name=Quick Deposit

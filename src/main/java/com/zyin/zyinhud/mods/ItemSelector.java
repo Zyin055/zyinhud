@@ -1,5 +1,6 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.util.Localization;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
@@ -39,7 +40,7 @@ public class ItemSelector
     }
 
     protected static int timeout;
-    public static final int defaultTimeout = 100;
+    public static final int defaultTimeout = 75;
     public static final int minTimeout     = 10;
     public static final int maxTimeout     = 500;
 
@@ -53,12 +54,11 @@ public class ItemSelector
         timeout = MathHelper.clamp_int(value, minTimeout, maxTimeout);
     }
 
-    static int[]   slotMemory    = new int[9];
-    static int     prevDirection = 0;
-    static int     ticksToShow   = 0;
+    static int[] slotMemory    = new int[9];
+    static int   ticksToShow   = 0;
 
     static boolean     selecting        = false;
-    static int         targetSlot       = 0;
+    static int         targetSlot       = -1;
     static int         currentSlot      = 0;
     static ItemStack[] currentInventory = null;
 
@@ -75,27 +75,39 @@ public class ItemSelector
             currentInventory = mc.thePlayer.inventory.mainInventory.clone();
         }
 
+        if ( currentInventory[currentSlot] != null && currentInventory[currentSlot].isItemEnchanted() )
+        {
+            InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
+            done();
+            return;
+        }
+
         int memory = slotMemory[currentSlot];
 
-        for (int i = 0; i < 28; i++)
+        for (int i = 0; i < 36; i++)
         {
-            if (direction == prevDirection || prevDirection == 0)
-                memory += direction;
+            memory += direction;
 
             if (memory < 9 || memory >= 36)
-                memory = direction == 1
+                memory = direction == WHEEL_UP
                         ? 9 : 35;
 
-            if (currentInventory[memory] != null)
+            if ( currentInventory[memory] != null && !currentInventory[memory].isItemEnchanted() )
             {
                 targetSlot = memory;
                 break;
             }
         }
 
+        if (targetSlot == -1)
+        {
+            InfoLine.DisplayNotification( Localization.get("itemselector.error.empty") );
+            done();
+            return;
+        }
+
         slotMemory[currentSlot] = targetSlot;
 
-        prevDirection = direction;
         ticksToShow   = timeout;
         selecting     = true;
     }
@@ -131,7 +143,6 @@ public class ItemSelector
         int    labelWidth  = mc.fontRenderer.getStringWidth(labelText);
         mc.fontRenderer.drawString(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRenderer.FONT_HEIGHT - 2, 0xFFFFAA00, true);
 
-        GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
         RenderHelper.enableGUIStandardItemLighting();
 
@@ -142,9 +153,11 @@ public class ItemSelector
             // Draws the selection
             if (idx + 9 == targetSlot)
             {
+                GL11.glEnable(GL11.GL_BLEND);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
                 mc.getTextureManager().bindTexture(widgetTexture);
                 mc.ingameGUI.drawTexturedModalRect(originX + (x * 20) - 1, originZ + (z * 22) - 1, 0, 22, 24, 24);
+                GL11.glDisable(GL11.GL_BLEND);
             }
 
             ItemStack itemStack = currentInventory[idx + 9];
@@ -176,7 +189,6 @@ public class ItemSelector
         }
 
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL11.GL_BLEND);
         GL11.glDisable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
 
         ticksToShow--;
@@ -186,9 +198,19 @@ public class ItemSelector
 
     static void selectItem()
     {
+        ItemStack currentStack = mc.thePlayer.inventory.mainInventory[currentSlot];
+        ItemStack targetStack  = mc.thePlayer.inventory.mainInventory[targetSlot];
+
         // Check if what was actually selected still exists in player's inventory
-        if (mc.thePlayer.inventory.mainInventory[targetSlot] != null)
+        if (targetStack != null)
         {
+            if ( ( currentStack != null && currentStack.isItemEnchanted() ) || targetStack.isItemEnchanted() )
+            {
+                InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
+                done();
+                return;
+            }
+
             EntityClientPlayerMP player     = mc.thePlayer;
             PlayerControllerMP   controller = mc.playerController;
 
@@ -196,13 +218,15 @@ public class ItemSelector
             controller.windowClick(player.inventoryContainer.windowId, targetSlot, 0, 0, player);
             controller.windowClick(player.inventoryContainer.windowId, currentSlot + 36, 0, 0, player);
         }
+        else
+            InfoLine.DisplayNotification( Localization.get("itemselector.error.emptyslot") );
 
         done();
     }
 
     static void done()
     {
-        targetSlot       = 0;
+        targetSlot       = -1;
         currentSlot      = 0;
         currentInventory = null;
 
