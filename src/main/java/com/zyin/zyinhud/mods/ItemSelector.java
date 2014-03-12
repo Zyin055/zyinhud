@@ -242,16 +242,16 @@ public class ItemSelector
                 return;
             }
 
-            EntityClientPlayerMP player    = mc.thePlayer;
-            PlayerControllerMP  controller = mc.playerController;
+            EntityClientPlayerMP player     = mc.thePlayer;
+            PlayerControllerMP   controller = mc.playerController;
 
             int currentInvSlot = InventoryUtil.TranslateHotbarIndexToInventoryIndex(currentHotbarSlot);
 
-            controller.windowClick(player.inventoryContainer.windowId, currentInvSlot, 0, 0, player);
-            controller.windowClick(player.inventoryContainer.windowId, targetInvSlot, 0, 0, player);
-            controller.windowClick(player.inventoryContainer.windowId, currentInvSlot, 0, 0, player);
+            //controller.windowClick(player.inventoryContainer.windowId, currentInvSlot, 0, 0, player);
+            //controller.windowClick(player.inventoryContainer.windowId, targetInvSlot, 0, 0, player);
+            //controller.windowClick(player.inventoryContainer.windowId, currentInvSlot, 0, 0, player);
 
-            //InventoryUtil.Swap( InventoryUtil.TranslateHotbarIndexToInventoryIndex(currentHotbarSlot), targetInvSlot );
+            InventoryUtil.Swap(currentInvSlot, targetInvSlot);
         }
         else
             InfoLine.DisplayNotification( Localization.get("itemselector.error.emptyslot") );
