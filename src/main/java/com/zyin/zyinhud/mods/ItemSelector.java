@@ -3,7 +3,9 @@ package com.zyin.zyinhud.mods;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
@@ -229,7 +231,16 @@ public class ItemSelector
                 return;
             }
 
-            InventoryUtil.Swap( InventoryUtil.TranslateHotbarIndexToInventoryIndex(currentHotbarSlot), targetInvSlot );
+            EntityClientPlayerMP player    = mc.thePlayer;
+            PlayerControllerMP  controller = mc.playerController;
+
+            int currentInvSlot = InventoryUtil.TranslateHotbarIndexToInventoryIndex(currentHotbarSlot);
+
+            controller.windowClick(player.inventoryContainer.windowId, currentInvSlot, 0, 0, player);
+            controller.windowClick(player.inventoryContainer.windowId, targetInvSlot, 0, 0, player);
+            controller.windowClick(player.inventoryContainer.windowId, currentInvSlot, 0, 0, player);
+
+            //InventoryUtil.Swap( InventoryUtil.TranslateHotbarIndexToInventoryIndex(currentHotbarSlot), targetInvSlot );
         }
         else
             InfoLine.DisplayNotification( Localization.get("itemselector.error.emptyslot") );
