@@ -8,6 +8,7 @@ key.zyinhud.potionaid=Potion Aid
 key.zyinhud.quickdeposit=Quick Deposit
 key.zyinhud.safeoverlay=Safe Overlay
 key.zyinhud.weaponswapper=Weapon Swap
+key.zyinhud.itemselector=Item Selector
 key.zyinhud.zyinhudoptions=Zyin's HUD Options
 
 clock.name=Clock
@@ -138,7 +139,16 @@ safeoverlay.distance.default=default
 
 weaponswapper.name=Weapon Swapper
 weaponswapper.noweaponsinhotbar=No weapons in hotbar
-weaponswapper.options.scanhotbarforweaponsfromlefttoright=Search Hotbar Left to Right: 
+weaponswapper.options.scanhotbarforweaponsfromlefttoright=Search Hotbar Left to Right:
+
+itemselector.name=Item Selector
+itemselector.error.emptyslot=That slot no longer has an item
+itemselector.error.enchant=Unable to swap enchanted items on multiplayer
+itemselector.error.empty=Inventory has no selectable items
+itemselector.options.ticks=Ticks until timeout:
+itemselector.options.selectionmode=Selection mode:
+itemselector.mode.0=All
+itemselector.mode.1=Same Column
 
 quickdeposit.name=Quick Deposit
 quickdeposit.options.ignoreitemsinhotbar=Ignore Hotbar: 

@@ -1,5 +1,10 @@
 package com.zyin.zyinhud;
 
+import com.zyin.zyinhud.gui.GuiOptionsOverride;
+import com.zyin.zyinhud.helper.HUDEntityTrackerHelper;
+import com.zyin.zyinhud.helper.RenderEntityTrackerHelper;
+import com.zyin.zyinhud.mods.*;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiOptions;
@@ -7,17 +12,6 @@ import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-
-import com.zyin.zyinhud.gui.GuiOptionsOverride;
-import com.zyin.zyinhud.helper.HUDEntityTrackerHelper;
-import com.zyin.zyinhud.helper.RenderEntityTrackerHelper;
-import com.zyin.zyinhud.mods.AnimalInfo;
-import com.zyin.zyinhud.mods.DurabilityInfo;
-import com.zyin.zyinhud.mods.InfoLine;
-import com.zyin.zyinhud.mods.PotionTimers;
-import com.zyin.zyinhud.mods.SafeOverlay;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * This class is in charge of rendering things onto the HUD and into the game world.
@@ -42,6 +36,7 @@ public class ZyinHUDRenderer
             DurabilityInfo.RenderOntoHUD();
             PotionTimers.RenderOntoHUD();
             AnimalInfo.RenderOntoDebugMenu();
+            ItemSelector.RenderOntoHUD(event.partialTicks);
             HUDEntityTrackerHelper.RenderEntityInfo();	//calls other mods that need to render things on the HUD near entities
     	}
     	

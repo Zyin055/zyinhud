@@ -1,30 +1,13 @@
 package com.zyin.zyinhud;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
-import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
-import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
-import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
-import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
-import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
-import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
-
+import com.zyin.zyinhud.keyhandlers.*;
+import com.zyin.zyinhud.mods.ItemSelector;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
-import cpw.mods.fml.common.gameevent.InputEvent.MouseInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.event.MouseEvent;
 
 public class ZyinHUDKeyHandlers
 {
@@ -40,6 +23,7 @@ public class ZyinHUDKeyHandlers
     private KeyBinding key_quickDeposit = new KeyBinding(QuickDepositKeyHandler.HotkeyDescription, QuickDepositKeyHandler.Hotkey, ZyinHUD.MODNAME);
     private KeyBinding key_safeOverlay = new KeyBinding(SafeOverlayKeyHandler.HotkeyDescription, SafeOverlayKeyHandler.Hotkey, ZyinHUD.MODNAME);
     private KeyBinding key_weaponSwapper = new KeyBinding(WeaponSwapperKeyHandler.HotkeyDescription, WeaponSwapperKeyHandler.Hotkey, ZyinHUD.MODNAME);
+    private KeyBinding key_itemSelector = new KeyBinding(ItemSelectorKeyHandler.HotkeyDescription, ItemSelectorKeyHandler.Hotkey, ZyinHUD.MODNAME);
     private KeyBinding key_zyinHUDOptions = new KeyBinding(ZyinHUDOptionsKeyHandler.HotkeyDescription, ZyinHUDOptionsKeyHandler.Hotkey, ZyinHUD.MODNAME);
     
 	public ZyinHUDKeyHandlers()
@@ -54,6 +38,7 @@ public class ZyinHUDKeyHandlers
 		ClientRegistry.registerKeyBinding(key_quickDeposit);
 		ClientRegistry.registerKeyBinding(key_safeOverlay);
 		ClientRegistry.registerKeyBinding(key_weaponSwapper);
+		ClientRegistry.registerKeyBinding(key_itemSelector);
 		ClientRegistry.registerKeyBinding(key_zyinHUDOptions);
 	}
 
@@ -88,6 +73,13 @@ public class ZyinHUDKeyHandlers
 		else if(key_zyinHUDOptions.getIsKeyPressed())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
 	}
+
+    @SubscribeEvent
+    public void MouseEvent(MouseEvent event)
+    {
+        if (event.dwheel != 0)
+            ItemSelectorKeyHandler.MouseWheel( event, key_itemSelector.getIsKeyPressed() );
+    }
 	
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
@@ -96,5 +88,6 @@ public class ZyinHUDKeyHandlers
     	
     	QuickDepositKeyHandler.QuickDepositTickEvent(event);
     	CoordinatesKeyHandler.CoordinatesTickEvent(event);
+        ItemSelector.CheckModifierPressed( key_itemSelector.getIsKeyPressed() );
     }
 }
