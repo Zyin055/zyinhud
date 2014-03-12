@@ -55,7 +55,6 @@ public class InventoryUtil
 	 */
 
     private static Minecraft mc = Minecraft.getMinecraft();
-    private static PlayerControllerMP playerController = mc.playerController;
     private Timer timer = new Timer();
     
     /**
@@ -157,7 +156,7 @@ public class InventoryUtil
 
     	
     	ItemStack currentItemStack = mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem];
-    	playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, currentItemStack);
+    	mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, currentItemStack);
 
     	mc.thePlayer.inventory.currentItem = previouslySelectedHotbarSlotIndex;
         
@@ -194,7 +193,7 @@ public class InventoryUtil
 
 		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(currentItemInventoryIndex);
 		ItemStack itemStackToUse = slotToUse.getStack();
-        playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, itemStackToUse);
+        mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, itemStackToUse);
 
         instance.SwapWithDelay(itemSlotIndex, currentItemInventoryIndex, suggestedItemSwapDelay);
 
@@ -1170,7 +1169,7 @@ public class InventoryUtil
         if (itemIndex < 0 || itemIndex > 44)
         	return;
         
-        playerController.windowClick(
+        mc.playerController.windowClick(
         		mc.thePlayer.inventoryContainer.windowId,
         		itemIndex,
         		(rightClick) ? 1 : 0,
@@ -1191,7 +1190,7 @@ public class InventoryUtil
         
         try
         {
-        	playerController.windowClick(
+        	mc.playerController.windowClick(
         		mc.thePlayer.openContainer.windowId,
         		itemIndex,
         		(rightClick) ? 1 : 0,
