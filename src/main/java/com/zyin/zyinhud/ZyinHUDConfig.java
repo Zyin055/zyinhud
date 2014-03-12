@@ -502,12 +502,19 @@ public class ZyinHUDConfig
         else
             p.set(Keyboard.getKeyName(ItemSelectorKeyHandler.Hotkey));
 
-        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorTimeout", true);
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorTimeout", ItemSelector.defaultTimeout);
         p.comment = "Specifies how many ticks until the item selector confirms your choice and performs the item swap.";
         if(loadSettings)
-            ItemSelector.setTimeout( p.getInt(ItemSelector.defaultTimeout) );
+            ItemSelector.SetTimeout(p.getInt(ItemSelector.defaultTimeout));
         else
-            p.set( ItemSelector.getTimeout() );
+            p.set( ItemSelector.GetTimeout() );
+
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorMode", ItemSelector.MODE_ALL);
+        p.comment = "Specifies the selection mode when cycling through items.";
+        if(loadSettings)
+            ItemSelector.Mode = p.getInt(ItemSelector.MODE_ALL);
+        else
+            p.set( ItemSelector.Mode );
         
         
         //CATEGORY_FPS

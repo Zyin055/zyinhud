@@ -20,8 +20,11 @@ import org.lwjgl.opengl.GL11;
  */
 public class ItemSelector
 {
-    public static final int WHEEL_UP   = 1;
-    public static final int WHEEL_DOWN = -1;
+    public static final int WHEEL_UP   = -1;
+    public static final int WHEEL_DOWN = 1;
+
+    public static final int MODE_ALL    = 0;
+    public static final int MODE_COLUMN = 1;
 
     public static final RenderItem itemRenderer = new RenderItem();
 
@@ -40,17 +43,31 @@ public class ItemSelector
         return Enabled;
     }
 
+    public static int Mode = MODE_ALL;
+
+    public static int NumberOfModes = 2;
+
+    public static int CycleMode()
+    {
+        Mode++;
+
+        if (Mode >= NumberOfModes)
+            Mode = 0;
+
+        return Mode;
+    }
+
     protected static int timeout;
-    public static final int defaultTimeout = 100;
-    public static final int minTimeout     = 10;
+    public static final int defaultTimeout = 200;
+    public static final int minTimeout     = 50;
     public static final int maxTimeout     = 500;
 
-    public static int getTimeout()
+    public static int GetTimeout()
     {
         return timeout;
     }
 
-    public static void setTimeout(int value)
+    public static void SetTimeout(int value)
     {
         timeout = MathHelper.clamp_int(value, minTimeout, maxTimeout);
     }
@@ -86,13 +103,16 @@ public class ItemSelector
 
         int memory = slotMemory[currentHotbarSlot];
 
-        for (int i = 0; i < 28; i++)
+        for (int i = 0; i < 36; i++)
         {
             memory += direction;
 
             if (memory < 9 || memory >= 36)
-                memory = direction == WHEEL_UP
+                memory = direction == WHEEL_DOWN
                         ? 9 : 35;
+
+            if (Mode == MODE_COLUMN && memory % 9 != currentHotbarSlot)
+                continue;
 
             if (currentInventory[memory] == null)
                 continue;
@@ -115,15 +135,6 @@ public class ItemSelector
 
         ticksToShow   = timeout;
         selecting     = true;
-    }
-
-    /**
-     * Called when the player scrolls to another item without holding the modifier key. This will cancel any pending
-     * item select.
-     */
-    public static void OnItemSwitch()
-    {
-        done();
     }
 
     /**
@@ -212,7 +223,7 @@ public class ItemSelector
 
         ticksToShow--;
         if (ticksToShow <= 0)
-            selectItem();
+            done();
     }
 
     static void selectItem()

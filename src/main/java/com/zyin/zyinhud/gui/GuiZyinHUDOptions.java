@@ -487,7 +487,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         Y += buttonHeight + buttonSpacing;
         buttonList.add(new GuiItemSelectorHotkeyButton(1702, buttonX_column1, Y, buttonWidth_half, buttonHeight, Keyboard.getKeyName(ItemSelectorKeyHandler.Hotkey)));
         Y += buttonHeight + buttonSpacing;
-        buttonList.add(new GuiNumberSlider(1703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.getTimeout(), true ));
+        buttonList.add(new GuiNumberSlider(1703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), true ));
+        Y += buttonHeight + buttonSpacing;
+        buttonList.add(new GuiButton(1704, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_ITEMSELECTOR, ItemSelector.Mode, ItemSelector.NumberOfModes)));
     }
     
     /**
@@ -1224,7 +1226,12 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
             else if (button.id == 1703)	//Ticks slider
             {
                 int value = ((GuiNumberSlider)button).GetValueAsInteger();
-                ItemSelector.setTimeout(value);
+                ItemSelector.SetTimeout(value);
+            }
+            else if (button.id == 1704)	//Mode
+            {
+                ItemSelector.CycleMode();
+                button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_ITEMSELECTOR, ItemSelector.Mode, ItemSelector.NumberOfModes);
             }
 
         }

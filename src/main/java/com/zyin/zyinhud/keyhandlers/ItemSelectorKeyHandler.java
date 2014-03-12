@@ -20,12 +20,10 @@ public class ItemSelectorKeyHandler
         if (mc.currentScreen != null || !ItemSelector.Enabled)
             return;
 
-        if (modifierPressed)
-        {
-            ItemSelector.Scroll(event.dwheel > 0 ? ItemSelector.WHEEL_UP : ItemSelector.WHEEL_DOWN);
-            event.setCanceled(true);
-        }
-        else
-            ItemSelector.OnItemSwitch();
+        if (!modifierPressed)
+            return;
+
+        ItemSelector.Scroll(event.dwheel > 0 ? ItemSelector.WHEEL_UP : ItemSelector.WHEEL_DOWN);
+        event.setCanceled(true);
     }
 }
