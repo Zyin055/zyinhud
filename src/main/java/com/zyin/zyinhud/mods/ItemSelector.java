@@ -1,10 +1,9 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
@@ -40,7 +39,7 @@ public class ItemSelector
     }
 
     protected static int timeout;
-    public static final int defaultTimeout = 75;
+    public static final int defaultTimeout = 100;
     public static final int minTimeout     = 10;
     public static final int maxTimeout     = 500;
 
@@ -57,10 +56,10 @@ public class ItemSelector
     static int[] slotMemory    = new int[9];
     static int   ticksToShow   = 0;
 
-    static boolean     selecting        = false;
-    static int         targetSlot       = -1;
-    static int         currentSlot      = 0;
-    static ItemStack[] currentInventory = null;
+    static boolean     selecting         = false;
+    static int         targetInvSlot     = -1;
+    static int         currentHotbarSlot = 0;
+    static ItemStack[] currentInventory  = null;
 
     /**
      * Scrolls the selector towards the specified direction. This will cause the item selector overlay to show.
@@ -71,20 +70,21 @@ public class ItemSelector
         // Bind to current player state
         if (currentInventory == null)
         {
-            currentSlot      = mc.thePlayer.inventory.currentItem;
+            currentHotbarSlot = mc.thePlayer.inventory.currentItem;
             currentInventory = mc.thePlayer.inventory.mainInventory.clone();
         }
 
-        if ( currentInventory[currentSlot] != null && currentInventory[currentSlot].isItemEnchanted() )
+        if ( !mc.isSingleplayer() )
+        if ( currentInventory[currentHotbarSlot] != null && currentInventory[currentHotbarSlot].isItemEnchanted() )
         {
             InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
             done();
             return;
         }
 
-        int memory = slotMemory[currentSlot];
+        int memory = slotMemory[currentHotbarSlot];
 
-        for (int i = 0; i < 36; i++)
+        for (int i = 0; i < 28; i++)
         {
             memory += direction;
 
@@ -92,32 +92,49 @@ public class ItemSelector
                 memory = direction == WHEEL_UP
                         ? 9 : 35;
 
-            if ( currentInventory[memory] != null && !currentInventory[memory].isItemEnchanted() )
-            {
-                targetSlot = memory;
-                break;
-            }
+            if (currentInventory[memory] == null)
+                continue;
+
+            if ( !mc.isSingleplayer() && currentInventory[memory].isItemEnchanted() )
+                continue;
+
+            targetInvSlot = memory;
+            break;
         }
 
-        if (targetSlot == -1)
+        if (targetInvSlot == -1)
         {
             InfoLine.DisplayNotification( Localization.get("itemselector.error.empty") );
             done();
             return;
         }
 
-        slotMemory[currentSlot] = targetSlot;
+        slotMemory[currentHotbarSlot] = targetInvSlot;
 
         ticksToShow   = timeout;
         selecting     = true;
     }
 
     /**
-     * Called when the player switches to another item. This will cancel any pending item select.
+     * Called when the player scrolls to another item without holding the modifier key. This will cancel any pending
+     * item select.
      */
     public static void OnItemSwitch()
     {
         done();
+    }
+
+    /**
+     * Tick event that checks if selection is ongoing and the modifier key gets de-pressed
+     * @param pressed
+     */
+    public static void CheckModifierPressed(boolean pressed)
+    {
+        if (!Enabled)
+            return;
+
+        if (selecting && !pressed)
+            selectItem();
     }
 
     /**
@@ -139,7 +156,7 @@ public class ItemSelector
         int originX      = (screenWidth / 2) - (invWidth / 2);
         int originZ      = screenHeight - invHeight - 48;
 
-        String labelText   = currentInventory[targetSlot].getDisplayName();
+        String labelText   = currentInventory[targetInvSlot].getDisplayName();
         int    labelWidth  = mc.fontRenderer.getStringWidth(labelText);
         mc.fontRenderer.drawString(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRenderer.FONT_HEIGHT - 2, 0xFFFFAA00, true);
 
@@ -151,7 +168,7 @@ public class ItemSelector
         for (int x = 0; x < 9; x++)
         {
             // Draws the selection
-            if (idx + 9 == targetSlot)
+            if (idx + 9 == targetInvSlot)
             {
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
@@ -198,12 +215,13 @@ public class ItemSelector
 
     static void selectItem()
     {
-        ItemStack currentStack = mc.thePlayer.inventory.mainInventory[currentSlot];
-        ItemStack targetStack  = mc.thePlayer.inventory.mainInventory[targetSlot];
+        ItemStack currentStack = mc.thePlayer.inventory.mainInventory[currentHotbarSlot];
+        ItemStack targetStack  = mc.thePlayer.inventory.mainInventory[targetInvSlot];
 
         // Check if what was actually selected still exists in player's inventory
         if (targetStack != null)
         {
+            if ( !mc.isSingleplayer() )
             if ( ( currentStack != null && currentStack.isItemEnchanted() ) || targetStack.isItemEnchanted() )
             {
                 InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
@@ -211,12 +229,7 @@ public class ItemSelector
                 return;
             }
 
-            EntityClientPlayerMP player     = mc.thePlayer;
-            PlayerControllerMP   controller = mc.playerController;
-
-            controller.windowClick(player.inventoryContainer.windowId, currentSlot + 36, 0, 0, player);
-            controller.windowClick(player.inventoryContainer.windowId, targetSlot, 0, 0, player);
-            controller.windowClick(player.inventoryContainer.windowId, currentSlot + 36, 0, 0, player);
+            InventoryUtil.Swap( InventoryUtil.TranslateHotbarIndexToInventoryIndex(currentHotbarSlot), targetInvSlot );
         }
         else
             InfoLine.DisplayNotification( Localization.get("itemselector.error.emptyslot") );
@@ -226,13 +239,14 @@ public class ItemSelector
 
     static void done()
     {
-        targetSlot       = -1;
-        currentSlot      = 0;
-        currentInventory = null;
+        targetInvSlot     = -1;
+        currentHotbarSlot = 0;
+        currentInventory  = null;
 
         ticksToShow = 0;
         selecting   = false;
     }
+
 
 
 }

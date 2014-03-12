@@ -1,6 +1,7 @@
 package com.zyin.zyinhud;
 
 import com.zyin.zyinhud.keyhandlers.*;
+import com.zyin.zyinhud.mods.ItemSelector;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -87,5 +88,6 @@ public class ZyinHUDKeyHandlers
     	
     	QuickDepositKeyHandler.QuickDepositTickEvent(event);
     	CoordinatesKeyHandler.CoordinatesTickEvent(event);
+        ItemSelector.CheckModifierPressed( key_itemSelector.getIsKeyPressed() );
     }
 }
