@@ -1,44 +1,18 @@
 package com.zyin.zyinhud.gui;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.zyin.zyinhud.ZyinHUD;
 import com.zyin.zyinhud.ZyinHUDConfig;
 import com.zyin.zyinhud.gui.buttons.GuiHotkeyButton;
 import com.zyin.zyinhud.gui.buttons.GuiNumberSlider;
-import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
-import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
-import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
-import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
-import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
-import com.zyin.zyinhud.mods.AnimalInfo;
-import com.zyin.zyinhud.mods.Clock;
-import com.zyin.zyinhud.mods.Compass;
-import com.zyin.zyinhud.mods.Coordinates;
-import com.zyin.zyinhud.mods.DistanceMeasurer;
-import com.zyin.zyinhud.mods.DurabilityInfo;
-import com.zyin.zyinhud.mods.EatingAid;
-import com.zyin.zyinhud.mods.EnderPearlAid;
-import com.zyin.zyinhud.mods.Fps;
+import com.zyin.zyinhud.keyhandlers.*;
+import com.zyin.zyinhud.mods.*;
 import com.zyin.zyinhud.mods.HealthMonitor;
-import com.zyin.zyinhud.mods.InfoLine;
-import com.zyin.zyinhud.mods.PlayerLocator;
-import com.zyin.zyinhud.mods.PotionAid;
-import com.zyin.zyinhud.mods.PotionTimers;
-import com.zyin.zyinhud.mods.QuickDeposit;
-import com.zyin.zyinhud.mods.SafeOverlay;
-import com.zyin.zyinhud.mods.WeaponSwapper;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 /**
  * This is the options GUI which is used to change any configurable setting while in game.
@@ -96,7 +70,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		Localization.get("potionaid.name"),
     		Localization.get("weaponswapper.name"),
     		Localization.get("quickdeposit.name"),
-    		Localization.get("healthmonitor.name")
+    		Localization.get("itemselector.name")
+            Localization.get("healthmonitor.name")};
     		};
     
     protected int[] tabbedButtonIDs = {
@@ -116,7 +91,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		1400,
     		1500,
     		1600,
-    		1800};
+    		1700,
+            	1800};
     
     /** The current tab page. It is 0 indexed. */
     protected static int tabbedPage = 0;
@@ -513,6 +489,18 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1610, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
     }
+    private void DrawItemSelectorButtons()
+    {
+        int Y = buttonY;
+        buttonList.add(new GuiButton(1701, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(ItemSelector.Enabled)));
+        Y += buttonHeight + buttonSpacing;
+        buttonList.add(new GuiHotkeyButton(1702, buttonX_column1, Y, buttonWidth_half, buttonHeight, ItemSelectorKeyHandler.HotkeyDescription));
+        Y += buttonHeight + buttonSpacing;
+        buttonList.add(new GuiNumberSlider(1703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), true ));
+        Y += buttonHeight + buttonSpacing;
+        buttonList.add(new GuiButton(1704, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_ITEMSELECTOR, ItemSelector.Mode, ItemSelector.NumberOfModes)));
+    }
+    
     private void DrawHealthMonitorButtoins()
     {
     	int Y = buttonY;
@@ -1145,6 +1133,30 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass);
 	            	break;
 	            	
+
+
+                /////////////////////////////////////////////////////////////////////////
+                // Item Selector
+                /////////////////////////////////////////////////////////////////////////
+                case 1700:
+                    screenTitle = Localization.get("itemselector.name");
+                    DrawItemSelectorButtons();
+                    break;
+                case 1701:  //Enabled/Disabled
+                    ItemSelector.ToggleEnabled();
+                    button.displayString = GetButtonLabel_Enabled(ItemSelector.Enabled);
+                    break;
+                case 1702:  //Hotkey
+                    HotkeyButtonClicked((GuiHotkeyButton)button);
+                    break;
+                case 1703:  //Ticks slider
+                    int itemSelectorTicks = ((GuiNumberSlider)button).GetValueAsInteger();
+                    ItemSelector.SetTimeout(itemSelectorTicks);
+                    break;
+                case 1704:  //Mode
+                    ItemSelector.CycleMode();
+                    button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_ITEMSELECTOR, ItemSelector.Mode, ItemSelector.NumberOfModes);
+                    break;
 	            	
 	            /////////////////////////////////////////////////////////////////////////
 	            // Health Monitor

@@ -1,25 +1,14 @@
 package com.zyin.zyinhud;
 
-import net.minecraft.client.settings.KeyBinding;
-
-import org.lwjgl.input.Keyboard;
-
-import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
-import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
-import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
-import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
-import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
-import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
-
+import com.zyin.zyinhud.keyhandlers.*;
+import com.zyin.zyinhud.mods.ItemSelector;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.event.MouseEvent;
+import org.lwjgl.input.Keyboard;
 
 public class ZyinHUDKeyHandlers
 {
@@ -39,17 +28,18 @@ public class ZyinHUDKeyHandlers
      */
     public static final KeyBinding[] KEY_BINDINGS = 
 	{
-		new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("O"), 	ZyinHUD.MODNAME),	//[0]
-	    new KeyBinding(CoordinatesKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F1"), ZyinHUD.MODNAME),	//[1]
-	    new KeyBinding(DistanceMeasurerKeyHandler.HotkeyDescription,Keyboard.getKeyIndex("K"), 	ZyinHUD.MODNAME),	//[2]
-	    new KeyBinding(EatingAidKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("G"), 	ZyinHUD.MODNAME),	//[3]
-	    new KeyBinding(EnderPearlAidKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("C"), 	ZyinHUD.MODNAME),	//[4]
-	    new KeyBinding(PlayerLocatorKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("P"), 	ZyinHUD.MODNAME),	//[5]
-	    new KeyBinding(PotionAidKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("V"), 	ZyinHUD.MODNAME),	//[6]
-	    new KeyBinding(QuickDepositKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("X"), 	ZyinHUD.MODNAME),	//[7]
-	    new KeyBinding(SafeOverlayKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("L"), 	ZyinHUD.MODNAME),	//[8]
-	    new KeyBinding(WeaponSwapperKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F"), 	ZyinHUD.MODNAME),	//[9]
-	    new KeyBinding(ZyinHUDOptionsKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("Z"), 	ZyinHUD.MODNAME),	//[10]
+		new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("O"), 	   ZyinHUD.MODNAME),	//[0]
+	    new KeyBinding(CoordinatesKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F1"),    ZyinHUD.MODNAME),	//[1]
+	    new KeyBinding(DistanceMeasurerKeyHandler.HotkeyDescription,Keyboard.getKeyIndex("K"), 	   ZyinHUD.MODNAME),	//[2]
+	    new KeyBinding(EatingAidKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("G"), 	   ZyinHUD.MODNAME),	//[3]
+	    new KeyBinding(EnderPearlAidKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("C"), 	   ZyinHUD.MODNAME),	//[4]
+	    new KeyBinding(PlayerLocatorKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("P"), 	   ZyinHUD.MODNAME),	//[5]
+	    new KeyBinding(PotionAidKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("V"), 	   ZyinHUD.MODNAME),	//[6]
+	    new KeyBinding(QuickDepositKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("X"), 	   ZyinHUD.MODNAME),	//[7]
+	    new KeyBinding(SafeOverlayKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("L"), 	   ZyinHUD.MODNAME),	//[8]
+	    new KeyBinding(WeaponSwapperKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F"), 	   ZyinHUD.MODNAME),	//[9]
+	    new KeyBinding(ZyinHUDOptionsKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("Z"), 	   ZyinHUD.MODNAME),	//[10]
+	    new KeyBinding(ItemSelectorKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("LMENU"), ZyinHUD.MODNAME),	//[11]
 	};
     
     public static final ZyinHUDKeyHandlers instance = new ZyinHUDKeyHandlers();
@@ -91,15 +81,24 @@ public class ZyinHUDKeyHandlers
 		else if(KEY_BINDINGS[10].getIsKeyPressed())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
 	}
+
+    @SubscribeEvent
+    public void MouseEvent(MouseEvent event)
+    {
+        if ( event.dwheel != 0 && KEY_BINDINGS[11].getIsKeyPressed() )
+            ItemSelectorKeyHandler.MouseWheel(event);
+    }
 	
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
     {
     	//This to tick handler is to overcome the GuiScreen + KeyInputEvent limitation
     	
-		if(Keyboard.getEventKey() == KEY_BINDINGS[1].getKeyCode())
+		if (Keyboard.getEventKey() == KEY_BINDINGS[1].getKeyCode())
 	    	CoordinatesKeyHandler.ClientTickEvent(event);
 		else if(Keyboard.getEventKey() == KEY_BINDINGS[7].getKeyCode())
 			QuickDepositKeyHandler.ClientTickEvent(event);
+        else
+            ItemSelector.CheckModifierPressed( KEY_BINDINGS[11].getIsKeyPressed() );
     }
 }

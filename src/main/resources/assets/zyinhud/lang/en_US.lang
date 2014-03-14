@@ -9,6 +9,7 @@ key.zyinhud.quickdeposit=Quick Deposit
 key.zyinhud.safeoverlay=Safe Overlay
 key.zyinhud.weaponswapper=Weapon Swap
 key.zyinhud.zyinhudoptions=Zyin's HUD Options
+key.zyinhud.itemselector=Item Selector
 
 clock.name=Clock
 clock.options.mode.tooltip=_lStandard_r: Shows the current Minecraft time_p_lCountdown_r: Timer till the next day/night begins_p_lGraphic_r: Shows a Minecraft clock
@@ -172,4 +173,13 @@ quickdeposit.options.blacklistarrow=Arrows:
 quickdeposit.options.blacklistenderpearl=Ender Pearls: 
 quickdeposit.options.blacklistfood=Food: 
 quickdeposit.options.blacklistwaterbucket=Water Buckets: 
-quickdeposit.options.blacklistclockcompass=Clock/Compass: 
+quickdeposit.options.blacklistclockcompass=Clock/Compass:
+
+itemselector.name=Item Selector
+itemselector.error.emptyslot=That slot no longer has an item
+itemselector.error.enchant=Unable to swap enchanted items on multiplayer
+itemselector.error.empty=Inventory has no selectable items
+itemselector.options.ticks=Ticks until timeout:
+itemselector.options.selectionmode=Selection mode:
+itemselector.mode.0=All
+itemselector.mode.1=Same Column
