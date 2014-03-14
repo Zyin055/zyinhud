@@ -367,7 +367,7 @@ public class SafeOverlay
     	
     	return false;
     }
-
+    
 
     /**
      * Renders all unsafe areas around the player.

@@ -6,20 +6,17 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 
 import org.lwjgl.input.Keyboard;
 
+import com.zyin.zyinhud.ZyinHUDKeyHandlers;
 import com.zyin.zyinhud.mods.QuickDeposit;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class QuickDepositKeyHandler
 {
-    private static Minecraft mc = Minecraft.getMinecraft();
-    
-    public static String DefaultHotkeyString = "X";
-    public static int DefaultHotkey = Keyboard.getKeyIndex(DefaultHotkeyString);
-    public static int Hotkey = Keyboard.KEY_NONE;	//this is updated when the config file is loaded
     public static final String HotkeyDescription = "key.zyinhud.quickdeposit";
+    
+    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{
@@ -36,11 +33,11 @@ public class QuickDepositKeyHandler
     
     private static boolean keyDown = false;
     
-	public static void QuickDepositTickEvent(ClientTickEvent event)
+	public static void ClientTickEvent(ClientTickEvent event)
     {
     	if(mc.currentScreen instanceof GuiChest)
     	{
-    		if(Keyboard.getEventKey() == QuickDepositKeyHandler.Hotkey)
+    		if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[7].getKeyCode())
     		{
     			if(Keyboard.getEventKeyState())
     			{

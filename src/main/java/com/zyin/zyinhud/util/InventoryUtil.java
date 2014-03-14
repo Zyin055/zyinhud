@@ -4,26 +4,21 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.lwjgl.opengl.GL11;
-
-import com.zyin.zyinhud.mods.QuickDeposit;
-
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMerchant;
 import net.minecraft.client.gui.inventory.GuiBrewingStand;
 import net.minecraft.client.gui.inventory.GuiFurnace;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
+
+import com.zyin.zyinhud.mods.QuickDeposit;
 
 /**
  * Utility class to help with inventory management.
@@ -193,7 +188,7 @@ public class InventoryUtil
 
 		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(currentItemInventoryIndex);
 		ItemStack itemStackToUse = slotToUse.getStack();
-        mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, itemStackToUse);
+		mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, itemStackToUse);
 
         instance.SwapWithDelay(itemSlotIndex, currentItemInventoryIndex, suggestedItemSwapDelay);
 
@@ -906,7 +901,7 @@ public class InventoryUtil
 	 * @param itemClass example: ItemEnderPearl.class
 	 * @return 5-44, -1 if not found
 	 */
-	private static int GetItemIndexFromInventory(Class itemClass)
+	public static int GetItemIndexFromInventory(Class itemClass)
     {
 		List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
 
@@ -934,7 +929,7 @@ public class InventoryUtil
 	 * @param itemClass example: ItemEnderPearl.class
 	 * @return 36-44, -1 if not found
 	 */
-	private static int GetItemIndexFromHotbar(Class itemClass)
+	public static int GetItemIndexFromHotbar(Class itemClass)
     {
 		List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
 
@@ -970,7 +965,7 @@ public class InventoryUtil
         {
     		Slot slot = (Slot)inventorySlots.get(i);
 			ItemStack itemStack = slot.getStack();
-			if(itemStack != null)
+			if(itemStack == null)
 			{
                 return i;
 			}
@@ -1109,6 +1104,44 @@ public class InventoryUtil
 	public static int GetCurrentlySelectedItemInventoryIndex()
 	{
 		return TranslateHotbarIndexToInventoryIndex(mc.thePlayer.inventory.currentItem);
+	}
+	
+	
+	/**
+	 * Moves an armor the player is wearing into their inventory
+	 * @param armorSlotIndex index 0-3, 0 = boots, 1 = pants, 2 = armor, 3 = helm (0-3 index will be changed to 5-8 in this method)
+	 * @return
+	 */
+	public static boolean MoveArmorIntoPlayerInventory(int armorSlotIndex)
+	{
+		armorSlotIndex = (3-armorSlotIndex) + 5;	//parameter comes in as 0-3, we shift it to 5-8
+		int emptySlotIndex = GetFirstEmptyIndexInInventory();
+		
+		if(emptySlotIndex != -1)
+		{
+			System.out.println("swapping "+armorSlotIndex+" to "+emptySlotIndex);
+			return Swap(armorSlotIndex, emptySlotIndex);
+		}
+		
+		return false;
+	}
+	
+	
+	/**
+	 * Moves an item the player has selected (selected in the hotbar) to their inventory
+	 * @return
+	 */
+	public static boolean MoveHeldItemIntoPlayerInventory()
+	{
+		int heldItemSlotIndex = GetCurrentlySelectedItemInventoryIndex();
+		int emptySlotIndex = GetFirstEmptyIndexInInventory();
+		
+		if(emptySlotIndex != -1)
+		{
+			return Swap(heldItemSlotIndex, emptySlotIndex);
+		}
+		
+		return false;
 	}
 
 	

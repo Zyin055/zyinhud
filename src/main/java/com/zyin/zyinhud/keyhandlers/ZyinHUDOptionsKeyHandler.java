@@ -10,10 +10,6 @@ import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class ZyinHUDOptionsKeyHandler
 {
-    
-    public static String DefaultHotkeyString = "Z";	//Ctrl + Alt + Z
-    public static int DefaultHotkey = Keyboard.getKeyIndex(DefaultHotkeyString);
-    public static int Hotkey = Keyboard.KEY_NONE;	//this is updated when the config file is loaded
     public static final String HotkeyDescription = "key.zyinhud.zyinhudoptions";
 
     private static Minecraft mc = Minecraft.getMinecraft();

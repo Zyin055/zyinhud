@@ -1,45 +1,63 @@
 package com.zyin.zyinhud;
 
-import com.zyin.zyinhud.keyhandlers.*;
-import com.zyin.zyinhud.mods.ItemSelector;
+import net.minecraft.client.settings.KeyBinding;
+
+import org.lwjgl.input.Keyboard;
+
+import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
+import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
+import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
+import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
+import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
+import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
+import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
+import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.event.MouseEvent;
 
 public class ZyinHUDKeyHandlers
 {
+    /**
+     * An array of all of Zyin's HUD custom key bindings. Don't reorder them since they are referenced by their position in the array.<br><ul>
+     * <li>[0] Animal Info
+     * <li>[1] Coordinates
+     * <li>[2] Distance Measurer
+     * <li>[3] Eating Aid
+     * <li>[4] Ender Pearl Aid
+     * <li>[5] Player Locator
+     * <li>[6] Potion Aid
+     * <li>[7] Quick Deposit
+     * <li>[8] Safe Overlay
+     * <li>[9] Weapon Swapper
+     * <li>[10] Zyin's HUD Options
+     */
+    public static final KeyBinding[] KEY_BINDINGS = 
+	{
+		new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("O"), 	ZyinHUD.MODNAME),	//[0]
+	    new KeyBinding(CoordinatesKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F1"), ZyinHUD.MODNAME),	//[1]
+	    new KeyBinding(DistanceMeasurerKeyHandler.HotkeyDescription,Keyboard.getKeyIndex("K"), 	ZyinHUD.MODNAME),	//[2]
+	    new KeyBinding(EatingAidKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("G"), 	ZyinHUD.MODNAME),	//[3]
+	    new KeyBinding(EnderPearlAidKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("C"), 	ZyinHUD.MODNAME),	//[4]
+	    new KeyBinding(PlayerLocatorKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("P"), 	ZyinHUD.MODNAME),	//[5]
+	    new KeyBinding(PotionAidKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("V"), 	ZyinHUD.MODNAME),	//[6]
+	    new KeyBinding(QuickDepositKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("X"), 	ZyinHUD.MODNAME),	//[7]
+	    new KeyBinding(SafeOverlayKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("L"), 	ZyinHUD.MODNAME),	//[8]
+	    new KeyBinding(WeaponSwapperKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F"), 	ZyinHUD.MODNAME),	//[9]
+	    new KeyBinding(ZyinHUDOptionsKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("Z"), 	ZyinHUD.MODNAME),	//[10]
+	};
+    
     public static final ZyinHUDKeyHandlers instance = new ZyinHUDKeyHandlers();
 	
-	private KeyBinding key_animalInfo = new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, AnimalInfoKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_coordinates = new KeyBinding(CoordinatesKeyHandler.HotkeyDescription, CoordinatesKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_distanceMeasurer = new KeyBinding(DistanceMeasurerKeyHandler.HotkeyDescription, DistanceMeasurerKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_eatingAid = new KeyBinding(EatingAidKeyHandler.HotkeyDescription, EatingAidKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_enderPearlAid = new KeyBinding(EnderPearlAidKeyHandler.HotkeyDescription, EnderPearlAidKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_playerLocator = new KeyBinding(PlayerLocatorKeyHandler.HotkeyDescription, PlayerLocatorKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_potionAid = new KeyBinding(PotionAidKeyHandler.HotkeyDescription, PotionAidKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_quickDeposit = new KeyBinding(QuickDepositKeyHandler.HotkeyDescription, QuickDepositKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_safeOverlay = new KeyBinding(SafeOverlayKeyHandler.HotkeyDescription, SafeOverlayKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_weaponSwapper = new KeyBinding(WeaponSwapperKeyHandler.HotkeyDescription, WeaponSwapperKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_itemSelector = new KeyBinding(ItemSelectorKeyHandler.HotkeyDescription, ItemSelectorKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    private KeyBinding key_zyinHUDOptions = new KeyBinding(ZyinHUDOptionsKeyHandler.HotkeyDescription, ZyinHUDOptionsKeyHandler.Hotkey, ZyinHUD.MODNAME);
-    
 	public ZyinHUDKeyHandlers()
 	{
-		ClientRegistry.registerKeyBinding(key_animalInfo);
-		ClientRegistry.registerKeyBinding(key_coordinates);
-		ClientRegistry.registerKeyBinding(key_distanceMeasurer);
-		ClientRegistry.registerKeyBinding(key_eatingAid);
-		ClientRegistry.registerKeyBinding(key_enderPearlAid);
-		ClientRegistry.registerKeyBinding(key_playerLocator);
-		ClientRegistry.registerKeyBinding(key_potionAid);
-		ClientRegistry.registerKeyBinding(key_quickDeposit);
-		ClientRegistry.registerKeyBinding(key_safeOverlay);
-		ClientRegistry.registerKeyBinding(key_weaponSwapper);
-		ClientRegistry.registerKeyBinding(key_itemSelector);
-		ClientRegistry.registerKeyBinding(key_zyinHUDOptions);
+		for(KeyBinding keyBinding : KEY_BINDINGS)
+			ClientRegistry.registerKeyBinding(keyBinding);
 	}
 
 	@SubscribeEvent
@@ -49,45 +67,39 @@ public class ZyinHUDKeyHandlers
 		
 		//if 2 KeyBindings have the same hotkey, only 1 will be flagged as "pressed" in getIsKeyPressed(),
 		//which one ends up getting pressed in that scenario is undetermined
-		
-		if(key_animalInfo.getIsKeyPressed())
+
+		if(KEY_BINDINGS[0].getIsKeyPressed())
 			AnimalInfoKeyHandler.Pressed(event);
-		//else if(key_coordinates.getIsKeyPressed())
+		//else if(keyBindings[1].getIsKeyPressed())
 			//CoordinatesKeyHandler.Pressed(event);		//THIS WILL NOT FIRE ON A GuiScreen
-		else if(key_distanceMeasurer.getIsKeyPressed())
+		else if(KEY_BINDINGS[2].getIsKeyPressed())
 			DistanceMeasurerKeyHandler.Pressed(event);
-		else if(key_eatingAid.getIsKeyPressed())
+		else if(KEY_BINDINGS[3].getIsKeyPressed())
 			EatingAidKeyHandler.Pressed(event);
-		else if(key_enderPearlAid.getIsKeyPressed())
+		else if(KEY_BINDINGS[4].getIsKeyPressed())
 			EnderPearlAidKeyHandler.Pressed(event);
-		else if(key_playerLocator.getIsKeyPressed())
+		else if(KEY_BINDINGS[5].getIsKeyPressed())
 			PlayerLocatorKeyHandler.Pressed(event);
-		else if(key_potionAid.getIsKeyPressed())
+		else if(KEY_BINDINGS[6].getIsKeyPressed())
 			PotionAidKeyHandler.Pressed(event);
-		//else if(key_quickDeposit.getIsKeyPressed())
+		//else if(keyBindings[7].getIsKeyPressed())
 			//QuickDepositKeyHandler.Pressed(event);	//THIS WILL NOT FIRE ON A GuiScreen
-		else if(key_safeOverlay.getIsKeyPressed())
+		else if(KEY_BINDINGS[8].getIsKeyPressed())
 			SafeOverlayKeyHandler.Pressed(event);
-		else if(key_weaponSwapper.getIsKeyPressed())
+		else if(KEY_BINDINGS[9].getIsKeyPressed())
 			WeaponSwapperKeyHandler.Pressed(event);
-		else if(key_zyinHUDOptions.getIsKeyPressed())
+		else if(KEY_BINDINGS[10].getIsKeyPressed())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
 	}
-
-    @SubscribeEvent
-    public void MouseEvent(MouseEvent event)
-    {
-        if (event.dwheel != 0)
-            ItemSelectorKeyHandler.MouseWheel( event, key_itemSelector.getIsKeyPressed() );
-    }
 	
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
     {
     	//This to tick handler is to overcome the GuiScreen + KeyInputEvent limitation
     	
-    	QuickDepositKeyHandler.QuickDepositTickEvent(event);
-    	CoordinatesKeyHandler.CoordinatesTickEvent(event);
-        ItemSelector.CheckModifierPressed( key_itemSelector.getIsKeyPressed() );
+		if(Keyboard.getEventKey() == KEY_BINDINGS[1].getKeyCode())
+	    	CoordinatesKeyHandler.ClientTickEvent(event);
+		else if(Keyboard.getEventKey() == KEY_BINDINGS[7].getKeyCode())
+			QuickDepositKeyHandler.ClientTickEvent(event);
     }
 }

@@ -81,13 +81,29 @@ public class Compass
             
             if(renderCompassTextInMiddle)
             {
-            	String brackets = "[   ]";
+            	String brackets;
+            	int x;
+            	int x_padding;
+
+        		//the font spacing is different if we are rendering in Unicode
+            	if(mc.fontRenderer.getUnicodeFlag())
+            	{
+            		brackets = "[  ]";
+                	x = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
+                	x_padding = mc.fontRenderer.getStringWidth(brackets)/2 - 4;
+                	if(facing % 2 == 0)	//s,w,n,e
+                		x_padding += 2;
+            		
+            	}
+            	else
+            	{
+            		brackets = "[   ]";
+                	x = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
+                	x_padding = mc.fontRenderer.getStringWidth(brackets)/2 - 6;
+                	if(facing % 2 == 0)	//s,w,n,e
+                		x_padding += 3;
+            	}
             	
-            	int x = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
-            	int x_padding = mc.fontRenderer.getStringWidth(brackets)/2 - 6;
-            	
-            	if(facing % 2 == 0)	//s,w,n,e
-            		x_padding += 3;
             	
             	mc.fontRenderer.drawStringWithShadow(FontCodes.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
             	

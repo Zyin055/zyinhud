@@ -12,19 +12,15 @@ import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class SafeOverlayKeyHandler
 {
+    public static final String HotkeyDescription = "key.zyinhud.safeoverlay";
 
     private static Minecraft mc = Minecraft.getMinecraft();
-    
-    public static String DefaultHotkeyString = "L";
-    public static int DefaultHotkey = Keyboard.getKeyIndex(DefaultHotkeyString);
-    public static int Hotkey = Keyboard.KEY_NONE;	//this is updated when the config file is loaded
-    public static final String HotkeyDescription = "key.zyinhud.safeoverlay";
 
     /**
      * Since we enable this key handler to repeat when the user holds the key down, we
      * want to be able to execute some code only on the initial key press.
      */
-    //private static boolean isFirstKeypress = true;	//TODO 1.6 need an OnKeyUp event for this...
+    //private static boolean isFirstKeypress = true;	//TODO 1.7 need an OnKeyUp event for this...
     
 	public static void Pressed(KeyInputEvent event) 
 	{

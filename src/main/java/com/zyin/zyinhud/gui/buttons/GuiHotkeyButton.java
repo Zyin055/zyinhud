@@ -1,28 +1,39 @@
 package com.zyin.zyinhud.gui.buttons;
 
-import org.lwjgl.input.Keyboard;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.settings.KeyBinding;
-import com.zyin.zyinhud.ZyinHUD;
+
+import org.lwjgl.input.Keyboard;
+
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 /**
- * Abstract class that is used for other mods to help implement their hotkey buttons.
+ * A button used to change Minecraft's key bindings
  */
-public abstract class GuiHotkeyButton extends GuiButton
+public class GuiHotkeyButton extends GuiButton
 {
 	protected static Minecraft mc = Minecraft.getMinecraft();
-    private boolean waitingForHotkeyInput;
-	private String hotkey;
+    protected boolean waitingForHotkeyInput = false;
+    protected String hotkey;	//E.x.: "P"
+    protected String hotkeyDescription;	//E.x.: "key.zyinhud.somemod"
 	
-	public GuiHotkeyButton(int id, int x, int y, int width, int height, String hotkey)
+	/**
+	 * 
+	 * @param id
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param hotkeyDescription This should be the same string used in the localization file, E.x.: "key.zyinhud.somemod"
+	 */
+	public GuiHotkeyButton(int id, int x, int y, int width, int height, String hotkeyDescription)
 	{
-		super(id, x, y, width, height, Localization.get("gui.options.hotkey") + hotkey);
-		waitingForHotkeyInput = false;
-		this.hotkey = hotkey;
+		super(id, x, y, width, height, "");
+		this.hotkeyDescription = hotkeyDescription;
+		this.hotkey = GetHotkey();
+		UpdateDisplayString();
 	}
 	
 	/**
@@ -48,7 +59,7 @@ public abstract class GuiHotkeyButton extends GuiButton
     	if(waitingForHotkeyInput)
     		displayString = Localization.get("gui.options.hotkey") + FontCodes.WHITE + "> " + FontCodes.YELLOW + "??? " + FontCodes.WHITE + "<";
     	else
-    		displayString = Localization.get("gui.options.hotkey") + hotkey;
+    		displayString = Localization.get("gui.options.hotkey") + GetHotkey();
 		
 	}
 	
@@ -70,8 +81,10 @@ public abstract class GuiHotkeyButton extends GuiButton
         KeyBinding[] keyBindings = mc.gameSettings.keyBindings;
         for(int i = 0; i < keyBindings.length; i++)
         {
+    		System.out.println(keyBindings[i].getKeyDescription() + " -- " + hotkeyDescription);
         	if(keyBindings[i].getKeyDescription().equals(hotkeyDescription))
         	{
+        		System.out.println("FOUND!");
         		return keyBindings[i];
         	}
         }
@@ -79,7 +92,8 @@ public abstract class GuiHotkeyButton extends GuiButton
 	}
 	
 	/**
-	 * Sets the mod's hotkey to the given parameter, and also updates Minecraft's keybinding.
+	 * Called when a key is pressed on the GuiZyinHUDOptions screen.
+	 * Updates Minecraft's keybinding.
 	 * @param newHotkey e.x. 37 (K), 1 (Esc), 55 (*)
 	 */
 	public void ApplyHotkey(int newHotkey)
@@ -87,7 +101,7 @@ public abstract class GuiHotkeyButton extends GuiButton
 		waitingForHotkeyInput = false;
 		hotkey = Keyboard.getKeyName(newHotkey);
 		
-		SetHotkey(hotkey);
+		//SetHotkey(hotkey);
 		UpdateDisplayString();
 		
 		//update key binding in Minecraft
@@ -99,16 +113,49 @@ public abstract class GuiHotkeyButton extends GuiButton
         }
 	}
 	
+	
+	
+	/**
+	 * Searches Minecraft's key bindings to get the hotkey based on the hotkey description, then caches the result for future use.
+	 * @return
+	 */
+	public String GetHotkey()
+	{
+		if(hotkey == null)
+		{
+			//get key binding in Minecraft
+	        KeyBinding keyBinding = FindKeyBinding(GetHotkeyDescription());
+	        if(keyBinding != null)
+	        {
+	        	SetHotkey(hotkey);
+	        	return Keyboard.getKeyName(keyBinding.getKeyCode());
+	        }
+	        else
+	        {
+	        	return "?";
+	        }
+		}
+		else
+			return hotkey;
+	}
+	
+	
 	/**
 	 * Sets the mods hotkey
 	 * @param hotkey the new hotkey to use
 	 */
-	protected abstract void SetHotkey(String hotkey);
+	protected void SetHotkey(String hotkey)
+	{
+		this.hotkey = hotkey;
+	}
 	
 	/**
 	 * Gets the description for the mods hotkey
 	 * @return
 	 */
-	protected abstract String GetHotkeyDescription();
-	
+	protected String GetHotkeyDescription()
+	{
+		System.out.println("GetHotkeyDescription() returning " +hotkeyDescription);
+		return hotkeyDescription;
+	}
 }

@@ -1,12 +1,39 @@
 package com.zyin.zyinhud;
 
-import com.zyin.zyinhud.keyhandlers.*;
-import com.zyin.zyinhud.mods.*;
+import java.io.File;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
 import org.lwjgl.input.Keyboard;
 
-import java.io.File;
+import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
+import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
+import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
+import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
+import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
+import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
+import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
+import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
+import com.zyin.zyinhud.mods.AnimalInfo;
+import com.zyin.zyinhud.mods.Clock;
+import com.zyin.zyinhud.mods.Compass;
+import com.zyin.zyinhud.mods.Coordinates;
+import com.zyin.zyinhud.mods.DistanceMeasurer;
+import com.zyin.zyinhud.mods.DurabilityInfo;
+import com.zyin.zyinhud.mods.EatingAid;
+import com.zyin.zyinhud.mods.EnderPearlAid;
+import com.zyin.zyinhud.mods.Fps;
+import com.zyin.zyinhud.mods.InfoLine;
+import com.zyin.zyinhud.mods.PlayerLocator;
+import com.zyin.zyinhud.mods.PotionAid;
+import com.zyin.zyinhud.mods.PotionTimers;
+import com.zyin.zyinhud.mods.QuickDeposit;
+import com.zyin.zyinhud.mods.SafeOverlay;
+import com.zyin.zyinhud.mods.WeaponSwapper;
 
 /**
  * This class is responsible for interacting with the configuration file.
@@ -25,7 +52,6 @@ public class ZyinHUDConfig
     public static final String CATEGORY_PLAYERLOCATOR = "playerlocator";
     public static final String CATEGORY_EATINGAID = "eatingaid";
     public static final String CATEGORY_WEAPONSWAP = "weaponswap";
-    public static final String CATEGORY_ITEMSELECTOR = "itemselector";
     public static final String CATEGORY_FPS = "fps";
     public static final String CATEGORY_ANIMALINFO = "horseinfo";
     public static final String CATEGORY_ENDERPEARLAID = "enderpearlaid";
@@ -82,7 +108,6 @@ public class ZyinHUDConfig
         config.addCustomCategoryComment(CATEGORY_PLAYERLOCATOR, "Player Locator gives you a radar-like ability to easily see where other people are.");
         config.addCustomCategoryComment(CATEGORY_EATINGAID, "Eating Aid makes eating food quick and easy.");
         config.addCustomCategoryComment(CATEGORY_WEAPONSWAP, "Weapon Swap allows you to quickly select your sword and bow.");
-        config.addCustomCategoryComment(CATEGORY_ITEMSELECTOR, "Item Selector allows you to conveniently swap your currently selected hotbar item with something in your inventory.");
         config.addCustomCategoryComment(CATEGORY_FPS, "FPS shows your frames per second without having to go into the F3 menu.");
         config.addCustomCategoryComment(CATEGORY_ANIMALINFO, "Animal Info gives you information about horse stats, such as speed and jump height.");
         config.addCustomCategoryComment(CATEGORY_ENDERPEARLAID, "Ender Pearl Aid makes it easier to quickly throw ender pearls.");
@@ -92,12 +117,6 @@ public class ZyinHUDConfig
         
         
         //CATEGORY_MISC
-        p = config.get(CATEGORY_MISC, "OptionsHotkey", ZyinHUDOptionsKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + ZyinHUDOptionsKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	ZyinHUDOptionsKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(ZyinHUDOptionsKeyHandler.Hotkey));
         
 
         //CATEGORY_INFOLINE
@@ -146,13 +165,6 @@ public class ZyinHUDConfig
         else
         	p.set(Coordinates.Enabled);
         
-        p = config.get(CATEGORY_COORDINATES, "CoordinatesHotkey", CoordinatesKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + CoordinatesKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	CoordinatesKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(CoordinatesKeyHandler.Hotkey));
-        
         p = config.get(CATEGORY_COORDINATES, "UseYCoordinateColors", true);
         p.comment = "Color code the Y (height) coordinate based on what ores can spawn at that level.";
         if(loadSettings)
@@ -161,7 +173,7 @@ public class ZyinHUDConfig
         	p.set(Coordinates.UseYCoordinateColors);
         
         p = config.get(CATEGORY_COORDINATES, "CoordinatesChatStringFormat", Coordinates.DefaultChatStringFormat);
-        p.comment = "The format used when sending your coordiantes in a chat message by pressing '" + CoordinatesKeyHandler.Hotkey + "'. {x}{y}{z} are replaced with actual coordiantes.";
+        p.comment = "The format used when sending your coordiantes in a chat message by pressing '" + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[1].getKeyCode()) + "'. {x}{y}{z} are replaced with actual coordiantes.";
         if(loadSettings)
         	Coordinates.ChatStringFormat = p.getString();
         else
@@ -193,13 +205,6 @@ public class ZyinHUDConfig
         	DistanceMeasurer.Enabled = p.getBoolean(true);
         else
         	p.set(DistanceMeasurer.Enabled);
-        
-        p = config.get(CATEGORY_DISTANCEMEASURER, "DistanceMeasurerHotkey", DistanceMeasurerKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + DistanceMeasurerKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	DistanceMeasurerKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(DistanceMeasurerKeyHandler.Hotkey));
         
         
         //CATEGORY_DURABILITYINFO
@@ -266,6 +271,20 @@ public class ZyinHUDConfig
         else
         	p.set(DurabilityInfo.GetVerticalLocation());
         
+        p = config.get(CATEGORY_DURABILITYINFO, "AutoUnequipArmor", true);
+        p.comment = "Enable/Disable automatically unequipping armor before it breaks.";
+        if(loadSettings)
+        	DurabilityInfo.AutoUnequipArmor = p.getBoolean(true);
+        else
+        	p.set(DurabilityInfo.AutoUnequipArmor);
+        
+        p = config.get(CATEGORY_DURABILITYINFO, "AutoUnequipTools", true);
+        p.comment = "Enable/Disable automatically unequipping tools before they breaks.";
+        if(loadSettings)
+        	DurabilityInfo.AutoUnequipTools = p.getBoolean(true);
+        else
+        	p.set(DurabilityInfo.AutoUnequipTools);
+        
         
         //CATEGORY_SAFEOVERLAY
         p = config.get(CATEGORY_SAFEOVERLAY, "EnableSafeOverlay", true);
@@ -284,15 +303,10 @@ public class ZyinHUDConfig
         else
         	p.set(SafeOverlay.Mode);
         
-        p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayHotkey", SafeOverlayKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + SafeOverlayKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	SafeOverlayKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(SafeOverlayKeyHandler.Hotkey));
-        
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayDrawDistance", 20);
-        p.comment = "How far away unsafe spots should be rendered around the player measured in blocks. This can be changed in game with - + "+SafeOverlayKeyHandler.DefaultHotkey+" and + + "+SafeOverlayKeyHandler.DefaultHotkey+".";
+        p.comment = "How far away unsafe spots should be rendered around the player measured in blocks. This can be changed in game with - + "
+        			+ Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode())+" and + + "
+        			+ Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode())+".";
         if(loadSettings)
         	SafeOverlay.instance.setDrawDistance(p.getInt(20));
         else
@@ -313,7 +327,7 @@ public class ZyinHUDConfig
         	p.set(SafeOverlay.instance.getDisplayInNether());
         
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlaySeeThroughWalls", false);
-        p.comment = "Enable/Disable showing unsafe areas through walls. Toggle in game with Ctrl + "+SafeOverlayKeyHandler.DefaultHotkey+".";
+        p.comment = "Enable/Disable showing unsafe areas through walls. Toggle in game with Ctrl + "+Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode())+".";
         if(loadSettings)
         	SafeOverlay.instance.setSeeUnsafePositionsThroughWalls(p.getBoolean(false));
         else
@@ -389,13 +403,6 @@ public class ZyinHUDConfig
         else
         	p.set(PlayerLocator.Mode);
         
-        p = config.get(CATEGORY_PLAYERLOCATOR, "PlayerLocatorHotkey", PlayerLocatorKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + PlayerLocatorKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	PlayerLocatorKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(PlayerLocatorKeyHandler.Hotkey));
-        
         p = config.get(CATEGORY_PLAYERLOCATOR, "ShowDistanceToPlayers", false);
         p.comment = "Show how far away you are from the other players next to their name.";
         if(loadSettings)
@@ -420,18 +427,12 @@ public class ZyinHUDConfig
         
         //CATEGORY_EATINGAID
         p = config.get(CATEGORY_EATINGAID, "EnableEatingAid", true);
-        p.comment = "Enables pressing a hotkey (default="+EatingAidKeyHandler.DefaultHotkey+") to eat food even if it is  in your inventory and not your hotbar.";
+        p.comment = "Enables pressing " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[3].getKeyCode())
+        			+ " to eat food even if it is  in your inventory and not your hotbar.";
         if(loadSettings)
         	EatingAid.Enabled = p.getBoolean(true);
         else
         	p.set(EatingAid.Enabled);
-        
-        p = config.get(CATEGORY_EATINGAID, "EatingAidHotkey", EatingAidKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + EatingAidKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	EatingAidKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(EatingAidKeyHandler.Hotkey));
         
         p = config.get(CATEGORY_EATINGAID, "EatGoldenFood", false);
         p.comment = "Enable/Disable using golden apples and golden carrots as food.";
@@ -466,18 +467,12 @@ public class ZyinHUDConfig
         
         //CATEGORY_WEAPONSWAP
         p = config.get(CATEGORY_WEAPONSWAP, "EnableWeaponSwap", true);
-        p.comment = "Enables pressing a hotkey (default="+WeaponSwapperKeyHandler.DefaultHotkey+") to swap between your sword and bow.";
+        p.comment = "Enables pressing " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[9].getKeyCode())
+        			+ " to swap between your sword and bow.";
         if(loadSettings)
         	WeaponSwapper.Enabled = p.getBoolean(true);
         else
         	p.set(WeaponSwapper.Enabled);
-
-        p = config.get(CATEGORY_WEAPONSWAP, "WeaponSwapHotkey", WeaponSwapperKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + WeaponSwapperKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	WeaponSwapperKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(WeaponSwapperKeyHandler.Hotkey));
         
         p = config.get(CATEGORY_WEAPONSWAP, "ScanHotbarForWeaponsFromLeftToRight", true);
         p.comment = "Set to false to scan the hotbar for swords and bows from right to left. Only matters if you have multiple swords/bows in your hotbar.";
@@ -485,36 +480,6 @@ public class ZyinHUDConfig
         	WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight = p.getBoolean(true);
         else
         	p.set(WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight);
-
-
-        //CATEGORY_ITEMSELECTOR
-        p = config.get(CATEGORY_ITEMSELECTOR, "EnableItemSelector", true);
-        p.comment = "Enables mousewheel scrolling whilst holding a hotkey (default="+ItemSelectorKeyHandler.DefaultHotkey+") to swap the selected item with an inventory item.";
-        if(loadSettings)
-            ItemSelector.Enabled = p.getBoolean(true);
-        else
-            p.set(ItemSelector.Enabled);
-
-        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorHotkey", ItemSelectorKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + ItemSelectorKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-            ItemSelectorKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-            p.set(Keyboard.getKeyName(ItemSelectorKeyHandler.Hotkey));
-
-        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorTimeout", ItemSelector.defaultTimeout);
-        p.comment = "Specifies how many ticks until the item selector confirms your choice and performs the item swap.";
-        if(loadSettings)
-            ItemSelector.SetTimeout(p.getInt(ItemSelector.defaultTimeout));
-        else
-            p.set( ItemSelector.GetTimeout() );
-
-        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorMode", ItemSelector.MODE_ALL);
-        p.comment = "Specifies the selection mode when cycling through items.";
-        if(loadSettings)
-            ItemSelector.Mode = p.getInt(ItemSelector.MODE_ALL);
-        else
-            p.set( ItemSelector.Mode );
         
         
         //CATEGORY_FPS
@@ -542,13 +507,6 @@ public class ZyinHUDConfig
         	AnimalInfo.Mode = p.getInt(0);
         else
         	p.set(AnimalInfo.Mode);
-
-        p = config.get(CATEGORY_ANIMALINFO, "AnimalInfoHotkey", AnimalInfoKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + AnimalInfoKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	AnimalInfoKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(AnimalInfoKeyHandler.Hotkey));
         
         p = config.get(CATEGORY_ANIMALINFO, "ShowTextBackgrounds", true);
         p.comment = "Enable/Disable showing a black background behind text.";
@@ -644,18 +602,12 @@ public class ZyinHUDConfig
         
         //CATEGORY_ENDERPEARLAID
         p = config.get(CATEGORY_ENDERPEARLAID, "EnableEnderPearlAid", true);
-        p.comment = "Enables pressing a hotkey (default="+EnderPearlAidKeyHandler.DefaultHotkey+") to use an enderpearl even if it is  in your inventory and not your hotbar.";
+        p.comment = "Enables pressing " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[4].getKeyCode())
+        			+ " to use an enderpearl even if it is  in your inventory and not your hotbar.";
         if(loadSettings)
         	EnderPearlAid.Enabled = p.getBoolean(true);
         else
         	p.set(EnderPearlAid.Enabled);
-
-        p = config.get(CATEGORY_ENDERPEARLAID, "EnderPearlAidHotkey", EnderPearlAidKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + EnderPearlAidKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	EnderPearlAidKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(EnderPearlAidKeyHandler.Hotkey));
         
         
         //CATEGORY_CLOCK
@@ -678,18 +630,12 @@ public class ZyinHUDConfig
         
         //CATEGORY_POTIONAID
         p = config.get(CATEGORY_POTIONAID, "EnablePotionAid", true);
-        p.comment = "Enables pressing a hotkey (default="+PotionAidKeyHandler.DefaultHotkey+") to drink a potion even if it is  in your inventory and not your hotbar.";
+        p.comment = "Enables pressing " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[6].getKeyCode())
+        			+ " to drink a potion even if it is  in your inventory and not your hotbar.";
         if(loadSettings)
         	PotionAid.Enabled = p.getBoolean(true);
         else
         	p.set(PotionAid.Enabled);
-
-        p = config.get(CATEGORY_POTIONAID, "PotionAidHotkey", PotionAidKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + PotionAidKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	PotionAidKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(PotionAidKeyHandler.Hotkey));
         
         
         //CATEGORY_QUICKDEPOSIT
@@ -700,15 +646,9 @@ public class ZyinHUDConfig
         else
         	p.set(QuickDeposit.Enabled);
 
-        p = config.get(CATEGORY_QUICKDEPOSIT, "QuickDepositHotkey", QuickDepositKeyHandler.DefaultHotkeyString);
-        p.comment = "Default: " + QuickDepositKeyHandler.DefaultHotkeyString;
-        if(loadSettings)
-        	QuickDepositKeyHandler.Hotkey = Keyboard.getKeyIndex(p.getString());
-        else
-        	p.set(Keyboard.getKeyName(QuickDepositKeyHandler.Hotkey));
-
         p = config.get(CATEGORY_QUICKDEPOSIT, "IgnoreItemsInHotbar", false);
-        p.comment = "Determines if items in your hotbar will be deposited into chests when '" + QuickDepositKeyHandler.Hotkey + "' is pressed.";
+        p.comment = "Determines if items in your hotbar will be deposited into chests when '"
+        			+ Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[7].getKeyCode()) + "' is pressed.";
         if(loadSettings)
         	QuickDeposit.IgnoreItemsInHotbar = p.getBoolean(false);
         else

@@ -27,7 +27,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-    public static final String MODVERSION = "1.1.4";
+    public static final String MODVERSION = "1.1.4.1";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     
@@ -44,8 +44,13 @@ public class ZyinHUD
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+    	//load all our Key Handlers
+    	FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
+    	
+    	//load configuration settings from the ZyinHUD.cfg file
     	ZyinHUDConfig.LoadConfigSettings(event.getSuggestedConfigurationFile());
         
+    	//load language localization files
         ModContainer modContainer = FMLCommonHandler.instance().findContainerFor(this);
         LanguageRegistry.instance().loadLanguagesFor(modContainer, Side.CLIENT);
     }
@@ -55,11 +60,6 @@ public class ZyinHUD
     {
     	//needed for @SubscribeEvent method subscriptions
     	MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
-    	MinecraftForge.EVENT_BUS.register(ZyinHUDKeyHandlers.instance);
-
-    	
-    	//load all our Key Handlers
-    	FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
     }
     
     @EventHandler

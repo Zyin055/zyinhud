@@ -119,8 +119,7 @@ public class PotionTimers
 			colorInt = potion.getLiquidColor();
 		
 		
-		
-
+		boolean unicodeFlag = mc.fontRenderer.getUnicodeFlag();
         mc.fontRenderer.setUnicodeFlag(true);
 		
 		//render the potion duration text onto the screen
@@ -145,7 +144,7 @@ public class PotionTimers
 		    }
 		}
 
-        mc.fontRenderer.setUnicodeFlag(false);
+        mc.fontRenderer.setUnicodeFlag(unicodeFlag);
 	}
     
     /**

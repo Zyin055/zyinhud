@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
+import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
 
@@ -50,6 +51,8 @@ public class DurabilityInfo
     public static int DurabilityUpdateFrequency;
 	public static boolean ShowIndividualArmorIcons;
     public static boolean ShowDamageAsPercentage;
+    public static boolean AutoUnequipArmor;
+    public static boolean AutoUnequipTools;
 	
 
     //U and V is the top left part of the image
@@ -169,12 +172,13 @@ public class DurabilityInfo
 		
 		if(toolStack.getItemDamage() != 0)
 		{
+			boolean unicodeFlag = mc.fontRenderer.getUnicodeFlag();
 			mc.fontRenderer.setUnicodeFlag(true);
 			String damageString = GetDamageString(toolStack.getItemDamage(), toolStack.getMaxDamage());
 			int damageX = horizontalPosition + toolX - mc.fontRenderer.getStringWidth(damageString);
 			int damageY = verticalSpacer + toolY - mc.fontRenderer.FONT_HEIGHT - 1;
 			mc.fontRenderer.drawStringWithShadow(damageString, damageX, damageY, 0xffffff);
-			mc.fontRenderer.setUnicodeFlag(false);
+			mc.fontRenderer.setUnicodeFlag(unicodeFlag);
 		}
 		
 	}
@@ -209,11 +213,12 @@ public class DurabilityInfo
         //and not typing
         if (mc.inGameHasFocus ||
         		(mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiZyinHUDOptions && ((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("durabilityinfo.name")))) &&
-        		//!mc.gameSettings.keyBindPlayerList.pressed)	//TODO 1.6
         		!mc.gameSettings.keyBindPlayerList.isPressed())
         {
             damagedItemsList.clear();
-            CalculateDurabilityIconsForItems();
+            UnequipDamagedArmor();
+            UnequipDamagedTool();
+            CalculateDurabilityIconsForTools();
             CalculateDurabilityIconsForArmor();
             lastGenerate = System.currentTimeMillis();
         }
@@ -223,7 +228,7 @@ public class DurabilityInfo
      * Examines the players first 9 inventory slots (the players inventory) and sees if any tools are damaged.
      * It adds damaged tools to the damagedItemsList list.
      */
-    private static void CalculateDurabilityIconsForItems()
+    private static void CalculateDurabilityIconsForTools()
     {
         ItemStack[] items = mc.thePlayer.inventory.mainInventory;
 
@@ -274,6 +279,64 @@ public class DurabilityInfo
                 }
             }
         }
+    }
+    
+    /**
+     * Takes off any armor the player is wearing if it is close to being destroyed,
+     * and puts it in their inventory if the player has room in their inventory.
+     */
+    private static void UnequipDamagedArmor()
+    {
+    	if(AutoUnequipArmor)
+    	{
+            ItemStack[] armorStacks = mc.thePlayer.inventory.armorInventory;
+            
+            //iterate over the armor the user is wearing
+            for(int i = 0; i < armorStacks.length; i++)
+            {
+            	ItemStack armorStack = armorStacks[i];
+                if (armorStack != null)
+                {
+                    int itemDamage = armorStack.getItemDamage();
+                    int maxDamage = armorStack.getMaxDamage();
+                    
+                    if (maxDamage != 0 &&
+                    		maxDamage - itemDamage < 5)
+                    {
+                       InventoryUtil.MoveArmorIntoPlayerInventory(i);
+                    }
+                }
+            }
+    	}
+    }
+
+    /**
+     * Takes off any tools the player is using if it is close to being destroyed,
+     * and puts it in their inventory if the player has room in their inventory.
+     */
+    private static void UnequipDamagedTool()
+    {
+    	if(AutoUnequipTools)
+    	{
+            ItemStack itemStack = mc.thePlayer.inventory.getCurrentItem();
+
+            if (itemStack != null)
+            {
+                Item item = itemStack.getItem();
+
+                if (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemBow || item instanceof ItemHoe)
+                {
+                    int itemDamage = itemStack.getItemDamage();
+                    int maxDamage = itemStack.getMaxDamage();
+
+                    if (maxDamage != 0 &&
+                    		maxDamage - itemDamage < 15)
+                    {
+                    	InventoryUtil.MoveHeldItemIntoPlayerInventory();
+                    }
+                }
+            }
+    	}
     }
     
 
@@ -404,5 +467,23 @@ public class DurabilityInfo
     {
     	ShowIndividualArmorIcons = !ShowIndividualArmorIcons;
     	return ShowIndividualArmorIcons;
+    }
+    /**
+     * Toggles unequipping breaking armor
+     * @return 
+     */
+    public static boolean ToggleAutoUnequipArmor()
+    {
+    	AutoUnequipArmor = !AutoUnequipArmor;
+    	return AutoUnequipArmor;
+    }
+    /**
+     * Toggles unequipping breaking tools
+     * @return 
+     */
+    public static boolean ToggleAutoUnequipTools()
+    {
+    	AutoUnequipTools = !AutoUnequipTools;
+    	return AutoUnequipTools;
     }
 }
