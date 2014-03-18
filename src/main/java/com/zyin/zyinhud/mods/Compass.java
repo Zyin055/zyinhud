@@ -29,6 +29,7 @@ public class Compass
     }
     
     private static Minecraft mc = Minecraft.getMinecraft();
+    private static final RenderItem itemRenderer = new RenderItem();
     
     public static boolean renderCompassTextInMiddle = true;
 
@@ -39,7 +40,7 @@ public class Compass
     private static String north = Localization.get("compass.north");
     private static String northeast = Localization.get("compass.northeast");
     private static String east = Localization.get("compass.east");
-    private static String southeast = Localization.get("compass.southeast");private static final RenderItem itemRenderer = new RenderItem();
+    private static String southeast = Localization.get("compass.southeast");
 
     /**
      * Calculates the direction the player is facing

@@ -7,17 +7,6 @@ import net.minecraftforge.common.config.Property;
 
 import org.lwjgl.input.Keyboard;
 
-import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
-import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
-import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
-import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
-import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
-import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
-import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
-import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
 import com.zyin.zyinhud.mods.AnimalInfo;
 import com.zyin.zyinhud.mods.Clock;
 import com.zyin.zyinhud.mods.Compass;
@@ -27,6 +16,7 @@ import com.zyin.zyinhud.mods.DurabilityInfo;
 import com.zyin.zyinhud.mods.EatingAid;
 import com.zyin.zyinhud.mods.EnderPearlAid;
 import com.zyin.zyinhud.mods.Fps;
+import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.PlayerLocator;
 import com.zyin.zyinhud.mods.PotionAid;
@@ -58,6 +48,7 @@ public class ZyinHUDConfig
     public static final String CATEGORY_CLOCK = "clock";
     public static final String CATEGORY_POTIONAID = "potionaid";
     public static final String CATEGORY_QUICKDEPOSIT = "quickdeposit";
+    public static final String CATEGORY_HEALTHMONITOR = "healthmonitor";
 
     public static Configuration config = null;
     
@@ -114,7 +105,7 @@ public class ZyinHUDConfig
         config.addCustomCategoryComment(CATEGORY_CLOCK, "Clock shows you time relevant to Minecraft time.");
         config.addCustomCategoryComment(CATEGORY_POTIONAID, "Potion Aid helps you quickly drink potions based on your circumstance.");
         config.addCustomCategoryComment(CATEGORY_QUICKDEPOSIT, "Quick Stack allows you to inteligently deposit every item in your inventory quickly into a chest.");
-        
+        config.addCustomCategoryComment(CATEGORY_HEALTHMONITOR, "Plays warning beeps when you are low on health.");
         
         //CATEGORY_MISC
         
@@ -621,7 +612,8 @@ public class ZyinHUDConfig
         p = config.get(CATEGORY_CLOCK, "ClockMode", 1);
         p.comment = "Set the clock mode:" + config.NEW_LINE +
         			"0 = standard Minecraft time in game" + config.NEW_LINE +
-        			"1 = countdown timer till morning/night.";
+        			"1 = countdown timer till morning/night" + config.NEW_LINE +
+        			"2 = a graphic Minecraft clock";
         if(loadSettings)
         	Clock.Mode = p.getInt(1);
         else
@@ -696,28 +688,43 @@ public class ZyinHUDConfig
         else
         	p.set(QuickDeposit.BlacklistWaterBucket);
 
+
+        //CATEGORY_HEALTHMONITOR
+        p = config.get(CATEGORY_HEALTHMONITOR, "EnableHealthMonitor", false);
+        p.comment = "Enable/Disable using the Health Monitor.";
+        if(loadSettings)
+        	HealthMonitor.Enabled = p.getBoolean(false);
+        else
+        	p.set(HealthMonitor.Enabled);
         
+        p = config.get(CATEGORY_HEALTHMONITOR, "HealthMonitorMode", 1);
+        p.comment = "Set the health monitor sound mode:" + config.NEW_LINE +
+        			"0 = OoT" + config.NEW_LINE +
+        			"1 = LttP" + config.NEW_LINE +
+        			"2 = Oracle" + config.NEW_LINE +
+        			"3 = LA" + config.NEW_LINE +
+        			"4 = LoZ" + config.NEW_LINE +
+        			"5 = AoL";
+        if(loadSettings)
+        	HealthMonitor.Mode = p.getInt(0);
+        else
+        	p.set(HealthMonitor.Mode);
+
+        p = config.get(CATEGORY_HEALTHMONITOR, "LowHealthSoundThreshold", 6);
+        p.comment = "A sound will start playingwhen you have less than this much health left.";
+        if(loadSettings)
+        	HealthMonitor.SetLowHealthSoundThreshold(p.getInt(1));
+        else
+        	p.set(HealthMonitor.GetLowHealthSoundThreshold());
+
+        p = config.get(CATEGORY_HEALTHMONITOR, "PlayFasterNearDeath", false);
+        p.comment = "Play the warning sounds quicker the closer you get to dieing.";
+        if(loadSettings)
+        	HealthMonitor.PlayFasterNearDeath = p.getBoolean(false);
+        else
+        	p.set(HealthMonitor.PlayFasterNearDeath);
 
         config.save();
-    }
-    
-    
-    /**
-     * Converts the string representation of a key into an integer.
-     * @param key example: "L", "G", "NUMPAD2"
-     * @return an integer representation of this key
-     */
-    public static int GetKeyboardKeyFromString(String key)
-    {
-    	key = key.trim();
-    	int keyIndex = Keyboard.getKeyIndex(key.toUpperCase());
-    	if(keyIndex == 0)
-    	{
-    		System.out.println("=========================================================================");
-    		System.out.println("[WARNING] ZyinHUD.cfg: \"" + key + "\" is not a valid hotkey!");
-    		System.out.println("=========================================================================");
-    	}
-    	return keyIndex;
     }
     
 }

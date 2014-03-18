@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Keyboard;
 
+import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -28,6 +29,7 @@ public class ZyinHUDOptionsKeyHandler
         {
             //display the GUI
             mc.displayGuiScreen(new GuiZyinHUDOptions(null));
+        	ZyinHUDSound.PlayButtonPress();
         }
 	}
 }

@@ -402,6 +402,7 @@ public class SafeOverlay
         GL11.glPushMatrix();
         GL11.glTranslated(-x, -y, -z);		//go from cartesian x,y,z coordinates to in-world x,y,z coordinates
         GL11.glDisable(GL11.GL_TEXTURE_2D);	//fixes color rendering bug (we aren't rendering textures)
+        GL11.glDisable(GL11.GL_LIGHTING);
         
         //BLEND and ALPHA allow for color transparency
         GL11.glEnable(GL11.GL_BLEND);

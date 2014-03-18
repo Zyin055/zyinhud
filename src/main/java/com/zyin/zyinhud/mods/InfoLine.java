@@ -74,7 +74,7 @@ public class InfoLine
         {
         	String infoLineMessage = "";
         	
-            String clock = Clock.CalculateMessageForInfoLine();
+            String clock = Clock.CalculateMessageForInfoLine(infoLineMessage);
             infoLineMessage = infoLineMessage + clock;
             
             String coordinates = Coordinates.CalculateMessageForInfoLine();

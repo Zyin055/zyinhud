@@ -7,6 +7,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import org.lwjgl.input.Keyboard;
 
 import com.zyin.zyinhud.ZyinHUDKeyHandlers;
+import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.mods.QuickDeposit;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;

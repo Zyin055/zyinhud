@@ -1,6 +1,13 @@
 package com.zyin.zyinhud.mods;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+
+import com.zyin.zyinhud.ZyinHUD;
 import com.zyin.zyinhud.util.FontCodes;
 
 /**
@@ -29,11 +36,12 @@ public class Clock
 	/**
 	 * 0=standard clock<br>
 	 * 1=time till night/day<br>
+	 * 2=graphic clock<br>
 	 */
     public static int Mode = 0;
     
     /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 2;
+    public static int NumberOfModes = 3;
     
     
 	private static Minecraft mc = Minecraft.getMinecraft();
@@ -44,11 +52,15 @@ public class Clock
 	//mobs start to burn at: 23600
 	private static long mobSpawningStopTime = 23600;
 	
+
+	
+	private static final RenderItem itemRenderer = new RenderItem();
+	
     /**
      * Calculates time
      * @return time if the Clock is enabled, otherwise "".
      */
-    public static String CalculateMessageForInfoLine()
+    public static String CalculateMessageForInfoLine(String infoLineMessageUpToThisPoint)
     {
         if (Clock.Enabled)
         {
@@ -93,6 +105,16 @@ public class Clock
                     String daytimeTimerString = FontCodes.YELLOW + String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + InfoLine.SPACER;
                     return daytimeTimerString;
         		}
+        	}
+        	else if(Clock.Mode == 2)
+        	{
+        		int infoLineWidth = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
+        		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.clock), infoLineWidth, 1);
+        		
+        		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the itemRenderer.renderItem() method enables lighting
+        		GL11.glDisable(GL11.GL_DEPTH_TEST);
+        		
+        		return "    ";
         	}
         }
 

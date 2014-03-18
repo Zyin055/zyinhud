@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiOpenEvent;
 
 import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.util.InventoryUtil;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -96,6 +97,8 @@ public class QuickDeposit
         	if(CloseChestAfterDepositing)
         		mc.thePlayer.closeScreen();
     	}
+
+    	ZyinHUDSound.PlayButtonPress();
     }
     
     /**

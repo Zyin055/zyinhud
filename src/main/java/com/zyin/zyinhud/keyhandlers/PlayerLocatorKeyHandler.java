@@ -2,6 +2,7 @@ package com.zyin.zyinhud.keyhandlers;
 
 import net.minecraft.client.Minecraft;
 
+import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.mods.PlayerLocator;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -20,6 +21,9 @@ public class PlayerLocatorKeyHandler
         }
 
         if(PlayerLocator.Enabled)
+        {
         	PlayerLocator.ToggleMode();
+        	ZyinHUDSound.PlayButtonPress();
+        }
 	}
 }

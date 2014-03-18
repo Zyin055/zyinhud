@@ -11,9 +11,10 @@ key.zyinhud.weaponswapper=Weapon Swap
 key.zyinhud.zyinhudoptions=Zyin's HUD Options
 
 clock.name=Clock
-clock.options.mode.tooltip=_lStandard_r: Shows the current Minecraft time_p_lCountdown_r: Timer till the next day/night begins
+clock.options.mode.tooltip=_lStandard_r: Shows the current Minecraft time_p_lCountdown_r: Timer till the next day/night begins_p_lGraphic_r: Shows a Minecraft clock
 clock.mode.0=Standard
 clock.mode.1=Countdown
+clock.mode.2=Graphic
 
 compass.name=Compass
 compass.options.hotkey.tooltip=Coordinates pasted into the chat box can be formatted in the config file
@@ -48,6 +49,20 @@ enderpearlaid.noenderpearls=No ender pearls
 
 fps.name=FPS
 fps.infoline=fps
+
+healthmonitor.name=Health Monitor
+healthmonitor.mode.0=OoT
+healthmonitor.mode.1=LttP
+healthmonitor.mode.2=Oracle
+healthmonitor.mode.3=LA
+healthmonitor.mode.4=LoZ
+healthmonitor.mode.5=AoL
+healthmonitor.options.enabled.tooltip=Plays a warning sound when you are low on health, just like in a Zelda game
+healthmonitor.options.mode.play=Play
+healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
+healthmonitor.options.playfasterneardeath=Quicker near death: 
+healthmonitor.options.playfasterneardeath.tooltip=Play the warning sounds quicker the closer you get to dieing
+healthmonitor.options.lowhealthsoundthreshold=Play when health < 
 
 durabilityinfo.name=Durability Info
 durabilityinfo.options.showitemdurability=Show Tools: 

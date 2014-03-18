@@ -1,7 +1,10 @@
 package com.zyin.zyinhud.keyhandlers;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.ResourceLocation;
 
+import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.mods.DistanceMeasurer;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -20,6 +23,9 @@ public class DistanceMeasurerKeyHandler
         }
         
         if(DistanceMeasurer.Enabled)
+        {
         	DistanceMeasurer.ToggleMode();
+        	ZyinHUDSound.PlayButtonPress();
+        }
 	}
 }

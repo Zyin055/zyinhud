@@ -29,6 +29,7 @@ import com.zyin.zyinhud.mods.DurabilityInfo;
 import com.zyin.zyinhud.mods.EatingAid;
 import com.zyin.zyinhud.mods.EnderPearlAid;
 import com.zyin.zyinhud.mods.Fps;
+import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.PlayerLocator;
 import com.zyin.zyinhud.mods.PotionAid;
@@ -94,7 +95,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		Localization.get("eatingaid.name"),
     		Localization.get("potionaid.name"),
     		Localization.get("weaponswapper.name"),
-    		Localization.get("quickdeposit.name")};
+    		Localization.get("quickdeposit.name"),
+    		Localization.get("healthmonitor.name")
+    		};
     
     protected int[] tabbedButtonIDs = {
     		100,
@@ -112,7 +115,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		1300,
     		1400,
     		1500,
-    		1600};
+    		1600,
+    		1800};
     
     /** The current tab page. It is 0 indexed. */
     protected static int tabbedPage = 0;
@@ -509,6 +513,23 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1610, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
     }
+    private void DrawHealthMonitorButtoins()
+    {
+    	int Y = buttonY;
+    	buttonList.add(new GuiButton(1801, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(HealthMonitor.Enabled)));
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1802, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_HEALTHMONITOR, HealthMonitor.Mode, HealthMonitor.NumberOfModes)));
+    	buttonList.add(new GuiButton(1803, buttonX_column2, Y, buttonWidth_half/2, buttonHeight, Localization.get("healthmonitor.options.mode.play")));
+    	
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiButton(1804, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("healthmonitor.options.playfasterneardeath", HealthMonitor.PlayFasterNearDeath)));
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	Y += buttonHeight + buttonSpacing;
+    	buttonList.add(new GuiNumberSlider(1805, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("healthmonitor.options.lowhealthsoundthreshold"), 1, 20, HealthMonitor.GetLowHealthSoundThreshold(), true));
+    	
+    }
     
     /**
      * Helper method to get the text for a button that toggles between modes for a mod.
@@ -772,9 +793,6 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	button.displayString = GetButtonLabel_Enabled(DistanceMeasurer.Enabled);
 	            	break;
 	            case 602:	//Hotkey
-	            	HotkeyButtonClicked((GuiHotkeyButton)button);
-	            	break;
-	            case 603:	//Hotkey
 	            	HotkeyButtonClicked((GuiHotkeyButton)button);
 	            	break;
 	            
@@ -1126,6 +1144,35 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	QuickDeposit.ToggleBlacklistClockCompass();
 	            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass);
 	            	break;
+	            	
+	            	
+	            /////////////////////////////////////////////////////////////////////////
+	            // Health Monitor
+	            /////////////////////////////////////////////////////////////////////////
+	            
+	            case 1800:
+	            	screenTitle = Localization.get("healthmonitor.name");
+	            	DrawHealthMonitorButtoins();
+	            	break;
+	            case 1801:	//Enable/Disable
+	            	HealthMonitor.ToggleEnabled();
+	            	button.displayString = GetButtonLabel_Enabled(HealthMonitor.Enabled);
+	            	break;
+	            case 1802:	//Mode
+	            	HealthMonitor.ToggleMode();
+	            	HealthMonitor.PlayLowHealthSound();
+	            	button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_HEALTHMONITOR, HealthMonitor.Mode, HealthMonitor.NumberOfModes);
+	            	break;
+	            case 1803:
+	            	HealthMonitor.PlayLowHealthSound();
+	            	break;
+	            case 1804:	//Play faster near death
+	            	HealthMonitor.TogglePlayFasterNearDeath();
+	            	button.displayString = GetButtonLabel_Boolean("healthmonitor.options.playfasterneardeath", HealthMonitor.PlayFasterNearDeath);
+	            	break;
+	            case 1805:	//Low Health Sound Threshold
+	            	HealthMonitor.SetLowHealthSoundThreshold(((GuiNumberSlider)button).GetValueAsInteger());
+	            	break;
 	            
             }
         }
@@ -1153,6 +1200,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1303: return Localization.get("eatingaid.options.mode.tooltip");
 			case 1603: return Localization.get("quickdeposit.options.ignoreitemsinhotbar.tooltip");
 			case 1604: return Localization.get("quickdeposit.options.closechestafterdepositing.tooltip");
+			case 1801: return Localization.get("healthmonitor.options.enabled.tooltip");
+			case 1802: return Localization.get("healthmonitor.options.mode.tooltip");
 			default: return null;
 		}
 	}

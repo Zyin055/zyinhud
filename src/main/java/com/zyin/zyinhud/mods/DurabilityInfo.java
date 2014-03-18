@@ -3,10 +3,7 @@ package com.zyin.zyinhud.mods;
 import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -154,37 +151,43 @@ public class DurabilityInfo
                     }
                 }
             }
-            
         }
     }
-
-	protected static void DrawItemIcon(ItemStack toolStack, int horizontalPosition, int verticalSpacer)
+    
+    /**
+     * Draws an ItemStack at the specified location on screen with its durability bar and number.
+     * @param itemStack
+     * @param x
+     * @param y
+     */
+	protected static void DrawItemIcon(ItemStack itemStack, int x, int y)
 	{
+		GL11.glEnable(GL11.GL_DEPTH_TEST);	//so the enchanted item effect is rendered properly
+		
 		//render the item with enchant effect
-		//itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, toolStack, horizontalPosition, verticalSpacer);	//TODO: 1.6 broke
-		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, toolStack, horizontalPosition, verticalSpacer);
+		itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
 		
 		//render the item's durability bar
-		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, toolStack, horizontalPosition, verticalSpacer);
+		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
 		
-		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the itemRenderer.renderItem() method enables lighting
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);	//so the itemRenderer.renderItem() method enables lighting
+		GL11.glDisable(GL11.GL_DEPTH_TEST);	//so the text renders above the item
 		
-		if(toolStack.getItemDamage() != 0)
+		//render the number of durability it has left
+		if(itemStack.getItemDamage() != 0)
 		{
 			boolean unicodeFlag = mc.fontRenderer.getUnicodeFlag();
 			mc.fontRenderer.setUnicodeFlag(true);
-			String damageString = GetDamageString(toolStack.getItemDamage(), toolStack.getMaxDamage());
-			int damageX = horizontalPosition + toolX - mc.fontRenderer.getStringWidth(damageString);
-			int damageY = verticalSpacer + toolY - mc.fontRenderer.FONT_HEIGHT - 1;
+			String damageString = GetDamageString(itemStack.getItemDamage(), itemStack.getMaxDamage());
+			int damageX = x + toolX - mc.fontRenderer.getStringWidth(damageString);
+			int damageY = y + toolY - mc.fontRenderer.FONT_HEIGHT - 1;
 			mc.fontRenderer.drawStringWithShadow(damageString, damageX, damageY, 0xffffff);
 			mc.fontRenderer.setUnicodeFlag(unicodeFlag);
 		}
-		
 	}
     
     /***
-     * Draws the broken durability icon
+     * Draws the broken durability image
      * @param x
      * @param y
      */

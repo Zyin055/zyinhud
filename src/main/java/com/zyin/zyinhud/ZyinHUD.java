@@ -4,6 +4,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.zyin.zyinhud.command.CommandFps;
 import com.zyin.zyinhud.command.CommandZyinHUDOptions;
+import com.zyin.zyinhud.mods.HealthMonitor;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -27,7 +28,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-    public static final String MODVERSION = "1.1.4.1";
+	public static final String MODVERSION = "1.1.4.2";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     
@@ -60,6 +61,7 @@ public class ZyinHUD
     {
     	//needed for @SubscribeEvent method subscriptions
     	MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
+    	MinecraftForge.EVENT_BUS.register(HealthMonitor.instance);
     }
     
     @EventHandler
@@ -68,20 +70,13 @@ public class ZyinHUD
     	
     }
     
-    
+
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
     	//THIS EVENT IS NOT FIRED ON SMP SERVERS
     	event.registerServerCommand(new CommandFps());
     	event.registerServerCommand(new CommandZyinHUDOptions());
-    }
-    
-    @EventHandler
-    public void serverStopping(FMLServerStoppingEvent event)
-    {
-    	//THIS EVENT IS NOT FIRED ON SMP SERVERS
-    	ZyinHUDConfig.SaveConfigSettings();
     }
     
 }

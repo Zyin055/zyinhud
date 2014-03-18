@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 
 import org.lwjgl.input.Keyboard;
 
+import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.SafeOverlay;
 import com.zyin.zyinhud.util.Localization;
@@ -24,7 +25,6 @@ public class SafeOverlayKeyHandler
     
 	public static void Pressed(KeyInputEvent event) 
 	{
-		System.out.println("SafeOverlayKeyHandler.Pressed()");
 		if (mc.currentScreen != null)
         {
             return;    //don't activate if the user is looking at a GUI
@@ -70,6 +70,7 @@ public class SafeOverlayKeyHandler
             InfoLine.DisplayNotification(Localization.get("safeoverlay.distance") + " " + Localization.get("safeoverlay.distance.default") + " (" + drawDistance + ")");
             
             SafeOverlay.instance.RecalculateUnsafePositions();
+        	ZyinHUDSound.PlayButtonPress();
             return;
         }
         
@@ -89,12 +90,14 @@ public class SafeOverlayKeyHandler
             }
 
             SafeOverlay.instance.RecalculateUnsafePositions();
+        	ZyinHUDSound.PlayButtonPress();
             return;
         }
         
         //if nothing is pressed, do the default behavior
         
         SafeOverlay.ToggleMode();
+    	ZyinHUDSound.PlayButtonPress();
 
         if (SafeOverlay.Mode == 1)
         {

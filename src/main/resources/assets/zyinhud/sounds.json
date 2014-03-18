@@ -1,0 +1,38 @@
+{
+	"lowhealth_AoL": {
+		"category": "master",
+		"sounds": [
+			"hud/lowhealth_AoL"
+		]
+	},
+	"lowhealth_LA": {
+		"category": "master",
+		"sounds": [
+			"hud/lowhealth_LA"
+		]
+	},
+	"lowhealth_LoZ": {
+		"category": "master",
+		"sounds": [
+			"hud/lowhealth_LoZ"
+		]
+	},
+	"lowhealth_LttP": {
+		"category": "master",
+		"sounds": [
+			"hud/lowhealth_LttP"
+		]
+	},
+	"lowhealth_OoT": {
+		"category": "master",
+		"sounds": [
+			"hud/lowhealth_OoT"
+		]
+	},
+	"lowhealth_Oracle": {
+		"category": "master",
+		"sounds": [
+			"hud/lowhealth_Oracle"
+		]
+	}
+}
