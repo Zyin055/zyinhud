@@ -47,8 +47,9 @@ public class ZyinHUD
     {
     	//load all our Key Handlers
     	FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
-    	
-    	//load configuration settings from the ZyinHUD.cfg file
+        MinecraftForge.EVENT_BUS.register(ZyinHUDKeyHandlers.instance);
+
+        //load configuration settings from the ZyinHUD.cfg file
     	ZyinHUDConfig.LoadConfigSettings(event.getSuggestedConfigurationFile());
         
     	//load language localization files

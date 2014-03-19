@@ -1,29 +1,12 @@
 package com.zyin.zyinhud;
 
-import java.io.File;
-
+import com.zyin.zyinhud.mods.*;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-
 import org.lwjgl.input.Keyboard;
 
-import com.zyin.zyinhud.mods.AnimalInfo;
-import com.zyin.zyinhud.mods.Clock;
-import com.zyin.zyinhud.mods.Compass;
-import com.zyin.zyinhud.mods.Coordinates;
-import com.zyin.zyinhud.mods.DistanceMeasurer;
-import com.zyin.zyinhud.mods.DurabilityInfo;
-import com.zyin.zyinhud.mods.EatingAid;
-import com.zyin.zyinhud.mods.EnderPearlAid;
-import com.zyin.zyinhud.mods.Fps;
+import java.io.File;
 import com.zyin.zyinhud.mods.HealthMonitor;
-import com.zyin.zyinhud.mods.InfoLine;
-import com.zyin.zyinhud.mods.PlayerLocator;
-import com.zyin.zyinhud.mods.PotionAid;
-import com.zyin.zyinhud.mods.PotionTimers;
-import com.zyin.zyinhud.mods.QuickDeposit;
-import com.zyin.zyinhud.mods.SafeOverlay;
-import com.zyin.zyinhud.mods.WeaponSwapper;
 
 /**
  * This class is responsible for interacting with the configuration file.
@@ -49,6 +32,7 @@ public class ZyinHUDConfig
     public static final String CATEGORY_POTIONAID = "potionaid";
     public static final String CATEGORY_QUICKDEPOSIT = "quickdeposit";
     public static final String CATEGORY_HEALTHMONITOR = "healthmonitor";
+    public static final String CATEGORY_ITEMSELECTOR = "itemselector";
 
     public static Configuration config = null;
     
@@ -106,6 +90,7 @@ public class ZyinHUDConfig
         config.addCustomCategoryComment(CATEGORY_POTIONAID, "Potion Aid helps you quickly drink potions based on your circumstance.");
         config.addCustomCategoryComment(CATEGORY_QUICKDEPOSIT, "Quick Stack allows you to inteligently deposit every item in your inventory quickly into a chest.");
         config.addCustomCategoryComment(CATEGORY_HEALTHMONITOR, "Plays warning beeps when you are low on health.");
+        config.addCustomCategoryComment(CATEGORY_ITEMSELECTOR, "Item Selector allows you to conveniently swap your currently selected hotbar item with something in your inventory.");
         
         //CATEGORY_MISC
         
@@ -696,6 +681,31 @@ public class ZyinHUDConfig
         	HealthMonitor.Enabled = p.getBoolean(false);
         else
         	p.set(HealthMonitor.Enabled);
+        	
+        	
+        //CATEGORY_ITEMSELECTOR
+        p = config.get(CATEGORY_ITEMSELECTOR, "EnableItemSelector", true);
+        p.comment = "Enables mouse wheel scrolling whilst holding "
+                + Keyboard.getKeyName( ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode() ) + " to swap the selected item with an inventory item.";
+        if(loadSettings)
+          ItemSelector.Enabled = p.getBoolean(true);
+        else
+          p.set(ItemSelector.Enabled);
+
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorTimeout", ItemSelector.defaultTimeout);
+        p.comment = "Specifies how many ticks until the item selector confirms your choice and performs the item swap.";
+        if(loadSettings)
+          ItemSelector.SetTimeout(p.getInt(ItemSelector.defaultTimeout));
+        else
+          p.set( ItemSelector.GetTimeout() );
+
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorMode", ItemSelector.MODE_ALL);
+        p.comment = "Specifies the selection mode when cycling through items.";
+        if(loadSettings)
+          ItemSelector.Mode = p.getInt(ItemSelector.MODE_ALL);
+        else
+          p.set( ItemSelector.Mode );
+
         
         p = config.get(CATEGORY_HEALTHMONITOR, "HealthMonitorMode", 1);
         p.comment = "Set the health monitor sound mode:" + config.NEW_LINE +
