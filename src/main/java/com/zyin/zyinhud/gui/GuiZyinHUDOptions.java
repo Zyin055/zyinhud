@@ -70,8 +70,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		Localization.get("potionaid.name"),
     		Localization.get("weaponswapper.name"),
     		Localization.get("quickdeposit.name"),
-    		Localization.get("itemselector.name")
-            Localization.get("healthmonitor.name")};
+    		Localization.get("itemselector.name"),
+            Localization.get("healthmonitor.name")
     		};
     
     protected int[] tabbedButtonIDs = {
@@ -92,7 +92,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		1500,
     		1600,
     		1700,
-            	1800};
+            1800};
     
     /** The current tab page. It is 0 indexed. */
     protected static int tabbedPage = 0;
