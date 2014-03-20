@@ -1,23 +1,19 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
 import org.lwjgl.input.Keyboard;
 
 import com.zyin.zyinhud.ZyinHUDKeyHandlers;
-import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.mods.QuickDeposit;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
-public class QuickDepositKeyHandler
+public class QuickDepositKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.quickdeposit";
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{

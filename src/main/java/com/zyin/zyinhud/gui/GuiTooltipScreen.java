@@ -22,7 +22,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
     public String tooltipNewlineDelimeter = "_p";
     
     /** The amount of time in milliseconds until a tooltip is rendered */
-	public long tooltipDelay = 1000;
+	public long tooltipDelay = 900;
 	
 	/** The maximum width in pixels a tooltip can occupy before word wrapping occurs */
 	public int tooltipMaxWidth = 150;
@@ -38,9 +38,10 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	}
 	
 	/**
-	 * Gets a tooltip String for a specific button.
-	 * @param buttonId
-	 * @return the tooltip string for the specified button ID
+	 * This method must be overriden. Gets a tooltip String for a specific button.
+	 * Recommended to use a switch/case statement for buttonId for easy implementation.
+	 * @param buttonId The ID of the button this tooltip corresponds to
+	 * @return The tooltip string for the specified buttonId
 	 */
 	protected abstract String GetButtonTooltip(int buttonId);
 	

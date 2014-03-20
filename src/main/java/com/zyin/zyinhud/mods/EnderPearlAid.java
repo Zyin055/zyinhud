@@ -1,13 +1,14 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.item.ItemEnderPearl;
+
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 
 /**
  * EnderPearl Aid allows the player to easily use an ender pearl on their hotbar by calling its UseEnderPearl() method.
  */
-public class EnderPearlAid
+public class EnderPearlAid extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -18,8 +19,7 @@ public class EnderPearlAid
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
     /**

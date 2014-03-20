@@ -1,37 +1,27 @@
 package com.zyin.zyinhud.mods;
 
-import com.zyin.zyinhud.util.InventoryUtil;
-import com.zyin.zyinhud.util.Localization;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.EXTRescaleNormal;
 import org.lwjgl.opengl.GL11;
+
+import com.zyin.zyinhud.mods.Coordinates.Modes;
+import com.zyin.zyinhud.util.InventoryUtil;
+import com.zyin.zyinhud.util.Localization;
 
 /**
  * Item Selector allows the player to conveniently swap their currently selected hotbar item with something in their
  * inventory.
  */
-public class ItemSelector
+public class ItemSelector extends ZyinHUDModBase
 {
-    public static final int WHEEL_UP   = -1;
-    public static final int WHEEL_DOWN = 1;
-
-    public static final int MODE_ALL    = 0;
-    public static final int MODE_COLUMN = 1;
-
-    public static final RenderItem itemRenderer = new RenderItem();
-
-    protected static Minecraft mc = Minecraft.getMinecraft();
-
-    /** Enables/Disables this Mod */
-    public static boolean Enabled;
+	/** Enables/Disables this Mod */
+	public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
@@ -39,24 +29,53 @@ public class ItemSelector
      */
     public static boolean ToggleEnabled()
     {
-        Enabled = !Enabled;
-        return Enabled;
+    	return Enabled = !Enabled;
     }
-
-    public static int Mode = MODE_ALL;
-
-    public static int NumberOfModes = 2;
-
-    public static int CycleMode()
+    
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
     {
-        Mode++;
+        ALL(Localization.get("itemselector.mode.0")),
+        SAME_COLUMN(Localization.get("itemselector.mode.1"));
+        
+        private String friendlyName;
+        
+        private Modes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
 
-        if (Mode >= NumberOfModes)
-            Mode = 0;
-
-        return Mode;
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[0];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
     }
-
+    
+    public static final int WHEEL_UP   = -1;
+    public static final int WHEEL_DOWN = 1;
+    
     protected static int timeout;
     public static final int defaultTimeout = 200;
     public static final int minTimeout     = 50;
@@ -72,13 +91,13 @@ public class ItemSelector
         timeout = MathHelper.clamp_int(value, minTimeout, maxTimeout);
     }
 
-    static int[] slotMemory    = new int[9];
-    static int   ticksToShow   = 0;
+    private static int[] slotMemory    = new int[9];
+    private static int   ticksToShow   = 0;
 
-    static boolean     selecting         = false;
-    static int         targetInvSlot     = -1;
-    static int         currentHotbarSlot = 0;
-    static ItemStack[] currentInventory  = null;
+    private static boolean     selecting         = false;
+    private static int         targetInvSlot     = -1;
+    private static int         currentHotbarSlot = 0;
+    private static ItemStack[] currentInventory  = null;
 
     /**
      * Scrolls the selector towards the specified direction. This will cause the item selector overlay to show.
@@ -97,7 +116,7 @@ public class ItemSelector
         if ( currentInventory[currentHotbarSlot] != null && currentInventory[currentHotbarSlot].isItemEnchanted() )
         {
             InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
-            done();
+            Done();
             return;
         }
 
@@ -111,7 +130,7 @@ public class ItemSelector
                 memory = direction == WHEEL_DOWN
                         ? 9 : 35;
 
-            if (Mode == MODE_COLUMN && memory % 9 != currentHotbarSlot)
+            if (Mode == Modes.SAME_COLUMN && memory % 9 != currentHotbarSlot)
                 continue;
 
             if (currentInventory[memory] == null)
@@ -127,7 +146,7 @@ public class ItemSelector
         if (targetInvSlot == -1)
         {
             InfoLine.DisplayNotification( Localization.get("itemselector.error.empty") );
-            done();
+            Done();
             return;
         }
 
@@ -143,11 +162,11 @@ public class ItemSelector
      */
     public static void CheckModifierPressed(boolean pressed)
     {
-        if (!Enabled)
+        if (!ItemSelector.Enabled)
             return;
 
         if (selecting && !pressed)
-            selectItem();
+            SelectItem();
     }
 
     /**
@@ -170,10 +189,12 @@ public class ItemSelector
         int originZ      = screenHeight - invHeight - 48;
 
         String labelText   = currentInventory[targetInvSlot].getDisplayName();
+        boolean isEnchanted;
         int    labelWidth  = mc.fontRenderer.getStringWidth(labelText);
         mc.fontRenderer.drawString(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRenderer.FONT_HEIGHT - 2, 0xFFFFAA00, true);
 
         GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);	//so the enchanted item effect is rendered properly
         RenderHelper.enableGUIStandardItemLighting();
 
         int idx = 0;
@@ -220,13 +241,14 @@ public class ItemSelector
 
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
+		GL11.glDisable(GL11.GL_LIGHTING);	//the itemRenderer.renderItem() method enables lighting
 
         ticksToShow--;
         if (ticksToShow <= 0)
-            done();
+            Done();
     }
 
-    static void selectItem()
+    private static void SelectItem()
     {
         ItemStack currentStack = mc.thePlayer.inventory.mainInventory[currentHotbarSlot];
         ItemStack targetStack  = mc.thePlayer.inventory.mainInventory[targetInvSlot];
@@ -235,31 +257,26 @@ public class ItemSelector
         if (targetStack != null)
         {
             if ( !mc.isSingleplayer() )
-            if ( ( currentStack != null && currentStack.isItemEnchanted() ) || targetStack.isItemEnchanted() )
             {
-                InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
-                done();
-                return;
+	            if ( ( currentStack != null && currentStack.isItemEnchanted() ) || targetStack.isItemEnchanted() )
+	            {
+	                InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
+	                Done();
+	                return;
+	            }
             }
-
-            EntityClientPlayerMP player     = mc.thePlayer;
-            PlayerControllerMP   controller = mc.playerController;
-
+            
             int currentInvSlot = InventoryUtil.TranslateHotbarIndexToInventoryIndex(currentHotbarSlot);
-
-            //controller.windowClick(player.inventoryContainer.windowId, currentInvSlot, 0, 0, player);
-            //controller.windowClick(player.inventoryContainer.windowId, targetInvSlot, 0, 0, player);
-            //controller.windowClick(player.inventoryContainer.windowId, currentInvSlot, 0, 0, player);
-
+            
             InventoryUtil.Swap(currentInvSlot, targetInvSlot);
         }
         else
             InfoLine.DisplayNotification( Localization.get("itemselector.error.emptyslot") );
 
-        done();
+        Done();
     }
 
-    static void done()
+    private static void Done()
     {
         targetInvSlot     = -1;
         currentHotbarSlot = 0;
@@ -268,7 +285,5 @@ public class ItemSelector
         ticksToShow = 0;
         selecting   = false;
     }
-
-
-
+    
 }

@@ -35,7 +35,6 @@ import net.minecraft.block.BlockWeb;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 //import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -43,6 +42,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import org.lwjgl.opengl.GL11;
 
+import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
@@ -52,7 +52,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
  * The Safe Overlay renders an overlay onto the game world showing which areas
  * mobs can spawn on.
  */
-public class SafeOverlay
+public class SafeOverlay extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -63,18 +63,49 @@ public class SafeOverlay
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-	/**
-	 * 0=off<br>
-	 * 1=on<br>
-	 */
-    public static int Mode = 0;
-    
-    /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 2;
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
+    {
+        OFF(Localization.get("safeoverlay.mode.0")),
+        ON(Localization.get("safeoverlay.mode.1"));
+        
+        private String friendlyName;
+        
+        private Modes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
+
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[0];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
     
     /**
      * Time in MS between re-calculations. This value changes based on the drawDistance
@@ -376,7 +407,7 @@ public class SafeOverlay
      */
     public void RenderAllUnsafePositionsMultithreaded(float partialTickTime)
     {
-        if (!SafeOverlay.Enabled || Mode == 0)	//0 = off, 1 = on
+        if (!SafeOverlay.Enabled || Mode == Modes.OFF)
         {
             return;
         }
@@ -576,11 +607,11 @@ public class SafeOverlay
      */
     public static String CalculateMessageForInfoLine()
     {
-        if (Mode == 0)	//off
+        if (Mode == Modes.OFF)
         {
             return FontCodes.WHITE + "";
         }
-        else if (Mode == 1)	//on
+        else if (Mode == Modes.ON)
         {
             return FontCodes.WHITE + Localization.get("safeoverlay.infoline") + InfoLine.SPACER;
         }
@@ -745,19 +776,6 @@ public class SafeOverlay
     {
         return unsafeOverlayMaxTransparency;
     }
-    
-    /**
-     * Increments the Clock mode
-     * @return The new Clock mode
-     */
-    public static int ToggleMode()
-    {
-    	Mode++;
-    	if(Mode >= NumberOfModes)
-    		Mode = 0;
-    	return Mode;
-    }
-    
     
     
     /**

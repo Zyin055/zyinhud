@@ -1,20 +1,18 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import com.zyin.zyinhud.mods.ItemSelector;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.MouseEvent;
 
-public class ItemSelectorKeyHandler
+import com.zyin.zyinhud.mods.ItemSelector;
+
+public class ItemSelectorKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.itemselector";
 
-    static Minecraft mc = Minecraft.getMinecraft();
-
     public static void MouseWheel(MouseEvent event)
     {
-        if (mc.currentScreen != null || !ItemSelector.Enabled)
+        if (!mc.inGameHasFocus || !ItemSelector.Enabled)
             return;
-
+        
         ItemSelector.Scroll(event.dwheel > 0 ? ItemSelector.WHEEL_UP : ItemSelector.WHEEL_DOWN);
         event.setCanceled(true);
     }

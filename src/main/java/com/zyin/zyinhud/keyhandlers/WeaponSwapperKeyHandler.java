@@ -1,16 +1,12 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import net.minecraft.client.Minecraft;
-
 import com.zyin.zyinhud.mods.WeaponSwapper;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
-public class WeaponSwapperKeyHandler
+public class WeaponSwapperKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.weaponswapper";
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{

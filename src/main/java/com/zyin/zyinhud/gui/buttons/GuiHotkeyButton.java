@@ -81,10 +81,8 @@ public class GuiHotkeyButton extends GuiButton
         KeyBinding[] keyBindings = mc.gameSettings.keyBindings;
         for(int i = 0; i < keyBindings.length; i++)
         {
-    		System.out.println(keyBindings[i].getKeyDescription() + " -- " + hotkeyDescription);
         	if(keyBindings[i].getKeyDescription().equals(hotkeyDescription))
         	{
-        		System.out.println("FOUND!");
         		return keyBindings[i];
         	}
         }
@@ -155,7 +153,6 @@ public class GuiHotkeyButton extends GuiButton
 	 */
 	protected String GetHotkeyDescription()
 	{
-		System.out.println("GetHotkeyDescription() returning " +hotkeyDescription);
 		return hotkeyDescription;
 	}
 }

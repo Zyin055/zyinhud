@@ -3,7 +3,6 @@ package com.zyin.zyinhud.mods;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
@@ -16,12 +15,13 @@ import org.lwjgl.opengl.GL11;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
+
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 /**
  * Potion Timers displays the remaining time left on any potion effects the user has.
  */
-public class PotionTimers
+public class PotionTimers extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -32,11 +32,9 @@ public class PotionTimers
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-    private static Minecraft mc = Minecraft.getMinecraft();
     private static final ResourceLocation inventoryResourceLocation = new ResourceLocation("textures/gui/container/inventory.png");
     
     public static boolean ShowPotionIcons;

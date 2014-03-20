@@ -16,9 +16,7 @@ import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.BlockWorkbench;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -36,9 +34,10 @@ import org.lwjgl.opengl.GL11;
  */
 public class ZyinHUDUtil
 {
-    private static Minecraft mc = Minecraft.getMinecraft();
-    private static GuiIngame gig = new GuiIngame(mc);
-
+    protected static Minecraft mc = Minecraft.getMinecraft();
+    protected static GuiIngame gig = new GuiIngame(mc);
+    protected static final RenderItem itemRenderer = new RenderItem();
+    protected static final TextureManager textureManager = mc.getTextureManager();
 	
     /***
      * Determines if something will happen if you right click on the block the 
@@ -71,7 +70,7 @@ public class ZyinHUDUtil
         return block instanceof BlockContainer	//BlockContainer = chests, hoppers, dispenser, jukebox, beacon, etc.
                 || block instanceof BlockButton
                 || block instanceof BlockLever
-                || block instanceof BlockRedstoneDiode	//BlockRedstoneLogic = repeaters, comparators, etc.	//TODO 1.6
+                || block instanceof BlockRedstoneDiode	//BlockRedstoneDiode = repeaters + comparators
                 || block instanceof BlockDoor
                 || block instanceof BlockAnvil
                 || block instanceof BlockBed
@@ -81,14 +80,14 @@ public class ZyinHUDUtil
                 || block instanceof BlockWorkbench;
 	}
 	
-	
-
-    //private static Icon boatIcon = GetBoatIcon();
-    //private static ResourceLocation saddleResource = GetSaddleResourceLocation();
-    
-    private static final RenderItem itemRenderer = new RenderItem();
-    private static final TextureManager textureManager = mc.getTextureManager();
-	
+	/**
+	 * Renders an Item icon in the 3D world at the specified coordinates
+	 * @param item
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param partialTickTime
+	 */
 	public static void RenderFloatingIcon(Item item, float x, float y, float z, float partialTickTime)
     {
     	RenderManager renderManager = RenderManager.instance;
@@ -118,7 +117,7 @@ public class ZyinHUDUtil
         ResourceLocation resource = textureManager.getResourceLocation(new ItemStack(item).getItemSpriteNumber());
         IIcon icon = new ItemStack(item).getIconIndex();
         
-        textureManager.bindTexture(resource);	//bind texture
+        textureManager.bindTexture(resource);
         itemRenderer.renderIcon(-8, -8, icon, 16, 16);
 
         GL11.glDepthMask(true);
@@ -129,7 +128,7 @@ public class ZyinHUDUtil
 	
 	
 	/**
-	 * Renders floating text at a specific position.
+	 * Renders floating text in the 3D world at a specific position.
 	 * @param text The text to render
 	 * @param x X coordinate in the game world
 	 * @param y Y coordinate in the game world
@@ -146,7 +145,7 @@ public class ZyinHUDUtil
     }
     
     /**
-	 * Renders floating lines of text at a specific position.
+	 * Renders floating lines of text in the 3D world at a specific position.
 	 * @param text The string array of text to render
 	 * @param x X coordinate in the game world
 	 * @param y Y coordinate in the game world
@@ -163,8 +162,6 @@ public class ZyinHUDUtil
     	
     	RenderManager renderManager = RenderManager.instance;
         FontRenderer fontRenderer = mc.fontRenderer;
-
-		//player = mc.thePlayer;
         
         float playerX = (float) (mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * partialTickTime);
         float playerY = (float) (mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * partialTickTime);
@@ -215,14 +212,12 @@ public class ZyinHUDUtil
             GL11.glEnable(GL11.GL_TEXTURE_2D);
         }
         
-        //fontRenderer.setUnicodeFlag(true);
         int i = 0;
         for(String message : text)
         {
             fontRenderer.drawString(message, -textWidth / 2, i*lineHeight, color);
         	i++;
         }
-        //fontRenderer.setUnicodeFlag(false);
         
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDepthMask(true);

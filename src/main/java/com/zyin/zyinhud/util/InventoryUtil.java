@@ -1119,7 +1119,6 @@ public class InventoryUtil
 		
 		if(emptySlotIndex != -1)
 		{
-			System.out.println("swapping "+armorSlotIndex+" to "+emptySlotIndex);
 			return Swap(armorSlotIndex, emptySlotIndex);
 		}
 		

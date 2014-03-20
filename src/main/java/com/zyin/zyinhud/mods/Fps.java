@@ -1,11 +1,11 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.client.Minecraft;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
-public class Fps
+public class Fps extends ZyinHUDModBase
 {
+	
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
 
@@ -15,11 +15,9 @@ public class Fps
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
-
-    private static Minecraft mc = Minecraft.getMinecraft();
+	
     public static String currentFps = "0";
 
     public static String CalculateMessageForInfoLine()

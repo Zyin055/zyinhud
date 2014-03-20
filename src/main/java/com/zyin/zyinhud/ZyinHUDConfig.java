@@ -1,12 +1,30 @@
 package com.zyin.zyinhud;
 
-import com.zyin.zyinhud.mods.*;
+import java.io.File;
+
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
 import org.lwjgl.input.Keyboard;
 
-import java.io.File;
+import com.zyin.zyinhud.mods.AnimalInfo;
+import com.zyin.zyinhud.mods.Clock;
+import com.zyin.zyinhud.mods.Compass;
+import com.zyin.zyinhud.mods.Coordinates;
+import com.zyin.zyinhud.mods.DistanceMeasurer;
+import com.zyin.zyinhud.mods.DurabilityInfo;
+import com.zyin.zyinhud.mods.EatingAid;
+import com.zyin.zyinhud.mods.EnderPearlAid;
+import com.zyin.zyinhud.mods.Fps;
 import com.zyin.zyinhud.mods.HealthMonitor;
+import com.zyin.zyinhud.mods.InfoLine;
+import com.zyin.zyinhud.mods.ItemSelector;
+import com.zyin.zyinhud.mods.PlayerLocator;
+import com.zyin.zyinhud.mods.PotionAid;
+import com.zyin.zyinhud.mods.PotionTimers;
+import com.zyin.zyinhud.mods.QuickDeposit;
+import com.zyin.zyinhud.mods.SafeOverlay;
+import com.zyin.zyinhud.mods.WeaponSwapper;
 
 /**
  * This class is responsible for interacting with the configuration file.
@@ -154,15 +172,13 @@ public class ZyinHUDConfig
         	Coordinates.ChatStringFormat = p.getString();
         else
         	p.set(Coordinates.ChatStringFormat);
-        
-        p = config.get(CATEGORY_COORDINATES, "CoordinatesMode", 0);
-        p.comment = "Set the coordinates display mode:" + config.NEW_LINE +
-					"0 = [x, z, y]" + config.NEW_LINE +
-					"1 = [x, y, z]";
+
+        p = config.get(CATEGORY_COORDINATES, "CoordinatesMode", "XZY");
+        p.comment = "Sets the Coordinates mode.";
         if(loadSettings)
-        	Coordinates.Mode = p.getInt(0);
+        	Coordinates.Mode = Coordinates.Modes.GetMode(p.getString());
         else
-        	p.set(Coordinates.Mode);
+        	p.set(Coordinates.Mode.name());
         
         
         //CATEGORY_COMPASS
@@ -181,6 +197,13 @@ public class ZyinHUDConfig
         	DistanceMeasurer.Enabled = p.getBoolean(true);
         else
         	p.set(DistanceMeasurer.Enabled);
+        
+        p = config.get(CATEGORY_DISTANCEMEASURER, "DistanceMeasurerMode", "OFF");
+        p.comment = "Sets the Distance Measurer mode.";
+        if(loadSettings)
+        	DistanceMeasurer.Mode = DistanceMeasurer.Modes.GetMode(p.getString());
+        else
+        	p.set(DistanceMeasurer.Mode.name());
         
         
         //CATEGORY_DURABILITYINFO
@@ -270,14 +293,12 @@ public class ZyinHUDConfig
         else
         	p.set(SafeOverlay.Enabled);
         
-        p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayMode", 0);
-        p.comment = "Set the safe overlay by default to:" + config.NEW_LINE +
-					"0 = off" + config.NEW_LINE +
-					"1 = on";
+        p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayMode", "OFF");
+        p.comment = "Sets the Safe Overlay mode.";
         if(loadSettings)
-        	SafeOverlay.Mode = p.getInt(0);
+        	SafeOverlay.Mode = SafeOverlay.Modes.GetMode(p.getString());
         else
-        	p.set(SafeOverlay.Mode);
+        	p.set(SafeOverlay.Mode.name());
         
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayDrawDistance", 20);
         p.comment = "How far away unsafe spots should be rendered around the player measured in blocks. This can be changed in game with - + "
@@ -370,14 +391,12 @@ public class ZyinHUDConfig
         else
         	p.set(PlayerLocator.Enabled);
         
-        p = config.get(CATEGORY_PLAYERLOCATOR, "PlayerLocatorMode", 0);
-        p.comment = "Set the player locator by default to:" + config.NEW_LINE +
-					"0 = off" + config.NEW_LINE +
-					"1 = on";
+        p = config.get(CATEGORY_PLAYERLOCATOR, "PlayerLocatorMode", "OFF");
+        p.comment = "Sets the Player Locator mode.";
         if(loadSettings)
-        	PlayerLocator.Mode = p.getInt(0);
+        	PlayerLocator.Mode = PlayerLocator.Modes.GetMode(p.getString());
         else
-        	p.set(PlayerLocator.Mode);
+        	p.set(PlayerLocator.Mode.name());
         
         p = config.get(CATEGORY_PLAYERLOCATOR, "ShowDistanceToPlayers", false);
         p.comment = "Show how far away you are from the other players next to their name.";
@@ -431,14 +450,12 @@ public class ZyinHUDConfig
         else
         	p.set(EatingAid.PrioritizeFoodInHotbar);
         
-        p = config.get(CATEGORY_EATINGAID, "EatingAidMode", 1);
-        p.comment = "Set the eating aid mode:" + config.NEW_LINE +
-					"0 = always eat food with the highest saturation value" + config.NEW_LINE +
-					"1 = intelligently select food so that you don't overeat and waste anything";
+        p = config.get(CATEGORY_EATINGAID, "EatingAidMode", "INTELLIGENT");
+        p.comment = "Sets the Eating Aid mode.";
         if(loadSettings)
-        	EatingAid.Mode = p.getInt(1);
+        	EatingAid.Mode = EatingAid.Modes.GetMode(p.getString());
         else
-        	p.set(EatingAid.Mode);
+        	p.set(EatingAid.Mode.name());
         
         
         //CATEGORY_WEAPONSWAP
@@ -475,14 +492,12 @@ public class ZyinHUDConfig
         else
         	p.set(AnimalInfo.Enabled);
         
-        p = config.get(CATEGORY_ANIMALINFO, "AnimalInfoMode", 0);
-        p.comment = "Set the animal info mode by default to:" + config.NEW_LINE +
-					"0 = off" + config.NEW_LINE +
-					"1 = on";
+        p = config.get(CATEGORY_ANIMALINFO, "AnimalInfoMode", "OFF");
+        p.comment = "Sets the Animal Info mode.";
         if(loadSettings)
-        	AnimalInfo.Mode = p.getInt(0);
+        	AnimalInfo.Mode = AnimalInfo.Modes.GetMode(p.getString());
         else
-        	p.set(AnimalInfo.Mode);
+        	p.set(AnimalInfo.Mode.name());
         
         p = config.get(CATEGORY_ANIMALINFO, "ShowTextBackgrounds", true);
         p.comment = "Enable/Disable showing a black background behind text.";
@@ -594,16 +609,14 @@ public class ZyinHUDConfig
         else
         	p.set(Clock.Enabled);
         
-        p = config.get(CATEGORY_CLOCK, "ClockMode", 1);
-        p.comment = "Set the clock mode:" + config.NEW_LINE +
-        			"0 = standard Minecraft time in game" + config.NEW_LINE +
-        			"1 = countdown timer till morning/night" + config.NEW_LINE +
-        			"2 = a graphic Minecraft clock";
+        p = config.get(CATEGORY_CLOCK, "ClockMode", "STANDARD");
+        p.comment = "Sets the Clock mode.";
         if(loadSettings)
-        	Clock.Mode = p.getInt(1);
+        	Clock.Mode = Clock.Modes.GetMode(p.getString());
         else
-        	p.set(Clock.Mode);
-
+        	p.set(Clock.Mode.name());
+        
+        
         
         //CATEGORY_POTIONAID
         p = config.get(CATEGORY_POTIONAID, "EnablePotionAid", true);
@@ -697,28 +710,22 @@ public class ZyinHUDConfig
         if(loadSettings)
           ItemSelector.SetTimeout(p.getInt(ItemSelector.defaultTimeout));
         else
-          p.set( ItemSelector.GetTimeout() );
-
-        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorMode", ItemSelector.MODE_ALL);
-        p.comment = "Specifies the selection mode when cycling through items.";
-        if(loadSettings)
-          ItemSelector.Mode = p.getInt(ItemSelector.MODE_ALL);
-        else
-          p.set( ItemSelector.Mode );
-
+          p.set(ItemSelector.GetTimeout());
         
-        p = config.get(CATEGORY_HEALTHMONITOR, "HealthMonitorMode", 1);
-        p.comment = "Set the health monitor sound mode:" + config.NEW_LINE +
-        			"0 = OoT" + config.NEW_LINE +
-        			"1 = LttP" + config.NEW_LINE +
-        			"2 = Oracle" + config.NEW_LINE +
-        			"3 = LA" + config.NEW_LINE +
-        			"4 = LoZ" + config.NEW_LINE +
-        			"5 = AoL";
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorMode", "ALL");
+        p.comment = "Sets the Item Selector mode.";
         if(loadSettings)
-        	HealthMonitor.Mode = p.getInt(0);
+        	ItemSelector.Mode = ItemSelector.Modes.GetMode(p.getString());
         else
-        	p.set(HealthMonitor.Mode);
+        	p.set(ItemSelector.Mode.name());
+
+        //CATEGORY_HEALTHMONITOR
+        p = config.get(CATEGORY_HEALTHMONITOR, "HealthMonitorMode", "OOT");
+        p.comment = "Sets the Health Monitor mode.";
+        if(loadSettings)
+        	HealthMonitor.Mode = HealthMonitor.Modes.GetMode(p.getString());
+        else
+        	p.set(HealthMonitor.Mode.name());
 
         p = config.get(CATEGORY_HEALTHMONITOR, "LowHealthSoundThreshold", 6);
         p.comment = "A sound will start playingwhen you have less than this much health left.";

@@ -1,31 +1,28 @@
 package com.zyin.zyinhud.mods;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.chunk.Chunk;
+
 import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.chunk.Chunk;
-
 /**
  * The Info Line consists of everything that gets displayed in the top-left portion
  * of the screen. It's job is to gather information about other classes and render
  * their message into the Info Line.
  */
-public class InfoLine
+public class InfoLine extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -36,11 +33,9 @@ public class InfoLine
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
-    private static Minecraft mc = Minecraft.getMinecraft();
-
+    
     public static boolean ShowBiome;
     public static boolean ShowCanSnow;
     
@@ -50,8 +45,6 @@ public class InfoLine
     public static final String SPACER = " ";
     public static int infoLineLocX = 1;
     public static int infoLineLocY = 1;
-
-    private static final RenderItem itemRenderer = new RenderItem();
 
     private static final int notificationDuration = 1200;	//measured in milliseconds
     private static long notificationTimer = 0;				//timer that goes from notificationDuration to 0

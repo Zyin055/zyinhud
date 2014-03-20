@@ -1,16 +1,12 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import net.minecraft.client.Minecraft;
-
 import com.zyin.zyinhud.mods.EnderPearlAid;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
-public class EnderPearlAidKeyHandler
+public class EnderPearlAidKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.enderpearlaid";
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{

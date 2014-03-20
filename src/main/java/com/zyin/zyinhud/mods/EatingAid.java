@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFishFood.FishType;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 
+import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -21,7 +22,7 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
 /**
  * Eating Helper allows the player to eat food in their inventory by calling its Eat() method.
  */
-public class EatingAid
+public class EatingAid extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -32,18 +33,49 @@ public class EatingAid
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-	/**
-	 * 0=basic<br>
-	 * 1=intelligent<br>
-	 */
-    public static int Mode = 0;
-    
-    /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 2;
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
+    {
+        BASIC(Localization.get("eatingaid.mode.0")),
+        INTELLIGENT(Localization.get("eatingaid.mode.1"));
+        
+        private String friendlyName;
+        
+        private Modes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
+
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[0];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
     
     /** Such as golden carrots, golden apples */
     public static boolean EatGoldenFood;
@@ -51,8 +83,6 @@ public class EatingAid
     public static boolean EatRawFood;
     public static boolean PrioritizeFoodInHotbar;
     
-    
-    private Minecraft mc = Minecraft.getMinecraft();
     private Timer timer = new Timer();
     private TimerTask swapTimerTask;
     private TimerTask eatTimerTask;
@@ -91,10 +121,10 @@ public class EatingAid
      */
     public void Eat()
     {
-        //currentItemStack.onFoodEaten(mc.theWorld, mc.thePlayer);	//INSTANT EATING (single player only?)
+        //currentItemStack.onFoodEaten(mc.theWorld, mc.thePlayer);	//INSTANT EATING (single player only)
     	
-        //make sure we're not about to click on a right-clickable thing
-        if(ZyinHUDUtil.IsMouseoveredBlockRightClickable())
+        //make sure we're not about to click on a right-clickable thing, and we're not in creative mode
+        if(ZyinHUDUtil.IsMouseoveredBlockRightClickable() || mc.playerController.isInCreativeMode())
         	return;
 
         if (isCurrentlyEating)
@@ -231,20 +261,12 @@ public class EatingAid
     
     public int GetFoodItemIndexFromInventory()
     {
-    	if(Mode == 0)
-    	{
-    		//basic mode
+    	if(Mode == Modes.BASIC)
     		return GetStrongestFoodItemIndexFromInventory();
-    	}
-    	else if(Mode == 1)
-    	{
-    		//intelligent mode
+    	else if(Mode == Modes.INTELLIGENT)
     		return GetBestFoodItemIndexFromInventory();
-    	}
     	else
-    	{
     		return -2;
-    	}
     }
     
     /**
@@ -293,13 +315,15 @@ public class EatingAid
                 }
                 else if (item.equals(Items.rotten_flesh)
                          || item.equals(Items.poisonous_potato)
-                         || item.equals(Items.spider_eye))
+                         || item.equals(Items.spider_eye)
+                         || FishType.func_150978_a(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
                 {
                 	saturation = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
                 }
                 else if (item.equals(Items.chicken)
                         || item.equals(Items.porkchop)
-                        || item.equals(Items.beef))
+                        || item.equals(Items.beef)
+                    	|| item.equals(Items.fish))	//Items.fish refers to UNCOOKED fish: Raw Fish, Raw Salmon, Pufferfish, Clownfish
                 {
                     if (!EatRawFood)
                     {
@@ -376,13 +400,15 @@ public class EatingAid
                 }
                 else if (item.equals(Items.rotten_flesh)
                         || item.equals(Items.poisonous_potato)
-                        || item.equals(Items.spider_eye))
+                        || item.equals(Items.spider_eye)
+                        || FishType.func_150978_a(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
                 {
                     overeat = 998;	//setting the overeat value high will make it unappealing to the food selection algorithm
                 }
                 else if (item.equals(Items.chicken)
                         || item.equals(Items.porkchop)
-                        || item.equals(Items.beef))
+                        || item.equals(Items.beef)
+                        || item.equals(Items.fish))	//Items.fish refers to UNCOOKED fish: Raw Fish, Raw Salmon, Pufferfish, Clownfish
                 {
                     if (!EatRawFood)
                     {
@@ -439,18 +465,6 @@ public class EatingAid
     {
     	PrioritizeFoodInHotbar = !PrioritizeFoodInHotbar;
     	return PrioritizeFoodInHotbar;
-    }
-    
-    /**
-     * Increments the Eating Aid mode
-     * @return The new Eating Aid mode
-     */
-    public static int ToggleMode()
-    {
-    	Mode++;
-    	if(Mode >= NumberOfModes)
-    		Mode = 0;
-    	return Mode;
     }
     
     

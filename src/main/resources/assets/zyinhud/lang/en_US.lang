@@ -11,86 +11,6 @@ key.zyinhud.weaponswapper=Weapon Swap
 key.zyinhud.zyinhudoptions=Zyin's HUD Options
 key.zyinhud.itemselector=Item Selector
 
-clock.name=Clock
-clock.options.mode.tooltip=_lStandard_r: Shows the current Minecraft time_p_lCountdown_r: Timer till the next day/night begins_p_lGraphic_r: Shows a Minecraft clock
-clock.mode.0=Standard
-clock.mode.1=Countdown
-clock.mode.2=Graphic
-
-compass.name=Compass
-compass.options.hotkey.tooltip=Coordinates pasted into the chat box can be formatted in the config file
-compass.north=N
-compass.east=E
-compass.south=S
-compass.west=W
-compass.northeast=NE
-compass.northwest=NW
-compass.southeast=SE
-compass.southwest=SW
-
-coordinates.name=Coordinates
-coordinates.mode.0=[x, z, y]
-coordinates.mode.1=[x, y, z]
-coordinates.options.useycoordinatecolors=Y Colors: 
-
-distancemeasurer.name=Distance Measurer
-distancemeasurer.far=far
-
-eatingaid.name=Eating Aid
-eatingaid.mode.0=Basic
-eatingaid.mode.1=Intelligent
-eatingaid.nofood=No food
-eatingaid.options.mode.tooltip=_lBasic_r: Eats the most filling food_p_lIntelligent_r: Eats whichever food best tops off your hunger
-eatingaid.options.eatgoldenfood=Eat Golden Food: 
-eatingaid.options.eatrawfood=Eat Uncooked Food: 
-eatingaid.options.prioritizefoodinhotbar=Prioritize Food in Hotbar: 
-
-enderpearlaid.name=Ender Pearl Aid
-enderpearlaid.noenderpearls=No ender pearls
-
-fps.name=FPS
-fps.infoline=fps
-
-healthmonitor.name=Health Monitor
-healthmonitor.mode.0=OoT
-healthmonitor.mode.1=LttP
-healthmonitor.mode.2=Oracle
-healthmonitor.mode.3=LA
-healthmonitor.mode.4=LoZ
-healthmonitor.mode.5=AoL
-healthmonitor.options.enabled.tooltip=Plays a warning sound when you are low on health, just like in a Zelda game
-healthmonitor.options.mode.play=Play
-healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
-healthmonitor.options.playfasterneardeath=Quicker near death: 
-healthmonitor.options.playfasterneardeath.tooltip=Play the warning sounds quicker the closer you get to dieing
-healthmonitor.options.lowhealthsoundthreshold=Play when health < 
-
-durabilityinfo.name=Durability Info
-durabilityinfo.options.showitemdurability=Show Tools: 
-durabilityinfo.options.showarmordurability=Show Armor: 
-durabilityinfo.options.itemdurabilitythreshold=Tool Threshold % : 
-durabilityinfo.options.itemdurabilitythreshold.tooltip=Settings this to 1.00 will always show your tools
-durabilityinfo.options.armordurabilitythreshold=Armor Threshold % : 
-durabilityinfo.options.armordurabilitythreshold.tooltip=Settings this to 1.00 will always show your armor
-durabilityinfo.options.autounequiparmor=Auto Unequip Armor: 
-durabilityinfo.options.autounequiparmor.tooltip=Will automatically take off your armor when it is is breaking (<5 durability)
-durabilityinfo.options.autounequiptools=Auto Unequip Tools: 
-durabilityinfo.options.autounequiptools.tooltip=Will automatically unequip your tool when it is is breaking (<20 durability)
-durabilityinfo.options.offsetx=Offset X: 
-durabilityinfo.options.offsety=Offset Y: 
-durabilityinfo.options.updatefrequency=Update Freq (ms): 
-durabilityinfo.options.showindividualarmoricons=Use Armor Icons: 
-durabilityinfo.options.showdamageaspercent=Use Percentages: 
-
-gui.override.options.buttons.options=Zyin's HUD...
-gui.options.title=Zyin's HUD Settings
-gui.options.enabled=Enabled: 
-gui.options.settingon=true
-gui.options.settingoff=false
-gui.options.mode=Mode: 
-gui.options.hotkey=Hotkey: 
-gui.options.saveandexit=Save
-
 animalinfo.name=Animal Info
 animalinfo.infoline=animals
 animalinfo.options.maxviewdistance=Max View Distance: 
@@ -121,13 +41,109 @@ animalinfo.debug.hp=Horse HP:
 animalinfo.debug.color=Horse Color:
 animalinfo.debug.markings=Horse Markings:
 
+clock.name=Clock
+clock.options.mode.tooltip=_lStandard_r: Shows the current Minecraft time_p_lCountdown_r: Timer till the next day/night begins_p_lGraphic_r: Shows a Minecraft clock
+clock.mode.0=Standard
+clock.mode.1=Countdown
+clock.mode.2=Graphic
+
+compass.name=Compass
+compass.options.hotkey.tooltip=Coordinates pasted into the chat box can be formatted in the config file
+compass.north=N
+compass.east=E
+compass.south=S
+compass.west=W
+compass.northeast=NE
+compass.northwest=NW
+compass.southeast=SE
+compass.southwest=SW
+
+coordinates.name=Coordinates
+coordinates.mode.0=[x, z, y]
+coordinates.mode.1=[x, y, z]
+coordinates.options.useycoordinatecolors=Y Colors: 
+
+distancemeasurer.name=Distance Measurer
+distancemeasurer.mode.0=Off
+distancemeasurer.mode.1=Simple
+distancemeasurer.mode.2=Complex
+distancemeasurer.far=far
+
+durabilityinfo.name=Durability Info
+durabilityinfo.options.showitemdurability=Show Tools: 
+durabilityinfo.options.showarmordurability=Show Armor: 
+durabilityinfo.options.itemdurabilitythreshold=Tool Threshold % : 
+durabilityinfo.options.itemdurabilitythreshold.tooltip=Settings this to 1.00 will always show your tools
+durabilityinfo.options.armordurabilitythreshold=Armor Threshold % : 
+durabilityinfo.options.armordurabilitythreshold.tooltip=Settings this to 1.00 will always show your armor
+durabilityinfo.options.autounequiparmor=Auto Unequip Armor: 
+durabilityinfo.options.autounequiparmor.tooltip=Will automatically take off your armor when it is is breaking (<5 durability)
+durabilityinfo.options.autounequiptools=Auto Unequip Tools: 
+durabilityinfo.options.autounequiptools.tooltip=Will automatically unequip your tool when it is is breaking (<20 durability)
+durabilityinfo.options.offsetx=Offset X: 
+durabilityinfo.options.offsety=Offset Y: 
+durabilityinfo.options.updatefrequency=Update Freq (ms): 
+durabilityinfo.options.showindividualarmoricons=Use Armor Icons: 
+durabilityinfo.options.showdamageaspercent=Use Percentages: 
+
+eatingaid.name=Eating Aid
+eatingaid.mode.0=Basic
+eatingaid.mode.1=Intelligent
+eatingaid.nofood=No food
+eatingaid.options.mode.tooltip=_lBasic_r: Eats the most filling food_p_lIntelligent_r: Eats whichever food best tops off your hunger
+eatingaid.options.eatgoldenfood=Eat Golden Food: 
+eatingaid.options.eatrawfood=Eat Uncooked Food: 
+eatingaid.options.prioritizefoodinhotbar=Prioritize Food in Hotbar: 
+
+enderpearlaid.name=Ender Pearl Aid
+enderpearlaid.noenderpearls=No ender pearls
+
+fps.name=FPS
+fps.infoline=fps
+
+healthmonitor.name=Health Monitor
+healthmonitor.mode.0=OoT
+healthmonitor.mode.1=LttP
+healthmonitor.mode.2=Oracle
+healthmonitor.mode.3=LA
+healthmonitor.mode.4=LoZ
+healthmonitor.mode.5=AoL
+healthmonitor.options.enabled.tooltip=Plays a warning sound when you are low on health, just like in a Zelda game
+healthmonitor.options.mode.play=Play
+healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
+healthmonitor.options.playfasterneardeath=Quicker near death: 
+healthmonitor.options.playfasterneardeath.tooltip=Play the warning sounds quicker the closer you get to dieing
+healthmonitor.options.lowhealthsoundthreshold=Play when health < 
+
+gui.override.options.buttons.options=Zyin's HUD...
+gui.options.title=Zyin's HUD Settings
+gui.options.enabled=Enabled: 
+gui.options.settingon=true
+gui.options.settingoff=false
+gui.options.mode=Mode: 
+gui.options.hotkey=Hotkey: 
+gui.options.saveandexit=Save
+
 infoline.name=Info Line
 infoline.options.showbiome=Show Biome: 
 infoline.options.showcansnow=Show if it can snow: 
 infoline.options.offsetx=Offset X: 
 infoline.options.offsety=Offset Y: 
 
+itemselector.name=Item Selector
+itemselector.mode.0=All
+itemselector.mode.1=Same Column
+itemselector.error.emptyslot=That slot no longer has an item
+itemselector.error.enchant=Unable to swap enchanted items in multiplayer
+itemselector.error.empty=Inventory has no selectable items
+itemselector.options.hotkey.tooltip=Hold this button while using the mousewheel to select items
+itemselector.options.mode.tooltip=_lAll_r: Select items from your entire inventory_p_lSame Column_r: Select items only from the same column as your currently selected item in the hotbar
+itemselector.options.ticks=Ticks until timeout: 
+itemselector.options.ticks.tooltip=How many in game ticks (20 = 1 sec) before the highlighted item is automatically selected
+
 playerlocator.name=Player Locator
+playerlocator.mode.0=Off
+playerlocator.mode.0=On
 playerlocator.infoline=players
 playerlocator.options.minviewdistance=Min View Distance: 
 playerlocator.options.showdistancetoplayers=Display Distances: 
@@ -146,6 +162,8 @@ potiontimers.options.offsetx=Offset X:
 potiontimers.options.offsety=Offset Y: 
 
 safeoverlay.name=Safe Overlay
+safeoverlay.mode.0=Off
+safeoverlay.mode.1=On
 safeoverlay.infoline=safe
 safeoverlay.options.hotkey.tooltip=Ctrl + key = Toggle X-ray_p+ + key = Increase distance_p- + key = Decrease distance_p0 + key = Reset distance
 safeoverlay.options.drawdistance=Draw Distance: 
@@ -174,12 +192,3 @@ quickdeposit.options.blacklistenderpearl=Ender Pearls:
 quickdeposit.options.blacklistfood=Food: 
 quickdeposit.options.blacklistwaterbucket=Water Buckets: 
 quickdeposit.options.blacklistclockcompass=Clock/Compass:
-
-itemselector.name=Item Selector
-itemselector.error.emptyslot=That slot no longer has an item
-itemselector.error.enchant=Unable to swap enchanted items on multiplayer
-itemselector.error.empty=Inventory has no selectable items
-itemselector.options.ticks=Ticks until timeout:
-itemselector.options.selectionmode=Selection mode:
-itemselector.mode.0=All
-itemselector.mode.1=Same Column

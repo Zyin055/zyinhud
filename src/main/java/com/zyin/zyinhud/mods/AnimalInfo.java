@@ -22,6 +22,7 @@ import net.minecraft.item.Item;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import com.zyin.zyinhud.mods.ItemSelector.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -29,7 +30,7 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
 /**
  * Shows information about horses in the F3 menu.
  */
-public class AnimalInfo
+public class AnimalInfo extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -40,18 +41,49 @@ public class AnimalInfo
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-	/**
-	 * 0=off<br>
-	 * 1=on<br>
-	 */
-    public static int Mode = 0;
-    
-    /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 2;
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
+    {
+        OFF(Localization.get("safeoverlay.mode.0")),
+        ON(Localization.get("safeoverlay.mode.1"));
+        
+        private String friendlyName;
+        
+        private Modes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
+
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[0];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
 
     public static boolean ShowTextBackgrounds;
     public static boolean ShowBreedingIcons;
@@ -70,10 +102,7 @@ public class AnimalInfo
     public static int minNumberOfDecimalsDisplayed = 0;
     public static int maxNumberOfDecimalsDisplayed = 20;
     
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
     private static EntityClientPlayerMP me;
-
     
     //values above the perfect value are aqua
     //values between the perfect and good values are green
@@ -236,7 +265,7 @@ public class AnimalInfo
         //if the player is in the world
         //and not looking at a menu
         //and F3 not pressed
-        if (AnimalInfo.Enabled && Mode == 1 &&
+        if (AnimalInfo.Enabled && Mode == Modes.ON &&
                 (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
                 && !mc.gameSettings.showDebugInfo)
         {
@@ -338,11 +367,11 @@ public class AnimalInfo
      */
     public static String CalculateMessageForInfoLine()
     {
-        if (Mode == 0)	//off
+        if (Mode == Modes.OFF)
         {
             return FontCodes.WHITE + "";
         }
-        else if (Mode == 1)	//on
+        else if (Mode == Modes.ON)
         {
             return FontCodes.WHITE + Localization.get("animalinfo.infoline") + InfoLine.SPACER;
         }
@@ -676,18 +705,5 @@ public class AnimalInfo
     {
     	ShowBreedingTimers = !ShowBreedingTimers;
     	return ShowBreedingTimers;
-    }
-
-    
-    /**
-     * Increments the Animal Info mode
-     * @return The new Animal Info mode
-     */
-    public static int ToggleMode()
-    {
-    	Mode++;
-    	if(Mode >= NumberOfModes)
-    		Mode = 0;
-    	return Mode;
     }
 }

@@ -1,16 +1,12 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import net.minecraft.client.Minecraft;
-
 import com.zyin.zyinhud.mods.PotionAid;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
-public class PotionAidKeyHandler
+public class PotionAidKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.potionaid";
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{

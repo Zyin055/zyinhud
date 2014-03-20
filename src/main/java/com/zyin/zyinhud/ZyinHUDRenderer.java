@@ -64,19 +64,4 @@ public class ZyinHUDRenderer
         RenderEntityTrackerHelper.RenderEntityInfo(event.partialTicks);
     }
     
-    
-    /**
-     * Event fired before a GUI is opened.
-     * @param event
-     */
-    @SubscribeEvent
-    public void GuiOpenEvent(GuiOpenEvent event)
-    {
-    	//override the default Options screen with our custom one, which contains our custom button
-    	if (event.gui instanceof GuiOptions && mc.theWorld != null)
-        {
-    		event.gui = new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings);
-        }
-    }
-    
 }

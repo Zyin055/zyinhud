@@ -1,6 +1,5 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
@@ -9,7 +8,7 @@ import net.minecraft.item.ItemSword;
 /**
  * Weapon Swap allows the player to quickly equip their sword and bow.
  */
-public class WeaponSwapper
+public class WeaponSwapper extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -20,14 +19,10 @@ public class WeaponSwapper
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
-	
+    
     public static boolean ScanHotbarForWeaponsFromLeftToRight;
-    
-    
-    protected static Minecraft mc = Minecraft.getMinecraft();
 
     /**
      * Makes the player select their sword. If a sword is already selected, it selects the bow instead.
@@ -46,38 +41,38 @@ public class WeaponSwapper
             currentItem = currentItemStack.getItem();
         }
 
-        int bowsSlot = GetItemSlotFromHotbar(ItemBow.class);
-        int swordsSlot = GetItemSlotFromHotbar(ItemSword.class);
+        int bowSlot = GetItemSlotFromHotbar(ItemBow.class);
+        int swordSlot = GetItemSlotFromHotbar(ItemSword.class);
 
-        if (swordsSlot < 0 && bowsSlot < 0)
+        if (swordSlot < 0 && bowSlot < 0)
         {
             //we dont have a sword or a bow
             InfoLine.DisplayNotification("No weapons in hotbar");
         }
-        else if (swordsSlot >= 0 && bowsSlot < 0)
+        else if (swordSlot >= 0 && bowSlot < 0)
         {
             //we have a sword, but no bow
-            SelectHotbarSlot(swordsSlot);
+            SelectHotbarSlot(swordSlot);
         }
-        else if (swordsSlot < 0 && bowsSlot >= 0)
+        else if (swordSlot < 0 && bowSlot >= 0)
         {
             //we have a bow, but no sword
-            SelectHotbarSlot(bowsSlot);
+            SelectHotbarSlot(bowSlot);
         }
         else if (currentItem instanceof ItemSword)
         {
             //currently selected sword, so equip bow
-            SelectHotbarSlot(bowsSlot);
+            SelectHotbarSlot(bowSlot);
         }
         else if (currentItem instanceof ItemBow)
         {
             //currently selected bow, so equip sword
-            SelectHotbarSlot(swordsSlot);
+            SelectHotbarSlot(swordSlot);
         }
         else
         {
             //we have weapons but they are not selected, so select the sword
-            SelectHotbarSlot(swordsSlot);
+            SelectHotbarSlot(swordSlot);
         }
     }
 

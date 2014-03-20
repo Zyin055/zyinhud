@@ -2,7 +2,6 @@ package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -10,17 +9,15 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -28,7 +25,7 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
 /**
  * The Player Locator checks for nearby players and displays their name on screen wherever they are.
  */
-public class PlayerLocator
+public class PlayerLocator extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -39,26 +36,54 @@ public class PlayerLocator
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
-
-	/**
-	 * 0=off<br>
-	 * 1=on<br>
-	 */
-    public static int Mode = 0;
     
-    /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 2;
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
+    {
+        OFF(Localization.get("playerlocator.mode.0")),
+        ON(Localization.get("playerlocator.mode.1"));
+        
+        private String friendlyName;
+        
+        private Modes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
+
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[0];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
     
     /** Shows how far you are from other players next to their name */
     public static boolean ShowDistanceToPlayers;
     public static boolean ShowPlayerHealth;
     
-    private static Minecraft mc = Minecraft.getMinecraft();
-    private static final RenderItem itemRenderer = new RenderItem();
-    private static TextureManager textureManager = mc.getTextureManager();
     private static final ResourceLocation iconsResourceLocation = new ResourceLocation("textures/gui/icons.png");
 
     private static final double pi = Math.PI;
@@ -97,7 +122,7 @@ public class PlayerLocator
         //if the player is in the world
         //and not looking at a menu
         //and F3 not pressed
-        if (PlayerLocator.Enabled && Mode == 1 &&
+        if (PlayerLocator.Enabled && Mode == Modes.ON &&
                 (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
                 && !mc.gameSettings.showDebugInfo)
         {
@@ -277,11 +302,11 @@ public class PlayerLocator
      */
     public static String CalculateMessageForInfoLine()
     {
-        if (Mode == 0)	//off
+        if (Mode == Modes.OFF)
         {
             return FontCodes.WHITE + "";
         }
-        else if (Mode == 1)	//on
+        else if (Mode == Modes.ON)
         {
             return FontCodes.WHITE + Localization.get("playerlocator.infoline") + InfoLine.SPACER;
         }
@@ -289,18 +314,6 @@ public class PlayerLocator
         {
             return FontCodes.WHITE + "???" + InfoLine.SPACER;
         }
-    }
-    
-    /**
-     * Increments the Clock mode
-     * @return The new Clock mode
-     */
-    public static int ToggleMode()
-    {
-    	Mode++;
-    	if(Mode >= NumberOfModes)
-    		Mode = 0;
-    	return Mode;
     }
 
     /**

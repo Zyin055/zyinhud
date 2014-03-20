@@ -4,13 +4,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
 
+import com.zyin.zyinhud.mods.Clock.Modes;
 import com.zyin.zyinhud.util.FontCodes;
+import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * The Coordinates calculates the player's position.
  */
-public class Coordinates
+public class Coordinates extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -21,18 +23,49 @@ public class Coordinates
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-	/**
-	 * 0=[x, z, y]<br>
-	 * 1=[x, y, z]<br>
-	 */
-    public static int Mode = 0;
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
+    {
+        XZY(Localization.get("coordinates.mode.0")),
+        XYZ(Localization.get("coordinates.mode.1"));
+        
+        private String friendlyName;
+        
+        private Modes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
 
-    /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 2;
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return XZY;}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
     
     /** The default chat format String which replaces "{x}", "{y}", and "{z}" with coordinates */
     public static String DefaultChatStringFormat = "[{x}, {y}, {z}]";
@@ -41,9 +74,6 @@ public class Coordinates
     
     /** Use colors to show what ores spawn at the elevation level */
     public static boolean UseYCoordinateColors;
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
-    
     
     private static final int oreBoundaries[] =
     {
@@ -88,9 +118,9 @@ public class Coordinates
             }
 
             String coordinatesString;
-            if(Mode == 0)
+            if(Mode == Modes.XZY)
             	coordinatesString = FontCodes.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + FontCodes.WHITE + "]";
-            else if(Mode == 1)
+            else if(Mode == Modes.XYZ)
             	coordinatesString = FontCodes.WHITE + "[" + coordX + ", " + yColor + coordY + FontCodes.WHITE + ", " + coordZ + "]";
             else
             	coordinatesString = FontCodes.WHITE + "[??, ??, ??]";
@@ -140,17 +170,5 @@ public class Coordinates
     {
     	UseYCoordinateColors = !UseYCoordinateColors;
     	return UseYCoordinateColors;
-    }
-
-    /**
-     * Increments the Distance Measurer mode
-     * @return The new Distance Measurer mode
-     */
-    public static int ToggleMode()
-    {
-    	Mode++;
-    	if(Mode >= NumberOfModes)
-    		Mode = 0;
-    	return Mode;
     }
 }

@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -22,7 +22,7 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
 /**
  * Potion Aid allows the player to drink potions in their inventory by calling its Drink() method.
  */
-public class PotionAid
+public class PotionAid extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -33,11 +33,9 @@ public class PotionAid
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-    private Minecraft mc = Minecraft.getMinecraft();
     private Timer timer = new Timer();
     private TimerTask swapTimerTask;
     private TimerTask drinkTimerTask;

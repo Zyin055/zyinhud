@@ -1,24 +1,20 @@
 package com.zyin.zyinhud.mods;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
-import com.zyin.zyinhud.ZyinHUD;
+import org.lwjgl.opengl.GL11;
+
+import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.FontCodes;
+import com.zyin.zyinhud.util.Localization;
 
 /**
  * Calculates time.
- * <p>
- * ClockMode = 0: standard 24 hour in game time<br>
- * ClockMode = 1: real time till Minecraft's day or night cycle ends
- * <p>
  * @See {@link http://www.minecraftwiki.net/wiki/Day-night_cycle} 
  */
-public class Clock
+public class Clock extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -29,32 +25,56 @@ public class Clock
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-	/**
-	 * 0=standard clock<br>
-	 * 1=time till night/day<br>
-	 * 2=graphic clock<br>
-	 */
-    public static int Mode = 0;
-    
-    /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 3;
-    
-    
-	private static Minecraft mc = Minecraft.getMinecraft();
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
+    {
+        STANDARD(Localization.get("clock.mode.0")),
+        COUNTDOWN(Localization.get("clock.mode.1")),
+        GRAPHIC(Localization.get("clock.mode.2"));
+        
+        private String friendlyName;
+        
+        private Modes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
 
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[1];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
+	
 	private static long mobSpawningStartTime = 13187;
 	
 	//mobs stop spawning at: 22813
 	//mobs start to burn at: 23600
 	private static long mobSpawningStopTime = 23600;
-	
-
-	
-	private static final RenderItem itemRenderer = new RenderItem();
 	
     /**
      * Calculates time
@@ -64,7 +84,7 @@ public class Clock
     {
         if (Clock.Enabled)
         {
-        	if(Clock.Mode == 0)
+        	if(Clock.Mode == Modes.STANDARD)
         	{
             	//0 game time is 6am, so add 6000
                 long time = (mc.theWorld.getWorldTime() + 6000) % 24000;
@@ -75,7 +95,7 @@ public class Clock
                 String clockString = FontCodes.WHITE + String.format("%02d", hours) + ":" + String.format("%02d", seconds) + InfoLine.SPACER;
                 return clockString;
         	}
-        	else if(Clock.Mode == 1)
+        	else if(Clock.Mode == Modes.COUNTDOWN)
         	{
                 long time = (mc.theWorld.getWorldTime()) % 24000;
                 
@@ -106,12 +126,12 @@ public class Clock
                     return daytimeTimerString;
         		}
         	}
-        	else if(Clock.Mode == 2)
+        	else if(Clock.Mode == Modes.GRAPHIC)
         	{
         		int infoLineWidth = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
         		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.clock), infoLineWidth, 1);
         		
-        		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the itemRenderer.renderItem() method enables lighting
+        		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the RenderItem.renderItem() methods enable lighting
         		GL11.glDisable(GL11.GL_DEPTH_TEST);
         		
         		return "    ";
@@ -125,11 +145,12 @@ public class Clock
      * Increments the Clock mode
      * @return The new Clock mode
      */
-    public static int ToggleMode()
+    /*public static int ToggleMode()
     {
     	Mode++;
     	if(Mode >= NumberOfModes)
     		Mode = 0;
     	return Mode;
     }
+    */
 }

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
+
 import com.zyin.zyinhud.mods.AnimalInfo;
 
 /**
@@ -30,7 +31,7 @@ public class RenderEntityTrackerHelper
      */
     public static void RenderEntityInfo(float partialTickTime)
     {
-        if (AnimalInfo.Mode == 1
+        if (AnimalInfo.Mode == AnimalInfo.Modes.ON
                 && mc.inGameHasFocus)
         {
             //iterate over all the loaded Entity objects and find just the players

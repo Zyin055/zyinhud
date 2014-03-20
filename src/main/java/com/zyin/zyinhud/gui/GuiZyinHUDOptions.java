@@ -1,18 +1,47 @@
 package com.zyin.zyinhud.gui;
 
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
 import com.zyin.zyinhud.ZyinHUD;
 import com.zyin.zyinhud.ZyinHUDConfig;
 import com.zyin.zyinhud.gui.buttons.GuiHotkeyButton;
 import com.zyin.zyinhud.gui.buttons.GuiNumberSlider;
-import com.zyin.zyinhud.keyhandlers.*;
-import com.zyin.zyinhud.mods.*;
+import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
+import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
+import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
+import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.ItemSelectorKeyHandler;
+import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
+import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
+import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
+import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
+import com.zyin.zyinhud.mods.AnimalInfo;
+import com.zyin.zyinhud.mods.Clock;
+import com.zyin.zyinhud.mods.Clock.Modes;
+import com.zyin.zyinhud.mods.Compass;
+import com.zyin.zyinhud.mods.Coordinates;
+import com.zyin.zyinhud.mods.DistanceMeasurer;
+import com.zyin.zyinhud.mods.DurabilityInfo;
+import com.zyin.zyinhud.mods.EatingAid;
+import com.zyin.zyinhud.mods.EnderPearlAid;
+import com.zyin.zyinhud.mods.Fps;
 import com.zyin.zyinhud.mods.HealthMonitor;
+import com.zyin.zyinhud.mods.InfoLine;
+import com.zyin.zyinhud.mods.ItemSelector;
+import com.zyin.zyinhud.mods.PlayerLocator;
+import com.zyin.zyinhud.mods.PotionAid;
+import com.zyin.zyinhud.mods.PotionTimers;
+import com.zyin.zyinhud.mods.QuickDeposit;
+import com.zyin.zyinhud.mods.SafeOverlay;
+import com.zyin.zyinhud.mods.WeaponSwapper;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 /**
  * This is the options GUI which is used to change any configurable setting while in game.
@@ -277,7 +306,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	int Y = buttonY;
     	buttonList.add(new GuiButton(201, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Clock.Enabled)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(202, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_CLOCK, Clock.Mode, Clock.NumberOfModes)));
+    	buttonList.add(new GuiButton(202, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(Clock.Mode.GetFriendlyName())));
     	
     }
     private void DrawCoordinatesButtons()
@@ -287,7 +316,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiHotkeyButton(303, buttonX_column1, Y, buttonWidth_half, buttonHeight, CoordinatesKeyHandler.HotkeyDescription));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_COORDINATES, Coordinates.Mode, Coordinates.NumberOfModes)));
+    	buttonList.add(new GuiButton(304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(Coordinates.Mode.GetFriendlyName())));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(302, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
     	
@@ -439,7 +468,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiHotkeyButton(1302, buttonX_column1, Y, buttonWidth_half, buttonHeight, EatingAidKeyHandler.HotkeyDescription));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1303, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes)));
+    	buttonList.add(new GuiButton(1303, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(EatingAid.Mode.GetFriendlyName())));
     	Y += buttonHeight + buttonSpacing;
     	buttonList.add(new GuiButton(1304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood)));
     	Y += buttonHeight + buttonSpacing;
@@ -496,9 +525,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         Y += buttonHeight + buttonSpacing;
         buttonList.add(new GuiHotkeyButton(1702, buttonX_column1, Y, buttonWidth_half, buttonHeight, ItemSelectorKeyHandler.HotkeyDescription));
         Y += buttonHeight + buttonSpacing;
-        buttonList.add(new GuiNumberSlider(1703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), true ));
+        buttonList.add(new GuiButton(1704, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName())));
         Y += buttonHeight + buttonSpacing;
-        buttonList.add(new GuiButton(1704, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_ITEMSELECTOR, ItemSelector.Mode, ItemSelector.NumberOfModes)));
+        buttonList.add(new GuiNumberSlider(1703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), true ));
+        
     }
     
     private void DrawHealthMonitorButtoins()
@@ -506,7 +536,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	int Y = buttonY;
     	buttonList.add(new GuiButton(1801, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(HealthMonitor.Enabled)));
     	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1802, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_HEALTHMONITOR, HealthMonitor.Mode, HealthMonitor.NumberOfModes)));
+    	buttonList.add(new GuiButton(1802, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(HealthMonitor.Mode.GetFriendlyName())));
     	buttonList.add(new GuiButton(1803, buttonX_column2, Y, buttonWidth_half/2, buttonHeight, Localization.get("healthmonitor.options.mode.play")));
     	
     	Y += buttonHeight + buttonSpacing;
@@ -521,25 +551,12 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     
     /**
      * Helper method to get the text for a button that toggles between modes for a mod.
-     * <p>
-     * The mod must have names for each mode in the localization file.
-     * <p>
-     * For example, for Clock there is:<br>
-     * clock.mode.0=Standard<br>
-     * clock.mode.1=Countdown<br>
-     * @param modName e.x. "clock", "safeoverlay", "eatingaid"
-     * @param mode the current mode the mod is in
-     * @param numModes the maximum amount of possible modes
+     * @param modeName The friendly name of the mode (use Mode.toString())
      * @return a String to be used as the button label
      */
-    private static String GetButtonLabel_Mode(String modName, int mode, int numModes)
+    private static String GetButtonLabel_Mode(String modeName)
     {
-    	for(int i = 0; i < numModes; i++)
-    	{
-    		if(mode == i)
-    			return Localization.get("gui.options.mode")+Localization.get(modName+".mode."+i);
-    	}
-    	return Localization.get("gui.options.mode")+"???";
+    	return Localization.get("gui.options.mode") + modeName;
     }
     
     /**
@@ -713,8 +730,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	button.displayString = GetButtonLabel_Enabled(Clock.Enabled);
 	            	break;
 	            case 202:	//Mode
-	            	Clock.ToggleMode();
-	            	button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_CLOCK, Clock.Mode, Clock.NumberOfModes);
+	            	Clock.Mode.ToggleMode();
+	            	button.displayString = GetButtonLabel_Mode(Clock.Mode.GetFriendlyName());
 	            	break;
 	
 	            /////////////////////////////////////////////////////////////////////////
@@ -737,8 +754,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	HotkeyButtonClicked((GuiHotkeyButton)button);
 	            	break;
 	            case 304:	//Mode
-	            	Coordinates.ToggleMode();
-	            	button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_COORDINATES, Coordinates.Mode, Coordinates.NumberOfModes);
+	            	Coordinates.Modes.ToggleMode();
+	            	button.displayString = GetButtonLabel_Mode(Coordinates.Mode.GetFriendlyName());
 	            	break;
 	
 	            /////////////////////////////////////////////////////////////////////////
@@ -1031,8 +1048,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	HotkeyButtonClicked((GuiHotkeyButton)button);
 	            	break;
 	            case 1303:	//Eating Mode
-	            	EatingAid.ToggleMode();
-	            	button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_EATINGAID, EatingAid.Mode, EatingAid.NumberOfModes);
+	            	EatingAid.Modes.ToggleMode();
+	            	button.displayString = GetButtonLabel_Mode(EatingAid.Mode.GetFriendlyName());
 	            	break;
 	            case 1304:	//Eat golden food
 	            	EatingAid.ToggleEatingGoldenFood();
@@ -1134,7 +1151,6 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	break;
 	            	
 
-
                 /////////////////////////////////////////////////////////////////////////
                 // Item Selector
                 /////////////////////////////////////////////////////////////////////////
@@ -1154,10 +1170,11 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
                     ItemSelector.SetTimeout(itemSelectorTicks);
                     break;
                 case 1704:  //Mode
-                    ItemSelector.CycleMode();
-                    button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_ITEMSELECTOR, ItemSelector.Mode, ItemSelector.NumberOfModes);
+                    ItemSelector.Modes.ToggleMode();
+                    button.displayString = GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName());
                     break;
-	            	
+                
+                
 	            /////////////////////////////////////////////////////////////////////////
 	            // Health Monitor
 	            /////////////////////////////////////////////////////////////////////////
@@ -1171,11 +1188,12 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	button.displayString = GetButtonLabel_Enabled(HealthMonitor.Enabled);
 	            	break;
 	            case 1802:	//Mode
-	            	HealthMonitor.ToggleMode();
+	            	HealthMonitor.Modes.ToggleMode();
 	            	HealthMonitor.PlayLowHealthSound();
-	            	button.displayString = GetButtonLabel_Mode(ZyinHUDConfig.CATEGORY_HEALTHMONITOR, HealthMonitor.Mode, HealthMonitor.NumberOfModes);
+	            	button.displayString = GetButtonLabel_Mode(HealthMonitor.Mode.GetFriendlyName());
 	            	break;
-	            case 1803:
+	            case 1803:	//Play sound
+	            	System.out.println("1803");
 	            	HealthMonitor.PlayLowHealthSound();
 	            	break;
 	            case 1804:	//Play faster near death
@@ -1212,6 +1230,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1303: return Localization.get("eatingaid.options.mode.tooltip");
 			case 1603: return Localization.get("quickdeposit.options.ignoreitemsinhotbar.tooltip");
 			case 1604: return Localization.get("quickdeposit.options.closechestafterdepositing.tooltip");
+			case 1702: return Localization.get("itemselector.options.hotkey.tooltip");
+			case 1704: return Localization.get("itemselector.options.mode.tooltip");
 			case 1801: return Localization.get("healthmonitor.options.enabled.tooltip");
 			case 1802: return Localization.get("healthmonitor.options.mode.tooltip");
 			default: return null;

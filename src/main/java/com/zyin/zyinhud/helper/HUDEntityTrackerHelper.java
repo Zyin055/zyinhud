@@ -5,8 +5,8 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.util.Vec3;
+
 import com.zyin.zyinhud.mods.PlayerLocator;
 
 /**
@@ -42,7 +42,7 @@ public class HUDEntityTrackerHelper
     {
     	PlayerLocator.numOverlaysRendered = 0;
     	
-        if (PlayerLocator.Enabled && PlayerLocator.Mode == 1
+        if (PlayerLocator.Enabled && PlayerLocator.Mode == PlayerLocator.Modes.ON
                 && mc.inGameHasFocus)
         {
             me = mc.thePlayer;

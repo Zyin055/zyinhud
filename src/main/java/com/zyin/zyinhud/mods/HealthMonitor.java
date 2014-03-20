@@ -7,13 +7,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import com.zyin.zyinhud.ZyinHUDSound;
+import com.zyin.zyinhud.mods.EatingAid.Modes;
+import com.zyin.zyinhud.util.Localization;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Plays a warning sound when the player is low on health.
  */
-public class HealthMonitor
+public class HealthMonitor extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -24,24 +26,56 @@ public class HealthMonitor
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-	/**
-	 * 0=OoT<br>
-	 * 1=LttP<br>
-	 * 2=Oracle<br>
-	 * 3=LA<br>
-	 * 4=LoZ<br>
-	 * 5=AoL<br>
-	 */
-    public static int Mode = 0;
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
+    {
+        OOT(Localization.get("healthmonitor.mode.0"), "lowhealth_OoT"),
+        LTTP(Localization.get("healthmonitor.mode.1"), "lowhealth_LttP"),
+        ORACLE(Localization.get("healthmonitor.mode.2"), "lowhealth_Oracle"),
+        LA(Localization.get("healthmonitor.mode.3"), "lowhealth_LA"),
+        LOZ(Localization.get("healthmonitor.mode.4"), "lowhealth_LoZ"),
+        AOL(Localization.get("healthmonitor.mode.5"), "lowhealth_AoL");
+        
+        private String friendlyName;
+        public String soundName;
+        
+        private Modes(String friendlyName, String soundName)
+        {
+        	this.friendlyName = friendlyName;
+        	this.soundName = soundName;
+        }
+
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return OOT;}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
     
-    /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 6;
-    
-	private static final Minecraft mc = Minecraft.getMinecraft();
 	private static Timer timer = new Timer();
 	
 	private static int LowHealthSoundThreshold;
@@ -91,10 +125,6 @@ public class HealthMonitor
 		}
 	}
 	
-	public static void PlayLowHealthSound()
-	{
-		ZyinHUDSound.PlaySound(GetSoundNameFromMode());
-	}
 	
 	/**
 	 * Gets the name of the sound resource associated with the current mode.
@@ -103,18 +133,17 @@ public class HealthMonitor
 	 */
 	private static String GetSoundNameFromMode()
 	{
-		switch (Mode)
-		{
-			case 0: return "lowhealth_OoT";
-			case 1: return "lowhealth_LttP";
-			case 2: return "lowhealth_Oracle";
-			case 3: return "lowhealth_LA";
-			case 4: return "lowhealth_LoZ";
-			case 5: return "lowhealth_AoL";
-			default: return "";
-		}
+		return Mode.soundName;
 	}
 	
+	/**
+	 * Plays the low health warning sound right now.
+	 */
+	public static void PlayLowHealthSound()
+	{
+		System.out.println("PlayLowHealthSound()");
+		ZyinHUDSound.PlaySound(GetSoundNameFromMode());
+	}
 	
 	private static class PlayLowHealthSoundTimerTask extends TimerTask
     {
@@ -129,20 +158,7 @@ public class HealthMonitor
         	PlayLowHealthSoundIfHurt();
         }
     }
-
-    
-    /**
-     * Increments the Clock mode
-     * @return The new Clock mode
-     */
-    public static int ToggleMode()
-    {
-    	Mode++;
-    	if(Mode >= NumberOfModes)
-    		Mode = 0;
-    	return Mode;
-    }
-
+	
 	public static void SetLowHealthSoundThreshold(int lowHealthSoundThreshold)
 	{
 		if(lowHealthSoundThreshold > 20)

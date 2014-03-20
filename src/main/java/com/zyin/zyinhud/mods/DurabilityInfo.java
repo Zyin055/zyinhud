@@ -2,7 +2,6 @@ package com.zyin.zyinhud.mods;
 
 import java.util.ArrayList;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.Item;
@@ -25,7 +24,7 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
  * Durability Info checks to see if any equipment (items in the hotbar, and armor) is damaged
  * and then displays info about them onto the HUD.
  */
-public class DurabilityInfo
+public class DurabilityInfo extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -36,11 +35,9 @@ public class DurabilityInfo
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
-
-    private static Minecraft mc = Minecraft.getMinecraft();
+    
 	protected static final ResourceLocation durabilityIconsResourceLocation = new ResourceLocation("zyinhud:textures/durability_icons.png");
     
     public static boolean ShowArmorDurability;
@@ -76,7 +73,7 @@ public class DurabilityInfo
     private static float durabilityDisplayThresholdForItem;
 
     private static ArrayList<ItemStack> damagedItemsList = new ArrayList<ItemStack>(13);	//used to push items into the list of broken equipment to render
-    private static final RenderItem itemRenderer = new RenderItem();
+    
 
     /**
      * The last time the item cache was generated
@@ -170,7 +167,7 @@ public class DurabilityInfo
 		//render the item's durability bar
 		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, itemStack, x, y);
 		
-		GL11.glDisable(GL11.GL_LIGHTING);	//so the itemRenderer.renderItem() method enables lighting
+		GL11.glDisable(GL11.GL_LIGHTING);	//the itemRenderer.renderItem() method enables lighting
 		GL11.glDisable(GL11.GL_DEPTH_TEST);	//so the text renders above the item
 		
 		//render the number of durability it has left

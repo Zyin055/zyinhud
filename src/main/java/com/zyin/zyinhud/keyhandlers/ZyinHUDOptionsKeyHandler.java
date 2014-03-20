@@ -1,7 +1,5 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import net.minecraft.client.Minecraft;
-
 import org.lwjgl.input.Keyboard;
 
 import com.zyin.zyinhud.ZyinHUDSound;
@@ -9,11 +7,9 @@ import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
-public class ZyinHUDOptionsKeyHandler
+public class ZyinHUDOptionsKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.zyinhudoptions";
-
-    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{

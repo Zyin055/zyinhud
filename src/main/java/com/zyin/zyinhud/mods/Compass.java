@@ -13,7 +13,7 @@ import com.zyin.zyinhud.util.Localization;
 /**
  * The Compass determines what direction the player is facing.
  */
-public class Compass
+public class Compass extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -24,12 +24,8 @@ public class Compass
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
-    private static final RenderItem itemRenderer = new RenderItem();
     
     public static boolean renderCompassTextInMiddle = true;
 

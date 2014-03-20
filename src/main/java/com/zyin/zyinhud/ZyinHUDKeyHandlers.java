@@ -1,14 +1,28 @@
 package com.zyin.zyinhud;
 
-import com.zyin.zyinhud.keyhandlers.*;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.event.MouseEvent;
+
+import org.lwjgl.input.Keyboard;
+
+import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
+import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
+import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
+import com.zyin.zyinhud.keyhandlers.EatingAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.EnderPearlAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.ItemSelectorKeyHandler;
+import com.zyin.zyinhud.keyhandlers.PlayerLocatorKeyHandler;
+import com.zyin.zyinhud.keyhandlers.PotionAidKeyHandler;
+import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
+import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
+import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
+import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
 import com.zyin.zyinhud.mods.ItemSelector;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.event.MouseEvent;
-import org.lwjgl.input.Keyboard;
 
 public class ZyinHUDKeyHandlers
 {
@@ -85,7 +99,7 @@ public class ZyinHUDKeyHandlers
     @SubscribeEvent
     public void MouseEvent(MouseEvent event)
     {
-        if ( event.dwheel != 0 && KEY_BINDINGS[11].getIsKeyPressed() )
+        if (event.dwheel != 0 && KEY_BINDINGS[11].getIsKeyPressed())
             ItemSelectorKeyHandler.MouseWheel(event);
     }
 	

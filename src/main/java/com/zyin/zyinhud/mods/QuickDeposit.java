@@ -1,9 +1,5 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiEnchantment;
 import net.minecraft.client.gui.GuiMerchant;
 import net.minecraft.client.gui.GuiRepair;
@@ -12,21 +8,19 @@ import net.minecraft.client.gui.inventory.GuiBrewingStand;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.client.gui.inventory.GuiFurnace;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.event.GuiOpenEvent;
 
-import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.util.InventoryUtil;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Quick Deposit allows you to inteligently deposit every item in your inventory quickly into a chest.
  */
-public class QuickDeposit
+public class QuickDeposit extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -37,12 +31,9 @@ public class QuickDeposit
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-    private static Minecraft mc = Minecraft.getMinecraft();
-
     public static boolean IgnoreItemsInHotbar;
     public static boolean CloseChestAfterDepositing;
 

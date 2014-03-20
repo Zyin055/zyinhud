@@ -1,17 +1,13 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import net.minecraft.client.Minecraft;
-
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.mods.AnimalInfo;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
-public class AnimalInfoKeyHandler
+public class AnimalInfoKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.animalinfo";
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{
@@ -22,7 +18,7 @@ public class AnimalInfoKeyHandler
         
         if(AnimalInfo.Enabled)
         {
-        	AnimalInfo.ToggleMode();
+        	AnimalInfo.Modes.ToggleMode();
         	ZyinHUDSound.PlayButtonPress();
         }
 	}

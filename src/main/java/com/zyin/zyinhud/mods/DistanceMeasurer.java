@@ -1,18 +1,16 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.MovingObjectPosition;
+
+import com.zyin.zyinhud.mods.Clock.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 /**
  * The Distance Measurer calculates the distance from the player to whatever the player's
  * crosshairs is looking at.
- * <p>
- * DistanceMeasurerMode = 0: "[FarthestDistance]"<br>
- * DistanceMeasurerMode = 1: "[x, z, y (AbsoluteDistance)]"
  */
-public class DistanceMeasurer
+public class DistanceMeasurer extends ZyinHUDModBase
 {
 	/** Enables/Disables this Mod */
 	public static boolean Enabled;
@@ -23,23 +21,53 @@ public class DistanceMeasurer
      */
     public static boolean ToggleEnabled()
     {
-    	Enabled = !Enabled;
-    	return Enabled;
+    	return Enabled = !Enabled;
     }
     
-    
-	/**
-	 * 0=off<br>
-	 * 1=simple<br>
-	 * 2=complex<br>
-	 */
-    public static int Mode = 0;
+	/** The current mode for this mod */
+	public static Modes Mode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum Modes
+    {
+        OFF(Localization.get("distancemeasurer.mode.0")),
+        SIMPLE(Localization.get("distancemeasurer.mode.1")),
+        COMPLEX(Localization.get("distancemeasurer.mode.2"));
+        
+        private String friendlyName;
+        
+        private Modes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
 
-    /** The maximum number of modes that is supported */
-    public static int NumberOfModes = 3;
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	if(Mode == null)
+        		System.out.println("Mode is null");
+        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static Modes GetMode(String modeName)
+        {
+        	try {return Modes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[0];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
     
-    private static Minecraft mc = Minecraft.getMinecraft();
-    private static String far;
 
     /**
      * Calculates the distance of the block the player is pointing at
@@ -47,7 +75,7 @@ public class DistanceMeasurer
      */
     protected static String CalculateMessageForInfoLine()
     {
-        if (DistanceMeasurer.Enabled && Mode > 0)
+        if (DistanceMeasurer.Enabled && Mode != Modes.OFF)
         {
             MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
             String distanceMeasurerString = "";
@@ -89,13 +117,13 @@ public class DistanceMeasurer
                 	deltaZ = coordZ - blockZ;
                 
 
-                if (Mode == 1)	//1=simple
+                if (Mode == Modes.SIMPLE)
                 {
                 	double farthestHorizontalDistance = Math.max(Math.abs(deltaX), Math.abs(deltaZ));
                     double farthestDistance = Math.max(Math.abs(deltaY), farthestHorizontalDistance);
                     return FontCodes.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]" + InfoLine.SPACER;
                 }
-                else if (Mode == 2)	//2=complex
+                else if (Mode == Modes.COMPLEX)
                 {
                     double delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
                     String x = String.format("%1$,.1f", deltaX);
@@ -115,17 +143,5 @@ public class DistanceMeasurer
         }
 
         return "";
-    }
-    
-    /**
-     * Increments the Distance Measurer mode
-     * @return The new Distance Measurer mode
-     */
-    public static int ToggleMode()
-    {
-    	Mode++;
-    	if(Mode >= NumberOfModes)
-    		Mode = 0;
-    	return Mode;
     }
 }

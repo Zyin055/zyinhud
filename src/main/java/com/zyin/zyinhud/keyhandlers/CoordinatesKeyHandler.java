@@ -1,6 +1,5 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 
 import org.lwjgl.input.Keyboard;
@@ -11,11 +10,9 @@ import com.zyin.zyinhud.mods.Coordinates;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
-public class CoordinatesKeyHandler
+public class CoordinatesKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.coordinates";
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{

@@ -1,17 +1,13 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import net.minecraft.client.Minecraft;
-
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.mods.PlayerLocator;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
-public class PlayerLocatorKeyHandler
+public class PlayerLocatorKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.playerlocator";
-    
-    private static Minecraft mc = Minecraft.getMinecraft();
     
 	public static void Pressed(KeyInputEvent event) 
 	{
@@ -22,7 +18,7 @@ public class PlayerLocatorKeyHandler
 
         if(PlayerLocator.Enabled)
         {
-        	PlayerLocator.ToggleMode();
+        	PlayerLocator.Modes.ToggleMode();
         	ZyinHUDSound.PlayButtonPress();
         }
 	}
