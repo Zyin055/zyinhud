@@ -71,17 +71,16 @@ import com.zyin.zyinhud.util.Localization;
  */
 public class GuiZyinHUDOptions extends GuiTooltipScreen
 {
-	public static String Hotkey;
-    public static final String HotkeyDescription = "Zyin's HUD: Options";
+    public static final String HotkeyDescription = "key.zyinhud.zyinhudoptions";
 	
 	protected GuiScreen parentGuiScreen;
     
     /** The title string that is displayed in the top-center of the screen. */
-    protected String screenTitle = "Zyin's HUD Settings";
+    protected String screenTitle;
 
     /** The button that was just pressed. */
     protected GuiButton selectedButton;
-
+    
     protected String[] tabbedButtonNames = {
     		Localization.get("infoline.name"),
     		Localization.get("clock.name"),
@@ -101,7 +100,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		Localization.get("quickdeposit.name"),
     		Localization.get("itemselector.name"),
             Localization.get("healthmonitor.name")
-    		};
+    	};
     
     protected int[] tabbedButtonIDs = {
     		100,
@@ -121,37 +120,40 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		1500,
     		1600,
     		1700,
-            1800};
-    
-    /** The current tab page. It is 0 indexed. */
-    protected static int tabbedPage = 0;
-    
-    /** The amount of items shown on each page. */
-    protected static int tabbedPageSize = 11;
-    protected static int tabbedMaxPages;
+            1800
+    	};
 
+    private GuiHotkeyButton currentlySelectedHotkeyButton;
+    private GuiButton currentlySelectedTabButton = null;
+    private String currentlySelectedTabButtonColor = FontCodes.YELLOW;
+    
+    
+    //variables influencing the placement/sizing of the tab buttons on the left
     protected int tabbedButtonX;
     protected int tabbedButtonY;
     protected int tabbedButtonWidth;
     protected int tabbedButtonHeight;
     protected int tabbedButtonSpacing;
-    
-    protected int buttonX_column1;
-	protected int buttonX_column2;
-	protected int buttonY;
-	protected int buttonWidth_half;
-	protected int buttonWidth_full;
-	protected int buttonHeight;
-	protected int buttonSpacing;
-
+	
 	protected int pagingButtonWidth;
 	protected int pagingButtonHeight;
+	
+    /** The current tab page. It is 0 indexed. */
+    protected static int tabbedPage = 0;
     
-    private GuiHotkeyButton currentlySelectedHotkeyButton;
-    private GuiButton currentlySelectedTabButton = null;
-    private String currentlySelectedTabButtonColor = FontCodes.YELLOW;
+    /** The amount of tabs shown on each page. */
+    protected static int tabbedPageSize = 11;
+    protected static int tabbedMaxPages;
     
-
+    
+    //variables influencing the placement/sizing of the buttons inside each tab
+	protected int buttonY;
+	protected int buttonWidth;
+	protected int buttonWidth_double;
+	protected int buttonHeight;
+	protected int buttonSpacing;
+	
+    
     public GuiZyinHUDOptions(GuiScreen parentGuiScreen)
     {
         this.parentGuiScreen = parentGuiScreen;
@@ -165,20 +167,18 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     {
         //button variables
     	buttonSpacing = 2;
-    	buttonWidth_half = 130;
-    	buttonWidth_full = buttonWidth_half*2 + buttonSpacing*2;
+    	buttonWidth = 130;
+    	buttonWidth_double = buttonWidth*2 + buttonSpacing*2;
     	
         //tabbed button variables
         tabbedButtonSpacing = 0;
         tabbedButtonWidth = 130;
         tabbedButtonHeight = 14;
-        tabbedButtonX = width/2 - (tabbedButtonWidth + buttonWidth_full)/2;
+        tabbedButtonX = width/2 - (tabbedButtonWidth + buttonWidth_double)/2;
         tabbedButtonY = (int)(height*0.16);
 
         //button variables
     	buttonHeight = 20;
-        buttonX_column1 = tabbedButtonWidth + tabbedButtonX + buttonSpacing*2;
-    	buttonX_column2 = buttonX_column1 + buttonWidth_half + buttonSpacing*2;
     	buttonY = (int)(height*0.17);
     	
     	//paging buttons
@@ -236,7 +236,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	{
     		String text = FontCodes.UNDERLINE + Localization.get("quickdeposit.options.blacklist");
     		
-        	int x = buttonX_column2 + buttonWidth_half/2 - fontRendererObj.getStringWidth(text)/2;
+        	int x = tabbedButtonWidth + tabbedButtonX + buttonSpacing*2 + buttonWidth + buttonSpacing*2 + buttonWidth/2 - fontRendererObj.getStringWidth(text)/2;
         	int y = buttonY - buttonHeight/2 - fontRendererObj.FONT_HEIGHT/2 + 3;
         	
         	fontRendererObj.drawStringWithShadow(text, x, y, 0xffffff);
@@ -251,17 +251,17 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private void DrawTabbedButtons()
     {
 		//make the paging controls
-		GuiButton pagingPrev = new GuiButton(10, tabbedButtonX, tabbedButtonY-pagingButtonHeight, pagingButtonWidth, pagingButtonHeight, "<");
-		GuiButton pagingNext = new GuiButton(11, tabbedButtonX+tabbedButtonWidth-pagingButtonWidth+1, tabbedButtonY-pagingButtonHeight, pagingButtonWidth, pagingButtonHeight, ">");
+		GuiButton prevPageButton = new GuiButton(10, tabbedButtonX, tabbedButtonY-pagingButtonHeight, pagingButtonWidth, pagingButtonHeight, "<");
+		GuiButton nextPageButton = new GuiButton(11, tabbedButtonX+tabbedButtonWidth-pagingButtonWidth+1, tabbedButtonY-pagingButtonHeight, pagingButtonWidth, pagingButtonHeight, ">");
     	
 		if(tabbedPage == 0)
-    		pagingPrev.enabled = false;
+    		prevPageButton.enabled = false;
     	else if(tabbedPage == tabbedMaxPages-1)
-    		pagingNext.enabled = false;
+    		nextPageButton.enabled = false;
     	
 		//add the paging controls
-		buttonList.add(pagingPrev);
-    	buttonList.add(pagingNext);
+		buttonList.add(prevPageButton);
+    	buttonList.add(nextPageButton);
 
     	int Y = tabbedButtonY;
     	
@@ -280,272 +280,190 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	}
     }
     
+    /**
+     * Helper method for adding buttons at specific positions when a tab is clicked. This will correctly set
+     * the button's xPosition and yPosition based on the specified row and column arguments.
+     * There are 2 columns and 7 rows visible on screen.
+     * @param column values: [0, 1]
+     * @param row values: [0, 1, 2, 3, 4, 5, 6]
+     * @param button
+     */
+    private void AddButtonAt(int column, int row, GuiButton button)
+    {
+    	button.xPosition = tabbedButtonWidth + tabbedButtonX + buttonSpacing*2 + (buttonWidth + buttonSpacing*2)*column;
+    	button.yPosition = buttonY + (buttonHeight + buttonSpacing)*row;
+    	
+    	buttonList.add(button);
+    }
+    
     private void DrawInfoLineButtons()
     {
-    	this.zLevel = 0f;
+    	AddButtonAt(0, 0, new GuiButton(101, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
+    	AddButtonAt(0, 1, new GuiButton(102, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
+    	AddButtonAt(0, 2, new GuiButton(105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showcansnow", InfoLine.ShowCanSnow)));
+    	AddButtonAt(0, 5, new GuiNumberSlider(103, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsetx"), 1, width - 25, InfoLine.GetHorizontalLocation(), true));
+    	AddButtonAt(0, 6, new GuiNumberSlider(104, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), true));
     	
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
-    	//buttonList.add(new GuiTooltipButton(101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled), "test1\ntest2\ntest3\ntest444\ntest5"));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(105, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("infoline.options.showcansnow", InfoLine.ShowCanSnow)));
-    	
-    	Y += buttonHeight + buttonSpacing;
-    	Y += buttonHeight + buttonSpacing;
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(103, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("infoline.options.offsetx"), 1, width - 25, InfoLine.GetHorizontalLocation(), true));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(104, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), true));
-    	
-    	this.zLevel = 0f;
     }
     private void DrawClockButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(201, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Clock.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(202, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(Clock.Mode.GetFriendlyName())));
+    	AddButtonAt(0, 0, new GuiButton(201, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(Clock.Enabled)));
+    	AddButtonAt(0, 1, new GuiButton(202, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(Clock.Mode.GetFriendlyName())));
     	
     }
     private void DrawCoordinatesButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(301, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Coordinates.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(303, buttonX_column1, Y, buttonWidth_half, buttonHeight, CoordinatesKeyHandler.HotkeyDescription));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(Coordinates.Mode.GetFriendlyName())));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(302, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
+    	AddButtonAt(0, 0, new GuiButton(301, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(Coordinates.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(303, 0, 0, buttonWidth, buttonHeight, CoordinatesKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 2, new GuiButton(304, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(Coordinates.Mode.GetFriendlyName())));
+    	AddButtonAt(0, 3, new GuiButton(302, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
     	
     }
     private void DrawCompassButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(401, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Compass.Enabled)));
+    	AddButtonAt(0, 0, new GuiButton(401, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(Compass.Enabled)));
     	
     }
     private void DrawFPSButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(501, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(Fps.Enabled)));
+    	AddButtonAt(0, 0, new GuiButton(501, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(Fps.Enabled)));
     	
     }
     private void DrawDistanceMeasurerButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(601, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(DistanceMeasurer.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(602, buttonX_column1, Y, buttonWidth_half, buttonHeight, DistanceMeasurerKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 0, new GuiButton(601, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(DistanceMeasurer.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(602, 0, 0, buttonWidth, buttonHeight, DistanceMeasurerKeyHandler.HotkeyDescription));
     	
     }
     private void DrawSafeOverlayButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(701, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(SafeOverlay.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(702, buttonX_column1, Y, buttonWidth_half, buttonHeight, SafeOverlayKeyHandler.HotkeyDescription));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("safeoverlay.options.drawdistance"), SafeOverlay.minDrawDistance, SafeOverlay.maxDrawDistance, SafeOverlay.instance.getDrawDistance(), true));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(704, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("safeoverlay.options.transparency"), SafeOverlay.instance.getUnsafeOverlayMinTransparency(), SafeOverlay.instance.getUnsafeOverlayMaxTransparency(), SafeOverlay.instance.getUnsafeOverlayTransparency(), false));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(705, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.getDisplayInNether())));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(706, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.getSeeUnsafePositionsThroughWalls())));
+    	AddButtonAt(0, 0, new GuiButton(701, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(SafeOverlay.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(702, 0, 0, buttonWidth, buttonHeight, SafeOverlayKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 2, new GuiNumberSlider(703, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.drawdistance"), SafeOverlay.minDrawDistance, SafeOverlay.maxDrawDistance, SafeOverlay.instance.getDrawDistance(), true));
+    	AddButtonAt(0, 3, new GuiNumberSlider(704, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.transparency"), SafeOverlay.instance.getUnsafeOverlayMinTransparency(), SafeOverlay.instance.getUnsafeOverlayMaxTransparency(), SafeOverlay.instance.getUnsafeOverlayTransparency(), false));
+    	AddButtonAt(0, 4, new GuiButton(705, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.getDisplayInNether())));
+    	AddButtonAt(0, 5, new GuiButton(706, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.getSeeUnsafePositionsThroughWalls())));
     	
     }
     private void DrawPlayerLocatorButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(801, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(PlayerLocator.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(802, buttonX_column1, Y, buttonWidth_half, buttonHeight, PlayerLocatorKeyHandler.HotkeyDescription));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(803, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("playerlocator.options.minviewdistance"), PlayerLocator.minViewDistanceCutoff, PlayerLocator.maxViewDistanceCutoff, PlayerLocator.viewDistanceCutoff, true));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(804, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(805, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showplayerhealth", PlayerLocator.ShowPlayerHealth)));
+    	AddButtonAt(0, 0, new GuiButton(801, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(PlayerLocator.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(802, 0, 0, buttonWidth, buttonHeight, PlayerLocatorKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 2, new GuiNumberSlider(803, 0, 0, buttonWidth, buttonHeight, Localization.get("playerlocator.options.minviewdistance"), PlayerLocator.minViewDistanceCutoff, PlayerLocator.maxViewDistanceCutoff, PlayerLocator.viewDistanceCutoff, true));
+    	AddButtonAt(0, 3, new GuiButton(804, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers)));
+    	AddButtonAt(0, 4, new GuiButton(805, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showplayerhealth", PlayerLocator.ShowPlayerHealth)));
     	
     }
     private void DrawAnimalInfoButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(901, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(AnimalInfo.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(902, buttonX_column1, Y, buttonWidth_half, buttonHeight, AnimalInfoKeyHandler.HotkeyDescription));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(903, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("animalinfo.options.maxviewdistance"), AnimalInfo.minViewDistanceCutoff, AnimalInfo.maxViewDistanceCutoff, AnimalInfo.viewDistanceCutoff, true));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(907, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showtextbackground", AnimalInfo.ShowTextBackgrounds)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(904, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("animalinfo.options.numdecimalsdisplayed"), AnimalInfo.minNumberOfDecimalsDisplayed, AnimalInfo.maxNumberOfDecimalsDisplayed, AnimalInfo.GetNumberOfDecimalsDisplayed(), true));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(905, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsonf3menu", AnimalInfo.ShowHorseStatsOnF3Menu)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(906, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsoverlay", AnimalInfo.ShowHorseStatsOverlay)));
     	
-    	Y = buttonY;
-    	buttonList.add(new GuiButton(916, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingicons", AnimalInfo.ShowBreedingIcons)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(917, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingtimers", AnimalInfo.ShowBreedingTimers)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(910, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedinghorse", AnimalInfo.ShowBreedingTimerForHorses)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(911, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingvillagers", AnimalInfo.ShowBreedingTimerForVillagers)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(912, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingcow", AnimalInfo.ShowBreedingTimerForCows)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(913, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingsheep", AnimalInfo.ShowBreedingTimerForSheep)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(914, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingpig", AnimalInfo.ShowBreedingTimerForPigs)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(915, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingchicken", AnimalInfo.ShowBreedingTimerForChickens)));
+    	AddButtonAt(0, 0, new GuiButton(901, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(AnimalInfo.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(902, 0, 0, buttonWidth, buttonHeight, AnimalInfoKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 2, new GuiNumberSlider(903, 0, 0, buttonWidth, buttonHeight, Localization.get("animalinfo.options.maxviewdistance"), AnimalInfo.minViewDistanceCutoff, AnimalInfo.maxViewDistanceCutoff, AnimalInfo.viewDistanceCutoff, true));
+    	AddButtonAt(0, 3, new GuiButton(907, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showtextbackground", AnimalInfo.ShowTextBackgrounds)));
+    	AddButtonAt(0, 4, new GuiNumberSlider(904, 0, 0, buttonWidth, buttonHeight, Localization.get("animalinfo.options.numdecimalsdisplayed"), AnimalInfo.minNumberOfDecimalsDisplayed, AnimalInfo.maxNumberOfDecimalsDisplayed, AnimalInfo.GetNumberOfDecimalsDisplayed(), true));
+    	AddButtonAt(0, 5, new GuiButton(905, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsonf3menu", AnimalInfo.ShowHorseStatsOnF3Menu)));
+    	AddButtonAt(0, 6, new GuiButton(906, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsoverlay", AnimalInfo.ShowHorseStatsOverlay)));
+    	
+    	AddButtonAt(1, 0, new GuiButton(916, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingicons", AnimalInfo.ShowBreedingIcons)));
+    	AddButtonAt(1, 1, new GuiButton(917, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingtimers", AnimalInfo.ShowBreedingTimers)));
+    	AddButtonAt(1, 2, new GuiButton(910, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedinghorse", AnimalInfo.ShowBreedingTimerForHorses)));
+    	AddButtonAt(1, 3, new GuiButton(911, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingvillagers", AnimalInfo.ShowBreedingTimerForVillagers)));
+    	AddButtonAt(1, 4, new GuiButton(912, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingcow", AnimalInfo.ShowBreedingTimerForCows)));
+    	AddButtonAt(1, 5, new GuiButton(913, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingsheep", AnimalInfo.ShowBreedingTimerForSheep)));
+    	AddButtonAt(1, 6, new GuiButton(914, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingpig", AnimalInfo.ShowBreedingTimerForPigs)));
+    	AddButtonAt(1, 7, new GuiButton(915, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingchicken", AnimalInfo.ShowBreedingTimerForChickens)));
     	
     }
     private void DrawPotionTimerButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(1001, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(PotionTimers.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1002, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1005, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1007, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.hidepotioneffectsininventory", PotionTimers.HidePotionEffectsInInventory)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(1006, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("potiontimers.options.potionscale"), 1.0f, 4.0f, PotionTimers.PotionScale, false));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(1003, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), true));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(1004, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), true));
+    	AddButtonAt(0, 0, new GuiButton(1001, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(PotionTimers.Enabled)));
+    	AddButtonAt(0, 1, new GuiButton(1002, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons)));
+    	AddButtonAt(0, 2, new GuiButton(1005, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors)));
+    	AddButtonAt(0, 3, new GuiButton(1007, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.hidepotioneffectsininventory", PotionTimers.HidePotionEffectsInInventory)));
+    	AddButtonAt(0, 4, new GuiNumberSlider(1006, 0, 0, buttonWidth, buttonHeight, Localization.get("potiontimers.options.potionscale"), 1.0f, 4.0f, PotionTimers.PotionScale, false));
+    	AddButtonAt(0, 5, new GuiNumberSlider(1003, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), true));
+    	AddButtonAt(0, 6, new GuiNumberSlider(1004, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), true));
     	
     }
     private void DrawDurabilityInfoButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(1101, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(DurabilityInfo.Enabled)));
-    	buttonList.add(new GuiNumberSlider(1107, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 100, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
-    	Y += buttonHeight + buttonSpacing;
+    	AddButtonAt(0, 0, new GuiButton(1101, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(DurabilityInfo.Enabled)));
+    	AddButtonAt(0, 1, new GuiButton(1105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
+    	AddButtonAt(0, 2, new GuiNumberSlider(1103, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForArmor(), false));
+    	AddButtonAt(0, 3, new GuiButton(1111, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiparmor", DurabilityInfo.AutoUnequipArmor)));
+    	AddButtonAt(0, 4, new GuiButton(1104, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons)));
+    	AddButtonAt(0, 5, new GuiNumberSlider(1108, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, true));
+    	AddButtonAt(0, 6, new GuiNumberSlider(1109, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, true));
     	
-    	buttonList.add(new GuiButton(1105, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
-    	buttonList.add(new GuiButton(1102, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showarmordurability", DurabilityInfo.ShowArmorDurability)));
-    	Y += buttonHeight + buttonSpacing;
-    	
-    	buttonList.add(new GuiNumberSlider(1103, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForArmor(), false));
-    	buttonList.add(new GuiNumberSlider(1106, buttonX_column2, Y, buttonWidth_half, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), false));
-    	Y += buttonHeight + buttonSpacing;
-    	
-    	buttonList.add(new GuiButton(1111, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiparmor", DurabilityInfo.AutoUnequipArmor)));
-    	buttonList.add(new GuiButton(1112, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiptools", DurabilityInfo.AutoUnequipTools)));
-    	Y += buttonHeight + buttonSpacing;
-    	
-    	buttonList.add(new GuiButton(1104, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons)));
-    	buttonList.add(new GuiButton(1110, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage)));
+    	AddButtonAt(1, 0, new GuiNumberSlider(1107, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 100, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
+    	AddButtonAt(1, 1, new GuiButton(1102, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showarmordurability", DurabilityInfo.ShowArmorDurability)));
+    	AddButtonAt(1, 2, new GuiNumberSlider(1106, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), false));
+    	AddButtonAt(1, 3, new GuiButton(1112, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiptools", DurabilityInfo.AutoUnequipTools)));
+    	AddButtonAt(1, 4, new GuiButton(1110, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage)));
 
-    	Y += buttonHeight + buttonSpacing;
-    	
-    	buttonList.add(new GuiNumberSlider(1108, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, true));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(1109, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, true));
-    	
     }
     private void DrawEnderPearlAidButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(1201, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(EnderPearlAid.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(1202, buttonX_column1, Y, buttonWidth_half, buttonHeight, EnderPearlAidKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 0, new GuiButton(1201, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(EnderPearlAid.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(1202, 0, 0, buttonWidth, buttonHeight, EnderPearlAidKeyHandler.HotkeyDescription));
     	
     }
     private void DrawEatingAidButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(1301, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(EatingAid.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(1302, buttonX_column1, Y, buttonWidth_half, buttonHeight, EatingAidKeyHandler.HotkeyDescription));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1303, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(EatingAid.Mode.GetFriendlyName())));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1304, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1306, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatrawfood", EatingAid.EatRawFood)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1305, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar)));
+    	AddButtonAt(0, 0, new GuiButton(1301, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(EatingAid.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(1302, 0, 0, buttonWidth, buttonHeight, EatingAidKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 2, new GuiButton(1303, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(EatingAid.Mode.GetFriendlyName())));
+    	AddButtonAt(0, 3, new GuiButton(1304, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood)));
+    	AddButtonAt(0, 4, new GuiButton(1306, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatrawfood", EatingAid.EatRawFood)));
+    	AddButtonAt(0, 5, new GuiButton(1305, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar)));
+    	
     }
     private void DrawPotionAidButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(1401, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(PotionAid.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(1402, buttonX_column1, Y, buttonWidth_half, buttonHeight, PotionAidKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 0, new GuiButton(1401, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(PotionAid.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(1402, 0, 0, buttonWidth, buttonHeight, PotionAidKeyHandler.HotkeyDescription));
     	
     }
     private void DrawWeaponSwapButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(1501, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(WeaponSwapper.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(1502, buttonX_column1, Y, buttonWidth_half, buttonHeight, WeaponSwapperKeyHandler.HotkeyDescription));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1503, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("weaponswapper.options.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight)));
+    	AddButtonAt(0, 0, new GuiButton(1501, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(WeaponSwapper.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(1502, 0, 0, buttonWidth, buttonHeight, WeaponSwapperKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 2, new GuiButton(1503, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("weaponswapper.options.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight)));
+    	
     }
     private void DrawQuickDepositButtons()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(1601, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(QuickDeposit.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiHotkeyButton(1602, buttonX_column1, Y, buttonWidth_half, buttonHeight, QuickDepositKeyHandler.HotkeyDescription));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1603, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.ignoreitemsinhotbar", QuickDeposit.IgnoreItemsInHotbar)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1604, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.closechestafterdepositing", QuickDeposit.CloseChestAfterDepositing)));
+    	AddButtonAt(0, 0, new GuiButton(1601, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(QuickDeposit.Enabled)));
+    	AddButtonAt(0, 1, new GuiHotkeyButton(1602, 0, 0, buttonWidth, buttonHeight, QuickDepositKeyHandler.HotkeyDescription));
+    	AddButtonAt(0, 2, new GuiButton(1603, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.ignoreitemsinhotbar", QuickDeposit.IgnoreItemsInHotbar)));
+    	AddButtonAt(0, 3, new GuiButton(1604, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.closechestafterdepositing", QuickDeposit.CloseChestAfterDepositing)));
     	
-    	Y = buttonY;
-    	//Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1605, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklisttorch", QuickDeposit.BlacklistTorch)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1606, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistarrow", QuickDeposit.BlacklistArrow)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1607, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistfood", QuickDeposit.BlacklistFood)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1608, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistenderpearl", QuickDeposit.BlacklistEnderPearl)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1609, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistwaterbucket", QuickDeposit.BlacklistWaterBucket)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1610, buttonX_column2, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
+    	AddButtonAt(1, 0, new GuiButton(1605, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklisttorch", QuickDeposit.BlacklistTorch)));
+    	AddButtonAt(1, 1, new GuiButton(1606, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistarrow", QuickDeposit.BlacklistArrow)));
+    	AddButtonAt(1, 2, new GuiButton(1607, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistfood", QuickDeposit.BlacklistFood)));
+    	AddButtonAt(1, 3, new GuiButton(1608, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistenderpearl", QuickDeposit.BlacklistEnderPearl)));
+    	AddButtonAt(1, 4, new GuiButton(1609, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistwaterbucket", QuickDeposit.BlacklistWaterBucket)));
+    	AddButtonAt(1, 5, new GuiButton(1610, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
+    	
     }
     private void DrawItemSelectorButtons()
     {
-        int Y = buttonY;
-        buttonList.add(new GuiButton(1701, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(ItemSelector.Enabled)));
-        Y += buttonHeight + buttonSpacing;
-        buttonList.add(new GuiHotkeyButton(1702, buttonX_column1, Y, buttonWidth_half, buttonHeight, ItemSelectorKeyHandler.HotkeyDescription));
-        Y += buttonHeight + buttonSpacing;
-        buttonList.add(new GuiButton(1704, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName())));
-        Y += buttonHeight + buttonSpacing;
-        buttonList.add(new GuiNumberSlider(1703, buttonX_column1, Y, buttonWidth_half, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), true ));
+        AddButtonAt(0, 0, new GuiButton(1701, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(ItemSelector.Enabled)));
+        AddButtonAt(0, 1, new GuiHotkeyButton(1702, 0, 0, buttonWidth, buttonHeight, ItemSelectorKeyHandler.HotkeyDescription));
+        AddButtonAt(0, 2, new GuiButton(1704, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName())));
+        AddButtonAt(0, 3, new GuiNumberSlider(1703, 0, 0, buttonWidth, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), true ));
         
     }
     
     private void DrawHealthMonitorButtoins()
     {
-    	int Y = buttonY;
-    	buttonList.add(new GuiButton(1801, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Enabled(HealthMonitor.Enabled)));
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1802, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Mode(HealthMonitor.Mode.GetFriendlyName())));
-    	buttonList.add(new GuiButton(1803, buttonX_column2, Y, buttonWidth_half/2, buttonHeight, Localization.get("healthmonitor.options.mode.play")));
-    	
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiButton(1804, buttonX_column1, Y, buttonWidth_half, buttonHeight, GetButtonLabel_Boolean("healthmonitor.options.playfasterneardeath", HealthMonitor.PlayFasterNearDeath)));
-    	Y += buttonHeight + buttonSpacing;
-    	Y += buttonHeight + buttonSpacing;
-    	Y += buttonHeight + buttonSpacing;
-    	Y += buttonHeight + buttonSpacing;
-    	buttonList.add(new GuiNumberSlider(1805, buttonX_column1, Y, buttonWidth_full, buttonHeight, Localization.get("healthmonitor.options.lowhealthsoundthreshold"), 1, 20, HealthMonitor.GetLowHealthSoundThreshold(), true));
+    	AddButtonAt(0, 0, new GuiButton(1801, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(HealthMonitor.Enabled)));
+    	AddButtonAt(0, 1, new GuiButton(1802, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(HealthMonitor.Mode.GetFriendlyName())));
+    	AddButtonAt(0, 2, new GuiButton(1804, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("healthmonitor.options.playfasterneardeath", HealthMonitor.PlayFasterNearDeath)));
+    	AddButtonAt(0, 3, new GuiNumberSlider(1805, 0, 0, buttonWidth_double, buttonHeight, Localization.get("healthmonitor.options.lowhealthsoundthreshold"), 1, 20, HealthMonitor.GetLowHealthSoundThreshold(), true));
+
+    	AddButtonAt(1, 1, new GuiButton(1803, 0, 0, buttonWidth/2, buttonHeight, Localization.get("healthmonitor.options.mode.play")));
     	
     }
     

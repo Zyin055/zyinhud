@@ -39,6 +39,7 @@ public class ZyinHUDKeyHandlers
      * <li>[8] Safe Overlay
      * <li>[9] Weapon Swapper
      * <li>[10] Zyin's HUD Options
+     * <li>[11] Item Selector
      */
     public static final KeyBinding[] KEY_BINDINGS = 
 	{
@@ -94,12 +95,14 @@ public class ZyinHUDKeyHandlers
 			WeaponSwapperKeyHandler.Pressed(event);
 		else if(KEY_BINDINGS[10].getIsKeyPressed())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
+		//else if(KEY_BINDINGS[11].getIsKeyPressed())
+			//ItemSelectorKeyHandler.Pressed(event);	//needs an OnKeyUp event, getIsKeyPressed() only is for OnKeyDown
 	}
 
     @SubscribeEvent
     public void MouseEvent(MouseEvent event)
     {
-        if (event.dwheel != 0 && KEY_BINDINGS[11].getIsKeyPressed())
+        if (KEY_BINDINGS[11].getIsKeyPressed() && event.dwheel != 0)
             ItemSelectorKeyHandler.MouseWheel(event);
     }
 	
@@ -107,12 +110,15 @@ public class ZyinHUDKeyHandlers
     public void ClientTickEvent(ClientTickEvent event)
     {
     	//This to tick handler is to overcome the GuiScreen + KeyInputEvent limitation
+    	//for Coordinates and QuickDeposit.
+    	
+    	//ItemSelector needs it for an OnKeyUp event
     	
 		if (Keyboard.getEventKey() == KEY_BINDINGS[1].getKeyCode())
 	    	CoordinatesKeyHandler.ClientTickEvent(event);
 		else if(Keyboard.getEventKey() == KEY_BINDINGS[7].getKeyCode())
 			QuickDepositKeyHandler.ClientTickEvent(event);
-        else
-            ItemSelector.CheckModifierPressed( KEY_BINDINGS[11].getIsKeyPressed() );
+		else if(Keyboard.getEventKey() == KEY_BINDINGS[11].getKeyCode())
+			ItemSelectorKeyHandler.ClientTickEvent(event);
     }
 }

@@ -1,8 +1,8 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -10,9 +10,9 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.EXTRescaleNormal;
 import org.lwjgl.opengl.GL11;
 
-import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * Item Selector allows the player to conveniently swap their currently selected hotbar item with something in their
@@ -72,6 +72,8 @@ public class ItemSelector extends ZyinHUDModBase
         	return friendlyName;
         }
     }
+    
+    private static final ResourceLocation widgetTexture = new ResourceLocation("textures/gui/widgets.png");
     
     public static final int WHEEL_UP   = -1;
     public static final int WHEEL_DOWN = 1;
@@ -158,14 +160,13 @@ public class ItemSelector extends ZyinHUDModBase
 
     /**
      * Tick event that checks if selection is ongoing and the modifier key gets de-pressed
-     * @param pressed
      */
-    public static void CheckModifierPressed(boolean pressed)
+    public static void OnHotkeyReleased()
     {
         if (!ItemSelector.Enabled)
             return;
 
-        if (selecting && !pressed)
+        if (selecting)
             SelectItem();
     }
 
@@ -179,7 +180,6 @@ public class ItemSelector extends ZyinHUDModBase
             return;
 
         ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
-        ResourceLocation widgetTexture    = new ResourceLocation("textures/gui/widgets.png");
 
         int screenWidth  = scaledresolution.getScaledWidth();
         int screenHeight = scaledresolution.getScaledHeight();
@@ -188,26 +188,34 @@ public class ItemSelector extends ZyinHUDModBase
         int originX      = (screenWidth / 2) - (invWidth / 2);
         int originZ      = screenHeight - invHeight - 48;
 
-        String labelText   = currentInventory[targetInvSlot].getDisplayName();
-        boolean isEnchanted;
-        int    labelWidth  = mc.fontRenderer.getStringWidth(labelText);
+        String labelText = currentInventory[targetInvSlot].getDisplayName();
+        int labelWidth = mc.fontRenderer.getStringWidth(labelText);
         mc.fontRenderer.drawString(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRenderer.FONT_HEIGHT - 2, 0xFFFFAA00, true);
-
+        
         GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);	//so the enchanted item effect is rendered properly
         RenderHelper.enableGUIStandardItemLighting();
+        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
         int idx = 0;
-        for (int z = 0; z < 3; z++)
-        for (int x = 0; x < 9; x++)
+        for (int z = 0; z < 3; z++)	//3 rows of the inventory
+        for (int x = 0; x < 9; x++)	//9 cols of the inventory
         {
+            if(Mode == Modes.SAME_COLUMN && x != currentHotbarSlot)
+            {
+            	//don't draw items that we will never be able to select if Same Column mode is active
+                idx++;
+                continue;
+            }
+            
+            OpenGlHelper.glBlendFunc(770, 771, 1, 0);	//so the selection graphic renders properly
+        	
             // Draws the selection
             if (idx + 9 == targetInvSlot)
             {
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
-                mc.getTextureManager().bindTexture(widgetTexture);
-                mc.ingameGUI.drawTexturedModalRect(originX + (x * 20) - 1, originZ + (z * 22) - 1, 0, 22, 24, 24);
+                ZyinHUDUtil.DrawTexture(originX + (x * 20) - 1, originZ + (z * 22) - 1, 0, 22, 24, 24, widgetTexture, 1f);
                 GL11.glDisable(GL11.GL_BLEND);
             }
 
@@ -221,13 +229,14 @@ public class ItemSelector extends ZyinHUDModBase
 
                 if (anim > 0.0F)
                 {
+                	System.out.println("("+x+", "+z+") anim="+anim);
                     GL11.glPushMatrix();
                     float f2 = 1.0F + anim / 5.0F;
                     GL11.glTranslatef(dimX + 8, dimZ + 12, 0.0F);
                     GL11.glScalef(1.0F / f2, (f2 + 1.0F) / 2.0F, 1.0F);
                     GL11.glTranslatef(-(dimX + 8), -(dimZ + 12), 0.0F);
                 }
-
+                
                 itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), itemStack, dimX, dimZ);
 
                 if (anim > 0.0F)

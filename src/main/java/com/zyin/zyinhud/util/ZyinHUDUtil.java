@@ -35,7 +35,6 @@ import org.lwjgl.opengl.GL11;
 public class ZyinHUDUtil
 {
     protected static Minecraft mc = Minecraft.getMinecraft();
-    protected static GuiIngame gig = new GuiIngame(mc);
     protected static final RenderItem itemRenderer = new RenderItem();
     protected static final TextureManager textureManager = mc.getTextureManager();
 	
@@ -244,12 +243,12 @@ public class ZyinHUDUtil
         y /= scaler;
         
         GL11.glPushMatrix();
-        GL11.glDisable(GL11.GL_LIGHTING);
+        //GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glScalef(scaler, scaler, scaler);
         
         mc.getTextureManager().bindTexture(resourceLocation);
         
-        gig.drawTexturedModalRect(x, y, u, v, width, height);
+        mc.ingameGUI.drawTexturedModalRect(x, y, u, v, width, height);
         
         GL11.glPopMatrix();
     }

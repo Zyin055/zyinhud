@@ -101,6 +101,15 @@ enderpearlaid.noenderpearls=No ender pearls
 fps.name=FPS
 fps.infoline=fps
 
+gui.override.options.buttons.options=Zyin's HUD...
+gui.options.title=Zyin's HUD Settings
+gui.options.enabled=Enabled: 
+gui.options.settingon=true
+gui.options.settingoff=false
+gui.options.mode=Mode: 
+gui.options.hotkey=Hotkey: 
+gui.options.saveandexit=Save
+
 healthmonitor.name=Health Monitor
 healthmonitor.mode.0=OoT
 healthmonitor.mode.1=LttP
@@ -114,15 +123,6 @@ healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
 healthmonitor.options.playfasterneardeath=Quicker near death: 
 healthmonitor.options.playfasterneardeath.tooltip=Play the warning sounds quicker the closer you get to dieing
 healthmonitor.options.lowhealthsoundthreshold=Play when health < 
-
-gui.override.options.buttons.options=Zyin's HUD...
-gui.options.title=Zyin's HUD Settings
-gui.options.enabled=Enabled: 
-gui.options.settingon=true
-gui.options.settingoff=false
-gui.options.mode=Mode: 
-gui.options.hotkey=Hotkey: 
-gui.options.saveandexit=Save
 
 infoline.name=Info Line
 infoline.options.showbiome=Show Biome: 

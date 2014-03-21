@@ -96,6 +96,15 @@ enderpearlaid.noenderpearls=Brak pereł Kresu
 fps.name=FPS
 fps.infoline=fps
 
+gui.override.options.buttons.options=Zyin's HUD...
+gui.options.title=Ustawienia Zyin's HUD
+gui.options.enabled=Włączony: 
+gui.options.settingon=Wł.
+gui.options.settingoff=Wył.
+gui.options.mode=Tryb: 
+gui.options.hotkey=Klawisz: 
+gui.options.saveandexit=Zapisz
+
 healthmonitor.name=Monitor zdrowia
 healthmonitor.mode.0=OoT
 healthmonitor.mode.1=LttP
@@ -109,15 +118,6 @@ healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
 healthmonitor.options.playfasterneardeath=Częstsze odtw.
 healthmonitor.options.playfasterneardeath.tooltip=Odgrywaj dźwięki ostrzegawcze tym szybciej, im bliżej do śmierci
 healthmonitor.options.lowhealthsoundthreshold=Odtw. gdy zdrowie <
-
-gui.override.options.buttons.options=Zyin's HUD...
-gui.options.title=Ustawienia Zyin's HUD
-gui.options.enabled=Włączony: 
-gui.options.settingon=Wł.
-gui.options.settingoff=Wył.
-gui.options.mode=Tryb: 
-gui.options.hotkey=Klawisz: 
-gui.options.saveandexit=Zapisz
 
 infoline.name=Wiersz informacji
 infoline.options.showbiome=Pokaż biom: 

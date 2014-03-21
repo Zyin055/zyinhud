@@ -1,0 +1,113 @@
+key.zyinhud.animalinfo=Info de l'animal
+key.zyinhud.coordinates=Coordonnées
+key.zyinhud.distancemeasurer=Mesures de Distances
+key.zyinhud.eatingaid=Aide nourriture
+key.zyinhud.enderpearlaid=Aide aux perles de l'End
+key.zyinhud.playerlocator=Location de Joueurs
+key.zyinhud.potionaid=Aide Potions
+key.zyinhud.quickdeposit=Dépôt rapide d'objets
+key.zyinhud.safeoverlay=Overlay sécurisé
+key.zyinhud.weaponswapper=Changement d'armes
+key.zyinhud.zyinhudoptions=Options du Zyin HUD.
+
+animalinfo.name=Info de l'animal
+animalinfo.infoline=Animaux
+animalinfo.options.maxviewdistance=Distance de vue maximale: 
+animalinfo.options.showhorsestatsonf3menu=F3 Statut du cheval: 
+animalinfo.options.showhorsestatsonf3menu.tooltip=Montre le statut du cheval que vous chevauchez dans le menu F3
+animalinfo.options.showhorsestatsoverlay=Statut du cheval: 
+animalinfo.options.showhorsestatsoverlay.tooltip=Montre vitesse, pv , et hauteur maximale de saut des chevaux du monde
+animalinfo.options.showbreedingicons=Icônes de nourriture: 
+animalinfo.options.showbreedingicons.tooltip=Montre l'élément qu'il faut à un animal pour se reproduire. Exemple : Du blé pour la vache.
+animalinfo.options.showbreedingtimers=Compte à rebours avant reproduction: 
+animalinfo.options.showbreedingtimers.tooltip=Montre le temps restant avant de pouvoir à nouveau faire se reproduire un animal.
+animalinfo.options.showbreedinghorse=Reproduction de cheval: 
+animalinfo.options.showbreedingvillagers=Reproduction de Villageois: 
+animalinfo.options.showbreedingcow=Reproduction de vache: 
+animalinfo.options.showbreedingsheep=Reproduction de mouton: 
+animalinfo.options.showbreedingpig=Reproduction de cochon: 
+animalinfo.options.showbreedingchicken=Reproduction de poule: 
+animalinfo.overlay.speed=m/s
+animalinfo.overlay.jump=Saut
+animalinfo.overlay.hp=pv
+animalinfo.overlay.hearts=coeurs
+animalinfo.debug.speed=Vitesse du cheval:
+animalinfo.debug.jump=Saut du cheval:
+animalinfo.debug.hp=PV du cheval:
+animalinfo.debug.color=Couleur du cheval:
+
+clock.name=Horloge
+clock.options.mode.tooltip=_lStandard_r: Montre l'heure minecraft actuelle_p_lCountdown_r: Temps restant avant le prochain jour minecraft.
+clock.mode.0=Standard
+clock.mode.1=Compte à rebours
+
+compass.name=Compas
+compass.options.hotkey.tooltip=Coordinates pasted into the chat box can be formatted in the config file
+compass.north=N
+compass.east=E
+compass.south=S
+compass.west=O				
+compass.northeast=NE
+compass.northwest=NO
+compass.southeast=SE
+compass.southwest=SO
+
+coordinates.name=Coordonnées
+coordinates.mode.0=[x, z, y]
+coordinates.mode.1=[x, y, z]
+coordinates.options.useycoordinatecolors=Y Colors: 
+
+distancemeasurer.name=Mesureur de Distances
+distancemeasurer.far=Loin
+
+durabilityinfo.name=Info sur la durabilité
+durabilityinfo.options.showitemdurability=Montre les objets: 
+durabilityinfo.options.showarmordurability=Montre l'armure: 
+
+eatingaid.name=Aide pour manger
+eatingaid.mode.0=Basique
+eatingaid.mode.1=Intelligent
+eatingaid.nofood=Sans nourriture
+eatingaid.options.mode.tooltip=_lBasic_r: Mange la nourriture qui rend le plus de points_p_lIntelligent_r: Mange la nourriture qui restaure le plus longtemps
+eatingaid.options.eatgoldenfood=Mange la nourriture en or
+eatingaid.options.eatrawfood=Mange la nourriture crue: 
+eatingaid.options.prioritizefoodinhotbar=Priorité à la nourriture dans la barre d'actions.
+
+enderpearlaid.name=Aide aux perles du Néant
+enderpearlaid.noenderpearls=Pas de perles du Néant
+
+fps.name=FPS
+fps.infoline=fps
+
+gui.override.options.buttons.options=Zyin HUD
+gui.options.title=Option du Zyin HUD
+gui.options.enabled=Activé: 
+gui.options.mode=Mode: 
+gui.options.hotkey=Commande: 
+gui.options.saveandexit=Sauvegarder
+
+infoline.name=Ligne d'infos
+infoline.options.showbiome=Montrer le biome: 
+infoline.options.showcansnow=Montre s'il peut neiger: 
+
+playerlocator.infoline=Joueurs
+playerlocator.options.minviewdistance=Distance de vue minimale: 
+playerlocator.options.showdistancetoplayers=Désactiver les distances: 
+playerlocator.options.showplayerhealth=Désactiver la vie: 
+
+weaponswapper.name=Changeur d'armes
+weaponswapper.noweaponsinhotbar=Pas d'armes dans la barre d'actions
+weaponswapper.options.scanhotbarforweaponsfromlefttoright=Regarde les armes de gauche à droite de la barre d'actions
+
+quickdeposit.name=Dépot rapide
+quickdeposit.options.ignoreitemsinhotbar=Ignorer la barre d'actions: 
+quickdeposit.options.ignoreitemsinhotbar.tooltip=ne placera jamais d'objets de votre barre d'actions dans un coffre
+quickdeposit.options.closechestafterdepositing=Ferme le coffre: 
+quickdeposit.options.closechestafterdepositing.tooltip=Ferme votre inventaire après avoir fait un dépot rapide dans un coffre
+quickdeposit.options.blacklist=Ne jamais déposer:
+quickdeposit.options.blacklisttorch=Torches: 
+quickdeposit.options.blacklistarrow=Flèches: 
+quickdeposit.options.blacklistenderpearl=Perles du Néant: 
+quickdeposit.options.blacklistfood=Nourriture: 
+quickdeposit.options.blacklistwaterbucket=Seau d'eau: 
+quickdeposit.options.blacklistclockcompass=Montre/Compas: 
