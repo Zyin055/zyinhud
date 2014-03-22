@@ -1111,7 +1111,6 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	button.displayString = GetButtonLabel_Mode(HealthMonitor.Mode.GetFriendlyName());
 	            	break;
 	            case 1803:	//Play sound
-	            	System.out.println("1803");
 	            	HealthMonitor.PlayLowHealthSound();
 	            	break;
 	            case 1804:	//Play faster near death

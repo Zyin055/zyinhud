@@ -229,7 +229,6 @@ public class ItemSelector extends ZyinHUDModBase
 
                 if (anim > 0.0F)
                 {
-                	System.out.println("("+x+", "+z+") anim="+anim);
                     GL11.glPushMatrix();
                     float f2 = 1.0F + anim / 5.0F;
                     GL11.glTranslatef(dimX + 8, dimZ + 12, 0.0F);

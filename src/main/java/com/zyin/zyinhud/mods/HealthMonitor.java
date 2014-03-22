@@ -11,6 +11,7 @@ import com.zyin.zyinhud.mods.EatingAid.Modes;
 import com.zyin.zyinhud.util.Localization;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 /**
  * Plays a warning sound when the player is low on health.
@@ -86,27 +87,41 @@ public class HealthMonitor extends ZyinHUDModBase
 	
 	public static HealthMonitor instance = new HealthMonitor();
 	
-	@SubscribeEvent
-	public void LivingHurtEvent(LivingHurtEvent event)
+	public HealthMonitor()
 	{
-		if(HealthMonitor.Enabled &&
-				event.entity.equals(mc.thePlayer) &&
-				!isPlayingLowHealthSound)
+		
+	}
+	
+	/**
+	 * We use a ClientTickEvent instead of a LivingHurtEvent because a LivingHurtEvent will only
+	 * fire in single player, whereas a ClientTickEvent fires in both single and multi player.
+	 * @param event
+	 */
+    @SubscribeEvent
+	public void ClientTickEvent(ClientTickEvent event)
+	{
+		//only play the sound if it's not playing already
+		if(HealthMonitor.Enabled && !isPlayingLowHealthSound)
 		{
 			PlayLowHealthSoundIfHurt();
 		}
 	}
 	
+	
 	/**
 	 * Checks to see if the player has less health than the set threshold, and will play a
 	 * warning sound on a 1 second loop until they heal up.
 	 */
-	public static void PlayLowHealthSoundIfHurt()
+	protected static void PlayLowHealthSoundIfHurt()
 	{
+		if(mc.thePlayer == null)
+			return;
+		
 		int playerHealth = (int)mc.thePlayer.getHealth();
-		if(playerHealth < LowHealthSoundThreshold)
+		if(playerHealth < LowHealthSoundThreshold && playerHealth > 0)
 		{
-			if(!mc.playerController.isInCreativeMode() && !mc.isGamePaused())
+			//don't play the sound if the user is looking at a screen or in creative
+			if(!mc.playerController.isInCreativeMode() && !mc.isGamePaused() && mc.inGameHasFocus)
 				PlayLowHealthSound();
 			
 			isPlayingLowHealthSound = true;
@@ -114,7 +129,7 @@ public class HealthMonitor extends ZyinHUDModBase
 			int soundDelay = repeatDelay;
 			
 			if(PlayFasterNearDeath)
-				soundDelay = (int)((float)repeatDelay * ((float)playerHealth / (float)LowHealthSoundThreshold));
+				soundDelay = repeatDelay/2 + (int)((float)repeatDelay/2 * ((float)playerHealth / (float)LowHealthSoundThreshold));
 			
 			TimerTask t = new PlayLowHealthSoundTimerTask();
 			timer.schedule(t, soundDelay);
@@ -131,7 +146,7 @@ public class HealthMonitor extends ZyinHUDModBase
 	 * Sound resouce names are declared in assets/zyinhud/sounds.json.
 	 * @return
 	 */
-	private static String GetSoundNameFromMode()
+	protected static String GetSoundNameFromMode()
 	{
 		return Mode.soundName;
 	}
@@ -141,7 +156,6 @@ public class HealthMonitor extends ZyinHUDModBase
 	 */
 	public static void PlayLowHealthSound()
 	{
-		System.out.println("PlayLowHealthSound()");
 		ZyinHUDSound.PlaySound(GetSoundNameFromMode());
 	}
 	

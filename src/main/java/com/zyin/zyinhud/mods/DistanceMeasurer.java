@@ -46,8 +46,6 @@ public class DistanceMeasurer extends ZyinHUDModBase
          */
         public static Modes ToggleMode()
         {
-        	if(Mode == null)
-        		System.out.println("Mode is null");
         	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
         }
         
