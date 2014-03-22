@@ -551,7 +551,9 @@ public class InventoryUtil
         if (merchantRecipeList == null || merchantRecipeList.isEmpty())
         	return false;
         
-    	int currentRecipeIndex = ZyinHUDUtil.GetFieldByReflection(GuiMerchant.class, guiMerchant, "currentRecipeIndex","field_70473_e");
+        //field_70473_e used to work in 1.6.4
+        //field_147041_z works in 1.7.2
+    	int currentRecipeIndex = ZyinHUDUtil.GetFieldByReflection(GuiMerchant.class, guiMerchant, "currentRecipeIndex","field_70473_e","field_147041_z");
         MerchantRecipe merchantRecipe = (MerchantRecipe)merchantRecipeList.get(currentRecipeIndex);
         
         ItemStack buyingItemStack1 = merchantRecipe.getItemToBuy();

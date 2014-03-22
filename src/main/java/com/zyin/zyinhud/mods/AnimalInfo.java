@@ -182,36 +182,29 @@ public class AnimalInfo extends ZyinHUDModBase
                 (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
                 && mc.gameSettings.showDebugInfo)
         {
-            Entity riddenEntity = mc.thePlayer.ridingEntity;
-
-            if (riddenEntity instanceof EntityHorse)
+            if (mc.thePlayer.isRidingHorse())
             {
-                EntityHorse horse = (EntityHorse) riddenEntity;
+                EntityHorse horse = (EntityHorse) mc.thePlayer.ridingEntity;
                 String horseSpeedMessage = Localization.get("animalinfo.debug.speed") + " " + GetHorseSpeedText(horse) + " m/s";
                 String horseJumpMessage = Localization.get("animalinfo.debug.jump") + " " + GetHorseJumpText(horse) + " blocks";
                 String horseHPMessage = Localization.get("animalinfo.debug.hp") + " " + GetHorseHPText(horse);
-
-                String coloring = GetHorseColoringText(horse);
-                String marking = GetHorseMarkingText(horse);
+                String horseColor = Localization.get("animalinfo.debug.color") + " " + GetHorseColoringText(horse);
+                String horseMarking = Localization.get("animalinfo.debug.markings") + " " + GetHorseMarkingText(horse);
                 
-                if(marking.isEmpty())	//no markings
-                	marking = "None";
-                
-                String horseColor = Localization.get("animalinfo.debug.color") + " " + coloring;
-                String horseMarking = Localization.get("animalinfo.debug.markings") + " " + marking;
+                //TODO: 1.8 F3 menu rendering done different
                 
                 mc.fontRenderer.drawStringWithShadow(horseSpeedMessage, 2, 130, 0xffffff);
                 mc.fontRenderer.drawStringWithShadow(horseJumpMessage, 2, 140, 0xffffff);
                 mc.fontRenderer.drawStringWithShadow(horseHPMessage, 2, 150, 0xffffff);
                 
-                if(!coloring.isEmpty())	//not a donkey
+                if(horse.getHorseType() == 0)	//not a donkey
                 {
                     mc.fontRenderer.drawStringWithShadow(horseColor, 2, 170, 0xffffff);
                     mc.fontRenderer.drawStringWithShadow(horseMarking, 2, 180, 0xffffff);
                 }
                 
 
-                /* //HORSE TESTING DATA
+                /* //Minecraft 1.6 HORSE TESTING DATA
                 
                 //float horseGrowingAge = horse.getHorseSize();	//horse size, 0.5 (baby) to 1 (adult)
                 
