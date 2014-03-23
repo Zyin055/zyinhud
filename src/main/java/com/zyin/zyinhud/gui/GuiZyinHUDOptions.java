@@ -39,6 +39,7 @@ import com.zyin.zyinhud.mods.PotionAid;
 import com.zyin.zyinhud.mods.PotionTimers;
 import com.zyin.zyinhud.mods.QuickDeposit;
 import com.zyin.zyinhud.mods.SafeOverlay;
+import com.zyin.zyinhud.mods.TorchAid;
 import com.zyin.zyinhud.mods.WeaponSwapper;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
@@ -96,6 +97,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		Localization.get("enderpearlaid.name"),
     		Localization.get("eatingaid.name"),
     		Localization.get("potionaid.name"),
+    		Localization.get("torchaid.name"),
     		Localization.get("weaponswapper.name"),
     		Localization.get("quickdeposit.name"),
     		Localization.get("itemselector.name"),
@@ -117,6 +119,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		1200,
     		1300,
     		1400,
+    		1900,
     		1500,
     		1600,
     		1700,
@@ -425,7 +428,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 1, new GuiHotkeyButton(1402, 0, 0, buttonWidth, buttonHeight, PotionAidKeyHandler.HotkeyDescription));
     	
     }
-    private void DrawWeaponSwapButtons()
+    private void DrawWeaponSwapperButtons()
     {
     	AddButtonAt(0, 0, new GuiButton(1501, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(WeaponSwapper.Enabled)));
     	AddButtonAt(0, 1, new GuiHotkeyButton(1502, 0, 0, buttonWidth, buttonHeight, WeaponSwapperKeyHandler.HotkeyDescription));
@@ -464,6 +467,12 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 3, new GuiNumberSlider(1805, 0, 0, buttonWidth_double, buttonHeight, Localization.get("healthmonitor.options.lowhealthsoundthreshold"), 1, 20, HealthMonitor.GetLowHealthSoundThreshold(), true));
 
     	AddButtonAt(1, 1, new GuiButton(1803, 0, 0, buttonWidth/2, buttonHeight, Localization.get("healthmonitor.options.mode.play")));
+    	
+    }
+    
+    private void DrawTorchAidButtoins()
+    {
+    	AddButtonAt(0, 0, new GuiButton(1901, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(TorchAid.Enabled)));
     	
     }
     
@@ -1005,7 +1014,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            
 	            case 1500:
 	            	screenTitle = Localization.get("weaponswapper.name");
-	            	DrawWeaponSwapButtons();
+	            	DrawWeaponSwapperButtons();
 	            	break;
 	            case 1501:	//Enabled/Disabled
 	            	WeaponSwapper.ToggleEnabled();
@@ -1120,6 +1129,20 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            case 1805:	//Low Health Sound Threshold
 	            	HealthMonitor.SetLowHealthSoundThreshold(((GuiNumberSlider)button).GetValueAsInteger());
 	            	break;
+	                
+	                
+		            /////////////////////////////////////////////////////////////////////////
+		            // Torch Aid
+		            /////////////////////////////////////////////////////////////////////////
+		            
+		            case 1900:
+		            	screenTitle = Localization.get("torchaid.name");
+		            	DrawTorchAidButtoins();
+		            	break;
+		            case 1901:	//Enable/Disable
+		            	TorchAid.ToggleEnabled();
+		            	button.displayString = GetButtonLabel_Enabled(TorchAid.Enabled);
+		            	break;
 	            
             }
         }
@@ -1131,26 +1154,45 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 		//this is where we set all of our button tooltips
 		switch (buttonId)
 		{
+			case 100: return Localization.get("infoline.options.tooltip");
 			case 202: return Localization.get("clock.options.mode.tooltip");
-			case 303: return Localization.get("compass.options.hotkey.tooltip");
+			case 300: return Localization.get("coordinates.options.tooltip");
+			case 303: return Localization.get("coordinates.options.hotkey.tooltip");
+			case 700: return Localization.get("safeoverlay.options.tooltip");
 			case 702: return Localization.get("safeoverlay.options.hotkey.tooltip");
+			case 600: return Localization.get("distancemeasurer.options.tooltip");
+			case 800: return Localization.get("playerlocator.options.tooltip");
+			case 900: return Localization.get("animalinfo.options.tooltip");
 			case 907: return Localization.get("animalinfo.options.showtextbackground.tooltip");
 			case 905: return Localization.get("animalinfo.options.showhorsestatsonf3menu.tooltip");
 			case 906: return Localization.get("animalinfo.options.showhorsestatsoverlay.tooltip");
 			case 916: return Localization.get("animalinfo.options.showbreedingicons.tooltip");
 			case 917: return Localization.get("animalinfo.options.showbreedingtimers.tooltip");
+			case 1000: return Localization.get("potiontimers.options.tooltip");
 			case 1007: return Localization.get("potiontimers.options.hidepotioneffectsininventory.tooltip");
+			case 1100: return Localization.get("durabilityinfo.options.tooltip");
 			case 1103: return Localization.get("durabilityinfo.options.armordurabilitythreshold.tooltip");
+			case 1104: return Localization.get("durabilityinfo.options.showindividualarmoricons.tooltip");
 			case 1106: return Localization.get("durabilityinfo.options.itemdurabilitythreshold.tooltip");
+			case 1110: return Localization.get("durabilityinfo.options.showdamageaspercent.tooltip");
 			case 1111: return Localization.get("durabilityinfo.options.autounequiparmor.tooltip");
 			case 1112: return Localization.get("durabilityinfo.options.autounequiptools.tooltip");
+			case 1200: return Localization.get("enderpearlaid.options.tooltip");
+			case 1300: return Localization.get("eatingaid.options.tooltip");
 			case 1303: return Localization.get("eatingaid.options.mode.tooltip");
+			case 1400: return Localization.get("potionaid.options.tooltip");
+			case 1500: return Localization.get("weaponswapper.options.tooltip");
+			case 1503: return Localization.get("weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip");
+			case 1600: return Localization.get("quickdeposit.options.tooltip");
 			case 1603: return Localization.get("quickdeposit.options.ignoreitemsinhotbar.tooltip");
 			case 1604: return Localization.get("quickdeposit.options.closechestafterdepositing.tooltip");
+			case 1700: return Localization.get("itemselector.options.tooltip");
 			case 1702: return Localization.get("itemselector.options.hotkey.tooltip");
 			case 1704: return Localization.get("itemselector.options.mode.tooltip");
-			case 1801: return Localization.get("healthmonitor.options.enabled.tooltip");
+			case 1800: return Localization.get("healthmonitor.options.tooltip");
 			case 1802: return Localization.get("healthmonitor.options.mode.tooltip");
+			case 1803: return Localization.get("healthmonitor.options.mode.play.tooltip");
+			case 1900: return Localization.get("torchaid.options.tooltip");
 			default: return null;
 		}
 	}

@@ -16,7 +16,6 @@ import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.BlockWorkbench;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -45,11 +44,9 @@ public class ZyinHUDUtil
      */
 	public static boolean IsMouseoveredBlockRightClickable()
 	{
-        MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(5, 1);
-
-        if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+        if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
-            Block block = mc.theWorld.getBlock(objectMouseOver.blockX, objectMouseOver.blockY, objectMouseOver.blockZ);
+            Block block = mc.theWorld.getBlock(mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ);
 
             if(ZyinHUDUtil.IsBlockRightClickable(block))
             	return true;
@@ -66,7 +63,7 @@ public class ZyinHUDUtil
 	{
         //couldn't find a way to see if a block is 'right click-able' without running the onBlockActivation() method
         //which we don't want to do
-        return block instanceof BlockContainer	//BlockContainer = chests, hoppers, dispenser, jukebox, beacon, etc.
+        return block instanceof BlockContainer	//BlockContainer = beacons, brewing stand, chest, command block, daylight detector, dispenser, enchantment table, ender chest, end portal, flower pot, furnace, hopper, jukebox, mob spawner, note block, piston moving, sign, skull
                 || block instanceof BlockButton
                 || block instanceof BlockLever
                 || block instanceof BlockRedstoneDiode	//BlockRedstoneDiode = repeaters + comparators

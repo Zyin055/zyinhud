@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMerchant;
 import net.minecraft.client.gui.inventory.GuiBrewingStand;
@@ -56,7 +57,7 @@ public class InventoryUtil
      * Minimum suggested delay between swapping items around.
      * We should use a higher value for laggier servers.
      */
-    public static int suggestedItemSwapDelay;
+    private static int suggestedItemSwapDelay;
 
     /**
      * Use this instance in order to use the SwapWithDelay() method call.
@@ -67,79 +68,71 @@ public class InventoryUtil
     
     private InventoryUtil()
     {
-    	//on single player there is very little lag, so we can set the delay betwen swapping items around
-    	//to be very small, but the ping on servers requires us to have a larger value in order to work more reliably.
-    	if(mc.isSingleplayer())
-    		suggestedItemSwapDelay = 150;
-    	else
-    		suggestedItemSwapDelay = 450;
+    	suggestedItemSwapDelay = GetSuggestedItemSwapDelay();
     }
 
     
 
+    /**
+     * Determines an appropriate duration in milliseconds that should be used as the delay for swapping items
+     * around in the inventory.
+     * @return
+     */
+	public static int GetSuggestedItemSwapDelay()
+	{
+    	//on single player there is very little lag, so we can set the delay betwen swapping items around
+    	//to be very small, but the ping on servers requires us to have a larger value in order to work more reliably.
+    	if(mc.isSingleplayer())
+    		return suggestedItemSwapDelay = 150;
+    	else
+    		return suggestedItemSwapDelay = 450;
+	}
+
 
 	/**
 	 * Uses an item locaed in your inventory or hotbar.
 	 * <p>
 	 * If it is in your hotbar, it will change the selected hotbar index in order to use it.
 	 * <br>If it is in your inventory, it will swap the item into your hotbar in order to use it.
-	 * @param itemClass example: ItemEnderPearl.class
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return true if the item was used.
 	 */
-	public static boolean UseItem(Class itemClass)
+	public static boolean UseItem(Object object)
 	{
-		int hotbarIndex = GetItemIndexFromHotbar(itemClass);
+		int hotbarIndex = GetItemIndexFromHotbar(object);
 		if(hotbarIndex < 0)
 		{
-			int inventoryIndex = GetItemIndexFromInventory(itemClass);
+			int inventoryIndex = GetItemIndexFromInventory(object);
 			if(inventoryIndex < 0)
 				return false;
 			else
-				return UseItemInInventory(itemClass);
+				return UseItemInInventory(object);
 		}
 		else
-			return UseItemInHotbar(itemClass);
-	}
-	
-    
-	/**
-	 * Uses an item locaed in your inventory or hotbar.
-	 * <p>
-	 * If it is in your hotbar, it will change the selected hotbar index in order to use it.
-	 * <br>If it is in your inventory, it will swap the item into your hotbar in order to use it.
-	 * @param itemIndex (9-35) for items in your inventory, (36-44) for items in your hotbar
-	 * @return true if the item was used.
-	 */
-	public static boolean UseItem(int itemIndex)
-	{
-		if(itemIndex > 8 && itemIndex <= 35)		//inventory
-			return UseItemInInventory(itemIndex);
-		else if(itemIndex > 35 && itemIndex <= 44)	//hotbar
-			return UseItemInHotbar(itemIndex);
-		else
-			return false;
+			return UseItemInHotbar(object);
 	}
 
 	
 	/**
 	 * Uses an item in the players hotbar by changing the selected index, using it, then changing it back.
-	 * @param itemClass example: ItemEnderPearl.class
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return true if the item was used.
 	 */
-	private static boolean UseItemInHotbar(Class itemClass)
+	public static boolean UseItemInHotbar(Object object)
 	{
-		int itemHotbarIndex = GetItemIndexFromHotbar(itemClass);
+		int itemHotbarIndex = GetItemIndexFromHotbar(object);
 
-		return UseItemInHotbar(itemHotbarIndex);
+		return UseItemInHotbar(object, itemHotbarIndex);
 	}
 
-	
+
 	/**
 	 * Uses an item in the players hotbar by changing the selected index, using it, then changing it back.
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @param itemSlotIndex 36-44
 	 * @return true if the item was used.
 	 */
-	public static boolean UseItemInHotbar(int itemSlotIndex)
+	private static boolean UseItemInHotbar(Object object, int itemSlotIndex)
 	{
 		if(itemSlotIndex < 36 || itemSlotIndex > 44)
 			return false;
@@ -149,10 +142,19 @@ public class InventoryUtil
 		int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
     	mc.thePlayer.inventory.currentItem = itemToUseHotbarIndex;
 
+    	ItemStack currentItemStack = mc.thePlayer.getHeldItem();
     	
-    	ItemStack currentItemStack = mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem];
-    	mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, currentItemStack);
-
+    	if(object instanceof Item)
+    	{
+    		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
+    		mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, currentItemStack);
+    	}
+    	else if(object instanceof Block)
+    	{
+    		//Blocks need to use the onPlayerRightClick() function to work properly
+    		mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, currentItemStack, mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
+    	}
+    	
     	mc.thePlayer.inventory.currentItem = previouslySelectedHotbarSlotIndex;
         
     	return true;
@@ -161,23 +163,24 @@ public class InventoryUtil
 	
 	/**
 	 * Uses an item in the players inventory by quickly Swap()ing it into the hotbar, using it, then Swap()ing it back.
-	 * @param itemClass example: ItemEnderPearl.class
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return true if the item was used.
 	 */
-	private static boolean UseItemInInventory(Class itemClass)
+	public static boolean UseItemInInventory(Object object)
 	{
-		int itemInventoryIndex = GetItemIndexFromInventory(itemClass);
+		int itemInventoryIndex = GetItemIndexFromInventory(object);
 
-		return UseItemInInventory(itemInventoryIndex);
+		return UseItemInInventory(object, itemInventoryIndex);
 	}
 
 	
 	/**
 	 * Uses an item in the players inventory by quickly Swap()ing it into the hotbar, using it, then Swap()ing it back.
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @param itemSlotIndex 0-35
 	 * @return true if the item was used.
 	 */
-	private static boolean UseItemInInventory(int itemSlotIndex)
+	private static boolean UseItemInInventory(Object object, int itemSlotIndex)
 	{
 		if(itemSlotIndex < 0 || itemSlotIndex > 35)
 			return false;
@@ -188,9 +191,19 @@ public class InventoryUtil
 
 		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(currentItemInventoryIndex);
 		ItemStack itemStackToUse = slotToUse.getStack();
-		mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, itemStackToUse);
-
-        instance.SwapWithDelay(itemSlotIndex, currentItemInventoryIndex, suggestedItemSwapDelay);
+		
+    	if(object instanceof Item)
+    	{
+    		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
+    		mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, itemStackToUse);
+    	}
+    	else if(object instanceof Block)
+    	{
+    		//Blocks need to use the onPlayerRightClick() function to work properly
+    		mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStackToUse, mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
+    	}
+		
+        instance.SwapWithDelay(itemSlotIndex, currentItemInventoryIndex, GetSuggestedItemSwapDelay());
 
     	return true;
 	}
@@ -900,10 +913,10 @@ public class InventoryUtil
 	
 	/**
 	 * Gets the index of an item class in your inventory.
-	 * @param itemClass example: ItemEnderPearl.class
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return 5-44, -1 if not found
 	 */
-	public static int GetItemIndexFromInventory(Class itemClass)
+	public static int GetItemIndexFromInventory(Object object)
     {
 		List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
 
@@ -914,8 +927,8 @@ public class InventoryUtil
 			ItemStack itemStack = slot.getStack();
 			if(itemStack != null)
 			{
-                Item item = itemStack.getItem();
-                if(item.getClass().getName().equals(itemClass.getName()))
+                if((object instanceof Block && Block.getBlockFromItem(itemStack.getItem()) == object) ||
+                   (object instanceof Item  && itemStack.getItem() == object))
                 {
                 	return i;
                 }
@@ -928,10 +941,10 @@ public class InventoryUtil
 	
 	/**
 	 * Gets the index of an item class in your hotbar.
-	 * @param itemClass example: ItemEnderPearl.class
+	 * @param object The type of item being used. E.x.: Items.torch, Blocks.ender_pearl
 	 * @return 36-44, -1 if not found
 	 */
-	public static int GetItemIndexFromHotbar(Class itemClass)
+	public static int GetItemIndexFromHotbar(Object object)
     {
 		List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
 
@@ -942,8 +955,8 @@ public class InventoryUtil
 			ItemStack itemStack = slot.getStack();
 			if(itemStack != null)
 			{
-                Item item = itemStack.getItem();
-                if(item.getClass().getName().equals(itemClass.getName()))
+                if((object instanceof Block && Block.getBlockFromItem(itemStack.getItem()) == object) ||
+                   (object instanceof Item  && itemStack.getItem() == object))
                 {
                 	return i;
                 }
@@ -952,6 +965,7 @@ public class InventoryUtil
     	
         return -1;
     }
+	
 	
 
 	/**

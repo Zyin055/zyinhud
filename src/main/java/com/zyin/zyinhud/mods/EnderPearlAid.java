@@ -1,6 +1,6 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.item.ItemEnderPearl;
+import net.minecraft.init.Items;
 
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
@@ -23,7 +23,7 @@ public class EnderPearlAid extends ZyinHUDModBase
     }
     
     /**
-     * Makes the player throw an ender pearl if there is one on their hotbar.
+     * Makes the player throw an ender pearl if they have one.
      */
     public static void UseEnderPearl()
     {
@@ -32,8 +32,8 @@ public class EnderPearlAid extends ZyinHUDModBase
             EatingAid.instance.StopEating();    //it's not good if we have an ender pearl selected and hold right click down...
         }
         
-        boolean usedEnderPearlSuccessfully = InventoryUtil.UseItem(ItemEnderPearl.class);
-
+        boolean usedEnderPearlSuccessfully = InventoryUtil.UseItem(Items.ender_pearl);
+        
         if (!usedEnderPearlSuccessfully)
         {
             InfoLine.DisplayNotification(Localization.get("enderpearlaid.noenderpearls"));

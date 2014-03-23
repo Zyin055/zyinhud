@@ -127,7 +127,7 @@ public class PotionAid extends ZyinHUDModBase
         
         //after this timer runs out we'll release right click to stop eating and select the previously selected item
         drinkTimerTask = new StopDrinkingTimerTask(r, previouslySelectedHotbarSlotIndex);
-        timer.schedule(drinkTimerTask, potionDrinkDuration + InventoryUtil.suggestedItemSwapDelay);
+        timer.schedule(drinkTimerTask, potionDrinkDuration + InventoryUtil.GetSuggestedItemSwapDelay());
     }
     
     /**
@@ -150,7 +150,7 @@ public class PotionAid extends ZyinHUDModBase
         drinkTimerTask = new StopDrinkingTimerTask(r);
         timer.schedule(drinkTimerTask, potionDrinkDuration);
         swapTimerTask = InventoryUtil.instance.SwapWithDelay(currentItemInventoryIndex, potionInventoryIndex,
-        		potionDrinkDuration + InventoryUtil.suggestedItemSwapDelay);
+        		potionDrinkDuration + InventoryUtil.GetSuggestedItemSwapDelay());
     }
     
     

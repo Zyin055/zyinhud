@@ -29,7 +29,7 @@ public class WeaponSwapper extends ZyinHUDModBase
      */
     public static void SwapWeapons()
     {
-        ItemStack currentItemStack = mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem];
+        ItemStack currentItemStack = mc.thePlayer.getHeldItem();
         Item currentItem;
 
         if (currentItemStack == null)

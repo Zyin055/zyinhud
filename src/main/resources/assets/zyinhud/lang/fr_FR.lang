@@ -42,7 +42,6 @@ clock.mode.0=Standard
 clock.mode.1=Compte à rebours
 
 compass.name=Compas
-compass.options.hotkey.tooltip=Coordinates pasted into the chat box can be formatted in the config file
 compass.north=N
 compass.east=E
 compass.south=S

@@ -14,7 +14,6 @@ import net.minecraft.item.ItemFishFood.FishType;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 
-import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -181,13 +180,13 @@ public class EatingAid extends ZyinHUDModBase
         isCurrentlyEating = true;
         previousEatFromHotbar = true;
         
-    	ItemStack currentItemStack = mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem];
+    	ItemStack currentItemStack = mc.thePlayer.getHeldItem();
     	ItemFood currentFood = (ItemFood)currentItemStack.getItem();
         int eatingDurationInMilliseconds = 1000*currentFood.itemUseDuration / 20;
         
         //after this timer runs out we'll release right click to stop eating and select the previously selected item
         eatTimerTask = new StopEatingTimerTask(r, previouslySelectedHotbarSlotIndex);
-        timer.schedule(eatTimerTask, eatingDurationInMilliseconds + InventoryUtil.suggestedItemSwapDelay);
+        timer.schedule(eatTimerTask, eatingDurationInMilliseconds + InventoryUtil.GetSuggestedItemSwapDelay());
     }
     
     /**
@@ -206,7 +205,7 @@ public class EatingAid extends ZyinHUDModBase
         isCurrentlyEating = true;
         previousEatFromHotbar = false;
         
-        ItemStack currentItemStack = mc.thePlayer.inventory.mainInventory[mc.thePlayer.inventory.currentItem];
+        ItemStack currentItemStack = mc.thePlayer.getHeldItem();
         ItemFood currentFood = (ItemFood)currentItemStack.getItem();
         int eatingDurationInMilliseconds = 1000 * currentFood.itemUseDuration / 20;
         
@@ -214,7 +213,7 @@ public class EatingAid extends ZyinHUDModBase
         eatTimerTask = new StopEatingTimerTask(r);
         timer.schedule(eatTimerTask, eatingDurationInMilliseconds);
         swapTimerTask = InventoryUtil.instance.SwapWithDelay(currentItemInventoryIndex, foodInventoryIndex,
-        		eatingDurationInMilliseconds + InventoryUtil.suggestedItemSwapDelay);
+        		eatingDurationInMilliseconds + InventoryUtil.GetSuggestedItemSwapDelay());
     }
     
     

@@ -1,11 +1,13 @@
 /* ========================================================================================================
  * 
+ * README
+ * 
  * Zyin's HUD
  * 
- * This code is all open source and you are free, and encouraged, to do whatever you want with it.
+ * This code is all open source and you are free to, and encouraged to, do whatever you want with it.
  * 
  * Adding your own functionality is (relatively) simple. First make a class in com.zyin.zyinhud.mods
- * which contains all of your 'mods' logic. Then you need a way to interact with your mod. You can
+ * which contains all of your mods logic. Then you need a way to interact with your mod. You can
  * do this with a Tick Handler (already setup for you in ZyinHUDRenderer.java), a Hotkey (follow the
  * examples in ZyinHUDKeyHandlers.java), or a single-player only command (see com.zyin.zyinhud.command).
  * 
@@ -36,7 +38,6 @@ import com.zyin.zyinhud.mods.HealthMonitor;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -55,7 +56,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-	public static final String MODVERSION = "1.2.2";
+	public static final String MODVERSION = "1.2.2.1";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     

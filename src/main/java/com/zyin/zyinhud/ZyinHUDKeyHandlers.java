@@ -17,7 +17,7 @@ import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
 import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
 import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
 import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
-import com.zyin.zyinhud.mods.ItemSelector;
+import com.zyin.zyinhud.mods.TorchAid;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -102,8 +102,24 @@ public class ZyinHUDKeyHandlers
     @SubscribeEvent
     public void MouseEvent(MouseEvent event)
     {
+    	//event.buttonstate = true if pressed, false if released
+    	//event.button = -1 = mouse moved
+    	//event.button =  0 = Left click
+    	//event.button =  1 = Right click
+    	//event.button =  2 = Middle click
+    	//event.dwheel =    0 = mouse moved
+    	//event.dwheel =  120 = mouse wheel up
+    	//event.dwheel = -120 = mouse wheel down
+    	
         if (KEY_BINDINGS[11].getIsKeyPressed() && event.dwheel != 0)
             ItemSelectorKeyHandler.MouseWheel(event);
+        
+        if(event.button == 1 && event.buttonstate == true)
+        {
+        	if(TorchAid.Enabled)
+        		TorchAid.UseTorchIfToolIsEquipped();
+        }
+        
     }
 	
     @SubscribeEvent

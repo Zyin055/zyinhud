@@ -47,7 +47,6 @@ clock.mode.1=Odliczanie
 clock.mode.2=Graficzny
 
 compass.name=Kompas
-compass.options.hotkey.tooltip=Współrzędne wklejone do czatu mogą być formatowane wedle pliku konfiguracyjnego
 compass.north=N
 compass.east=E
 compass.south=S
@@ -60,6 +59,7 @@ compass.southwest=SW
 coordinates.name=Współrzędne
 coordinates.mode.0=[x, z, y]
 coordinates.mode.1=[x, y, z]
+coordinates.options.hotkey.tooltip=Współrzędne wklejone do czatu mogą być formatowane wedle pliku konfiguracyjnego
 coordinates.options.useycoordinatecolors=Kolory wsp. Y: 
 
 distancemeasurer.name=Miernik odległości

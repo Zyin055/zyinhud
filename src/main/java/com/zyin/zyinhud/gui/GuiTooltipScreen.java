@@ -13,7 +13,10 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
  */
 public abstract class GuiTooltipScreen extends GuiScreen
 {
-    protected final static int LINE_HEIGHT = 11;
+	public static boolean ShowTooltipButtonMouseoverEffect = true;
+	public static boolean ShowTooltipButtonEffect = true;
+	
+    private final static int LINE_HEIGHT = 11;
     
 	private long mouseoverTime = 0;
 	private long prevSystemTime = -1;
@@ -30,30 +33,35 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	protected int tooltipXOffset = 0;
 	protected int tooltipYOffset = 10;
 	
-	public void drawScreen(int mouseX, int mouseY, float par3)
+	public void drawScreen(int mouseX, int mouseY, float f)
 	{
-		super.drawScreen(mouseX, mouseY, par3);
+		super.drawScreen(mouseX, mouseY, f);
 		
-		RenderAllTooltips(mouseX, mouseY);
+		drawTooltipScreen(mouseX, mouseY);
 	}
 	
 	/**
 	 * This method must be overriden. Gets a tooltip String for a specific button.
 	 * Recommended to use a switch/case statement for buttonId for easy implementation.
 	 * @param buttonId The ID of the button this tooltip corresponds to
-	 * @return The tooltip string for the specified buttonId
+	 * @return The tooltip string for the specified buttonId. null if no tooltip exists for this button.
 	 */
 	protected abstract String GetButtonTooltip(int buttonId);
 	
 	/**
-	 * Renders any tooltips for GuiButtons that are being mouseovered.
+	 * Renders any special effects applied to tooltip buttons, and renders any tooltips for GuiButtons 
+	 * that are being mouseovered.
 	 * @param mouseX
 	 * @param mouseY
 	 */
-	protected void RenderAllTooltips(int mouseX, int mouseY)
+	protected void drawTooltipScreen(int mouseX, int mouseY)
 	{
+		if(ShowTooltipButtonEffect)
+			RenderTooltipButtonEffect();
+		
 		int mousedOverButtonId = -1;
 		
+		//find out which button is being mouseovered
 		for(int i = 0; i < buttonList.size(); i++)
 		{
 			GuiButton button = (GuiButton)buttonList.get(i);
@@ -61,10 +69,15 @@ public abstract class GuiTooltipScreen extends GuiScreen
 			if(IsButtonMouseovered(mouseX, mouseY, button))
 			{
 				mousedOverButtonId = button.id;
+				
+				if(ShowTooltipButtonMouseoverEffect && GetButtonTooltip(mousedOverButtonId) != null)
+					RenderTooltipButtonMouseoverEffect(button);
+				
 				break;
 			}
 		}
 		
+		//calculate how long this button has been mouseovered for
 		if(mousedOverButtonId > -1)
 		{
 			long systemTime = System.currentTimeMillis();
@@ -79,6 +92,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 			mouseoverTime = 0;
 		}
 		
+		//render the button's tooltip
 		if(mouseoverTime > tooltipDelay)
 		{
 			String tooltip = GetButtonTooltip(mousedOverButtonId);
@@ -94,20 +108,51 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	 * @param mouseX
 	 * @param mouseY
 	 * @param button
-	 * @return
+	 * @return true if this button is mouseovered
 	 */
 	protected boolean IsButtonMouseovered(int mouseX, int mouseY, GuiButton button)
 	{
 		if(mouseX >= button.xPosition && mouseX <= button.xPosition + button.getButtonWidth() &&
 			mouseY >= button.yPosition)
 		{
-			//for some god-forsaken reason they made GuiButton.width public but not GuiButton.height,
+			//for some god-forsaken reason they made GuiButton.getButtonWidth() public but not height,
 			//so use reflection to grab it
 			int buttonHeight = ZyinHUDUtil.GetFieldByReflection(GuiButton.class, button, "height","field_146121_g");
 			if(mouseY <= button.yPosition + buttonHeight)
 				return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Render anything special onto all buttons that have tooltips assigned to them.
+	 */
+	protected void RenderTooltipButtonEffect()
+	{
+		for(int i = 0; i < buttonList.size(); i++)
+		{
+			GuiButton button = (GuiButton)buttonList.get(i);
+			
+			if(GetButtonTooltip(button.id) != null)
+			{
+				boolean flag = mc.fontRenderer.getUnicodeFlag();
+				mc.fontRenderer.setUnicodeFlag(true);
+				mc.fontRenderer.drawStringWithShadow("?", button.xPosition+button.getButtonWidth()-5, button.yPosition, 0x99FFFFFF);
+				mc.fontRenderer.setUnicodeFlag(flag);
+			}
+		}
+	}
+	
+	/**
+	 * Render anything special onto buttons that have tooltips assigned to them when they are mousevered.
+	 * @param button
+	 */
+	protected void RenderTooltipButtonMouseoverEffect(GuiButton button)
+	{
+		boolean flag = mc.fontRenderer.getUnicodeFlag();
+		mc.fontRenderer.setUnicodeFlag(true);
+		mc.fontRenderer.drawStringWithShadow(FontCodes.AQUA + "?", button.xPosition+button.getButtonWidth()-5, button.yPosition, 0xFFFFFF);
+		mc.fontRenderer.setUnicodeFlag(flag);
 	}
 	
 	/**
@@ -159,7 +204,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	/**
 	 * Converts a String representation of a tooltip into a String[], and also decodes any font codes used.
 	 * @param s Ex: "Hello,_nI am your _ltooltip_r and you love me."
-	 * @return
+	 * @return An array of Strings such that each String width does not exceed tooltipMaxWidth
 	 */
 	protected String[] ParseTooltipArrayFromString(String s)
 	{

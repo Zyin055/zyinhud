@@ -24,6 +24,7 @@ import com.zyin.zyinhud.mods.PotionAid;
 import com.zyin.zyinhud.mods.PotionTimers;
 import com.zyin.zyinhud.mods.QuickDeposit;
 import com.zyin.zyinhud.mods.SafeOverlay;
+import com.zyin.zyinhud.mods.TorchAid;
 import com.zyin.zyinhud.mods.WeaponSwapper;
 
 /**
@@ -31,7 +32,6 @@ import com.zyin.zyinhud.mods.WeaponSwapper;
  */
 public class ZyinHUDConfig
 {
-    //this should match the text used in the en_US.properties file because its used to grab data from the localization file
     public static final String CATEGORY_MISC = "misc";
     public static final String CATEGORY_INFOLINE = "infoline";
     public static final String CATEGORY_COORDINATES = "coordinates";
@@ -51,6 +51,7 @@ public class ZyinHUDConfig
     public static final String CATEGORY_QUICKDEPOSIT = "quickdeposit";
     public static final String CATEGORY_HEALTHMONITOR = "healthmonitor";
     public static final String CATEGORY_ITEMSELECTOR = "itemselector";
+    public static final String CATEGORY_TORCHAID= "torchaid";
 
     public static Configuration config = null;
     
@@ -109,6 +110,7 @@ public class ZyinHUDConfig
         config.addCustomCategoryComment(CATEGORY_QUICKDEPOSIT, "Quick Stack allows you to inteligently deposit every item in your inventory quickly into a chest.");
         config.addCustomCategoryComment(CATEGORY_HEALTHMONITOR, "Plays warning beeps when you are low on health.");
         config.addCustomCategoryComment(CATEGORY_ITEMSELECTOR, "Item Selector allows you to conveniently swap your currently selected hotbar item with something in your inventory.");
+        config.addCustomCategoryComment(CATEGORY_TORCHAID, "Torch Aid lets you right click while holding an axe, pickaxe, shovel, or when you have nothing in your hand to place a torch.");
         
         //CATEGORY_MISC
         
@@ -630,7 +632,7 @@ public class ZyinHUDConfig
         
         //CATEGORY_QUICKDEPOSIT
         p = config.get(CATEGORY_QUICKDEPOSIT, "EnableQuickDeposit", true);
-        p.comment = ".";
+        p.comment = "Enables Quick Deposit.";
         if(loadSettings)
         	QuickDeposit.Enabled = p.getBoolean(true);
         else
@@ -685,20 +687,10 @@ public class ZyinHUDConfig
         	QuickDeposit.BlacklistWaterBucket = p.getBoolean(false);
         else
         	p.set(QuickDeposit.BlacklistWaterBucket);
-
-
-        //CATEGORY_HEALTHMONITOR
-        p = config.get(CATEGORY_HEALTHMONITOR, "EnableHealthMonitor", false);
-        p.comment = "Enable/Disable using the Health Monitor.";
-        if(loadSettings)
-        	HealthMonitor.Enabled = p.getBoolean(false);
-        else
-        	p.set(HealthMonitor.Enabled);
-        	
         	
         //CATEGORY_ITEMSELECTOR
         p = config.get(CATEGORY_ITEMSELECTOR, "EnableItemSelector", true);
-        p.comment = "Enables mouse wheel scrolling whilst holding "
+        p.comment = "Enables/Disable using mouse wheel scrolling whilst holding "
                 + Keyboard.getKeyName( ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode() ) + " to swap the selected item with an inventory item.";
         if(loadSettings)
           ItemSelector.Enabled = p.getBoolean(true);
@@ -720,6 +712,13 @@ public class ZyinHUDConfig
         	p.set(ItemSelector.Mode.name());
 
         //CATEGORY_HEALTHMONITOR
+        p = config.get(CATEGORY_HEALTHMONITOR, "EnableHealthMonitor", false);
+        p.comment = "Enable/Disable using the Health Monitor.";
+        if(loadSettings)
+        	HealthMonitor.Enabled = p.getBoolean(false);
+        else
+        	p.set(HealthMonitor.Enabled);
+        
         p = config.get(CATEGORY_HEALTHMONITOR, "HealthMonitorMode", "OOT");
         p.comment = "Sets the Health Monitor mode.";
         if(loadSettings)
@@ -740,6 +739,15 @@ public class ZyinHUDConfig
         	HealthMonitor.PlayFasterNearDeath = p.getBoolean(false);
         else
         	p.set(HealthMonitor.PlayFasterNearDeath);
+        
+        //CATEGORY_TORCHAID
+        p = config.get(CATEGORY_TORCHAID, "EnableTorchAid", true);
+        p.comment = "Enable/Disable using Torch Aid to help you place torches more easily.";
+        if(loadSettings)
+        	TorchAid.Enabled = p.getBoolean(true);
+        else
+        	p.set(TorchAid.Enabled);
+        
 
         config.save();
     }
