@@ -38,8 +38,8 @@ public class ItemSelector extends ZyinHUDModBase
 	/** The enum for the different types of Modes this mod can have */
     public static enum Modes
     {
-        ALL(Localization.get("itemselector.mode.0")),
-        SAME_COLUMN(Localization.get("itemselector.mode.1"));
+        ALL(Localization.get("itemselector.mode.all")),
+        SAME_COLUMN(Localization.get("itemselector.mode.column"));
         
         private String friendlyName;
         

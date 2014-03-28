@@ -34,6 +34,16 @@ public class TorchAid extends ZyinHUDModBase
     
     
     /**
+     * When the player right clicks
+     */
+    public static void OnRightClick()
+    {
+    	if(TorchAid.Enabled)
+    		UseTorchIfToolIsEquipped();
+    }
+    
+    
+    /**
      * Makes the player place a Torch if they are currently using an axe, pickaxe, shovel, or have nothing in hand.
      */
     public static void UseTorchIfToolIsEquipped()

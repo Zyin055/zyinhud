@@ -19,6 +19,7 @@ import com.zyin.zyinhud.mods.Fps;
 import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.ItemSelector;
+import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.mods.PlayerLocator;
 import com.zyin.zyinhud.mods.PotionAid;
 import com.zyin.zyinhud.mods.PotionTimers;
@@ -32,7 +33,7 @@ import com.zyin.zyinhud.mods.WeaponSwapper;
  */
 public class ZyinHUDConfig
 {
-    public static final String CATEGORY_MISC = "misc";
+    public static final String CATEGORY_MISCELLANEOUS = "miscellaneous";
     public static final String CATEGORY_INFOLINE = "infoline";
     public static final String CATEGORY_COORDINATES = "coordinates";
     public static final String CATEGORY_COMPASS = "compass";
@@ -91,7 +92,7 @@ public class ZyinHUDConfig
         
         Property p;
         
-        config.addCustomCategoryComment(CATEGORY_MISC, "Other settings not related to any specific functionality.");
+        config.addCustomCategoryComment(CATEGORY_MISCELLANEOUS, "Other settings not related to any specific functionality.");
         config.addCustomCategoryComment(CATEGORY_INFOLINE, "Info Line displays the status of other features in the top left corner of the screen.");
         config.addCustomCategoryComment(CATEGORY_COORDINATES, "Coordinates displays your coordinates. Nuff said.");
         config.addCustomCategoryComment(CATEGORY_COMPASS, "Compass displays a text compass.");
@@ -112,8 +113,13 @@ public class ZyinHUDConfig
         config.addCustomCategoryComment(CATEGORY_ITEMSELECTOR, "Item Selector allows you to conveniently swap your currently selected hotbar item with something in your inventory.");
         config.addCustomCategoryComment(CATEGORY_TORCHAID, "Torch Aid lets you right click while holding an axe, pickaxe, shovel, or when you have nothing in your hand to place a torch.");
         
-        //CATEGORY_MISC
-        
+		// CATEGORY_MISCELLANEOUS
+        p = config.get(CATEGORY_MISCELLANEOUS, "UseEnhancedMiddleClick", true);
+        p.comment = "Enable/Disable improving the middle click functionality to work with blocks in your inventory.";
+        if(loadSettings)
+        	Miscellaneous.UseEnhancedMiddleClick = p.getBoolean(true);
+        else
+        	p.set(Miscellaneous.UseEnhancedMiddleClick);
 
         //CATEGORY_INFOLINE
         p = config.get(CATEGORY_INFOLINE, "EnableInfoLine", true);
@@ -251,13 +257,6 @@ public class ZyinHUDConfig
         else
         	p.set(DurabilityInfo.GetDurabilityDisplayThresholdForItem());
         
-        p = config.get(CATEGORY_DURABILITYINFO, "DurabilityUpdateFrequency", 1000);
-        p.comment = "Update the the durability info display every XX ms.";
-        if(loadSettings)
-        	DurabilityInfo.DurabilityUpdateFrequency = p.getInt();
-        else
-        	p.set(DurabilityInfo.DurabilityUpdateFrequency);
-        
         p = config.get(CATEGORY_DURABILITYINFO, "DurabilityLocationHorizontal", 30);
         p.comment = "The horizontal position of the durability icons. 0 is left, 400 is far right.";
         if(loadSettings)
@@ -307,30 +306,30 @@ public class ZyinHUDConfig
         			+ Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode())+" and + + "
         			+ Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode())+".";
         if(loadSettings)
-        	SafeOverlay.instance.setDrawDistance(p.getInt(20));
+        	SafeOverlay.instance.SetDrawDistance(p.getInt(20));
         else
-        	p.set(SafeOverlay.instance.getDrawDistance());
+        	p.set(SafeOverlay.instance.GetDrawDistance());
         
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayTransparency", 0.3);
         p.comment = "The transparency of the unsafe marks. Must be between greater than 0.1 and less than or equal to 1.";
         if(loadSettings)
-        	SafeOverlay.instance.setUnsafeOverlayTransparency((float)p.getDouble(0.3));
+        	SafeOverlay.instance.SetUnsafeOverlayTransparency((float)p.getDouble(0.3));
         else
-        	p.set(SafeOverlay.instance.getUnsafeOverlayTransparency());
+        	p.set(SafeOverlay.instance.GetUnsafeOverlayTransparency());
         
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayDisplayInNether", false);
         p.comment = "Enable/Disable showing unsafe areas in the Nether.";
         if(loadSettings)
-        	SafeOverlay.instance.setDisplayInNether(p.getBoolean(false));
+        	SafeOverlay.instance.SetDisplayInNether(p.getBoolean(false));
         else
-        	p.set(SafeOverlay.instance.getDisplayInNether());
+        	p.set(SafeOverlay.instance.GetDisplayInNether());
         
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlaySeeThroughWalls", false);
         p.comment = "Enable/Disable showing unsafe areas through walls. Toggle in game with Ctrl + "+Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode())+".";
         if(loadSettings)
-        	SafeOverlay.instance.setSeeUnsafePositionsThroughWalls(p.getBoolean(false));
+        	SafeOverlay.instance.SetSeeUnsafePositionsThroughWalls(p.getBoolean(false));
         else
-        	p.set(SafeOverlay.instance.getSeeUnsafePositionsThroughWalls());
+        	p.set(SafeOverlay.instance.GetSeeUnsafePositionsThroughWalls());
         
         
         //CATEGORY_POTIONTIMERS
@@ -420,6 +419,20 @@ public class ZyinHUDConfig
         	PlayerLocator.viewDistanceCutoff = p.getInt(0);
         else
         	p.set(PlayerLocator.viewDistanceCutoff);
+        
+        p = config.get(CATEGORY_PLAYERLOCATOR, "ShowWolves", true);
+        p.comment = "Show your tamed wolves in addition to other players.";
+        if(loadSettings)
+        	PlayerLocator.ShowWolves = p.getBoolean(true);
+        else
+        	p.set(PlayerLocator.ShowWolves);
+        
+        p = config.get(CATEGORY_PLAYERLOCATOR, "UseWolfColors", true);
+        p.comment = "Use the color of your wolf's collar to colorize their name.";
+        if(loadSettings)
+        	PlayerLocator.UseWolfColors = p.getBoolean(true);
+        else
+        	p.set(PlayerLocator.UseWolfColors);
         
         
         //CATEGORY_EATINGAID

@@ -32,8 +32,8 @@ public class Coordinates extends ZyinHUDModBase
 	/** The enum for the different types of Modes this mod can have */
     public static enum Modes
     {
-        XZY(Localization.get("coordinates.mode.0")),
-        XYZ(Localization.get("coordinates.mode.1"));
+        XZY(Localization.get("coordinates.mode.xzy")),
+        XYZ(Localization.get("coordinates.mode.xyz"));
         
         private String friendlyName;
         
@@ -168,7 +168,6 @@ public class Coordinates extends ZyinHUDModBase
      */
     public static boolean ToggleUseYCoordinateColors()
     {
-    	UseYCoordinateColors = !UseYCoordinateColors;
-    	return UseYCoordinateColors;
+    	return UseYCoordinateColors = !UseYCoordinateColors;
     }
 }

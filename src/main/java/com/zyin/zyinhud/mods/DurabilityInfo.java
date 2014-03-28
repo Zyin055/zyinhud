@@ -42,12 +42,12 @@ public class DurabilityInfo extends ZyinHUDModBase
     
     public static boolean ShowArmorDurability;
     public static boolean ShowItemDurability;
-    public static int DurabilityUpdateFrequency;
 	public static boolean ShowIndividualArmorIcons;
     public static boolean ShowDamageAsPercentage;
     public static boolean AutoUnequipArmor;
     public static boolean AutoUnequipTools;
-	
+
+    public static final int durabilityUpdateFrequency = 1000;
 
     //U and V is the top left part of the image
     //X and Y is the width and height of the image
@@ -94,7 +94,7 @@ public class DurabilityInfo extends ZyinHUDModBase
         		!mc.gameSettings.showDebugInfo)
         {
             //don't waste time recalculating things every tick
-        	if(System.currentTimeMillis() - lastGenerate > DurabilityUpdateFrequency)
+        	if(System.currentTimeMillis() - lastGenerate > durabilityUpdateFrequency)	//update every 1 second
             {
                 CalculateDurabilityIcons();
             }
@@ -438,8 +438,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowArmorDurability()
     {
-    	ShowArmorDurability = !ShowArmorDurability;
-    	return ShowArmorDurability;
+    	return ShowArmorDurability = !ShowArmorDurability;
     }
     /**
      * Toggles showing durability for items
@@ -447,8 +446,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowItemDurability()
     {
-    	ShowItemDurability = !ShowItemDurability;
-    	return ShowItemDurability;
+    	return ShowItemDurability = !ShowItemDurability;
     }
     /**
      * Toggles showing percentages for item durability
@@ -456,8 +454,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowDamageAsPercent()
     {
-    	ShowDamageAsPercentage = !ShowDamageAsPercentage;
-    	return ShowDamageAsPercentage;
+    	return ShowDamageAsPercentage = !ShowDamageAsPercentage;
     }
     /**
      * Toggles showing icons or an image for broken armor
@@ -465,8 +462,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowIndividualArmorIcons()
     {
-    	ShowIndividualArmorIcons = !ShowIndividualArmorIcons;
-    	return ShowIndividualArmorIcons;
+    	return ShowIndividualArmorIcons = !ShowIndividualArmorIcons;
     }
     /**
      * Toggles unequipping breaking armor
@@ -474,8 +470,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static boolean ToggleAutoUnequipArmor()
     {
-    	AutoUnequipArmor = !AutoUnequipArmor;
-    	return AutoUnequipArmor;
+    	return AutoUnequipArmor = !AutoUnequipArmor;
     }
     /**
      * Toggles unequipping breaking tools
@@ -483,7 +478,6 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static boolean ToggleAutoUnequipTools()
     {
-    	AutoUnequipTools = !AutoUnequipTools;
-    	return AutoUnequipTools;
+    	return AutoUnequipTools = !AutoUnequipTools;
     }
 }

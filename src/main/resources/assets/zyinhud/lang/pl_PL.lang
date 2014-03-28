@@ -42,9 +42,9 @@ animalinfo.debug.markings=Rodzaj konia:
 
 clock.name=Zegarek
 clock.options.mode.tooltip=_lStandardowy_r: Pokazuje aktualny czas w grze_p_lOdliczanie_r: Czas pozostały do rozpoczęcia się następnego dnia lub nocy_p_lGrafika_r: Pokazuje zegar Minecraft
-clock.mode.0=Standardowy
-clock.mode.1=Odliczanie
-clock.mode.2=Graficzny
+clock.mode.standard=Standardowy
+clock.mode.countdown=Odliczanie
+clock.mode.graphic=Graficzny
 
 compass.name=Kompas
 compass.north=N
@@ -57,15 +57,15 @@ compass.southeast=SE
 compass.southwest=SW
 
 coordinates.name=Współrzędne
-coordinates.mode.0=[x, z, y]
-coordinates.mode.1=[x, y, z]
+coordinates.mode.xzy=[x, z, y]
+coordinates.mode.xyz=[x, y, z]
 coordinates.options.hotkey.tooltip=Współrzędne wklejone do czatu mogą być formatowane wedle pliku konfiguracyjnego
 coordinates.options.useycoordinatecolors=Kolory wsp. Y: 
 
 distancemeasurer.name=Miernik odległości
-distancemeasurer.mode.0=Z
-distancemeasurer.mode.1=Prosty
-distancemeasurer.mode.2=złożony
+distancemeasurer.mode.off=Z
+distancemeasurer.mode.simple=Prosty
+distancemeasurer.mode.complex=złożony
 distancemeasurer.far=daleko
 
 durabilityinfo.name=Info o wytrzymałości
@@ -82,8 +82,8 @@ durabilityinfo.options.showindividualarmoricons=Użyj ikon zbroi:
 durabilityinfo.options.showdamageaspercent=Użyj procentów: 
 
 eatingaid.name=Pomoc z jedzeniem
-eatingaid.mode.0=Podstawowy
-eatingaid.mode.1=Inteligentny
+eatingaid.mode.basic=Podstawowy
+eatingaid.mode.intelligent=Inteligentny
 eatingaid.nofood=Brak jedzenia
 eatingaid.options.mode.tooltip=_lPodstawowy_r: Używa najbardziej wypełniającego jedzenia_p_lInteligentny_r:Wybiera jedzenie najlepiej pasujące do aktualnego głodu
 eatingaid.options.eatgoldenfood=Jedz złote jedzenie: 
@@ -106,12 +106,12 @@ gui.options.hotkey=Klawisz:
 gui.options.saveandexit=Zapisz
 
 healthmonitor.name=Monitor zdrowia
-healthmonitor.mode.0=OoT
-healthmonitor.mode.1=LttP
-healthmonitor.mode.2=Oracle
-healthmonitor.mode.3=LA
-healthmonitor.mode.4=LoZ
-healthmonitor.mode.5=AoL
+healthmonitor.mode.oot=OoT
+healthmonitor.mode.lttp=LttP
+healthmonitor.mode.oracle=Oracle
+healthmonitor.mode.la=LA
+healthmonitor.mode.loz=LoZ
+healthmonitor.mode.aol=AoL
 healthmonitor.options.enabled.tooltip=Odgrywa dźwięk ostrzegający o niskim stanie zdrowia w taki sam sposób, jak wygląda to w grach z serii Zelda.
 healthmonitor.options.mode.play=Odtwórz
 healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
@@ -126,8 +126,8 @@ infoline.options.offsetx=Pozycja X:
 infoline.options.offsety=Pozycja Y: 
 
 itemselector.name=Item Selector
-itemselector.mode.0=All
-itemselector.mode.1=Same Column
+itemselector.mode.all=All
+itemselector.mode.column=Same Column
 itemselector.error.emptyslot=That slot no longer has an item
 itemselector.error.enchant=Unable to swap enchanted items in multiplayer
 itemselector.error.empty=Inventory has no selectable items
@@ -137,8 +137,8 @@ itemselector.options.ticks=Ticks until timeout:
 itemselector.options.ticks.tooltip=How many in game ticks (20 = 1 sec) before the highlighted item is automatically selected
 
 playerlocator.name=Lokalizator graczy
-playerlocator.mode.0=Z
-playerlocator.mode.0=Na
+playerlocator.mode.off=Z
+playerlocator.mode.on=Na
 playerlocator.infoline=gracze
 playerlocator.options.minviewdistance=Zasięg działania: 
 playerlocator.options.showdistancetoplayers=Pokaż odległości: 
@@ -157,8 +157,8 @@ potiontimers.options.offsetx=Pozycja X:
 potiontimers.options.offsety=Pozycja Y: 
 
 safeoverlay.name=Nakładka bezpiecznej strefy
-safeoverlay.mode.0=Z
-safeoverlay.mode.1=Na
+safeoverlay.mode.off=Z
+safeoverlay.mode.on=Na
 safeoverlay.infoline=bezp
 safeoverlay.options.hotkey.tooltip=Ctrl + klawisz = Przełącz X-ray_p+ + klawisz = Zwiększ dystans_p- + key = Zmniejsz dystans_p0 + key = Zresetuj dystans
 safeoverlay.options.drawdistance=Zasięg działania: 

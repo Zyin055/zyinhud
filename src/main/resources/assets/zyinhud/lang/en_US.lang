@@ -44,9 +44,9 @@ animalinfo.debug.markings=Horse Markings:
 
 clock.name=Clock
 clock.options.mode.tooltip=_lStandard_r: Shows the current Minecraft time_p_lCountdown_r: Timer till the next day/night begins_p_lGraphic_r: Shows a Minecraft clock
-clock.mode.0=Standard
-clock.mode.1=Countdown
-clock.mode.2=Graphic
+clock.mode.standard=Standard
+clock.mode.countdown=Countdown
+clock.mode.graphic=Graphic
 
 compass.name=Compass
 compass.north=N
@@ -59,16 +59,17 @@ compass.southeast=SE
 compass.southwest=SW
 
 coordinates.name=Coordinates
-coordinates.mode.0=[x, z, y]
-coordinates.mode.1=[x, y, z]
+coordinates.mode.xzy=[x, z, y]
+coordinates.mode.xyz=[x, y, z]
 coordinates.options.tooltip=In addition to displaying your coordinates, you can use the designated hotkey to write your current coordinates into the chat box while it is open
 coordinates.options.hotkey.tooltip=Coordinates pasted into the chat box can be formatted in the config file
 coordinates.options.useycoordinatecolors=Y Colors: 
+coordinates.options.useycoordinatecolors.tooltip=Change the color of the Y coordinate based on what ores are found at that elevation
 
 distancemeasurer.name=Distance Measurer
-distancemeasurer.mode.0=Off
-distancemeasurer.mode.1=Simple
-distancemeasurer.mode.2=Complex
+distancemeasurer.mode.off=Off
+distancemeasurer.mode.simple=Simple
+distancemeasurer.mode.complex=Complex
 distancemeasurer.far=far
 distancemeasurer.options.tooltip=Pressing the hotkey once shows you how far away the block you're looking at is using the following format: [max(x,y,z)]._pPressing it again will show how far it is in a more detailed format: [x, y, z (diagonal distance)]
 
@@ -88,13 +89,13 @@ durabilityinfo.options.offsetx=Offset X:
 durabilityinfo.options.offsety=Offset Y: 
 durabilityinfo.options.updatefrequency=Update Freq (ms): 
 durabilityinfo.options.showindividualarmoricons=Use Armor Icons: 
-durabilityinfo.options.showindividualarmoricons.tooltip=If set to false, it will show a damaged armor image (similar to Diablo 3) instead of individual armor icons
+durabilityinfo.options.showindividualarmoricons.tooltip=If set to false, it will show a damaged armor icon (similar to Diablo 3) instead of individual armor icons
 durabilityinfo.options.showdamageaspercent=Use Percentages: 
-durabilityinfo.options.showdamageaspercent.tooltip=Display the remaining durability as a precentage rather than the amount of uses it has left
+durabilityinfo.options.showdamageaspercent.tooltip=Display the remaining durability as a precentage rather than the amount of durability it has left
 
 eatingaid.name=Eating Aid
-eatingaid.mode.0=Basic
-eatingaid.mode.1=Intelligent
+eatingaid.mode.basic=Basic
+eatingaid.mode.intelligent=Intelligent
 eatingaid.nofood=No food
 eatingaid.options.tooltip=Helps you eat food even if it's not on your hotbar, or if it is on your hotbar but you don't have it selected.
 eatingaid.options.mode.tooltip=_lBasic_r: Eats the most filling food_p_lIntelligent_r: Eats whichever food best tops off your hunger
@@ -119,18 +120,18 @@ gui.options.hotkey=Hotkey:
 gui.options.saveandexit=Save
 
 healthmonitor.name=Health Monitor
-healthmonitor.mode.0=OoT
-healthmonitor.mode.1=LttP
-healthmonitor.mode.2=Oracle
-healthmonitor.mode.3=LA
-healthmonitor.mode.4=LoZ
-healthmonitor.mode.5=AoL
+healthmonitor.mode.oot=OoT
+healthmonitor.mode.lttp=LttP
+healthmonitor.mode.oracle=Oracle
+healthmonitor.mode.la=LA
+healthmonitor.mode.loz=LoZ
+healthmonitor.mode.aol=AoL
 healthmonitor.options.tooltip=Plays a warning sound when you are low on health, just like in a Zelda game.
 healthmonitor.options.mode.play=Play
 healthmonitor.options.mode.play.tooltip=beep
 healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
-healthmonitor.options.playfasterneardeath=Quicker near death: 
-healthmonitor.options.playfasterneardeath.tooltip=Play the warning sounds quicker the closer you get to dieing
+healthmonitor.options.playfasterneardeath=Increases tempo: 
+healthmonitor.options.playfasterneardeath.tooltip=Play the warning sounds quicker the closer you are to death
 healthmonitor.options.lowhealthsoundthreshold=Play when health < 
 
 infoline.name=Info Line
@@ -141,8 +142,8 @@ infoline.options.offsetx=Offset X:
 infoline.options.offsety=Offset Y: 
 
 itemselector.name=Item Selector
-itemselector.mode.0=All
-itemselector.mode.1=Same Column
+itemselector.mode.all=All
+itemselector.mode.column=Same Column
 itemselector.error.emptyslot=That slot no longer has an item
 itemselector.error.enchant=Unable to swap enchanted items in multiplayer
 itemselector.error.empty=Inventory has no selectable items
@@ -152,14 +153,24 @@ itemselector.options.mode.tooltip=_lAll_r: Select items from your entire invento
 itemselector.options.ticks=Ticks until timeout: 
 itemselector.options.ticks.tooltip=How many in game ticks (20 = 1 sec) before the highlighted item is automatically selected
 
+miscellaneous.name=Miscellaneous
+miscellaneous.options.useenhancedmiddleclick=Enhanced middle click: 
+miscellaneous.options.useenhancedmiddleclick.tooltip=When enabled, middle clicking will move the mouseovered block into your hotbar if it exists in your inventory._pThe default middle click functionality only works if it exists on your hotbar.
+
 playerlocator.name=Player Locator
-playerlocator.mode.0=Off
-playerlocator.mode.0=On
+playerlocator.mode.off=Off
+playerlocator.mode.on=On
 playerlocator.infoline=players
+playerlocator.wolf=Wolf
 playerlocator.options.tooltip=Helps you to find where other players are by showing their names on the screen.
 playerlocator.options.minviewdistance=Min View Distance: 
+playerlocator.options.minviewdistance.tooltip=Players less than [Min View Distance] blocks away will not be shown
 playerlocator.options.showdistancetoplayers=Display Distances: 
 playerlocator.options.showplayerhealth=Display Health: 
+playerlocator.options.showwolves=Show your wolves: 
+playerlocator.options.showwolves.tooltip=In addition to showing other players it will also show any tamed wolves that you own
+playerlocator.options.usewolfcolors=Use wolf colors: 
+playerlocator.options.usewolfcolors.tooltip=Use the color of the wolf's collar to color their name (default collar color is red)
 
 potionaid.name=Potion Aid
 potionaid.noappropriatepotions=No appropriate potions
@@ -176,8 +187,8 @@ potiontimers.options.offsetx=Offset X:
 potiontimers.options.offsety=Offset Y: 
 
 safeoverlay.name=Safe Overlay
-safeoverlay.mode.0=Off
-safeoverlay.mode.1=On
+safeoverlay.mode.off=Off
+safeoverlay.mode.on=On
 safeoverlay.infoline=safe
 safeoverlay.options.tooltip=Marks blocks as "unsafe" by drawing a yellow X on them, which means that mobs can spawn there at night. A red X means it is dark enough for mobs to spawn there even during the day.
 safeoverlay.options.hotkey.tooltip=Ctrl + key = Toggle X-ray_p+ + key = Increase distance_p- + key = Decrease distance_p0 + key = Reset distance
@@ -199,7 +210,7 @@ weaponswapper.name=Weapon Swapper
 weaponswapper.noweaponsinhotbar=No weapons in hotbar
 weaponswapper.options.tooltip=Press the hotkey to select your sword. Press again to select your bow.
 weaponswapper.options.scanhotbarforweaponsfromlefttoright=Search Hotbar Left to Right: 
-weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip=Only relevant if you have multiple swords on your hotbar
+weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip=Only relevant if you have multiple swords/bows on your hotbar. If enabled, it will select the left most weapon in your hotbar. If disabled, it will select the right most weapon in your hotbar.
 
 quickdeposit.name=Quick Deposit
 quickdeposit.options.tooltip=Works like Terraria's quick stack functionality. When looking at a container (chest, horse chest, villager trading menu, etc) it will move any items from your inventory to the container if that item already exists in the container.

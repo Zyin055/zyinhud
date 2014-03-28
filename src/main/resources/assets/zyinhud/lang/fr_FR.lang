@@ -38,8 +38,9 @@ animalinfo.debug.color=Couleur du cheval:
 
 clock.name=Horloge
 clock.options.mode.tooltip=_lStandard_r: Montre l'heure minecraft actuelle_p_lCountdown_r: Temps restant avant le prochain jour minecraft.
-clock.mode.0=Standard
-clock.mode.1=Compte à rebours
+clock.mode.standard=Standard
+clock.mode.countdown=Compte à rebours
+clock.mode.graphic=Graphique
 
 compass.name=Compas
 compass.north=N
@@ -52,8 +53,8 @@ compass.southeast=SE
 compass.southwest=SO
 
 coordinates.name=Coordonnées
-coordinates.mode.0=[x, z, y]
-coordinates.mode.1=[x, y, z]
+coordinates.mode.xzy=[x, z, y]
+coordinates.mode.xyz=[x, y, z]
 coordinates.options.useycoordinatecolors=Y Colors: 
 
 distancemeasurer.name=Mesureur de Distances
@@ -64,8 +65,8 @@ durabilityinfo.options.showitemdurability=Montre les objets:
 durabilityinfo.options.showarmordurability=Montre l'armure: 
 
 eatingaid.name=Aide pour manger
-eatingaid.mode.0=Basique
-eatingaid.mode.1=Intelligent
+eatingaid.mode.basic=Basique
+eatingaid.mode.intelligent=Intelligent
 eatingaid.nofood=Sans nourriture
 eatingaid.options.mode.tooltip=_lBasic_r: Mange la nourriture qui rend le plus de points_p_lIntelligent_r: Mange la nourriture qui restaure le plus longtemps
 eatingaid.options.eatgoldenfood=Mange la nourriture en or

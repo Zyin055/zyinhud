@@ -41,8 +41,8 @@ public class EatingAid extends ZyinHUDModBase
 	/** The enum for the different types of Modes this mod can have */
     public static enum Modes
     {
-        BASIC(Localization.get("eatingaid.mode.0")),
-        INTELLIGENT(Localization.get("eatingaid.mode.1"));
+        BASIC(Localization.get("eatingaid.mode.basic")),
+        INTELLIGENT(Localization.get("eatingaid.mode.intelligent"));
         
         private String friendlyName;
         
@@ -442,8 +442,7 @@ public class EatingAid extends ZyinHUDModBase
      */
     public static boolean ToggleEatingGoldenFood()
     {
-    	EatGoldenFood = !EatGoldenFood;
-    	return EatGoldenFood;
+    	return EatGoldenFood = !EatGoldenFood;
     }
     
     /**
@@ -452,8 +451,7 @@ public class EatingAid extends ZyinHUDModBase
      */
     public static boolean ToggleEatingRawFood()
     {
-    	EatRawFood = !EatRawFood;
-    	return EatRawFood;
+    	return EatRawFood = !EatRawFood;
     }
     
     /**
@@ -462,8 +460,7 @@ public class EatingAid extends ZyinHUDModBase
      */
     public static boolean TogglePrioritizeFoodInHotbar()
     {
-    	PrioritizeFoodInHotbar = !PrioritizeFoodInHotbar;
-    	return PrioritizeFoodInHotbar;
+    	return PrioritizeFoodInHotbar = !PrioritizeFoodInHotbar;
     }
     
     

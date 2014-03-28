@@ -23,7 +23,6 @@ import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
 import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
 import com.zyin.zyinhud.mods.AnimalInfo;
 import com.zyin.zyinhud.mods.Clock;
-import com.zyin.zyinhud.mods.Clock.Modes;
 import com.zyin.zyinhud.mods.Compass;
 import com.zyin.zyinhud.mods.Coordinates;
 import com.zyin.zyinhud.mods.DistanceMeasurer;
@@ -34,6 +33,7 @@ import com.zyin.zyinhud.mods.Fps;
 import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.ItemSelector;
+import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.mods.PlayerLocator;
 import com.zyin.zyinhud.mods.PotionAid;
 import com.zyin.zyinhud.mods.PotionTimers;
@@ -83,6 +83,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     protected GuiButton selectedButton;
     
     protected String[] tabbedButtonNames = {
+    		Localization.get("miscellaneous.name"),
     		Localization.get("infoline.name"),
     		Localization.get("clock.name"),
     		Localization.get("coordinates.name"),
@@ -92,8 +93,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		Localization.get("safeoverlay.name"),
     		Localization.get("playerlocator.name"),
     		Localization.get("animalinfo.name"),
-    		Localization.get("potiontimers.name"),
     		Localization.get("durabilityinfo.name"),
+    		Localization.get("potiontimers.name"),
     		Localization.get("enderpearlaid.name"),
     		Localization.get("eatingaid.name"),
     		Localization.get("potionaid.name"),
@@ -105,6 +106,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	};
     
     protected int[] tabbedButtonIDs = {
+    		2000,
     		100,
     		200,
     		300,
@@ -114,8 +116,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		700,
     		800,
     		900,
-    		1000,
     		1100,
+    		1000,
     		1200,
     		1300,
     		1400,
@@ -197,7 +199,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     {
         buttonList.clear();
         currentlySelectedTabButton = null;
-        DrawMiscButtons();
+        DrawOtherButtons();
         DrawTabbedButtons();
     }
     
@@ -245,7 +247,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         	fontRendererObj.drawStringWithShadow(text, x, y, 0xffffff);
     	}
     }
-    private void DrawMiscButtons()
+    private void DrawOtherButtons()
     {
     	//Save button
     	buttonList.add(new GuiButton(1, width / 2 - 100, height / 6 + 168, Localization.get("gui.options.saveandexit")));
@@ -299,6 +301,11 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	buttonList.add(button);
     }
     
+    private void DrawMiscellaneousButtons()
+    {
+    	AddButtonAt(0, 0, new GuiButton(2001, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.useenhancedmiddleclick", Miscellaneous.UseEnhancedMiddleClick)));
+    	
+    }
     private void DrawInfoLineButtons()
     {
     	AddButtonAt(0, 0, new GuiButton(101, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
@@ -342,10 +349,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     {
     	AddButtonAt(0, 0, new GuiButton(701, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(SafeOverlay.Enabled)));
     	AddButtonAt(0, 1, new GuiHotkeyButton(702, 0, 0, buttonWidth, buttonHeight, SafeOverlayKeyHandler.HotkeyDescription));
-    	AddButtonAt(0, 2, new GuiNumberSlider(703, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.drawdistance"), SafeOverlay.minDrawDistance, SafeOverlay.maxDrawDistance, SafeOverlay.instance.getDrawDistance(), true));
-    	AddButtonAt(0, 3, new GuiNumberSlider(704, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.transparency"), SafeOverlay.instance.getUnsafeOverlayMinTransparency(), SafeOverlay.instance.getUnsafeOverlayMaxTransparency(), SafeOverlay.instance.getUnsafeOverlayTransparency(), false));
-    	AddButtonAt(0, 4, new GuiButton(705, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.getDisplayInNether())));
-    	AddButtonAt(0, 5, new GuiButton(706, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.getSeeUnsafePositionsThroughWalls())));
+    	AddButtonAt(0, 2, new GuiNumberSlider(703, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.drawdistance"), SafeOverlay.minDrawDistance, SafeOverlay.maxDrawDistance, SafeOverlay.instance.GetDrawDistance(), true));
+    	AddButtonAt(0, 3, new GuiNumberSlider(704, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.transparency"), SafeOverlay.instance.GetUnsafeOverlayMinTransparency(), SafeOverlay.instance.GetUnsafeOverlayMaxTransparency(), SafeOverlay.instance.GetUnsafeOverlayTransparency(), false));
+    	AddButtonAt(0, 4, new GuiButton(705, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.GetDisplayInNether())));
+    	AddButtonAt(0, 5, new GuiButton(706, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.GetSeeUnsafePositionsThroughWalls())));
     	
     }
     private void DrawPlayerLocatorButtons()
@@ -355,6 +362,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 2, new GuiNumberSlider(803, 0, 0, buttonWidth, buttonHeight, Localization.get("playerlocator.options.minviewdistance"), PlayerLocator.minViewDistanceCutoff, PlayerLocator.maxViewDistanceCutoff, PlayerLocator.viewDistanceCutoff, true));
     	AddButtonAt(0, 3, new GuiButton(804, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers)));
     	AddButtonAt(0, 4, new GuiButton(805, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showplayerhealth", PlayerLocator.ShowPlayerHealth)));
+    	
+    	AddButtonAt(1, 0, new GuiButton(806, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showwolves", PlayerLocator.ShowWolves)));
+    	AddButtonAt(1, 1, new GuiButton(807, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.usewolfcolors", PlayerLocator.UseWolfColors)));
     	
     }
     private void DrawAnimalInfoButtons()
@@ -392,15 +402,15 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private void DrawDurabilityInfoButtons()
     {
     	AddButtonAt(0, 0, new GuiButton(1101, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(DurabilityInfo.Enabled)));
-    	AddButtonAt(0, 1, new GuiButton(1105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
+    	AddButtonAt(0, 1, new GuiButton(1102, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showarmordurability", DurabilityInfo.ShowArmorDurability)));
     	AddButtonAt(0, 2, new GuiNumberSlider(1103, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForArmor(), false));
     	AddButtonAt(0, 3, new GuiButton(1111, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiparmor", DurabilityInfo.AutoUnequipArmor)));
     	AddButtonAt(0, 4, new GuiButton(1104, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons)));
     	AddButtonAt(0, 5, new GuiNumberSlider(1108, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, true));
     	AddButtonAt(0, 6, new GuiNumberSlider(1109, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, true));
     	
-    	AddButtonAt(1, 0, new GuiNumberSlider(1107, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 100, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
-    	AddButtonAt(1, 1, new GuiButton(1102, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showarmordurability", DurabilityInfo.ShowArmorDurability)));
+    	//AddButtonAt(1, 0, new GuiNumberSlider(1107, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 100, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
+    	AddButtonAt(1, 1, new GuiButton(1105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
     	AddButtonAt(1, 2, new GuiNumberSlider(1106, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), false));
     	AddButtonAt(1, 3, new GuiButton(1112, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiptools", DurabilityInfo.AutoUnequipTools)));
     	AddButtonAt(1, 4, new GuiButton(1110, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage)));
@@ -470,7 +480,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	
     }
     
-    private void DrawTorchAidButtoins()
+    private void DrawTorchAidButtons()
     {
     	AddButtonAt(0, 0, new GuiButton(1901, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(TorchAid.Enabled)));
     	
@@ -745,18 +755,18 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	break;
 	            case 703:	//Draw distance slider
 	            	int value = ((GuiNumberSlider)button).GetValueAsInteger();
-	            	SafeOverlay.instance.setDrawDistance(value);
+	            	SafeOverlay.instance.SetDrawDistance(value);
 	            	break;
 	            case 704:	//Draw distance slider
-	            	SafeOverlay.instance.setUnsafeOverlayTransparency(((GuiNumberSlider)button).GetValueAsFloat());
+	            	SafeOverlay.instance.SetUnsafeOverlayTransparency(((GuiNumberSlider)button).GetValueAsFloat());
 	            	break;
 	            case 705:	//Show in Nether
-	            	SafeOverlay.instance.toggleDisplayInNether();
-	            	button.displayString = GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.getDisplayInNether());
+	            	SafeOverlay.instance.ToggleDisplayInNether();
+	            	button.displayString = GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.GetDisplayInNether());
 	            	break;
 	            case 706:	//X-ray
-	            	SafeOverlay.instance.toggleSeeUnsafePositionsThroughWalls();
-	            	button.displayString = GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.getSeeUnsafePositionsThroughWalls());
+	            	SafeOverlay.instance.ToggleSeeUnsafePositionsThroughWalls();
+	            	button.displayString = GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.GetSeeUnsafePositionsThroughWalls());
 	            	break;
 	            
 	            /////////////////////////////////////////////////////////////////////////
@@ -784,6 +794,14 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            case 805:	//Show players health
 	            	PlayerLocator.ToggleShowPlayerHealth();
 	            	button.displayString = GetButtonLabel_Boolean("playerlocator.options.showplayerhealth", PlayerLocator.ShowPlayerHealth);
+	            	break;
+	            case 806:	//Show tamed wolves
+	            	PlayerLocator.ToggleShowWolves();
+	            	button.displayString = GetButtonLabel_Boolean("playerlocator.options.showwolves", PlayerLocator.ShowWolves);
+	            	break;
+	            case 807:	//Use wolf colors
+	            	PlayerLocator.ToggleUseWolfColors();
+	            	button.displayString = GetButtonLabel_Boolean("playerlocator.options.usewolfcolors", PlayerLocator.UseWolfColors);
 	            	break;
 	            
 	            /////////////////////////////////////////////////////////////////////////
@@ -917,9 +935,6 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	break;
 	            case 1106:	//Item  durability threshold slider
 	            	DurabilityInfo.SetDurabilityDisplayThresholdForItem(((GuiNumberSlider)button).GetValueAsFloat());
-	            	break;
-	            case 1107:	//Update frequency
-	            	DurabilityInfo.DurabilityUpdateFrequency = ((GuiNumberSlider)button).GetValueAsInteger();
 	            	break;
 	            case 1108:	//Horizontal location
 	            	DurabilityInfo.SetHorizontalLocation(((GuiNumberSlider)button).GetValueAsInteger());
@@ -1131,18 +1146,33 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	break;
 	                
 	                
-		            /////////////////////////////////////////////////////////////////////////
-		            // Torch Aid
-		            /////////////////////////////////////////////////////////////////////////
-		            
-		            case 1900:
-		            	screenTitle = Localization.get("torchaid.name");
-		            	DrawTorchAidButtoins();
-		            	break;
-		            case 1901:	//Enable/Disable
-		            	TorchAid.ToggleEnabled();
-		            	button.displayString = GetButtonLabel_Enabled(TorchAid.Enabled);
-		            	break;
+	            /////////////////////////////////////////////////////////////////////////
+	            // Torch Aid
+	            /////////////////////////////////////////////////////////////////////////
+	            
+	            case 1900:
+	            	screenTitle = Localization.get("torchaid.name");
+	            	DrawTorchAidButtons();
+	            	break;
+	            case 1901:	//Enable/Disable
+	            	TorchAid.ToggleEnabled();
+	            	button.displayString = GetButtonLabel_Enabled(TorchAid.Enabled);
+	            	break;
+	                
+	                
+	            /////////////////////////////////////////////////////////////////////////
+	            // Miscellaneous
+	            /////////////////////////////////////////////////////////////////////////
+	            
+	            case 2000:
+	            	screenTitle = Localization.get("miscellaneous.name");
+	            	DrawMiscellaneousButtons();
+	            	break;
+	            case 2001:	//Use enhanced middle click
+	            	Miscellaneous.ToggleUseEnchancedMiddleClick();
+	            	button.displayString = GetButtonLabel_Boolean("miscellaneous.options.useenhancedmiddleclick", Miscellaneous.UseEnhancedMiddleClick);
+	            	break;
+	            	
 	            
             }
         }
@@ -1157,11 +1187,15 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 100: return Localization.get("infoline.options.tooltip");
 			case 202: return Localization.get("clock.options.mode.tooltip");
 			case 300: return Localization.get("coordinates.options.tooltip");
+			case 302: return Localization.get("coordinates.options.useycoordinatecolors.tooltip");
 			case 303: return Localization.get("coordinates.options.hotkey.tooltip");
 			case 700: return Localization.get("safeoverlay.options.tooltip");
 			case 702: return Localization.get("safeoverlay.options.hotkey.tooltip");
 			case 600: return Localization.get("distancemeasurer.options.tooltip");
 			case 800: return Localization.get("playerlocator.options.tooltip");
+			case 803: return Localization.get("playerlocator.options.minviewdistance.tooltip");
+			case 806: return Localization.get("playerlocator.options.showwolves.tooltip");
+			case 807: return Localization.get("playerlocator.options.usewolfcolors.tooltip");
 			case 900: return Localization.get("animalinfo.options.tooltip");
 			case 907: return Localization.get("animalinfo.options.showtextbackground.tooltip");
 			case 905: return Localization.get("animalinfo.options.showhorsestatsonf3menu.tooltip");
@@ -1192,7 +1226,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1800: return Localization.get("healthmonitor.options.tooltip");
 			case 1802: return Localization.get("healthmonitor.options.mode.tooltip");
 			case 1803: return Localization.get("healthmonitor.options.mode.play.tooltip");
+			case 1804: return Localization.get("healthmonitor.options.playfasterneardeath.tooltip");
 			case 1900: return Localization.get("torchaid.options.tooltip");
+			case 2001: return Localization.get("miscellaneous.options.useenhancedmiddleclick.tooltip");
 			default: return null;
 		}
 	}

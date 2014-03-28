@@ -129,8 +129,7 @@ public class QuickDeposit extends ZyinHUDModBase
      */
     public static boolean ToggleIgnoreItemsInHotbar()
     {
-    	IgnoreItemsInHotbar = !IgnoreItemsInHotbar;
-    	return IgnoreItemsInHotbar;
+    	return IgnoreItemsInHotbar = !IgnoreItemsInHotbar;
     }
     /**
      * Toggles depositing items in your hotbar
@@ -138,8 +137,7 @@ public class QuickDeposit extends ZyinHUDModBase
      */
     public static boolean ToggleCloseChestAfterDepositing()
     {
-    	CloseChestAfterDepositing = !CloseChestAfterDepositing;
-    	return CloseChestAfterDepositing;
+    	return CloseChestAfterDepositing = !CloseChestAfterDepositing;
     }
     /**
      * Toggles blacklisting this item
@@ -147,8 +145,7 @@ public class QuickDeposit extends ZyinHUDModBase
      */
     public static boolean ToggleBlacklistTorch()
     {
-    	BlacklistTorch = !BlacklistTorch;
-    	return BlacklistTorch;
+    	return BlacklistTorch = !BlacklistTorch;
     }
     /**
      * Toggles blacklisting this item
@@ -156,8 +153,7 @@ public class QuickDeposit extends ZyinHUDModBase
      */
     public static boolean ToggleBlacklistArrow()
     {
-    	BlacklistArrow = !BlacklistArrow;
-    	return BlacklistArrow;
+    	return BlacklistArrow = !BlacklistArrow;
     }
     /**
      * Toggles blacklisting this item
@@ -165,8 +161,7 @@ public class QuickDeposit extends ZyinHUDModBase
      */
     public static boolean ToggleBlacklistEnderPearl()
     {
-    	BlacklistEnderPearl = !BlacklistEnderPearl;
-    	return BlacklistEnderPearl;
+    	return BlacklistEnderPearl = !BlacklistEnderPearl;
     }
     /**
      * Toggles blacklisting this item
@@ -174,8 +169,7 @@ public class QuickDeposit extends ZyinHUDModBase
      */
     public static boolean ToggleBlacklistFood()
     {
-    	BlacklistFood = !BlacklistFood;
-    	return BlacklistFood;
+    	return BlacklistFood = !BlacklistFood;
     }
     /**
      * Toggles blacklisting this item
@@ -183,8 +177,7 @@ public class QuickDeposit extends ZyinHUDModBase
      */
     public static boolean ToggleBlacklistWaterBucket()
     {
-    	BlacklistWaterBucket = !BlacklistWaterBucket;
-    	return BlacklistWaterBucket;
+    	return BlacklistWaterBucket = !BlacklistWaterBucket;
     }
     /**
      * Toggles blacklisting this item
@@ -192,7 +185,6 @@ public class QuickDeposit extends ZyinHUDModBase
      */
     public static boolean ToggleBlacklistClockCompass()
     {
-    	BlacklistClockCompass = !BlacklistClockCompass;
-    	return BlacklistClockCompass;
+    	return BlacklistClockCompass = !BlacklistClockCompass;
     }
 }

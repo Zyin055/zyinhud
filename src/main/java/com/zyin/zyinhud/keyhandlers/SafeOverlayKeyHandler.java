@@ -34,7 +34,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         if (Keyboard.isKeyDown(Keyboard.KEY_EQUALS) || 	//keyboard "+" ("=")
                 Keyboard.isKeyDown(Keyboard.KEY_ADD))	//numpad "+"
         {
-            int drawDistance = SafeOverlay.instance.increaseDrawDistance();
+            int drawDistance = SafeOverlay.instance.IncreaseDrawDistance();
 
             if (drawDistance == SafeOverlay.maxDrawDistance)
             {
@@ -52,7 +52,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         //if "-" is pressed, decrease the draw distance
         if (Keyboard.isKeyDown(Keyboard.KEY_MINUS))
         {
-            int drawDistance = SafeOverlay.instance.decreaseDrawDistance();
+            int drawDistance = SafeOverlay.instance.DecreaseDrawDistance();
             InfoLine.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
             
             SafeOverlay.instance.RecalculateUnsafePositions();
@@ -62,8 +62,8 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         //if "0" is pressed, set to the default draw distance
         if (Keyboard.isKeyDown(Keyboard.KEY_0))
         {
-            int drawDistance = SafeOverlay.instance.setDrawDistance(SafeOverlay.defaultDrawDistance);
-            SafeOverlay.instance.setSeeUnsafePositionsThroughWalls(false);
+            int drawDistance = SafeOverlay.instance.SetDrawDistance(SafeOverlay.defaultDrawDistance);
+            SafeOverlay.instance.SetSeeUnsafePositionsThroughWalls(false);
             InfoLine.DisplayNotification(Localization.get("safeoverlay.distance") + " " + Localization.get("safeoverlay.distance.default") + " (" + drawDistance + ")");
             
             SafeOverlay.instance.RecalculateUnsafePositions();
@@ -75,7 +75,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)
                 || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
         {
-            boolean seeThroughWalls = SafeOverlay.instance.toggleSeeUnsafePositionsThroughWalls();
+            boolean seeThroughWalls = SafeOverlay.instance.ToggleSeeUnsafePositionsThroughWalls();
 
             if (seeThroughWalls)
             {

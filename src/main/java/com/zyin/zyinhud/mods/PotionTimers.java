@@ -205,8 +205,7 @@ public class PotionTimers extends ZyinHUDModBase
      */
     public static boolean ToggleShowPotionIcons()
     {
-    	ShowPotionIcons = !ShowPotionIcons;
-    	return ShowPotionIcons;
+    	return ShowPotionIcons = !ShowPotionIcons;
     }
     
     /**
@@ -215,8 +214,7 @@ public class PotionTimers extends ZyinHUDModBase
      */
     public static boolean ToggleUsePotionColors()
     {
-    	UsePotionColors = !UsePotionColors;
-    	return UsePotionColors;
+    	return UsePotionColors = !UsePotionColors;
     }
     
     /**
@@ -225,8 +223,7 @@ public class PotionTimers extends ZyinHUDModBase
      */
     public static boolean ToggleHidePotionEffectsInInventory()
     {
-    	HidePotionEffectsInInventory = !HidePotionEffectsInInventory;
-    	return HidePotionEffectsInInventory;
+    	return HidePotionEffectsInInventory = !HidePotionEffectsInInventory;
     }
     
     /**

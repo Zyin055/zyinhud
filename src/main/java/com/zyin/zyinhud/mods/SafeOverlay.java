@@ -72,8 +72,8 @@ public class SafeOverlay extends ZyinHUDModBase
 	/** The enum for the different types of Modes this mod can have */
     public static enum Modes
     {
-        OFF(Localization.get("safeoverlay.mode.0")),
-        ON(Localization.get("safeoverlay.mode.1"));
+        OFF(Localization.get("safeoverlay.mode.off")),
+        ON(Localization.get("safeoverlay.mode.on"));
         
         private String friendlyName;
         
@@ -198,7 +198,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * @param event
      */
     @SubscribeEvent
-    public void onPlayerInteractEvent(PlayerInteractEvent event)
+    public void PlayerInteractEvent(PlayerInteractEvent event)
     {
     	//THIS EVENT IS NOT FIRED ON SMP SERVERS
     	
@@ -241,7 +241,7 @@ public class SafeOverlay extends ZyinHUDModBase
         Block blockPlaced = mc.theWorld.getBlock(x, y, z);
         if (blockPlaced != Blocks.air)	//if it's not an Air block
         {
-            onBlockPlaced(blockPlaced, x, y , z);
+            OnBlockPlaced(blockPlaced, x, y , z);
         }
     }
 
@@ -255,11 +255,11 @@ public class SafeOverlay extends ZyinHUDModBase
      * @param y
      * @param z
      */
-    public void onBlockPlaced(Block block, int x, int y, int z)
+    public void OnBlockPlaced(Block block, int x, int y, int z)
     {
         if (block.getLightValue() > 0)
         {
-            onLightEmittingBlockPlaced(block, x, y, z);
+            OnLightEmittingBlockPlaced(block, x, y, z);
         }
     }
 
@@ -273,7 +273,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * @param y
      * @param z
      */
-    public void onLightEmittingBlockPlaced(Block block, int x, int y, int z)
+    public void OnLightEmittingBlockPlaced(Block block, int x, int y, int z)
     {
         RecalculateUnsafePositions();
     }
@@ -542,7 +542,7 @@ public class SafeOverlay extends ZyinHUDModBase
         double maxY = position.y + boundingBoxMaxY + 0.02;
         double minZ = position.z + boundingBoxMinZ + 0.02;
         double maxZ = position.z + boundingBoxMaxZ - 0.02;
-        
+
         //render the "X" mark
         //since we are using doubles it causes the marks to 'flicker' when very far from spawn (~5000 blocks)
         //if we use GL11.glVertex3i(int, int, int) it fixes the issue but then we can't render the marks
@@ -625,7 +625,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * Gets the current draw distance.
      * @return the draw distance radius
      */
-    public int getDrawDistance()
+    public int GetDrawDistance()
     {
         return drawDistance;
     }
@@ -635,7 +635,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * @param newDrawDistance the new draw distance
      * @return the updated draw distance
      */
-    public int setDrawDistance(int newDrawDistance)
+    public int SetDrawDistance(int newDrawDistance)
     {
         if (newDrawDistance > maxDrawDistance)
         {
@@ -657,42 +657,42 @@ public class SafeOverlay extends ZyinHUDModBase
      * Increases the current draw distance by 3 blocks.
      * @return the updated draw distance
      */
-    public int increaseDrawDistance()
+    public int IncreaseDrawDistance()
     {
-        return setDrawDistance(drawDistance + 3);
+        return SetDrawDistance(drawDistance + 3);
     }
     /**
      * Decreases the current draw distance by 3 blocks.
      * @return the updated draw distance
      */
-    public int decreaseDrawDistance()
+    public int DecreaseDrawDistance()
     {
-        return setDrawDistance(drawDistance - 3);
+        return SetDrawDistance(drawDistance - 3);
     }
     /**
      * Increases the current draw distance.
      * @param amount how much to increase the draw distance by
      * @return the updated draw distance
      */
-    public int increaseDrawDistance(int amount)
+    public int IncreaseDrawDistance(int amount)
     {
-        return setDrawDistance(drawDistance + amount);
+        return SetDrawDistance(drawDistance + amount);
     }
     /**
      * Decreases the current draw distance.
      * @param amount how much to increase the draw distance by
      * @return the updated draw distance
      */
-    public int decreaseDrawDistance(int amount)
+    public int DecreaseDrawDistance(int amount)
     {
-        return setDrawDistance(drawDistance - amount);
+        return SetDrawDistance(drawDistance - amount);
     }
 
     /**
      * Checks if see through walls mode is enabled.
      * @return
      */
-    public boolean getSeeUnsafePositionsThroughWalls()
+    public boolean GetSeeUnsafePositionsThroughWalls()
     {
         return renderUnsafePositionsThroughWalls;
     }
@@ -701,7 +701,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * @param displayInUnsafeAreasInNether true or false
      * @return the updated see Nether viewing mode
      */
-    public boolean setDisplayInNether(Boolean displayInUnsafeAreasInNether)
+    public boolean SetDisplayInNether(Boolean displayInUnsafeAreasInNether)
     {
     	displayInNether = displayInUnsafeAreasInNether;
         return displayInNether;
@@ -710,7 +710,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * Gets if you can see unsafe areas in the Nether
      * @return the Nether viewing mode
      */
-    public boolean getDisplayInNether()
+    public boolean GetDisplayInNether()
     {
         return displayInNether;
     }
@@ -718,16 +718,16 @@ public class SafeOverlay extends ZyinHUDModBase
      * Toggles the current display in Nether mode
      * @return the updated see display in Nether mode
      */
-    public boolean toggleDisplayInNether()
+    public boolean ToggleDisplayInNether()
     {
-        return setDisplayInNether(!displayInNether);
+        return SetDisplayInNether(!displayInNether);
     }
     /**
      * Sets the see through wall mode
      * @param safeOverlaySeeThroughWalls true or false
      * @return the updated see through wall mode
      */
-    public boolean setSeeUnsafePositionsThroughWalls(Boolean safeOverlaySeeThroughWalls)
+    public boolean SetSeeUnsafePositionsThroughWalls(Boolean safeOverlaySeeThroughWalls)
     {
         renderUnsafePositionsThroughWalls = safeOverlaySeeThroughWalls;
         return renderUnsafePositionsThroughWalls;
@@ -736,16 +736,16 @@ public class SafeOverlay extends ZyinHUDModBase
      * Toggles the current see through wall mode
      * @return the udpated see through wall mode
      */
-    public boolean toggleSeeUnsafePositionsThroughWalls()
+    public boolean ToggleSeeUnsafePositionsThroughWalls()
     {
-        return setSeeUnsafePositionsThroughWalls(!renderUnsafePositionsThroughWalls);
+        return SetSeeUnsafePositionsThroughWalls(!renderUnsafePositionsThroughWalls);
     }
     /**
      * Sets the alpha value of the unsafe marks
      * @param alpha the alpha value of the unsafe marks
      * @return the updated alpha value
      */
-    public float setUnsafeOverlayTransparency(float alpha)
+    public float SetUnsafeOverlayTransparency(float alpha)
     {
     	//must be between (0.101, 1]
         unsafeOverlayTransparency = (alpha <= unsafeOverlayMinTransparency) ? unsafeOverlayMinTransparency : alpha;	//check lower bounds
@@ -756,7 +756,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * gets the alpha value of the unsafe marks
      * @return the alpha value
      */
-    public float getUnsafeOverlayTransparency()
+    public float GetUnsafeOverlayTransparency()
     {
         return unsafeOverlayTransparency;
     }
@@ -764,7 +764,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * gets the smallest allowed alpha value of the unsafe marks
      * @return the alpha value
      */
-    public float getUnsafeOverlayMinTransparency()
+    public float GetUnsafeOverlayMinTransparency()
     {
         return unsafeOverlayMinTransparency;
     }
@@ -772,7 +772,7 @@ public class SafeOverlay extends ZyinHUDModBase
      * gets the largest allowed alpha value of the unsafe marks
      * @return the alpha value
      */
-    public float getUnsafeOverlayMaxTransparency()
+    public float GetUnsafeOverlayMaxTransparency()
     {
         return unsafeOverlayMaxTransparency;
     }

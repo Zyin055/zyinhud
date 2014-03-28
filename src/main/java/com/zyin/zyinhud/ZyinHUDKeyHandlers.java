@@ -17,6 +17,7 @@ import com.zyin.zyinhud.keyhandlers.QuickDepositKeyHandler;
 import com.zyin.zyinhud.keyhandlers.SafeOverlayKeyHandler;
 import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
 import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
+import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.mods.TorchAid;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -111,14 +112,25 @@ public class ZyinHUDKeyHandlers
     	//event.dwheel =  120 = mouse wheel up
     	//event.dwheel = -120 = mouse wheel down
     	
-        if (KEY_BINDINGS[11].getIsKeyPressed() && event.dwheel != 0)
-            ItemSelectorKeyHandler.MouseWheel(event);
+    	//Mouse wheel scroll
+        if(event.dwheel != 0)
+        {
+        	if(KEY_BINDINGS[11].getIsKeyPressed())
+        		ItemSelectorKeyHandler.OnMouseWheelScroll(event);
+        }
+
+        //Middle click
+        if(event.button == 2 && event.buttonstate == true)
+        {
+        	Miscellaneous.OnMiddleClick();
+        }
         
+        //Right click
         if(event.button == 1 && event.buttonstate == true)
         {
-        	if(TorchAid.Enabled)
-        		TorchAid.UseTorchIfToolIsEquipped();
+        	TorchAid.OnRightClick();
         }
+        
         
     }
 	

@@ -20,7 +20,7 @@ public class ItemSelectorKeyHandler implements ZyinHUDKeyHandlerBase
     //	
     //}
 
-    public static void MouseWheel(MouseEvent event)
+    public static void OnMouseWheelScroll(MouseEvent event)
     {
         if (!mc.inGameHasFocus || !ItemSelector.Enabled)
             return;

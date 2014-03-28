@@ -34,9 +34,9 @@ public class Clock extends ZyinHUDModBase
 	/** The enum for the different types of Modes this mod can have */
     public static enum Modes
     {
-        STANDARD(Localization.get("clock.mode.0")),
-        COUNTDOWN(Localization.get("clock.mode.1")),
-        GRAPHIC(Localization.get("clock.mode.2"));
+        STANDARD(Localization.get("clock.mode.standard")),
+        COUNTDOWN(Localization.get("clock.mode.countdown")),
+        GRAPHIC(Localization.get("clock.mode.graphic"));
         
         private String friendlyName;
         

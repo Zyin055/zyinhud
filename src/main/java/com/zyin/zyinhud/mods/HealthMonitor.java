@@ -36,12 +36,12 @@ public class HealthMonitor extends ZyinHUDModBase
 	/** The enum for the different types of Modes this mod can have */
     public static enum Modes
     {
-        OOT(Localization.get("healthmonitor.mode.0"), "lowhealth_OoT"),
-        LTTP(Localization.get("healthmonitor.mode.1"), "lowhealth_LttP"),
-        ORACLE(Localization.get("healthmonitor.mode.2"), "lowhealth_Oracle"),
-        LA(Localization.get("healthmonitor.mode.3"), "lowhealth_LA"),
-        LOZ(Localization.get("healthmonitor.mode.4"), "lowhealth_LoZ"),
-        AOL(Localization.get("healthmonitor.mode.5"), "lowhealth_AoL");
+        OOT(Localization.get("healthmonitor.mode.oot"), "lowhealth_OoT"),
+        LTTP(Localization.get("healthmonitor.mode.lttp"), "lowhealth_LttP"),
+        ORACLE(Localization.get("healthmonitor.mode.oracle"), "lowhealth_Oracle"),
+        LA(Localization.get("healthmonitor.mode.la"), "lowhealth_LA"),
+        LOZ(Localization.get("healthmonitor.mode.loz"), "lowhealth_LoZ"),
+        AOL(Localization.get("healthmonitor.mode.aol"), "lowhealth_AoL");
         
         private String friendlyName;
         public String soundName;
@@ -194,7 +194,6 @@ public class HealthMonitor extends ZyinHUDModBase
      */
     public static boolean TogglePlayFasterNearDeath()
     {
-    	PlayFasterNearDeath = !PlayFasterNearDeath;
-    	return PlayFasterNearDeath;
+    	return PlayFasterNearDeath = !PlayFasterNearDeath;
     }
 }

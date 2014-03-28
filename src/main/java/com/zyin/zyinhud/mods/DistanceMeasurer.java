@@ -30,9 +30,9 @@ public class DistanceMeasurer extends ZyinHUDModBase
 	/** The enum for the different types of Modes this mod can have */
     public static enum Modes
     {
-        OFF(Localization.get("distancemeasurer.mode.0")),
-        SIMPLE(Localization.get("distancemeasurer.mode.1")),
-        COMPLEX(Localization.get("distancemeasurer.mode.2"));
+        OFF(Localization.get("distancemeasurer.mode.off")),
+        SIMPLE(Localization.get("distancemeasurer.mode.simple")),
+        COMPLEX(Localization.get("distancemeasurer.mode.complex"));
         
         private String friendlyName;
         

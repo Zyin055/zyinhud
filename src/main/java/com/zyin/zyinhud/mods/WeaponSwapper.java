@@ -143,7 +143,6 @@ public class WeaponSwapper extends ZyinHUDModBase
      */
     public static boolean ToggleScanHotbarFromLeftToRight()
     {
-    	ScanHotbarForWeaponsFromLeftToRight = !ScanHotbarForWeaponsFromLeftToRight;
-    	return ScanHotbarForWeaponsFromLeftToRight;
+    	return ScanHotbarForWeaponsFromLeftToRight = !ScanHotbarForWeaponsFromLeftToRight;
     }
 }

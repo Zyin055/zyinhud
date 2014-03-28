@@ -18,8 +18,8 @@ buildscript {
 apply plugin: 'forge'
 
 archivesBaseName = "ZyinsHUD"
-version = "(1.7.2)-v.1.2.2.1"
-group= "com.zyin.zyinshud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "(1.7.2)-v.1.3.0"
+group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 minecraft {
     version = "1.7.2-10.12.0.1046"

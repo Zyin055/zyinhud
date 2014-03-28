@@ -237,8 +237,7 @@ public class InfoLine extends ZyinHUDModBase
      */
     public static boolean ToggleShowBiome()
     {
-    	ShowBiome = !ShowBiome;
-    	return ShowBiome;
+    	return ShowBiome = !ShowBiome;
     }
 
     /**
@@ -247,8 +246,7 @@ public class InfoLine extends ZyinHUDModBase
      */
     public static boolean ToggleShowCanSnow()
     {
-    	ShowCanSnow = !ShowCanSnow;
-    	return ShowCanSnow;
+    	return ShowCanSnow = !ShowCanSnow;
     }
     
 

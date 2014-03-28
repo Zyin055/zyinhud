@@ -605,8 +605,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowHorseStatsOnF3Menu()
     {
-    	ShowHorseStatsOnF3Menu = !ShowHorseStatsOnF3Menu;
-    	return ShowHorseStatsOnF3Menu;
+    	return ShowHorseStatsOnF3Menu = !ShowHorseStatsOnF3Menu;
     }
     /**
      * Toggle showing horse stats on the overlay
@@ -614,8 +613,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowHorseStatsOverlay()
     {
-    	ShowHorseStatsOverlay = !ShowHorseStatsOverlay;
-    	return ShowHorseStatsOverlay;
+    	return ShowHorseStatsOverlay = !ShowHorseStatsOverlay;
     }
     /**
      * Toggle showing black text backgrounds on overlayed text
@@ -623,8 +621,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowTextBackgrounds()
     {
-    	ShowTextBackgrounds = !ShowTextBackgrounds;
-    	return ShowTextBackgrounds;
+    	return ShowTextBackgrounds = !ShowTextBackgrounds;
     }
 
     /**
@@ -633,8 +630,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowBreedingHorses()
     {
-    	ShowBreedingTimerForHorses = !ShowBreedingTimerForHorses;
-    	return ShowBreedingTimerForHorses;
+    	return ShowBreedingTimerForHorses = !ShowBreedingTimerForHorses;
     }
     /**
      * Toggles showing the breeding of this type of entity
@@ -642,8 +638,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowBreedingVillagers()
     {
-    	ShowBreedingTimerForVillagers = !ShowBreedingTimerForVillagers;
-    	return ShowBreedingTimerForVillagers;
+    	return ShowBreedingTimerForVillagers = !ShowBreedingTimerForVillagers;
     }
     /**
      * Toggles showing the breeding of this type of entity
@@ -651,8 +646,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowBreedingCows()
     {
-    	ShowBreedingTimerForCows = !ShowBreedingTimerForCows;
-    	return ShowBreedingTimerForCows;
+    	return ShowBreedingTimerForCows = !ShowBreedingTimerForCows;
     }
     /**
      * Toggles showing the breeding of this type of entity
@@ -660,8 +654,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowBreedingSheep()
     {
-    	ShowBreedingTimerForSheep = !ShowBreedingTimerForSheep;
-    	return ShowBreedingTimerForSheep;
+    	return ShowBreedingTimerForSheep = !ShowBreedingTimerForSheep;
     }
     /**
      * Toggles showing the breeding of this type of entity
@@ -669,8 +662,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowBreedingPigs()
     {
-    	ShowBreedingTimerForPigs = !ShowBreedingTimerForPigs;
-    	return ShowBreedingTimerForPigs;
+    	return ShowBreedingTimerForPigs = !ShowBreedingTimerForPigs;
     }
     /**
      * Toggles showing the breeding of this type of entity
@@ -678,8 +670,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowBreedingChickens()
     {
-    	ShowBreedingTimerForChickens = !ShowBreedingTimerForChickens;
-    	return ShowBreedingTimerForChickens;
+    	return ShowBreedingTimerForChickens = !ShowBreedingTimerForChickens;
     }
     /**
      * Toggles showing breeding icons
@@ -687,8 +678,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowBreedingIcons()
     {
-    	ShowBreedingIcons = !ShowBreedingIcons;
-    	return ShowBreedingIcons;
+    	return ShowBreedingIcons = !ShowBreedingIcons;
     }
     /**
      * Toggles showing breeding timers
@@ -696,7 +686,6 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static boolean ToggleShowBreedingTimers()
     {
-    	ShowBreedingTimers = !ShowBreedingTimers;
-    	return ShowBreedingTimers;
+    	return ShowBreedingTimers = !ShowBreedingTimers;
     }
 }
