@@ -35,6 +35,7 @@ import net.minecraft.block.BlockWeb;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
 //import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -637,17 +638,8 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     public int SetDrawDistance(int newDrawDistance)
     {
-        if (newDrawDistance > maxDrawDistance)
-        {
-            newDrawDistance = maxDrawDistance;
-        }
-        else if (newDrawDistance < minDrawDistance)
-        {
-            newDrawDistance = minDrawDistance;
-        }
-
-        drawDistance = newDrawDistance;
-        double percent = (double)newDrawDistance / maxDrawDistance;
+        drawDistance = MathHelper.clamp_int(newDrawDistance, minDrawDistance, maxDrawDistance);
+        double percent = (double)drawDistance / maxDrawDistance;
         updateFrequency = (int)((double)(updateFrequencyMax - updateFrequencyMin) * percent  + updateFrequencyMin);
         RecalculateUnsafePositions();
         return drawDistance;
@@ -703,8 +695,7 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     public boolean SetDisplayInNether(Boolean displayInUnsafeAreasInNether)
     {
-    	displayInNether = displayInUnsafeAreasInNether;
-        return displayInNether;
+        return displayInNether = displayInUnsafeAreasInNether;
     }
     /**
      * Gets if you can see unsafe areas in the Nether
@@ -729,8 +720,7 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     public boolean SetSeeUnsafePositionsThroughWalls(Boolean safeOverlaySeeThroughWalls)
     {
-        renderUnsafePositionsThroughWalls = safeOverlaySeeThroughWalls;
-        return renderUnsafePositionsThroughWalls;
+        return renderUnsafePositionsThroughWalls = safeOverlaySeeThroughWalls;
     }
     /**
      * Toggles the current see through wall mode
@@ -742,15 +732,12 @@ public class SafeOverlay extends ZyinHUDModBase
     }
     /**
      * Sets the alpha value of the unsafe marks
-     * @param alpha the alpha value of the unsafe marks
+     * @param alpha the alpha value of the unsafe marks, must be between (0.101, 1]
      * @return the updated alpha value
      */
     public float SetUnsafeOverlayTransparency(float alpha)
     {
-    	//must be between (0.101, 1]
-        unsafeOverlayTransparency = (alpha <= unsafeOverlayMinTransparency) ? unsafeOverlayMinTransparency : alpha;	//check lower bounds
-        unsafeOverlayTransparency = (alpha >= unsafeOverlayMaxTransparency) ? unsafeOverlayMaxTransparency : alpha;	//check upper bounds
-        return unsafeOverlayTransparency;
+        return unsafeOverlayTransparency = MathHelper.clamp_float(alpha, unsafeOverlayMinTransparency, unsafeOverlayMaxTransparency);
     }
     /**
      * gets the alpha value of the unsafe marks

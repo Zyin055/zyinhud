@@ -8,6 +8,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -242,12 +243,7 @@ public class PotionTimers extends ZyinHUDModBase
      */
     public static int SetHorizontalLocation(int x)
     {
-    	if(x < 0)
-    		x = 0;
-    	else if(x > mc.displayWidth)
-    		x = mc.displayWidth;
-    	
-    	potionLocX = x;
+    	potionLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
     	return potionLocX;
     }
     
@@ -267,12 +263,7 @@ public class PotionTimers extends ZyinHUDModBase
      */
     public static int SetVerticalLocation(int y)
     {
-    	if(y < 0)
-    		y = 0;
-    	else if(y > mc.displayHeight)
-    		y = mc.displayHeight;
-    	
-    	potionLocY = y;
+    	potionLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
     	return potionLocY;
     }
     

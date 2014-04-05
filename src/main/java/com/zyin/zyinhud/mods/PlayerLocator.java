@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
@@ -17,6 +18,7 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -93,18 +95,18 @@ public class PlayerLocator extends ZyinHUDModBase
 
     private static final double pi = Math.PI;
     
-    private static final String wolfName = Localization.get("playerlocator.wolf");
+    private static final String wolfName = Localization.getMinecraft("entity.Wolf.name");
     private static final String sprintingMessagePrefix = "";
     private static final String sneakingMessagePrefix = FontCodes.ITALICS;
     private static final String ridingMessagePrefix = "    ";	//space for the saddle/minecart/boat/horse armor icon
 
     /** Don't render players that are closer than this */
     public static int viewDistanceCutoff = 10;
-    public static int minViewDistanceCutoff = 0;
-    public static int maxViewDistanceCutoff = 120;	//realistic max distance the game will render entities: up to ~115 blocks away
+    public static final int minViewDistanceCutoff = 0;
+    public static final int maxViewDistanceCutoff = 120;	//realistic max distance the game will render entities: up to ~115 blocks away
 
-    public static final int maxNumberOfOverlays = 50;	//render only the first nearest 50 players
     public static int numOverlaysRendered;
+    public static final int maxNumberOfOverlays = 50;	//render only the first nearest 50 players
 
 
     /**

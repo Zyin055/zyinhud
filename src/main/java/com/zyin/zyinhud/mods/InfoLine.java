@@ -267,12 +267,7 @@ public class InfoLine extends ZyinHUDModBase
      */
     public static int SetHorizontalLocation(int x)
     {
-    	if(x < 0)
-    		x = 0;
-    	else if(x > mc.displayWidth)
-    		x = mc.displayWidth;
-    	
-    	infoLineLocX = x;
+    	infoLineLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
     	return infoLineLocX;
     }
     
@@ -292,12 +287,7 @@ public class InfoLine extends ZyinHUDModBase
      */
     public static int SetVerticalLocation(int y)
     {
-    	if(y < 0)
-    		y = 0;
-    	else if(y > mc.displayHeight)
-    		y = mc.displayHeight;
-    	
-    	infoLineLocY = y;
+    	infoLineLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
     	return infoLineLocY;
     }
 }

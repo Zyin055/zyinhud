@@ -1,5 +1,8 @@
 package com.zyin.zyinhud.command;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -13,8 +16,21 @@ public class CommandZyinHUDOptions extends CommandBase
 	@Override
 	public String getCommandName()
 	{
-		return "zyinhudoptions";
+		return "zyinhud";
 	}
+	
+	@Override
+    public List getCommandAliases()
+    {
+		List list = new ArrayList();
+		list.add("zh");
+		list.add("zyin");
+		list.add("zyinshud");
+		list.add("zyinoptions");
+		list.add("zyinhudoptions");
+		list.add("zyinshudoptions");
+        return list;
+    }
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender)

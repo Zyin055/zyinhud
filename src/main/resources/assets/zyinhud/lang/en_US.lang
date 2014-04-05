@@ -48,6 +48,9 @@ clock.mode.standard=Standard
 clock.mode.countdown=Countdown
 clock.mode.graphic=Graphic
 
+commands.zyinhudfps.usage=/fps
+commands.zyinhudoptions.usage=/zyinhud
+
 compass.name=Compass
 compass.north=N
 compass.east=E
@@ -113,8 +116,6 @@ fps.infoline=fps
 gui.override.options.buttons.options=Zyin's HUD...
 gui.options.title=Zyin's HUD Settings
 gui.options.enabled=Enabled: 
-gui.options.settingon=true
-gui.options.settingoff=false
 gui.options.mode=Mode: 
 gui.options.hotkey=Hotkey: 
 gui.options.saveandexit=Save
@@ -163,7 +164,6 @@ playerlocator.name=Player Locator
 playerlocator.mode.off=Off
 playerlocator.mode.on=On
 playerlocator.infoline=players
-playerlocator.wolf=Wolf
 playerlocator.options.tooltip=Helps you to find where other players are by showing their names on the screen.
 playerlocator.options.minviewdistance=Min View Distance: 
 playerlocator.options.minviewdistance.tooltip=Players less than [Min View Distance] blocks away will not be shown

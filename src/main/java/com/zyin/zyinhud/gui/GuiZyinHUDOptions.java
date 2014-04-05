@@ -62,8 +62,8 @@ import com.zyin.zyinhud.util.Localization;
  * See existing examples on how to use these.
  * <p>
  * We are able to access this screen by using a hotkey (Ctrl + Alt + Z), or navigating through the
- * default options window. We put an additional button into the Options window by using the ZyinHUDRenderer
- * class and replacing the normal GuiOptions class with our custom OverrideGuiOptions class.
+ * default options window. We put an additional button into the Options window by replacing the normal
+ * GuiOptions class with our custom OverrideGuiOptions class.
  * <p>
  * In order to get the GuiNumberSlider to work when we click and drag it, we override and modify 3 methods:
  * mouseClicked(), mouseMovedOrUp(), and actionPerformed_MouseUp().
@@ -505,9 +505,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private static String GetButtonLabel_Enabled(boolean enabled)
     {
     	if(enabled)
-    		return Localization.get("gui.options.enabled") + FontCodes.GREEN + Localization.get("gui.options.settingon") + FontCodes.WHITE;
+    		return Localization.get("gui.options.enabled") + FontCodes.GREEN + Localization.getMinecraft("options.on") + FontCodes.WHITE;
     	else
-    		return Localization.get("gui.options.enabled") + FontCodes.RED + Localization.get("gui.options.settingoff") + FontCodes.WHITE;
+    		return Localization.get("gui.options.enabled") + FontCodes.RED + Localization.getMinecraft("options.off") + FontCodes.WHITE;
     }
     
     /**
@@ -519,9 +519,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private static String GetButtonLabel_Boolean(String localizationString, boolean bool)
     {
 		if(bool)
-			return Localization.get(localizationString) + Localization.get("gui.options.settingon");
+			return Localization.get(localizationString) + Localization.getMinecraft("options.on");
 		else
-			return Localization.get(localizationString) + Localization.get("gui.options.settingoff");
+			return Localization.get(localizationString) + Localization.getMinecraft("options.off");
     }
     
     

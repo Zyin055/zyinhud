@@ -1,0 +1,225 @@
+key.zyinhud.animalinfo=Tierinfo
+key.zyinhud.coordinates=Chat-Koordinaten
+key.zyinhud.distancemeasurer=Entfernungsmessung
+key.zyinhud.eatingaid=Essenshilfe
+key.zyinhud.enderpearlaid=Enderperlenhilfe
+key.zyinhud.playerlocator=Spielerlokalisierer
+key.zyinhud.potionaid=Trankhelfer
+key.zyinhud.quickdeposit=Schnelles Deponieren
+key.zyinhud.safeoverlay=Safe Overlay
+key.zyinhud.weaponswapper=Waffentausch
+key.zyinhud.zyinhudoptions=Zyin's HUD Optionen
+key.zyinhud.itemselector=Itemauswahl
+
+animalinfo.name=Tierinfo
+animalinfo.infoline=Tiere
+animalinfo.options.tooltip=Displays horse stats such as health, speed, and jump height. It also shows when animals are ready to breed by displaying what item is required to breed them.
+animalinfo.options.maxviewdistance=Maximale Sichtweite: 
+animalinfo.options.showtextbackground=Texthintergründe: 
+animalinfo.options.showtextbackground.tooltip=Zeigt einen schwarzen Hintergrund hinter jedem Text an, um ihn lesbarer zu machen
+animalinfo.options.numdecimalsdisplayed=Dezimalstellen in Pferdestatistiken : 
+animalinfo.options.showhorsestatsonf3menu=F3 Pferdestatistiken: 
+animalinfo.options.showhorsestatsonf3menu.tooltip=Zeigt die Statistiken des momentan gerittenen Pferdes im F3-Bildschirm an.
+animalinfo.options.showhorsestatsoverlay=Pferdestatistiken: 
+animalinfo.options.showhorsestatsoverlay.tooltip=Zeigt Leben, Geschwindigkeit und Sprungkraft der Pferde in der Welt an.
+animalinfo.options.showbreedingicons=Nahrungsanzeige: 
+animalinfo.options.showbreedingicons.tooltip=Zeigt ein Nahrungsmittel über vermehrbaren Tieren._pz.B: Weizen für Kühe
+animalinfo.options.showbreedingtimers=Zuchtzeit: 
+animalinfo.options.showbreedingtimers.tooltip=Zeigt die Dauer bis zum nächsten Zeitpunkt an, an dem das Tier wieder zuchtbereit ist
+animalinfo.options.showbreedinghorse=Pferdezucht: 
+animalinfo.options.showbreedingvillagers=Dorfbewohnerzucht: 
+animalinfo.options.showbreedingcow=Kuhzucht: 
+animalinfo.options.showbreedingsheep=Schafzucht: 
+animalinfo.options.showbreedingpig=Schweinezucht: 
+animalinfo.options.showbreedingchicken=Hühnerzucht: 
+animalinfo.overlay.speed=m/s
+animalinfo.overlay.jump=Sprungkraft
+animalinfo.overlay.hp=Lebenspunkte
+animalinfo.overlay.hearts=Herzen
+animalinfo.debug.speed=Pferdegeschwindigkeit:
+animalinfo.debug.jump=Pferdesprungkraft:
+animalinfo.debug.hp=Pferdelebenspunkte:
+animalinfo.debug.color=Pferdefarbe:
+animalinfo.debug.markings=Pferdemuster:
+
+clock.name=Uhr
+clock.options.mode.tooltip=_lStandard_r: Zeigt die momentane Minecraft-Zeit_p_lCountdown_r: Ein Timer bis zum nächsten Tag / zur nächsten Nacht beginnt_p_lGrafik_r: Zeigt eine Minecraftuhr
+clock.mode.standard=Standard
+clock.mode.countdown=Countdown
+clock.mode.graphic=Grafik
+
+compass.name=Kompass
+compass.north=N
+compass.east=O
+compass.south=S
+compass.west=W
+compass.northeast=NO
+compass.northwest=NW
+compass.southeast=SO
+compass.southwest=SW
+
+coordinates.name=Koordinaten
+coordinates.mode.xzy=[x, z, y]
+coordinates.mode.xyz=[x, y, z]
+coordinates.options.tooltip=Der gewählte Hotkey kann zusätzlich zur Anzeige der Koordinaten die Koordinaten in den Chat schreiben, wenn dieser geöffnet ist
+coordinates.options.hotkey.tooltip=Die eingefügten Koordinaten können in der Config-Datei formatiert werden
+coordinates.options.useycoordinatecolors=Y-Farben: 
+coordinates.options.useycoordinatecolors.tooltip=Die Farbe von Y verädert sich je nach momentaner Höhe
+
+distancemeasurer.name=Entfernungsmessung
+distancemeasurer.mode.off=Aus
+distancemeasurer.mode.simple=Einfach
+distancemeasurer.mode.complex=Komplex
+distancemeasurer.far=Weit
+distancemeasurer.options.tooltip=Durch einmaliges Drücken des Hotkeys wird die Entfernung zum anvisierten Block im Format [max(x,y,z)] angezeigt._pNochmaliges Drücken öffnet die Anzeige [x, y, z (diagonal distance)]
+
+durabilityinfo.name=Haltbarkeitsinfo
+durabilityinfo.options.tooltip=Zeigt die Haltbarkeit der Rüstung im Inventar, sowie der Waffen und Werkzeuge im Hotbar an. Dies wird nur angezeigt, wenn die Haltbarkeit sich unter einem eingestelltem Schwellwert befindet. (Standardmäßig 10%).
+durabilityinfo.options.showitemdurability=Werkzeuge anzeigen: 
+durabilityinfo.options.showarmordurability=Rüstung anzeigen: 
+durabilityinfo.options.itemdurabilitythreshold=Schwellwert für Werkzeuge in % : 
+durabilityinfo.options.itemdurabilitythreshold.tooltip=Wenn dieser Wert 1.00 beträgt, wird die Haltbarkeit von Werkzeugen immer angezeigt.
+durabilityinfo.options.armordurabilitythreshold=Schwellwert für Rüstung in % : 
+durabilityinfo.options.armordurabilitythreshold.tooltip=Wenn dieser Wert 1.00 beträgt, wird die Haltbarkeit von Rüstung immer angezeigt.
+durabilityinfo.options.autounequiparmor=Automatisch Rüstung ausziehen: 
+durabilityinfo.options.autounequiparmor.tooltip=Zieht automatisch die Rüstung aus, wenn diese kurz davor ist, zu zerbrechen
+durabilityinfo.options.autounequiptools=Automatisch Werkzeuge entfernen: 
+durabilityinfo.options.autounequiptools.tooltip=Entfernt automatisch Werkzeuge aus der Hand, wenn diese kurz davor sind, zu zerbrechen
+durabilityinfo.options.offsetx=X-Offset: 
+durabilityinfo.options.offsety=Y-Offset: 
+durabilityinfo.options.updatefrequency=Überprüfungsregelmäßigkeit (ms): 
+durabilityinfo.options.showindividualarmoricons=Rüstungssymbole benutzen: 
+durabilityinfo.options.showindividualarmoricons.tooltip=Wenn dies auf false eingestellt ist, wird ein beschädigtes Rüstungssymbol (ähnlich wie in Diablo 3) anstatt eines individuellen Rüstungssymbols angezeigt.
+durabilityinfo.options.showdamageaspercent=In Prozent anzeigen: 
+durabilityinfo.options.showdamageaspercent.tooltip=Die restliche Haltbarkeit in Prozent anzeigen
+
+eatingaid.name=Essenshilfe
+eatingaid.mode.basic=Basic
+eatingaid.mode.intelligent=Intelligent
+eatingaid.nofood=Kein Essen
+eatingaid.options.tooltip=Hilft, Nahrung zu essen, auch wenn diese sich nicht in der Hand befindet.
+eatingaid.options.mode.tooltip=_lEinfach_r: Isst das nahrhafteste Essen_p_lIntelligent_r: Isst das Essen, das am sparsamsten den Hunger beendet
+eatingaid.options.eatgoldenfood=Goldene Nahrung essen: 
+eatingaid.options.eatrawfood=Ungekochte Nahrung essen: 
+eatingaid.options.prioritizefoodinhotbar=Essen in Hotbar oberste Priorität geben: 
+
+enderpearlaid.name=Enderperlenhilfe
+enderpearlaid.noenderpearls=Keine Enderperlen
+enderpearlaid.options.tooltip=Hilft, Enderperlen zu werfen, auch wenn sich diese momentan nicht in der Hand befinden.
+
+fps.name=FPS
+fps.infoline=fps
+
+gui.override.options.buttons.options=Zyin's HUD...
+gui.options.title=Zyin's HUD Einstellungen
+gui.options.enabled=Aktiv: 
+gui.options.mode=Modus: 
+gui.options.hotkey=Hotkey: 
+gui.options.saveandexit=Speichern
+
+healthmonitor.name=Gesundheitsmonitor
+healthmonitor.mode.oot=OoT
+healthmonitor.mode.lttp=LttP
+healthmonitor.mode.oracle=Orakel
+healthmonitor.mode.la=LA
+healthmonitor.mode.loz=LoZ
+healthmonitor.mode.aol=AoL
+healthmonitor.options.tooltip=Spielt ein Warngeräusch ab, wenn das Leben gering ist, wie in einem Zelda-Spiel.
+healthmonitor.options.mode.play=Abspielen
+healthmonitor.options.mode.play.tooltip=biep
+healthmonitor.options.mode.tooltip=OoT_pLttP_pOrakel_pLA_pLoZ_pAoL
+healthmonitor.options.playfasterneardeath=Tempo steigern: 
+healthmonitor.options.playfasterneardeath.tooltip=Spielt den Ton schneller, je weniger Leben vorhanden ist
+healthmonitor.options.lowhealthsoundthreshold=Abspielen ab einem Leben von < 
+
+infoline.name=Infozeile
+infoline.options.tooltip=Der oben links in der Ecke angezeigte Text.
+infoline.options.showbiome=Biom anzeigen: 
+infoline.options.showcansnow=Anzeigen, ob es schneien kann: 
+infoline.options.offsetx=X-Offset: 
+infoline.options.offsety=Y-Offset: 
+
+itemselector.name=Itemauswahl
+itemselector.mode.all=Alles
+itemselector.mode.column=Gleiche Spalte
+itemselector.error.emptyslot=Dieser Slot beinhaltet kein Item mehr!
+itemselector.error.enchant=Im Mehrspielermodus können keine Verzauberungen vertauscht werden!
+itemselector.error.empty=Das Inventar hat keine wählbaren Gegenstände mehr!
+itemselector.options.tooltip=Erlaubt, Gegenstände mit dem Mausrad aus dem Inventar zu wählen, ohne es zu öffnen.
+itemselector.options.hotkey.tooltip=Taste gedrückt halten, um mit dem Mausrad Gegenstände zu wählen
+itemselector.options.mode.tooltip=_lAlles_r: Wählt Gegenstände aus dem gesamten Inventar_p_lGleiche Spalte_r: Wählt nur Gegenstände aus der gleichen Spalte des gehaltenen Gegenstandes im Inventar
+itemselector.options.ticks=Ticks bis Timeout: 
+itemselector.options.ticks.tooltip=Wieviele Ticks (20 = 1 sec) bevor der fokussierte Gegenstand automatisch gewählt wird
+
+miscellaneous.name=Verschiedenes
+miscellaneous.options.useenhancedmiddleclick=Verbesserter Mittelklick: 
+miscellaneous.options.useenhancedmiddleclick.tooltip=Wenn dies Eingeschaltet ist, wird der angesehene Block, falls er im Inventar ist, in den Hotbar bewegt._pDer normale Mittelklick funktioniert nur, wenn sich der Block im Hotbar befindet.
+
+playerlocator.name=Spielerlokalisierer
+playerlocator.mode.off=Aus
+playerlocator.mode.on=Ein
+playerlocator.infoline=Spieler
+playerlocator.wolf=Wolf
+playerlocator.options.tooltip=Hilft, die Position anderer Spieler zu finden und zeigt deren Namen an.
+playerlocator.options.minviewdistance=Minimale Sichtweite: 
+playerlocator.options.minviewdistance.tooltip=Spieler, die mehr als [Min View Distance] Blöcke entfernt sind, werden nicht angezeigt 
+playerlocator.options.showdistancetoplayers=Entfernungen anzeigen: 
+playerlocator.options.showplayerhealth=Gesundheit anzeigen: 
+playerlocator.options.showwolves=Eigene Hunde / Wölfe anzeigen: 
+playerlocator.options.showwolves.tooltip=Zusätzlich zur Anzeige der Spieler können auch eigene Hunde angezeigt werden.
+playerlocator.options.usewolfcolors=Hundefarben nutzen: 
+playerlocator.options.usewolfcolors.tooltip=Zeigt den Namen des Hundes in der Farbe seines Halsbandes an. (Standardfarbe des Halsbandes ist Rot)
+
+potionaid.name=Trankhelfer
+potionaid.noappropriatepotions=Keine entsprechenden Tränke
+potionaid.options.tooltip=Lässt den Spieler automatisch den benötigten Trank trinken, auch wenn dieser nicht im Hotbar ist. Zum Beispiel, wenn der Spieler brennt, wird ein Trank der Feuerresistenz gewählt. Wird er verletzt, wird ein Trank der Heilung gewählt. Ist er nicht in Gefahr, werden Boni wie Schnelligkeit, Stärke und Unsichtbarkeit gewählt..
+
+potiontimers.name=Tranktimer
+potiontimers.options.tooltip=Eine einfache Aneige in der oberen linken Ecke wird angezeigt, wenn ein aktiver Trankeffekt auf dem Spieler ist.
+potiontimers.options.showpotionicons=Symbole anzeigen: 
+potiontimers.options.usepotioncolors=Bunter Text: 
+potiontimers.options.hidepotioneffectsininventory=Trankeffekte im Inventar verstecken: 
+potiontimers.options.hidepotioneffectsininventory.tooltip=Deaktiviert die Standardtrankeffektanzeige im Inventar
+potiontimers.options.potionscale=Größe: 
+potiontimers.options.offsetx=X-Offset: 
+potiontimers.options.offsety=Y-Offset: 
+
+safeoverlay.name=Safe Overlay
+safeoverlay.mode.off=Aus
+safeoverlay.mode.on=Ein
+safeoverlay.infoline=Sicher
+safeoverlay.options.tooltip=Markiert einen "unsicheren" Block mit einem gelben X, was bedeutet, dass Mobs nachts dort spawnen können. Ein rotes X bedeutet, dass es für Mobs dunkel genug ist, dort tagsüber zu spawnen.
+safeoverlay.options.hotkey.tooltip=Strg + key = Röntgen ein-/ausschalten_p+ + key = Entfernung erhöhen_p- + key = Entfernung vermindern_p0 + key = Entfernung zurücksetzen
+safeoverlay.options.drawdistance=Anzeigeentfernung: 
+safeoverlay.options.transparency=Transparenz: 
+safeoverlay.options.displayinnether=Im Nether anzeigen: 
+safeoverlay.options.seethroughwalls=Röntgen: 
+safeoverlay.seethroughwallsenabled=Durch Wände sehen: Eingeschaltet
+safeoverlay.seethroughwallsdisabled=Durch Wände sehen: Ausgeschaltet
+safeoverlay.distance=Safe Overlay-Entfenung:
+safeoverlay.distance.max=Maximal
+safeoverlay.distance.default=Normal
+
+torchaid.name=Fackelhelfer
+torchaid.notorches=Keine Fackeln!
+torchaid.options.tooltip=Setzt eine Fackel durch Rechtsklick mit Axt, Spitzhacke, Schaufel oder gar nichts in der Hand, auch wenn keine Fackeln im Hotbar sind.
+
+weaponswapper.name=Waffentausch
+weaponswapper.noweaponsinhotbar=Keine Waffen im Hotbar!
+weaponswapper.options.tooltip=Hotkey drücken, um das Schwert zu wählen, nochmals drücken um Bogen zu wählen.
+weaponswapper.options.scanhotbarforweaponsfromlefttoright=Hotbar von links nach rechts durchsuchen: 
+weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip=Nur dann relevant, wenn im Hotbar mehrere Bögen / Schwerter sind. Wenn dies eingeschaltet ist, wird es die Waffe, die sich am weitesten links im Hotbar befindet, auswählen. Ansonsten wird es die Waffe, die am weitesten rechts ist auswählen.
+
+quickdeposit.name=Schnelles Deponieren
+quickdeposit.options.tooltip=Wenn sich im angesehenen Container (Truhe, Eseltruhe, Dorfbewohnerhandelsmenü etc.) der selbe Gegenstad wie im Inventar befindet, wird es all diese Gegenstände in den Container deponieren.
+quickdeposit.options.ignoreitemsinhotbar=Hotbar ignorieren: 
+quickdeposit.options.ignoreitemsinhotbar.tooltip=Deponiert nur Items, die sich nicht im Hotbar befinden.
+quickdeposit.options.closechestafterdepositing=Nach Entleeren schließen: 
+quickdeposit.options.closechestafterdepositing.tooltip=Schließt das Inventar nach einem Entleeren.
+quickdeposit.options.blacklist=Nicht deponieren:
+quickdeposit.options.blacklisttorch=Fackeln: 
+quickdeposit.options.blacklistarrow=Pfeile: 
+quickdeposit.options.blacklistenderpearl=Enderperlen: 
+quickdeposit.options.blacklistfood=Nahrung: 
+quickdeposit.options.blacklistwaterbucket=Wassereimer: 
+quickdeposit.options.blacklistclockcompass=Uhr/Compass: 

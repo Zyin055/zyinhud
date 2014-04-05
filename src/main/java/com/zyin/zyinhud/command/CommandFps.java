@@ -1,5 +1,8 @@
 package com.zyin.zyinhud.command;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
@@ -12,11 +15,19 @@ public class CommandFps extends CommandBase
 	{
 		return "fps";
 	}
+	
+	@Override
+    public List getCommandAliases()
+    {
+		List list = new ArrayList();
+		list.add("f");
+        return list;
+    }
 
 	@Override
 	public String getCommandUsage(ICommandSender iCommandSender)
 	{
-		return "commands.fps.usage";
+		return "commands.zyinhudfps.usage";
 	}
 
 	@Override
