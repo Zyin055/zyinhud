@@ -724,6 +724,13 @@ public class ZyinHUDConfig
         else
         	p.set(ItemSelector.Mode.name());
 
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorSideButtons", "ALL");
+        p.comment = "Enable/disable use of side buttons for item selection.";
+        if(loadSettings)
+            ItemSelector.UseMouseSideButtons = p.getBoolean(true);
+        else
+            p.set(ItemSelector.UseMouseSideButtons);
+
         //CATEGORY_HEALTHMONITOR
         p = config.get(CATEGORY_HEALTHMONITOR, "EnableHealthMonitor", false);
         p.comment = "Enable/Disable using the Health Monitor.";

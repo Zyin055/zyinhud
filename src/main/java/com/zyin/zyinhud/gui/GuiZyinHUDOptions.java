@@ -466,7 +466,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         AddButtonAt(0, 1, new GuiHotkeyButton(1702, 0, 0, buttonWidth, buttonHeight, ItemSelectorKeyHandler.HotkeyDescription));
         AddButtonAt(0, 2, new GuiButton(1704, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName())));
         AddButtonAt(0, 3, new GuiNumberSlider(1703, 0, 0, buttonWidth, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), true ));
-        
+        AddButtonAt(0, 4, new GuiButton(1705, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("itemselector.options.sideButtons", ItemSelector.UseMouseSideButtons)));
+
     }
     
     private void DrawHealthMonitorButtoins()
@@ -1115,6 +1116,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
                     ItemSelector.Modes.ToggleMode();
                     button.displayString = GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName());
                     break;
+                case 1705:  //Side buttons
+                    ItemSelector.UseMouseSideButtons = !ItemSelector.UseMouseSideButtons;
+                    button.displayString = GetButtonLabel_Boolean("itemselector.options.sideButtons", ItemSelector.UseMouseSideButtons);
+                    break;
                 
                 
 	            /////////////////////////////////////////////////////////////////////////
@@ -1222,7 +1227,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1604: return Localization.get("quickdeposit.options.closechestafterdepositing.tooltip");
 			case 1700: return Localization.get("itemselector.options.tooltip");
 			case 1702: return Localization.get("itemselector.options.hotkey.tooltip");
-			case 1704: return Localization.get("itemselector.options.mode.tooltip");
+            case 1704: return Localization.get("itemselector.options.mode.tooltip");
+            case 1705: return Localization.get("itemselector.options.sideButtons.tooltip");
 			case 1800: return Localization.get("healthmonitor.options.tooltip");
 			case 1802: return Localization.get("healthmonitor.options.mode.tooltip");
 			case 1803: return Localization.get("healthmonitor.options.mode.play.tooltip");
