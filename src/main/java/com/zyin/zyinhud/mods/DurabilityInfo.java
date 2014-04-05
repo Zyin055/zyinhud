@@ -1,24 +1,15 @@
 package com.zyin.zyinhud.mods;
 
-import java.util.ArrayList;
-
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.item.*;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 /**
  * Durability Info checks to see if any equipment (items in the hotbar, and armor) is damaged
@@ -240,7 +231,8 @@ public class DurabilityInfo extends ZyinHUDModBase
             {
                 Item item = itemStack.getItem();
 
-                if (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemBow || item instanceof ItemHoe)
+                if (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemBow || item instanceof ItemHoe
+                        || item instanceof ItemShears || item instanceof ItemFishingRod)
                 {
                     int itemDamage = itemStack.getItemDamage();
                     int maxDamage = itemStack.getMaxDamage();
@@ -324,13 +316,17 @@ public class DurabilityInfo extends ZyinHUDModBase
             {
                 Item item = itemStack.getItem();
 
-                if (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemBow || item instanceof ItemHoe)
+                if (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemBow || item instanceof ItemHoe
+                        || item instanceof ItemShears || item instanceof ItemFishingRod)
                 {
                     int itemDamage = itemStack.getItemDamage();
                     int maxDamage = itemStack.getMaxDamage();
+                    int threshold = (item instanceof ItemFishingRod)
+                        ? 5
+                        : 15;
 
                     if (maxDamage != 0 &&
-                    		maxDamage - itemDamage < 15)
+                    		maxDamage - itemDamage < threshold)
                     {
                     	InventoryUtil.MoveHeldItemIntoPlayerInventory();
                     }
