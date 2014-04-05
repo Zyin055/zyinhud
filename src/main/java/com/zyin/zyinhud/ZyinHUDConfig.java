@@ -724,10 +724,10 @@ public class ZyinHUDConfig
         else
         	p.set(ItemSelector.Mode.name());
 
-        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorSideButtons", "ALL");
+        p = config.get(CATEGORY_ITEMSELECTOR, "ItemSelectorSideButtons", false);
         p.comment = "Enable/disable use of side buttons for item selection.";
         if(loadSettings)
-            ItemSelector.UseMouseSideButtons = p.getBoolean(true);
+            ItemSelector.UseMouseSideButtons = p.getBoolean(false);
         else
             p.set(ItemSelector.UseMouseSideButtons);
 

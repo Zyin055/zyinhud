@@ -1117,7 +1117,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
                     button.displayString = GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName());
                     break;
                 case 1705:  //Side buttons
-                    ItemSelector.UseMouseSideButtons = !ItemSelector.UseMouseSideButtons;
+                    ItemSelector.ToggleUseMouseSideButtons();
                     button.displayString = GetButtonLabel_Boolean("itemselector.options.sideButtons", ItemSelector.UseMouseSideButtons);
                     break;
                 
@@ -1227,6 +1227,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1604: return Localization.get("quickdeposit.options.closechestafterdepositing.tooltip");
 			case 1700: return Localization.get("itemselector.options.tooltip");
 			case 1702: return Localization.get("itemselector.options.hotkey.tooltip");
+			case 1703: return Localization.get("itemselector.options.ticks.tooltip");
             case 1704: return Localization.get("itemselector.options.mode.tooltip");
             case 1705: return Localization.get("itemselector.options.sideButtons.tooltip");
 			case 1800: return Localization.get("healthmonitor.options.tooltip");
