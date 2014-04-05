@@ -152,6 +152,8 @@ itemselector.options.hotkey.tooltip=Hold this button while using the mousewheel 
 itemselector.options.mode.tooltip=_lAll_r: Select items from your entire inventory_p_lSame Column_r: Select items only from the same column as your currently selected item in the hotbar
 itemselector.options.ticks=Ticks until timeout: 
 itemselector.options.ticks.tooltip=How many in game ticks (20 = 1 sec) before the highlighted item is automatically selected
+itemselector.options.sideButtons=Side buttons: 
+itemselector.options.sideButtons.tooltip=Allows the use of side buttons on supported mice to select items
 
 miscellaneous.name=Miscellaneous
 miscellaneous.options.useenhancedmiddleclick=Enhanced middle click: 

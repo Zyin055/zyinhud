@@ -34,7 +34,6 @@ public class ItemSelector extends ZyinHUDModBase
     
 	/** The current mode for this mod */
 	public static Modes Mode;
-	
 	/** The enum for the different types of Modes this mod can have */
     public static enum Modes
     {
@@ -72,6 +71,11 @@ public class ItemSelector extends ZyinHUDModBase
         	return friendlyName;
         }
     }
+
+    /**
+     * Determines if the side buttons of supported mice can be used for item selection
+     */
+    public static boolean UseMouseSideButtons = true;
     
     private static final ResourceLocation widgetTexture = new ResourceLocation("textures/gui/widgets.png");
     
@@ -97,6 +101,8 @@ public class ItemSelector extends ZyinHUDModBase
     private static int   ticksToShow   = 0;
 
     private static boolean     selecting         = false;
+    private static int         scrollAmount      = 0;
+    private static int         previousDir       = 0;
     private static int         targetInvSlot     = -1;
     private static int         currentHotbarSlot = 0;
     private static ItemStack[] currentInventory  = null;
@@ -114,23 +120,65 @@ public class ItemSelector extends ZyinHUDModBase
             currentInventory = mc.thePlayer.inventory.mainInventory.clone();
         }
 
-        if ( !mc.isSingleplayer() )
-        if ( currentInventory[currentHotbarSlot] != null && currentInventory[currentHotbarSlot].isItemEnchanted() )
+        if ( !adjustSlot(direction) )
         {
-            InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
             Done();
             return;
         }
+
+        slotMemory[currentHotbarSlot] = targetInvSlot;
+
+        scrollAmount++;
+        ticksToShow = timeout;
+        selecting   = true;
+    }
+
+    /**
+     * Swaps the currently selected item by one toward the given direction
+     * @param direction Direction player is scrolling toward
+     */
+    public static void SideButton(int direction)
+    {
+        currentHotbarSlot = mc.thePlayer.inventory.currentItem;
+        currentInventory  = mc.thePlayer.inventory.mainInventory.clone();
+
+        if ( adjustSlot(direction) )
+        {
+            slotMemory[currentHotbarSlot] = targetInvSlot;
+            SelectItem();
+        }
+        else
+            Done();
+    }
+
+    /**
+     * Calculates the adjustment of the currently selected hotbar slot by the given direction
+     * @param direction Direction to adjust towards
+     * @return True if successful, false if attempting to switch enchanted item or no target is available
+     */
+    static boolean adjustSlot(int direction)
+    {
+        if ( !mc.isSingleplayer() )
+            if ( currentInventory[currentHotbarSlot] != null && currentInventory[currentHotbarSlot].isItemEnchanted() )
+            {
+                InfoLine.DisplayNotification( Localization.get("itemselector.error.enchant") );
+                return false;
+            }
 
         int memory = slotMemory[currentHotbarSlot];
 
         for (int i = 0; i < 36; i++)
         {
-            memory += direction;
+            // This complicated bit of logic allows for side button mechanism to go back and forth without skipping
+            // slots
+            if (scrollAmount != 0 || previousDir == direction)
+                memory += direction;
 
             if (memory < 9 || memory >= 36)
                 memory = direction == WHEEL_DOWN
                         ? 9 : 35;
+
+            previousDir = direction;
 
             if (Mode == Modes.SAME_COLUMN && memory % 9 != currentHotbarSlot)
                 continue;
@@ -148,14 +196,10 @@ public class ItemSelector extends ZyinHUDModBase
         if (targetInvSlot == -1)
         {
             InfoLine.DisplayNotification( Localization.get("itemselector.error.empty") );
-            Done();
-            return;
+            return false;
         }
-
-        slotMemory[currentHotbarSlot] = targetInvSlot;
-
-        ticksToShow   = timeout;
-        selecting     = true;
+        else
+            return true;
     }
 
     /**
@@ -287,6 +331,7 @@ public class ItemSelector extends ZyinHUDModBase
     private static void Done()
     {
         targetInvSlot     = -1;
+        scrollAmount      = 0;
         currentHotbarSlot = 0;
         currentInventory  = null;
 

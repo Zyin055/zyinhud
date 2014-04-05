@@ -119,6 +119,13 @@ public class ZyinHUDKeyHandlers
         		ItemSelectorKeyHandler.OnMouseWheelScroll(event);
         }
 
+        //Mouse side buttons
+        if(event.buttonstate)
+        if(event.button == 3 || event.button == 4)
+        {
+            ItemSelectorKeyHandler.OnMouseSideButton(event);
+        }
+
         //Middle click
         if(event.button == 2 && event.buttonstate == true)
         {

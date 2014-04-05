@@ -1,15 +1,10 @@
 package com.zyin.zyinhud.keyhandlers;
 
-import org.lwjgl.input.Keyboard;
-
-import net.minecraft.client.gui.GuiChat;
-import net.minecraftforge.client.event.MouseEvent;
-
 import com.zyin.zyinhud.ZyinHUDKeyHandlers;
 import com.zyin.zyinhud.mods.ItemSelector;
-
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.client.event.MouseEvent;
+import org.lwjgl.input.Keyboard;
 
 public class ItemSelectorKeyHandler implements ZyinHUDKeyHandlerBase
 {
@@ -29,6 +24,18 @@ public class ItemSelectorKeyHandler implements ZyinHUDKeyHandlerBase
         event.setCanceled(true);
     }
 
+    public static void OnMouseSideButton(MouseEvent event)
+    {
+        if (!mc.inGameHasFocus || !ItemSelector.Enabled || !ItemSelector.UseMouseSideButtons)
+            return;
+
+        int direction = event.button == 3
+            ? ItemSelector.WHEEL_UP
+            : ItemSelector.WHEEL_DOWN;
+
+        ItemSelector.SideButton(direction);
+        event.setCanceled(true);
+    }
     
     private static boolean keyDown = false;
     
