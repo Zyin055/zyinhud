@@ -15,6 +15,7 @@ import com.zyin.zyinhud.util.Localization;
 public class GuiHotkeyButton extends GuiButton
 {
 	protected static Minecraft mc = Minecraft.getMinecraft();
+	
     protected boolean waitingForHotkeyInput = false;
     protected String hotkey;	//E.x.: "P"
     protected String hotkeyDescription;	//E.x.: "key.zyinhud.somemod"
@@ -57,7 +58,7 @@ public class GuiHotkeyButton extends GuiButton
 	protected void UpdateDisplayString()
 	{
     	if(waitingForHotkeyInput)
-    		displayString = Localization.get("gui.options.hotkey") + FontCodes.WHITE + "> " + FontCodes.YELLOW + "??? " + FontCodes.WHITE + "<";
+    		displayString = Localization.get("gui.options.hotkey") + FontCodes.WHITE + "> " + FontCodes.YELLOW + GetHotkey() + FontCodes.WHITE + " <";
     	else
     		displayString = Localization.get("gui.options.hotkey") + GetHotkey();
 		
@@ -115,7 +116,7 @@ public class GuiHotkeyButton extends GuiButton
 	
 	/**
 	 * Searches Minecraft's key bindings to get the hotkey based on the hotkey description, then caches the result for future use.
-	 * @return
+	 * @return String representation of the hotkey, e.x. "K", "LMENU"
 	 */
 	public String GetHotkey()
 	{

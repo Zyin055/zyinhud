@@ -11,6 +11,7 @@ import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -396,12 +397,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static int SetHorizontalLocation(int x)
     {
-    	if(x < 0)
-    		x = 0;
-    	else if(x > mc.displayWidth)
-    		x = mc.displayWidth;
-    	
-    	durabalityLocX = x;
+    	durabalityLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
     	equipmentLocX = durabalityLocX + armorDurabilityIconX;
     	return durabalityLocX;
     }
@@ -422,12 +418,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static int SetVerticalLocation(int y)
     {
-    	if(y < 0)
-    		y = 0;
-    	else if(y > mc.displayHeight)
-    		y = mc.displayHeight;
-    	
-    	durabalityLocY = y;
+    	durabalityLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
     	equipmentLocY = durabalityLocY;
     	return durabalityLocY;
     }

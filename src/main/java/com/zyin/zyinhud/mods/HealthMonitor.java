@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import com.zyin.zyinhud.ZyinHUDSound;
@@ -175,12 +176,7 @@ public class HealthMonitor extends ZyinHUDModBase
 	
 	public static void SetLowHealthSoundThreshold(int lowHealthSoundThreshold)
 	{
-		if(lowHealthSoundThreshold > 20)
-			LowHealthSoundThreshold = 20;
-		else if(lowHealthSoundThreshold < 1)
-			LowHealthSoundThreshold = 1;
-		else
-			LowHealthSoundThreshold = lowHealthSoundThreshold;
+		LowHealthSoundThreshold = MathHelper.clamp_int(lowHealthSoundThreshold, 1, 20);
 	}
 	public static int GetLowHealthSoundThreshold()
 	{

@@ -13,13 +13,11 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
  */
 public abstract class GuiTooltipScreen extends GuiScreen
 {
-	public static boolean ShowTooltipButtonMouseoverEffect = true;
+	/** Show a white "?" in the top right part of any button with a tooltip assigned to it */
 	public static boolean ShowTooltipButtonEffect = true;
 	
-    private final static int LINE_HEIGHT = 11;
-    
-	private long mouseoverTime = 0;
-	private long prevSystemTime = -1;
+	/** Show an aqua "?" in the top right part of any button with a tooltip assigned to it when mouseovered */
+	public static boolean ShowTooltipButtonMouseoverEffect = true;
 	
 	/** Putting this string into a tooltip will cause a line break */
     public String tooltipNewlineDelimeter = "_p";
@@ -33,11 +31,16 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	protected int tooltipXOffset = 0;
 	protected int tooltipYOffset = 10;
 	
+    private final static int LINE_HEIGHT = 11;
+    
+	private long mouseoverTime = 0;
+	private long prevSystemTime = -1;
+	
 	public void drawScreen(int mouseX, int mouseY, float f)
 	{
 		super.drawScreen(mouseX, mouseY, f);
 		
-		drawTooltipScreen(mouseX, mouseY);
+		DrawTooltipScreen(mouseX, mouseY);
 	}
 	
 	/**
@@ -54,7 +57,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	 * @param mouseX
 	 * @param mouseY
 	 */
-	protected void drawTooltipScreen(int mouseX, int mouseY)
+	protected void DrawTooltipScreen(int mouseX, int mouseY)
 	{
 		if(ShowTooltipButtonEffect)
 			RenderTooltipButtonEffect();
@@ -242,8 +245,8 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	
 	/**
 	 * Decodes any font codes into something useable by the FontRenderer.
-	 * @param s Ex: "Hello,_nI am your _ltooltip_r and you love me."
-	 * @return Ex output:<br>"Hello,<br>I am your <b>tooltip</b> and you love me."
+	 * @param s E.x.: "Hello,_nI am your _ltooltip_r and you love me."
+	 * @return E.x. output (html not included): <br>"Hello,<br>I am your <b>tooltip</b> and you love me."
 	 */
 	private String DecodeStringCodes(String s)
 	{
