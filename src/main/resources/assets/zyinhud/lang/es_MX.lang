@@ -1,0 +1,227 @@
+key.zyinhud.animalinfo=Info de Animal
+key.zyinhud.coordinates=Coordenadas de Chat
+key.zyinhud.distancemeasurer=Medidor de distancia
+key.zyinhud.eatingaid=Ayuda de Comida
+key.zyinhud.enderpearlaid=Ayuda de Perla de Ender
+key.zyinhud.playerlocator=Localizar Jugadores
+key.zyinhud.potionaid=Ayuda de Poción
+key.zyinhud.quickdeposit=Depósito Rápido
+key.zyinhud.safeoverlay=Capa Segura
+key.zyinhud.weaponswapper=Cambio de Arma
+key.zyinhud.zyinhudoptions=Opciones de Zyin's HUD
+key.zyinhud.itemselector=Selector de Items
+
+animalinfo.name=Info de Animal
+animalinfo.infoline=Animales
+animalinfo.options.tooltip=Muestra estadísticas de un caballo como la salud, velocidad, y altura de salto. También dice cuando los animales están listos para criar mostrando qué item es requerido para criarlos.
+animalinfo.options.maxviewdistance=Máxima Distancia: 
+animalinfo.options.showtextbackground=Fondo del Texto: 
+animalinfo.options.showtextbackground.tooltip=Muestra un fondo negro detrás de un texto para que sea más fácil de leer
+animalinfo.options.numdecimalsdisplayed=Decimales Est. Caballos: 
+animalinfo.options.showhorsestatsonf3menu=Estad. Caballo F3: 
+animalinfo.options.showhorsestatsonf3menu.tooltip=Muestra las estadísticas del caballo en el que estás montado en el menú F3
+animalinfo.options.showhorsestatsoverlay=Estadísticas Caballo: 
+animalinfo.options.showhorsestatsoverlay.tooltip=Muestra la velocidad, vida, y máxima altura de salto de los caballos del mundo
+animalinfo.options.showbreedingicons=Iconos de cría: 
+animalinfo.options.showbreedingicons.tooltip=Muestra un icono de comida sobre los animales a los que se puede criar_pEj.: trigo para vacas
+animalinfo.options.showbreedingtimers=Tiempo de cría: 
+animalinfo.options.showbreedingtimers.tooltip=Muestra el tiempo a esperar hasta que el animal esté listo para criar otra vez
+animalinfo.options.showbreedinghorse=Cría de Caballos: 
+animalinfo.options.showbreedingvillagers=Cría de Aldeanos: 
+animalinfo.options.showbreedingcow=Cría de Vacas: 
+animalinfo.options.showbreedingsheep=Cría de Ovejas: 
+animalinfo.options.showbreedingpig=Cría de Cerdos: 
+animalinfo.options.showbreedingchicken=Cria de Pollos: 
+animalinfo.overlay.speed=m/s
+animalinfo.overlay.jump=salto
+animalinfo.overlay.hp=hp
+animalinfo.overlay.hearts=corazones
+animalinfo.debug.speed=Velocidad del caballo:
+animalinfo.debug.jump=Salto del caballo:
+animalinfo.debug.hp=Salud del caballo:
+animalinfo.debug.color=Color del caballo:
+animalinfo.debug.markings=Marcas del caballo:
+
+clock.name=Reloj
+clock.options.mode.tooltip=_lEstándar_r: Muestra el tiempo actual de Minecraft_p_lCuenta Atrás_r: Contador hasta el próximo día/noche comienza_p_lGráfico_r: Muestra un reloj de Minecraft
+clock.mode.standard=Estándar
+clock.mode.countdown=Cuenta Atrás
+clock.mode.graphic=Gráfico
+
+compass.name=Brújula
+compass.north=N
+compass.east=E
+compass.south=S
+compass.west=O
+compass.northeast=NE
+compass.northwest=NO
+compass.southeast=SE
+compass.southwest=SO
+
+coordinates.name=Coordenadas
+coordinates.mode.xzy=[x, z, y]
+coordinates.mode.xyz=[x, y, z]
+coordinates.options.tooltip=Además de mostrar tus coordenadas, puedes usar la tecla designada para escribir tus coordenadas actuales en el chat mientras esté abierto
+coordinates.options.hotkey.tooltip=Coordenadas pegadas en el chat pueden ser formateadas en el archivo de configuración
+coordinates.options.useycoordinatecolors=Colores Y: 
+coordinates.options.useycoordinatecolors.tooltip=Cambia el color de la coordenada Y basado en las menas encontradas en esa elevación
+
+distancemeasurer.name=Medidor de Distancia
+distancemeasurer.mode.off=Off
+distancemeasurer.mode.simple=Simple
+distancemeasurer.mode.complex=Complejo
+distancemeasurer.far=Lejos
+distancemeasurer.options.tooltip=Pulsando la tecla de acceso rápido ona vez muestra cómo de lejos está el bloque al que estás mirando usando este formato: [max(x,y,z)]._pPulsándola otra vez mostrará cómo de lejos está en un formato más detallado: [x, y, z (distancia diagonal)]
+
+durabilityinfo.name=Info de Durabilidad
+durabilityinfo.options.tooltip=Muestra la durabilidad de la armadura que lleves equipada así como las herramientas o armas que tienes en tu barra de acceso rápido. Sólo serán mostrados cuando sus durabilidades estén por debajo de un umbral (10% por defecto).
+durabilityinfo.options.showitemdurability=Mostrar Herramientas: 
+durabilityinfo.options.showarmordurability=Mostrar Armadura: 
+durabilityinfo.options.itemdurabilitythreshold=Umbral Herram. % : 
+durabilityinfo.options.itemdurabilitythreshold.tooltip=Configurar esto a 1.00 siempre mostrará tus herramientas
+durabilityinfo.options.armordurabilitythreshold=Umbral Armadura % : 
+durabilityinfo.options.armordurabilitythreshold.tooltip=Configurar esto a 1.00 siempre mostrará tu armadura
+durabilityinfo.options.autounequiparmor=Autoretirar Armadura: 
+durabilityinfo.options.autounequiparmor.tooltip=Te desequipará tu armadura cuando se vaya a romper
+durabilityinfo.options.autounequiptools=Autoretirar Herram.: 
+durabilityinfo.options.autounequiptools.tooltip=Te desequipará tus herramientas cuando se vayan a romper
+durabilityinfo.options.offsetx=Posición X: 
+durabilityinfo.options.offsety=Posición Y: 
+durabilityinfo.options.updatefrequency=Actualizar Frecuencia (ms): 
+durabilityinfo.options.showindividualarmoricons=Iconos de Armadura: 
+durabilityinfo.options.showindividualarmoricons.tooltip=Si está en NO, mostrará un icono de armadura dañada (similar a Diablo 3) en vez de iconos de armadura individuales
+durabilityinfo.options.showdamageaspercent=Usar Porcentajes: 
+durabilityinfo.options.showdamageaspercent.tooltip=Muestra la durabilidad restante como un porcentaje en vez de la cantidad de durabilidad que le queda
+
+eatingaid.name=Ayuda de Comida
+eatingaid.mode.basic=Básico
+eatingaid.mode.intelligent=Inteligente
+eatingaid.nofood=No hay comida
+eatingaid.options.tooltip=Te ayuda a comer comida incluso si no está en tu barra de acceso rápido, o si está en tu barra de acceso rápido pero no la tienes seleccionada.
+eatingaid.options.mode.tooltip=_lBásico_r: Come la comida que más recupera_p_lInteligente_r: Come cualquier comida que mejor sacie el hambre
+eatingaid.options.eatgoldenfood=Comer Comida Dorada: 
+eatingaid.options.eatrawfood=Comer Comida Cruda: 
+eatingaid.options.prioritizefoodinhotbar=Priorizar Comida en B.A.R.: 
+
+enderpearlaid.name=Ayuda de Perla de Ender
+enderpearlaid.noenderpearls=No hay Perlas de Ender
+enderpearlaid.options.tooltip=Te ayuda a tirar Perlas de Ender incluso si no están en tu barra de acceso rápido, o si están en tu barra de acceso rápido pero no las tienes seleccionadas.
+
+fps.name=FPS
+fps.infoline=fps
+
+gui.override.options.buttons.options=Opciones de Zyin's HUD...
+gui.options.title=Configuración de Zyin's HUD
+gui.options.enabled=Habilitado: 
+gui.options.settingon=SÍ
+gui.options.settingoff=NO
+gui.options.mode=Modo: 
+gui.options.hotkey=Tecla: 
+gui.options.saveandexit=Guardar
+
+healthmonitor.name=Monitor de Salud
+healthmonitor.mode.oot=OoT
+healthmonitor.mode.lttp=LttP
+healthmonitor.mode.oracle=Oracle
+healthmonitor.mode.la=LA
+healthmonitor.mode.loz=LoZ
+healthmonitor.mode.aol=AoL
+healthmonitor.options.tooltip=Suena un aviso cuando tienes poca vida, como en el juego de Zelda.
+healthmonitor.options.mode.play=Reproducir
+healthmonitor.options.mode.play.tooltip=beep
+healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
+healthmonitor.options.playfasterneardeath=Incrementa tempo: 
+healthmonitor.options.playfasterneardeath.tooltip=Suena el aviso más rápido cuando estás a punto de morir
+healthmonitor.options.lowhealthsoundthreshold=Reproducir cuando la salud < 
+
+infoline.name=Línea de Info
+infoline.options.tooltip=El texto mostrado en la parte superior izaquierda de la pantalla en el que otros mods usan para indicar información.
+infoline.options.showbiome=Mostrar Bioma: 
+infoline.options.showcansnow=Mostrar si nieva: 
+infoline.options.offsetx=Posición X: 
+infoline.options.offsety=Posición Y: 
+
+itemselector.name=Selector de Items
+itemselector.mode.all=Todo
+itemselector.mode.column=Misma Columna
+itemselector.error.emptyslot=Ese espacio ya no tiene un item
+itemselector.error.enchant=No se puede cambiar items encantados en multijugador
+itemselector.error.empty=El inventario no tiene items seleccionables
+itemselector.options.tooltip=Te permite usar la rueda del ratón para coger items de tu inventario sin tener que abrirlo.
+itemselector.options.hotkey.tooltip=Mantén este botón mientras usas la rueda del ratón para seleccionar items
+itemselector.options.mode.tooltip=_lTodo_r: Selecciona items de todo tu inventario_p_lMisma Columna_r: Selecciona los items que estén en la misma columna que el item seleccionado en la barra de acceso rápido
+itemselector.options.ticks=Ticks hasta fin tiempo: 
+itemselector.options.ticks.tooltip=Cuántos ticks de juego (20 ticks = 1 segundo) antes de que el item destacado se seleccione automáticamente
+
+miscellaneous.name=Misceláneo
+miscellaneous.options.useenhancedmiddleclick=Mejor Click del Medio: 
+miscellaneous.options.useenhancedmiddleclick.tooltip=Cuando esté habilitado, hacer click en el medio moverá el bloque que tenga el ratón encima a tu barra de acceso rápido si existe en tu inventario._pLa funcionalidad del click del medio por defecto sólo funciona si existe en tu barra de acceso rápido.
+
+playerlocator.name=Localizar Jugadores
+playerlocator.mode.off=Off
+playerlocator.mode.on=On
+playerlocator.infoline=jugadores
+playerlocator.wolf=Lobo
+playerlocator.options.tooltip=Te ayuda a encontrar donde están los otros jugadores mostrando sus nombres en la pantalla.
+playerlocator.options.minviewdistance=Mínima Distancia: 
+playerlocator.options.minviewdistance.tooltip=Los jugadores más cercanos a [Mínima Distancia] bloques de lejos no serán mostrados
+playerlocator.options.showdistancetoplayers=Mostrar Distancias: 
+playerlocator.options.showplayerhealth=Mostrar Salud: 
+playerlocator.options.showwolves=Mostrar Tus Lobos: 
+playerlocator.options.showwolves.tooltip=Además de mostrar otros jugadores también mostrará los lobos domados que tú tengas
+playerlocator.options.usewolfcolors=Usar colores de lobo: 
+playerlocator.options.usewolfcolors.tooltip=Usa el color del collar del lobo para colorear su nombre (el color del collar por defecto es rojo)
+
+potionaid.name=Ayuda de Poción
+potionaid.noappropriatepotions=No son pociones apropiadas
+potionaid.options.tooltip=Inteligentemente determina qué poción beber, incluso si no está en tu barra de acceso rápido. Por ejemplo, si te estás quemando en la lava usará una poción de resistencia al fuego. Si estás dañado, usará una poción de salud o regeneración. Si estás bien te hará mas fuerte con pociones de velociadad, de fuerza, y de invisibilidad.
+
+potiontimers.name=Contadores de Poción
+potiontimers.options.tooltip=Muestra una simple pantalla en la parte superior izquierda de la pantalla cuando tienes algún efecto de poción.
+potiontimers.options.showpotionicons=Mostrar Iconos: 
+potiontimers.options.usepotioncolors=Texto Coloreado: 
+potiontimers.options.hidepotioneffectsininventory=Ocultar en Inventario: 
+potiontimers.options.hidepotioneffectsininventory.tooltip=Oculta los contadores de poción por defecto que se muestran cuando abres el inventario
+potiontimers.options.potionscale=Tamaño: 
+potiontimers.options.offsetx=Posición X: 
+potiontimers.options.offsety=Posición Y: 
+
+safeoverlay.name=Capa Segura
+safeoverlay.mode.off=Off
+safeoverlay.mode.on=On
+safeoverlay.infoline=seguro
+safeoverlay.options.tooltip=Marca bloques como "inseguros" dibujando una X amarilla en ellos, lo que significa que los mobs pueden aparecer ahí por la noche. Una X roja significa que es lo suficientemente oscuro para que los mobs aparezcan incluso de día.
+safeoverlay.options.hotkey.tooltip=Ctrl + Tecla = Activar Rayos X_p+ + Tecla = Incrementar distancia_p- + Tecla = Reducir distancia_p0 + Tecla = Reiniciar distancia
+safeoverlay.options.drawdistance=Dibujar Distancia: 
+safeoverlay.options.transparency=Transparencia: 
+safeoverlay.options.displayinnether=Mostrar en el Nether: 
+safeoverlay.options.seethroughwalls=Rayos X: 
+safeoverlay.seethroughwallsenabled=Ver a través de las paredes habilitado
+safeoverlay.seethroughwallsdisabled=Ver a través de las paredes deshabilitado
+safeoverlay.distance=Distancia de Capa Segura:
+safeoverlay.distance.max=max
+safeoverlay.distance.default=default
+
+torchaid.name=Ayuda de Antorchas
+torchaid.notorches=No hay Antorchas
+torchaid.options.tooltip=Coloca antorchas sin tenerlas en tu barra de acceso rápido haciendo click derecho con un hacha, pico, pala, o cuando no tienes nada en tu mano.
+
+weaponswapper.name=Cambio de Armas
+weaponswapper.noweaponsinhotbar=No hay armas en la barra de acceso rápido
+weaponswapper.options.tooltip=Pulsa la tecla de acceso rápido para seleccionar tu espada. Pulsa otra vez para seleccionar tu arco.
+weaponswapper.options.scanhotbarforweaponsfromlefttoright=Buscar en B.A.R. de iz. a dr.: 
+weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip=Sólo relevante si tienes múltiples espadas/arcos en tu barra de acceso rápido. Si está habilitado, seleccionará el arma más a la izquierda en tu barra de acceso rápido. Si está deshabilitado, seleccionará el arma más a la derecha en tu barra de acceso rápido.
+
+quickdeposit.name=Depósito Rápido
+quickdeposit.options.tooltip=Funciona como la opción de stack rápido de Terraria. Cuando miras a un contenedor (cofre, cofre de caballo, menú de trueque de aldeano, etc) moverá los items de tu inventario al contenedor si ese item ya existe en el contenedor.
+quickdeposit.options.ignoreitemsinhotbar=Ignorar B. A. Rápido: 
+quickdeposit.options.ignoreitemsinhotbar.tooltip=Nunca colocará items en un cofre si están en tu barra de acceso rápido
+quickdeposit.options.closechestafterdepositing=Cierra Cofre: 
+quickdeposit.options.closechestafterdepositing.tooltip=Cerrará tu inventario después de hacer un Depósito Rápido de items en un cofre
+quickdeposit.options.blacklist=Nunca Depositar:
+quickdeposit.options.blacklisttorch=Antorchas 
+quickdeposit.options.blacklistarrow=Flechas: 
+quickdeposit.options.blacklistenderpearl=Perlas de Ender: 
+quickdeposit.options.blacklistfood=Comida: 
+quickdeposit.options.blacklistwaterbucket=Cubos de Agua: 
+quickdeposit.options.blacklistclockcompass=Reloj/Brújula: 
