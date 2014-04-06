@@ -1,0 +1,53 @@
+animalinfo.name=Wild beasts
+animalinfo.infoline=beasts
+
+clock.name=Pocketwatch
+clock.mode.graphic=PIRATE STYLE
+
+compass.name=Bearing compass
+
+coordinates.name=Treasure coordinates
+
+distancemeasurer.name=Ring dial
+
+durabilityinfo.name=Armory
+
+eatingaid.name=Grub Aid
+eatingaid.mode.basic=Hungry Pirate
+eatingaid.mode.intelligent=Smart Pirate
+
+enderpearlaid.name=Cave Pearl Aid
+
+fps.name=Renderin' speed
+fps.infoline=clicks
+
+gui.override.options.buttons.options=ZE PIRATE'S HUD...
+gui.options.title=Yer PIRATE'S HUD Settings
+gui.options.enabled=Does it work? 
+gui.options.saveandexit=Abandon ship!
+
+healthmonitor.name=Am I dead yet?
+
+infoline.name=Line with markings
+
+itemselector.name=Big ol' backpack
+itemselector.mode.all=Whole backpack
+itemselector.mode.column=Just meh pocket
+
+miscellaneous.name=Peg legs
+
+playerlocator.name=Priate Finder
+playerlocator.infoline=pirates
+
+potionaid.name=Drinkin' Aid
+
+potiontimers.name=Hangover Timers
+
+safeoverlay.name=X marks the spot
+safeoverlay.infoline=buriedtreasure
+
+torchaid.name=Fire on a stick
+
+weaponswapper.name=Draw yer blade!
+
+quickdeposit.name=Bury yer treasure
