@@ -1,0 +1,227 @@
+key.zyinhud.animalinfo=Info Hewan
+key.zyinhud.coordinates=Koordinat 
+key.zyinhud.distancemeasurer=Pengukur Jarak
+key.zyinhud.eatingaid=Bantuan Makan
+key.zyinhud.enderpearlaid=Bantuan 
+key.zyinhud.playerlocator=Pelacak Pemain
+key.zyinhud.potionaid=Bantuan Obat
+key.zyinhud.quickdeposit=Quick Deposit
+key.zyinhud.safeoverlay=Safe Overlay
+key.zyinhud.weaponswapper=Pengganti Senjata
+key.zyinhud.zyinhudoptions=Setting Zyin HUD
+key.zyinhud.itemselector=Memilih Barang
+
+animalinfo.name=Info Hewan
+animalinfo.infoline=Hewan
+animalinfo.options.tooltip=Menunjukkan status hewan seperti darah, lari, tinggi lompatan. Juga muncul saat hewan akan berkembang biak dan menunjukkan benda yang dibutuhkan untuk hal itu.
+animalinfo.options.maxviewdistance=Jarak Melihat Max: 
+animalinfo.options.showtextbackground=Background teks: 
+animalinfo.options.showtextbackground.tooltip=Memberikan background hitam dibelakang teks untuk memudahkan membaca.
+animalinfo.options.numdecimalsdisplayed=Status dalam desimal: 
+animalinfo.options.showhorsestatsonf3menu=Status kuda F3: 
+animalinfo.options.showhorsestatsonf3menu.tooltip=Menunjukkan status kuda yang dinaiki dengan menu F3
+animalinfo.options.showhorsestatsoverlay=Status kuda: 
+animalinfo.options.showhorsestatsoverlay.tooltip=Menunjukkan kecepatan, darah, dan tinggi lompatan kuda di dunia
+animalinfo.options.showbreedingicons=Ikon berkembang biak: 
+animalinfo.options.showbreedingicons.tooltip=Menunjukkan ikon makanan untuk hewan yang bisa berkembang biak_pE.x: jerami untuk sapi
+animalinfo.options.showbreedingtimers=Timer Berkembang biak: 
+animalinfo.options.showbreedingtimers.tooltip=Menunjukkan waktu sampai hewan bisa berkembang biak lagi
+animalinfo.options.showbreedinghorse=Pembiakkan kuda: 
+animalinfo.options.showbreedingvillagers=Pembiakkan Penduduk: 
+animalinfo.options.showbreedingcow=Pembiakkan Sapi: 
+animalinfo.options.showbreedingsheep=Pembiakkan Domba: 
+animalinfo.options.showbreedingpig=Pembiakkan Babi: 
+animalinfo.options.showbreedingchicken=Pembiakkan Ayam: 
+animalinfo.overlay.speed=m/s
+animalinfo.overlay.jump=loncat
+animalinfo.overlay.hp=hp
+animalinfo.overlay.hearts=hati
+animalinfo.debug.speed=Kecepatan Kuda:
+animalinfo.debug.jump=Lompatan Kuda:
+animalinfo.debug.hp=HP Kuda:
+animalinfo.debug.color=Warna Kuda:
+animalinfo.debug.markings=Tanda Kuda:
+
+clock.name=Jam
+clock.options.mode.tooltip=_lStandar_r: Menunjukkan waktu Minecraft saat ini_p_lHitung Mundur_r: Timer sampai hari berikutnya_p_lGrafis_r: Menunjukkan waktu Minecraft
+clock.mode.standard=Standar
+clock.mode.countdown=Hitungan mundur
+clock.mode.graphic=Grafis
+
+compass.name=Kompas
+compass.north=U
+compass.east=T
+compass.south=S
+compass.west=B
+compass.northeast=NE
+compass.northwest=NW
+compass.southeast=SE
+compass.southwest=SW
+
+coordinates.name=Koordinat
+coordinates.mode.xzy=[x, z, y]
+coordinates.mode.xyz=[x, y, z]
+coordinates.options.tooltip=Selain menunjukkan koordinat, gunakan hotkey untuk menulis koordinat saat ini ke kotak chat saat terbuka
+coordinates.options.hotkey.tooltip=Koordinat yang di letakkan di kotak chat bisa diformat di file config
+coordinates.options.useycoordinatecolors=Y Colors: 
+coordinates.options.useycoordinatecolors.tooltip=Rubah warna koordinat Y sesuai dengan ore yang ditemukan di sana 
+
+distancemeasurer.name=Pengukur jarak
+distancemeasurer.mode.off=Off
+distancemeasurer.mode.simple=Simpel
+distancemeasurer.mode.complex=Complex
+distancemeasurer.far=jauh
+distancemeasurer.options.tooltip=Menekan hotkey akan menunjukkan seberapa jauh kamu dari blok yang terlihat saat ini: [max(x,y,z)]._pMenekannya sekali lagi akan membuatnya lebih detail: [x, y, z (jarak diagonal)]
+
+durabilityinfo.name=Info Ketahanan
+durabilityinfo.options.tooltip=Menunjukkan ketahanan armor yang kamu gunakan serta peralatan yang ada di hotbar. Mereka hanya akan terlihat ketika ketahanan mereka dibawah thresold spesifik(default 10%).
+durabilityinfo.options.showitemdurability=Tunjukkan Peralatan: 
+durabilityinfo.options.showarmordurability=Tunjukkan Armor: 
+durabilityinfo.options.itemdurabilitythreshold=Thresold Peralatan % : 
+durabilityinfo.options.itemdurabilitythreshold.tooltip=Mengatur ini ke 1.00 akan selalu menunjukkan peralatanmu
+durabilityinfo.options.armordurabilitythreshold=Thresold Armor % : 
+durabilityinfo.options.armordurabilitythreshold.tooltip=Mengatur ini ke 1.00 akan selalu menunjukkan armormu
+durabilityinfo.options.autounequiparmor=Auto Lepas Armor: 
+durabilityinfo.options.autounequiparmor.tooltip=Secara otomatis melepaskan armor ketika hampir rusak
+durabilityinfo.options.autounequiptools=Auto Lepas Alat: 
+durabilityinfo.options.autounequiptools.tooltip=Secara otomatis melepaskan peralatan ketika hampir rusak
+durabilityinfo.options.offsetx=Offset X: 
+durabilityinfo.options.offsety=Offset Y: 
+durabilityinfo.options.updatefrequency=Frekuensi Update (ms): 
+durabilityinfo.options.showindividualarmoricons=Gunakan ikon armor: 
+durabilityinfo.options.showindividualarmoricons.tooltip=Jika tidak, akan menunjukkan ikon armor rusak (mirip dengan Diablo 3) dan bukan ikon individual armor
+durabilityinfo.options.showdamageaspercent=Dalam persentase: 
+durabilityinfo.options.showdamageaspercent.tooltip=Menunjukkan ketahanan yang tersisa dengan persentase
+
+eatingaid.name=Bantuan Makan
+eatingaid.mode.basic=Basic
+eatingaid.mode.intelligent=Pintar
+eatingaid.nofood=Tidak ada makanan 
+eatingaid.options.tooltip=Membantu kamu makan ketika makanan tidak ada di hotbar, atau ada di hotbar tapi di terseleksi.
+eatingaid.options.mode.tooltip=_lBasic_r: Makan makanan yang paling mengenyangkan_p_lPintar_r: Makan makanan terbaik sesuai dengan tingkat kelaparan
+eatingaid.options.eatgoldenfood=Makanan emas: 
+eatingaid.options.eatrawfood=Makanan Mentah: 
+eatingaid.options.prioritizefoodinhotbar=Prioritas makanan: 
+
+enderpearlaid.name=Bantuan Permata Ender
+enderpearlaid.noenderpearls=Tidak ada Permata Ender
+enderpearlaid.options.tooltip=Membantu melempar Permata Ender bahkan ketika tidak ada di hotbar, atau mereka ada di hotbar tapi tidak terseleksi.
+
+fps.name=FPS
+fps.infoline=fps
+
+gui.override.options.buttons.options=Zyin's HUD...
+gui.options.title=Pengaturan Zyin's HUD
+gui.options.enabled=Aktif: 
+gui.options.settingon=ya
+gui.options.settingoff=tidak
+gui.options.mode=Mode: 
+gui.options.hotkey=Hotkey: 
+gui.options.saveandexit=Simpan
+
+healthmonitor.name=Monitor Kesehatan
+healthmonitor.mode.oot=OoT
+healthmonitor.mode.lttp=LttP
+healthmonitor.mode.oracle=Oracle
+healthmonitor.mode.la=LA
+healthmonitor.mode.loz=LoZ
+healthmonitor.mode.aol=AoL
+healthmonitor.options.tooltip=Memainkan suara peringatan ketika HP sedikit, seperti di game Zelda.
+healthmonitor.options.mode.play=Mainkan
+healthmonitor.options.mode.play.tooltip=beep
+healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
+healthmonitor.options.playfasterneardeath=Percepat tempo: 
+healthmonitor.options.playfasterneardeath.tooltip=Memainkan suara peringatan lebih cepat seiring berkurangnya HP
+healthmonitor.options.lowhealthsoundthreshold=Mainkan ketika sehat < 
+
+infoline.name=Garis Informasi
+infoline.options.tooltip=Teks yang digunakan di pojok kiri atas yang digunakan mod lain untuk menampilkan informasi.
+infoline.options.showbiome=Tampilkan Biome: 
+infoline.options.showcansnow=Bila Bersalju ?: 
+infoline.options.offsetx=Offset X: 
+infoline.options.offsety=Offset Y: 
+
+itemselector.name=Pemilih Benda
+itemselector.mode.all=Semua
+itemselector.mode.column=Kolom yang sama
+itemselector.error.emptyslot=Slot itu tidak memiliki benda
+itemselector.error.enchant=Tidak bisa menukar benda yang sudah ditingkatkan ketika bermain bersama
+itemselector.error.empty=Inventory tidak memiliki benda untuk diseleksi
+itemselector.options.tooltip=Memperbolehkan kamu menyeleksi benda di inventory menggunakan roda mouse tanpa harus membukanya.
+itemselector.options.hotkey.tooltip=Tahan tombol ini ketika menggunakan roda mouse untuk menyeleksi benda
+itemselector.options.mode.tooltip=_lAll_r: Menyeleksi benda dari semua inventory_p_lSame Column_r: Seleksi benda hanya dari kolom yang sama seperti hotbar yang terseleksi saat ini
+itemselector.options.ticks=Ticks sampai timeout: 
+itemselector.options.ticks.tooltip=Seberapa banyak ticks dalam game (20 = 1 sec) sebelum benda yang dihighlight terseleksi
+
+miscellaneous.name=Lain-lain
+miscellaneous.options.useenhancedmiddleclick=Peningkatan Tombol Tengah: 
+miscellaneous.options.useenhancedmiddleclick.tooltip=Jika aktif, tombol tengah akan menyeleksi blok di hotbar jika ada di Inventory._pTombol tengah hanya berfungsi jika benda ada di Inventory.
+
+playerlocator.name=Pelacak Pemain
+playerlocator.mode.off=Off
+playerlocator.mode.on=On
+playerlocator.infoline=pemain
+playerlocator.wolf=Serigala
+playerlocator.options.tooltip=Membantu kamu menemukan pemain lain dengan menunjukkan nama mereka di layar.
+playerlocator.options.minviewdistance=Jarak Melihat Min: 
+playerlocator.options.minviewdistance.tooltip=Pemain lebih sedikit dari [Jarak Penglihatan Minimum] tidak akan ditampilkan
+playerlocator.options.showdistancetoplayers=Tunjukkan jarak: 
+playerlocator.options.showplayerhealth=Tunjukkan HP: 
+playerlocator.options.showwolves=Tunjukkan serigalamu: 
+playerlocator.options.showwolves.tooltip=Selain menunjukkan pemain lain juga menunjukkan serigala yang kamu biakkan
+playerlocator.options.usewolfcolors=Warna Serigala: 
+playerlocator.options.usewolfcolors.tooltip=Gunakan warna dari leher serigala untuk penamaan (warna awal adalah merah)
+
+potionaid.name=Bantuan Ramuan
+potionaid.noappropriatepotions=Tidak ada ramuan
+potionaid.options.tooltip=Secara pintar menentukan ramuan mana yang akan diminum, walau tidak ada di hotbar. Contohnya, ketika sedang di dalam lava akan meminum ramuan tahan api. Jika terluka, akan meminum ramuan regenerasi atau sejenisnya. Jika baik saja, akan meminum ramuan kekuatan, kecepatan, atau tembus pandang.
+
+potiontimers.name=Timer Ramuan
+potiontimers.options.tooltip=Menunjukkan timer ramuan di pojok kiri jika sedang memiliki efek.
+potiontimers.options.showpotionicons=Tunjukkan Ikon: 
+potiontimers.options.usepotioncolors=Teks Berwarna: 
+potiontimers.options.hidepotioneffectsininventory=Tutupi di Inventory: 
+potiontimers.options.hidepotioneffectsininventory.tooltip=Menyembunyikan timer ramuan default yang ada di Inventory
+potiontimers.options.potionscale=Ukuran: 
+potiontimers.options.offsetx=Offset X: 
+potiontimers.options.offsety=Offset Y: 
+
+safeoverlay.name=Tempat Aman
+safeoverlay.mode.off=Off
+safeoverlay.mode.on=On
+safeoverlay.infoline=aman
+safeoverlay.options.tooltip=Menandakan blok dengan X kuning, berarti monster bisa spawn di sana pada malam hari.  X merah menandakan monster bisa spawn di sana bahkan pada siang hari.
+safeoverlay.options.hotkey.tooltip=Ctrl + kunci = Nyalakan X-ray_p+ + kunci = Tambah jarak_p- + key = Kurangi jarak_p0 + key = Reset jarak
+safeoverlay.options.drawdistance=Tentukan Jarak: 
+safeoverlay.options.transparency=Transparan: 
+safeoverlay.options.displayinnether=Di Neraka?: 
+safeoverlay.options.seethroughwalls=X-ray: 
+safeoverlay.seethroughwallsenabled=Melihat tembus dinding Aktif
+safeoverlay.seethroughwallsdisabled=Melihat tembus dinding Nonaktif
+safeoverlay.distance=Jarak Tempat Aman:
+safeoverlay.distance.max=maks
+safeoverlay.distance.default=default
+
+torchaid.name=Bantuan Obor
+torchaid.notorches=Tidak ada obor
+torchaid.options.tooltip=Meletakkan obor tanpa menaruhnya di hotbar dengan klik kanan mouse ketika memegang kapak, pickaxe, shovel, atau ketika tidak memiliki apa-apa di tangan.
+
+weaponswapper.name=Penukar Senjata
+weaponswapper.noweaponsinhotbar=Tidak ada senjata di hotbar
+weaponswapper.options.tooltip=Tekan hotkey untuk memilih pedang. Tekan lagi untuk memilih busurmu.
+weaponswapper.options.scanhotbarforweaponsfromlefttoright=Kiri ke Kanan: 
+weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip=Hanya jika kamu punya lebih dari satu pedang/busur di hotbar. Jika aktif, akan memilih senjata di paling kiri. Jika tidak, akan menyeleksi senjata paling kanan.
+
+quickdeposit.name=Menabung Cepat
+quickdeposit.options.tooltip=Bekerja seperti stacking Terraria. Ketika melihat di kontainer (peti, peti kuda, menu tukar penduduk, dll) akan memindahkan benda dari inventory ke kontainer jika benda itu sudah ada di kontainer.
+quickdeposit.options.ignoreitemsinhotbar=Biarkan Hotbar: 
+quickdeposit.options.ignoreitemsinhotbar.tooltip=Tidak akan meletakkan benda ke kontainer jika ada di Hotbar
+quickdeposit.options.closechestafterdepositing=Tutup Peti: 
+quickdeposit.options.closechestafterdepositing.tooltip=Akan menutup inventory setelah menabung
+quickdeposit.options.blacklist=Jangan pernah tabung:
+quickdeposit.options.blacklisttorch=Obor: 
+quickdeposit.options.blacklistarrow=Panah: 
+quickdeposit.options.blacklistenderpearl=Permata Ender: 
+quickdeposit.options.blacklistfood=Makanan: 
+quickdeposit.options.blacklistwaterbucket=Ember Air: 
+quickdeposit.options.blacklistclockcompass=Jam/Kompas: 
