@@ -56,7 +56,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-	public static final String MODVERSION = "1.3.0.1";
+	public static final String MODVERSION = "1.3.1";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     

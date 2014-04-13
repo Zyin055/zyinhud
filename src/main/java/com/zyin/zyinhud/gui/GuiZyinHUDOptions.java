@@ -431,6 +431,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 4, new GuiButton(1306, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.eatrawfood", EatingAid.EatRawFood)));
     	AddButtonAt(0, 5, new GuiButton(1305, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar)));
     	
+    	AddButtonAt(1, 0, new GuiButton(1307, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("eatingaid.options.usepvpsoup", EatingAid.UsePvPSoup)));
+    	
     }
     private void DrawPotionAidButtons()
     {
@@ -1006,6 +1008,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	EatingAid.TogglePrioritizeFoodInHotbar();
 	            	button.displayString = GetButtonLabel_Boolean("eatingaid.options.prioritizefoodinhotbar", EatingAid.PrioritizeFoodInHotbar);
 	            	break;
+	            case 1307:	//Use PvP Soup
+	            	EatingAid.ToggleUsePvPSoup();
+	            	button.displayString = GetButtonLabel_Boolean("eatingaid.options.usepvpsoup", EatingAid.UsePvPSoup);
+	            	break;
 	            
 	            /////////////////////////////////////////////////////////////////////////
 	            // Potion Aid
@@ -1219,6 +1225,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1200: return Localization.get("enderpearlaid.options.tooltip");
 			case 1300: return Localization.get("eatingaid.options.tooltip");
 			case 1303: return Localization.get("eatingaid.options.mode.tooltip");
+			case 1307: return Localization.get("eatingaid.options.usepvpsoup.tooltip");
 			case 1400: return Localization.get("potionaid.options.tooltip");
 			case 1500: return Localization.get("weaponswapper.options.tooltip");
 			case 1503: return Localization.get("weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip");

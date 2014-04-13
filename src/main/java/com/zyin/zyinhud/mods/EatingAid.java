@@ -80,7 +80,10 @@ public class EatingAid extends ZyinHUDModBase
     public static boolean EatGoldenFood;
     /** Such as raw chicken/porkchop/beef */
     public static boolean EatRawFood;
+    /** Food found on the hotbar will be chosen over food found in the inventory */
     public static boolean PrioritizeFoodInHotbar;
+    /** Treat mushroom stew as instant-eat */
+    public static boolean UsePvPSoup;
     
     private Timer timer = new Timer();
     private TimerTask swapTimerTask;
@@ -136,14 +139,14 @@ public class EatingAid extends ZyinHUDModBase
         else
         {
             //we need to eat something by first finding the best food to eat, then eat it
-            if (!mc.thePlayer.getFoodStats().needFood())
+            if(!mc.thePlayer.getFoodStats().needFood() && !UsePvPSoup)
             {
                 //if we're not hungry then don't do anything
                 return;
             }
             
             foodItemIndex = GetFoodItemIndexFromInventory();
-        	if (foodItemIndex < 0)
+        	if(foodItemIndex < 0)
             {
                 InfoLine.DisplayNotification(Localization.get("eatingaid.nofood"));
                 return;
@@ -167,26 +170,43 @@ public class EatingAid extends ZyinHUDModBase
      */
     private void StartEatingFromHotbar(int foodHotbarIndex)
     {
-    	if(foodHotbarIndex < 36 | foodHotbarIndex > 44)
+    	if(foodHotbarIndex < 36 || foodHotbarIndex > 44)
     		return;
-    	
-    	currentItemHotbarIndex = mc.thePlayer.inventory.currentItem;
-    	foodHotbarIndex = InventoryUtil.TranslateInventoryIndexToHotbarIndex(foodHotbarIndex);
-    	
-    	int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
-    	mc.thePlayer.inventory.currentItem = foodHotbarIndex;
 
-        r.mousePress(InputEvent.BUTTON3_MASK); //perform a right click
-        isCurrentlyEating = true;
-        previousEatFromHotbar = true;
-        
-    	ItemStack currentItemStack = mc.thePlayer.getHeldItem();
-    	ItemFood currentFood = (ItemFood)currentItemStack.getItem();
-        int eatingDurationInMilliseconds = 1000*currentFood.itemUseDuration / 20;
-        
-        //after this timer runs out we'll release right click to stop eating and select the previously selected item
-        eatTimerTask = new StopEatingTimerTask(r, previouslySelectedHotbarSlotIndex);
-        timer.schedule(eatTimerTask, eatingDurationInMilliseconds + InventoryUtil.GetSuggestedItemSwapDelay());
+		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(foodHotbarIndex);
+		ItemFood food = (ItemFood)(slotToUse.getStack().getItem());
+		
+    	if(UsePvPSoup && food.equals(Items.mushroom_stew) &&
+    			(mc.thePlayer.getHealth() < 20 || mc.thePlayer.getFoodStats().needFood()))
+    	{
+    		int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
+    		mc.thePlayer.inventory.currentItem = InventoryUtil.TranslateInventoryIndexToHotbarIndex(foodHotbarIndex);
+    		
+    		InventoryUtil.SendUseItem();
+    		
+    		mc.thePlayer.inventory.currentItem = previouslySelectedHotbarSlotIndex;
+    	}
+    	else if(mc.thePlayer.getFoodStats().needFood())
+    	{
+        	currentItemHotbarIndex = mc.thePlayer.inventory.currentItem;
+        	foodHotbarIndex = InventoryUtil.TranslateInventoryIndexToHotbarIndex(foodHotbarIndex);
+        	
+        	int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
+        	mc.thePlayer.inventory.currentItem = foodHotbarIndex;
+
+            r.mousePress(InputEvent.BUTTON3_MASK); //perform a right click
+            isCurrentlyEating = true;
+            previousEatFromHotbar = true;
+            
+        	ItemStack currentItemStack = mc.thePlayer.getHeldItem();
+        	ItemFood currentFood = (ItemFood)currentItemStack.getItem();
+        	
+            int eatingDurationInMilliseconds = 1000*currentFood.itemUseDuration / 20;
+            
+            //after this timer runs out we'll release right click to stop eating and select the previously selected item
+            eatTimerTask = new StopEatingTimerTask(r, previouslySelectedHotbarSlotIndex);
+            timer.schedule(eatTimerTask, eatingDurationInMilliseconds + InventoryUtil.GetSuggestedItemSwapDelay());
+    	}
     }
     
     /**
@@ -195,28 +215,54 @@ public class EatingAid extends ZyinHUDModBase
      */
     private void StartEatingFromInventory(int foodInventoryIndex)
     {
-    	if(foodInventoryIndex < 9 | foodInventoryIndex > 35)
+    	if(foodInventoryIndex < 9 || foodInventoryIndex > 35)
+    		return;
+
+		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(foodInventoryIndex);
+		ItemFood food = (ItemFood)(slotToUse.getStack().getItem());
+		
+		//if PvP Soup is on and we don't need eat it, then return
+    	if(UsePvPSoup && food.equals(Items.mushroom_stew) && mc.thePlayer.getHealth() >= 20 && !mc.thePlayer.getFoodStats().needFood())
     		return;
     	
         currentItemInventoryIndex = InventoryUtil.GetCurrentlySelectedItemInventoryIndex();
         InventoryUtil.Swap(currentItemInventoryIndex, foodInventoryIndex);
         
         r.mousePress(InputEvent.BUTTON3_MASK); //perform a right click
-        isCurrentlyEating = true;
         previousEatFromHotbar = false;
         
         ItemStack currentItemStack = mc.thePlayer.getHeldItem();
         ItemFood currentFood = (ItemFood)currentItemStack.getItem();
+        
         int eatingDurationInMilliseconds = 1000 * currentFood.itemUseDuration / 20;
         
-        //after this timer runs out we'll release right click to stop eating
-        eatTimerTask = new StopEatingTimerTask(r);
-        timer.schedule(eatTimerTask, eatingDurationInMilliseconds);
+        if(UsePvPSoup && food.equals(Items.mushroom_stew) &&
+    			(mc.thePlayer.getHealth() < 20 || mc.thePlayer.getFoodStats().needFood()))	//for PvP Soup eating
+        {
+            isCurrentlyEating = false;
+            r.mouseRelease(InputEvent.BUTTON3_MASK); //release right click
+            eatingDurationInMilliseconds = 1;
+            
+        	InventoryUtil.SendUseItem();
+        }
+        else if(mc.thePlayer.getFoodStats().needFood())	//for normal eating
+        {
+            isCurrentlyEating = true;
+            
+            //after this timer runs out we'll release right click to stop eating
+            eatTimerTask = new StopEatingTimerTask(r);
+            timer.schedule(eatTimerTask, eatingDurationInMilliseconds);
+        }
+        else	//for if we try to eat something but aren't hungry
+        {
+        	eatingDurationInMilliseconds = 1;
+        	r.mouseRelease(InputEvent.BUTTON3_MASK); //release right click
+        }
+        
         swapTimerTask = InventoryUtil.instance.SwapWithDelay(currentItemInventoryIndex, foodInventoryIndex,
         		eatingDurationInMilliseconds + InventoryUtil.GetSuggestedItemSwapDelay());
+        
     }
-    
-    
     
     
 
@@ -296,13 +342,17 @@ public class EatingAid extends ZyinHUDModBase
             }
 
             Item item = itemStack.getItem();
-
+            
             if (item instanceof ItemFood)
             {
                 ItemFood food = (ItemFood)item;
                 float saturation = food.func_150906_h(itemStack);
-
-                if (item.equals(Items.golden_carrot)
+                
+                if (UsePvPSoup && item.equals(Items.mushroom_stew))
+                {
+                	saturation = 1000f;	//setting the saturation value very high will make it appealing to the food selection algorithm
+                }
+                else if (item.equals(Items.golden_carrot)
                         || item.equals(Items.golden_apple))
                 {
                     if (!EatGoldenFood)
@@ -387,7 +437,11 @@ public class EatingAid extends ZyinHUDModBase
                 int overeat = foodNeeded - eat;
                 overeat = (overeat > 0) ? 0 : Math.abs(overeat);	//positive number, amount we would overeat by eating this food
 
-                if (item.equals(Items.golden_carrot)
+                if (UsePvPSoup && item.equals(Items.mushroom_stew))
+                {
+                	overeat = -1000;	//setting the overeat value very low will make it appealing to the food selection algorithm
+                }
+                else if (item.equals(Items.golden_carrot)
                         || item.equals(Items.golden_apple))
                 {
                     if (!EatGoldenFood)
@@ -434,7 +488,7 @@ public class EatingAid extends ZyinHUDModBase
         else
             return -1;
     }
-
+    
 
     /**
      * Toggles the whether you eat golden food or not
@@ -453,7 +507,7 @@ public class EatingAid extends ZyinHUDModBase
     {
     	return EatRawFood = !EatRawFood;
     }
-    
+
     /**
      * Toggles the prioritizing food in hotbar
      * @return The state it was changed to
@@ -461,6 +515,15 @@ public class EatingAid extends ZyinHUDModBase
     public static boolean TogglePrioritizeFoodInHotbar()
     {
     	return PrioritizeFoodInHotbar = !PrioritizeFoodInHotbar;
+    }
+    
+    /**
+     * Toggles enabling using PvP Soup
+     * @return The state it was changed to
+     */
+    public static boolean ToggleUsePvPSoup()
+    {
+    	return UsePvPSoup = !UsePvPSoup;
     }
     
     

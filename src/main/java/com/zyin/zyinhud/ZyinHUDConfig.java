@@ -472,6 +472,13 @@ public class ZyinHUDConfig
         else
         	p.set(EatingAid.Mode.name());
         
+        p = config.get(CATEGORY_EATINGAID, "UsePvPSoup", false);
+        p.comment = "If you are connected to a Bukkit server that uses PvP Soup or Fast Soup (mushroom stew) with this enabled, Eating Aid will use it instead of other foods.";
+        if(loadSettings)
+        	EatingAid.UsePvPSoup = p.getBoolean(false);
+        else
+        	p.set(EatingAid.UsePvPSoup);
+        
         
         //CATEGORY_WEAPONSWAP
         p = config.get(CATEGORY_WEAPONSWAP, "EnableWeaponSwap", true);

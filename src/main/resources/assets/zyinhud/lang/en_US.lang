@@ -105,6 +105,8 @@ eatingaid.options.mode.tooltip=_lBasic_r: Eats the most filling food_p_lIntellig
 eatingaid.options.eatgoldenfood=Eat Golden Food: 
 eatingaid.options.eatrawfood=Eat Uncooked Food: 
 eatingaid.options.prioritizefoodinhotbar=Prioritize Food in Hotbar: 
+eatingaid.options.usepvpsoup=PvP Soup: 
+eatingaid.options.usepvpsoup.tooltip=_nIMPORTANT:_r Only enable this if you are connected to a server that uses the _6PvP _6Soup_r or _6Fast _6Soup_r plugin. Eating Aid will treat Mushroom Stew as instant-eat and will always use it when it is available.
 
 enderpearlaid.name=Ender Pearl Aid
 enderpearlaid.noenderpearls=No ender pearls

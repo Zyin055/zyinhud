@@ -132,7 +132,7 @@ public class InventoryUtil
 	 * @param itemSlotIndex 36-44
 	 * @return true if the item was used.
 	 */
-	private static boolean UseItemInHotbar(Object object, int itemSlotIndex)
+	public static boolean UseItemInHotbar(Object object, int itemSlotIndex)
 	{
 		if(itemSlotIndex < 36 || itemSlotIndex > 44)
 			return false;
@@ -141,18 +141,14 @@ public class InventoryUtil
 		
 		int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
     	mc.thePlayer.inventory.currentItem = itemToUseHotbarIndex;
-
-    	ItemStack currentItemStack = mc.thePlayer.getHeldItem();
     	
     	if(object instanceof Item)
     	{
-    		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
-    		mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, currentItemStack);
+    		SendUseItem();
     	}
     	else if(object instanceof Block)
     	{
-    		//Blocks need to use the onPlayerRightClick() function to work properly
-    		mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, currentItemStack, mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
+    		SendUseBlock();
     	}
     	
     	mc.thePlayer.inventory.currentItem = previouslySelectedHotbarSlotIndex;
@@ -180,7 +176,7 @@ public class InventoryUtil
 	 * @param itemSlotIndex 0-35
 	 * @return true if the item was used.
 	 */
-	private static boolean UseItemInInventory(Object object, int itemSlotIndex)
+	public static boolean UseItemInInventory(Object object, int itemSlotIndex)
 	{
 		if(itemSlotIndex < 0 || itemSlotIndex > 35)
 			return false;
@@ -188,24 +184,39 @@ public class InventoryUtil
 		int currentItemInventoryIndex = TranslateHotbarIndexToInventoryIndex(mc.thePlayer.inventory.currentItem);
 
 		Swap(itemSlotIndex, currentItemInventoryIndex);
-
-		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(currentItemInventoryIndex);
-		ItemStack itemStackToUse = slotToUse.getStack();
 		
     	if(object instanceof Item)
     	{
-    		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
-    		mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, itemStackToUse);
+    		SendUseItem();
     	}
     	else if(object instanceof Block)
     	{
-    		//Blocks need to use the onPlayerRightClick() function to work properly
-    		mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStackToUse, mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
+    		SendUseBlock();
     	}
 		
         instance.SwapWithDelay(itemSlotIndex, currentItemInventoryIndex, GetSuggestedItemSwapDelay());
 
     	return true;
+	}
+	
+	/**
+	 * Makes the player use the Item in their currently selected hotbar slot.
+	 * To use Blocks, use SendUseBlock()
+	 */
+	public static void SendUseItem()
+	{
+		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
+		mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, mc.thePlayer.getHeldItem());
+	}
+	
+	/**
+	 * Makes the player use the Block in their currently selected hotbar slot.
+	 * To use Items, use SendUseItem()
+	 */
+	public static void SendUseBlock()
+	{
+		//Blocks need to use the onPlayerRightClick() function to work properly
+		mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem(), mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
 	}
 
 	
