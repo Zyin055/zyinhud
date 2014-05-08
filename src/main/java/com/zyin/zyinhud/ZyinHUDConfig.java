@@ -120,6 +120,14 @@ public class ZyinHUDConfig
         	Miscellaneous.UseEnhancedMiddleClick = p.getBoolean(true);
         else
         	p.set(Miscellaneous.UseEnhancedMiddleClick);
+        
+        p = config.get(CATEGORY_MISCELLANEOUS, "UseQuickPlaceSign", false);
+        p.comment = "Enable/Disable being able to place a sign with no text by sneaking while placing a sign.";
+        if(loadSettings)
+        	Miscellaneous.UseQuickPlaceSign = p.getBoolean(false);
+        else
+        	p.set(Miscellaneous.UseQuickPlaceSign);
+        
 
         //CATEGORY_INFOLINE
         p = config.get(CATEGORY_INFOLINE, "EnableInfoLine", true);

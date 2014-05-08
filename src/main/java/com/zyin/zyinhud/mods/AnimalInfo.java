@@ -3,7 +3,6 @@ package com.zyin.zyinhud.mods;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.entity.Entity;
@@ -18,11 +17,9 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import com.zyin.zyinhud.mods.ItemSelector.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -202,40 +199,6 @@ public class AnimalInfo extends ZyinHUDModBase
                     mc.fontRenderer.drawStringWithShadow(horseColor, 2, 170, 0xffffff);
                     mc.fontRenderer.drawStringWithShadow(horseMarking, 2, 180, 0xffffff);
                 }
-                
-
-                /* //Minecraft 1.6 HORSE TESTING DATA
-                
-                //float horseGrowingAge = horse.getHorseSize();	//horse size, 0.5 (baby) to 1 (adult)
-                
-                int field_110278_bp = horse.field_110278_bp;		//tail rotation
-                int field_110279_bq = horse.field_110279_bq;		//
-                float func_110258_o = horse.func_110258_o(1f);		//head rotation
-                float func_110223_p = horse.func_110223_p(1f);		//standing up rotation (i.e. when jumping)
-                float func_110201_q = horse.func_110201_q(1f);		//flickers for... idk
-                boolean func_110248_bS = horse.func_110248_bS();	//tamed
-                int getGrowingAge = horse.getGrowingAge();			//baby age if negative, breed-ready if 0, bred if positive
-                boolean func_110256_cu = horse.func_110256_cu();	//is zombie/skeleton horse
-                int func_110265_bP = horse.func_110265_bP();		//type of horse (0=horse, 1=donkey, 2=mule, 3=zombie, 4=skeleton)
-                int armor = horse.func_110241_cb();
-
-                int love = horse.inLove;	//countdown timer starting at ~600 when fed a breeding item
-                //horse.breeding;	//countdown from 60 after breeding initiated
-                
-                
-                mc.fontRenderer.drawStringWithShadow("tail rotation:"+field_110278_bp, 1, 40, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("field_110279_bq:"+field_110279_bq, 1, 50, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("age:"+horseAge, 1, 60, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("head rotation:"+func_110258_o, 1, 70, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("body rotation:"+func_110223_p, 1, 80, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("func_110201_q:"+func_110201_q, 1, 90, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("love:"+love, 1, 100, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("tamed:"+func_110248_bS, 1, 110, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("getGrowingAge:"+getGrowingAge, 1, 120, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("is zombie/skeleton?:"+func_110256_cu, 1, 130, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("horse type:"+func_110265_bP, 1, 140, 0xFFFFFF);
-                mc.fontRenderer.drawStringWithShadow("armor equipped:"+armor, 1, 150, 0xFFFFFF);
-                */
             }
         }
     }
@@ -531,30 +494,6 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     private static double GetHorseMaxJump(EntityHorse horse)
     {
-        //testing data (tested using snow layers on blocks):
-        //0.46865 = 1.5   blocks
-        //0.47179 = 1.5   blocks
-        //0.49099 = 1.5   blocks
-        //0.49262 = 1.625 blocks
-        //0.49494 = 1.625 blocks
-        //0.50000 = 1.625 blocks
-        //0.50505 = 1.625 blocks
-    	//0.50937 = 1.75  blocks
-    	//0.51283 = 1.75  blocks
-    	//0.51358 = 1.75  blocks
-    	//0.52574 = 1.75  blocks
-    	//0.56227 = 2     blocks
-    	//...
-    	//0.90143 = 4.875 blocks
-    	//0.90297 = 4.875 blocks
-    	//0.90805 = 4.875 blocks
-    	//0.91588 = 5     blocks
-    	//0.91405 = 5     blocks
-    	//0.93901 = 5.25  blocks
-    	//0.94306 = 5.25  blocks
-        //...
-        //??? = 5.5 blocks (max according to the Wiki)
-    	
     	//simulate gravity and air resistance to determine the jump height
     	double yVelocity = horse.getHorseJumpStrength();	//horses's jump strength attribute
     	double jumpHeight = 0;

@@ -24,6 +24,8 @@
 
 package com.zyin.zyinhud;
 
+import java.io.File;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiOptions;
@@ -34,6 +36,7 @@ import com.zyin.zyinhud.command.CommandFps;
 import com.zyin.zyinhud.command.CommandZyinHUDOptions;
 import com.zyin.zyinhud.gui.GuiOptionsOverride;
 import com.zyin.zyinhud.mods.HealthMonitor;
+import com.zyin.zyinhud.mods.Miscellaneous;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -47,8 +50,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-import java.io.File;
-
 @Mod(modid = ZyinHUD.MODID, version = ZyinHUD.MODVERSION)
 public class ZyinHUD
 {
@@ -58,7 +59,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-	public static final String MODVERSION = "1.3.1";
+	public static final String MODVERSION = "1.3.1.1";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     
@@ -99,6 +100,7 @@ public class ZyinHUD
         //FMLCommonHandler.instance().bus().register() is used for cpw.mods.fml events
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
+    	MinecraftForge.EVENT_BUS.register(Miscellaneous.instance);
         FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
     }
     
@@ -126,7 +128,7 @@ public class ZyinHUD
     public void GuiOpenEvent(GuiOpenEvent event)
     {
     	//override the default Options screen with our custom one, which contains our custom "Zyin's HUD..." button
-    	if (event.gui instanceof GuiOptions && mc.theWorld != null)
+    	if(event.gui instanceof GuiOptions && mc.theWorld != null)
         {
     		event.gui = new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings);
         }

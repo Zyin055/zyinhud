@@ -1,6 +1,8 @@
 package com.zyin.zyinhud;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.init.Items;
 import net.minecraftforge.client.event.MouseEvent;
 
 import org.lwjgl.input.Keyboard;
@@ -19,6 +21,8 @@ import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
 import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
 import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.mods.TorchAid;
+import com.zyin.zyinhud.util.InventoryUtil;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -144,8 +148,9 @@ public class ZyinHUDKeyHandlers
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
     {
-    	//This to tick handler is to overcome the GuiScreen + KeyInputEvent limitation
-    	//for Coordinates and QuickDeposit.
+    	//This tick handler is to overcome the GuiScreen + KeyInputEvent limitation
+    	//for Coordinates and QuickDeposit, as well as having an OnKeyUp event for
+    	//Item Selector
     	
     	//ItemSelector needs it for an OnKeyUp event
     	
