@@ -47,6 +47,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 
+import java.io.File;
+
 @Mod(modid = ZyinHUD.MODID, version = ZyinHUD.MODVERSION)
 public class ZyinHUD
 {
@@ -64,7 +66,8 @@ public class ZyinHUD
     public static CommonProxy proxy;
     
     protected static final Minecraft mc = Minecraft.getMinecraft();
-    
+
+    private File configFile;
     
     public ZyinHUD()
     {
@@ -75,29 +78,28 @@ public class ZyinHUD
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-    	//load all our Key Handlers
-    	FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
-        MinecraftForge.EVENT_BUS.register(ZyinHUDKeyHandlers.instance);
-
-        //load configuration settings from the ZyinHUD.cfg file
-    	ZyinHUDConfig.LoadConfigSettings(event.getSuggestedConfigurationFile());
-        
-    	//load language localization files
-        LanguageRegistry.instance().loadLanguagesFor(FMLCommonHandler.instance().findContainerFor(this), Side.CLIENT);
-        
-
-    	//needed for @SubscribeEvent method subscriptions:
-    	//MinecraftForge.EVENT_BUS.register() is used for net.minecraftforge events
-    	//FMLCommonHandler.instance().bus().register() is used for cpw.mods.fml events
-    	MinecraftForge.EVENT_BUS.register(this);
-    	MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
-    	FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
+        configFile = event.getSuggestedConfigurationFile();
     }
 	
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-    	
+        //load all our Key Handlers
+        FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
+        MinecraftForge.EVENT_BUS.register(ZyinHUDKeyHandlers.instance);
+
+        //load language localization files
+        LanguageRegistry.instance().loadLanguagesFor(FMLCommonHandler.instance().findContainerFor(this), Side.CLIENT);
+
+        //load configuration settings from the ZyinHUD.cfg file
+        ZyinHUDConfig.LoadConfigSettings(configFile);
+
+        //needed for @SubscribeEvent method subscriptions:
+        //MinecraftForge.EVENT_BUS.register() is used for net.minecraftforge events
+        //FMLCommonHandler.instance().bus().register() is used for cpw.mods.fml events
+        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
+        FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
     }
     
     @EventHandler
