@@ -1,18 +1,35 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.item.Item;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.client.event.GuiOpenEvent;
 
 import com.zyin.zyinhud.util.InventoryUtil;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * The Miscellaneous mod has other functionality not relating to anything specific.
  */
 public class Miscellaneous extends ZyinHUDModBase
 {
-	
+	public static final Miscellaneous instance = new Miscellaneous();
+
 	public static boolean UseEnhancedMiddleClick;
+	public static boolean UseQuickPlaceSign;
+	
+
+    @SubscribeEvent
+    public void GuiOpenEvent(GuiOpenEvent event)
+	{
+    	if(UseQuickPlaceSign && event.gui instanceof GuiEditSign && mc.thePlayer.isSneaking())
+    	{
+    		event.setCanceled(true);
+    	}
+	}
 	
 	/**
 	 * When the player middle clicks
@@ -22,7 +39,6 @@ public class Miscellaneous extends ZyinHUDModBase
 		if(UseEnhancedMiddleClick)
 			MoveMouseoveredBlockIntoHotbar();
 	}
-	
 	
 	
 	/**
@@ -65,5 +81,13 @@ public class Miscellaneous extends ZyinHUDModBase
     {
     	return UseEnhancedMiddleClick = !UseEnhancedMiddleClick;
     }
-	
+    
+    /**
+     * Toggles improving the middle click functionality to work with blocks in your inventory
+     * @return 
+     */
+    public static boolean ToggleUseQuickPlaceSign()
+    {
+    	return UseQuickPlaceSign = !UseQuickPlaceSign;
+    }
 }

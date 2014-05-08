@@ -34,6 +34,7 @@ import com.zyin.zyinhud.command.CommandFps;
 import com.zyin.zyinhud.command.CommandZyinHUDOptions;
 import com.zyin.zyinhud.gui.GuiOptionsOverride;
 import com.zyin.zyinhud.mods.HealthMonitor;
+import com.zyin.zyinhud.mods.Miscellaneous;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -91,6 +92,7 @@ public class ZyinHUD
     	//FMLCommonHandler.instance().bus().register() is used for cpw.mods.fml events
     	MinecraftForge.EVENT_BUS.register(this);
     	MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
+    	MinecraftForge.EVENT_BUS.register(Miscellaneous.instance);
     	FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
     }
 	
@@ -124,7 +126,7 @@ public class ZyinHUD
     public void GuiOpenEvent(GuiOpenEvent event)
     {
     	//override the default Options screen with our custom one, which contains our custom "Zyin's HUD..." button
-    	if (event.gui instanceof GuiOptions && mc.theWorld != null)
+    	if(event.gui instanceof GuiOptions && mc.theWorld != null)
         {
     		event.gui = new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings);
         }

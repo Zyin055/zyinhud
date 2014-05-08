@@ -304,6 +304,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private void DrawMiscellaneousButtons()
     {
     	AddButtonAt(0, 0, new GuiButton(2001, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.useenhancedmiddleclick", Miscellaneous.UseEnhancedMiddleClick)));
+    	AddButtonAt(0, 1, new GuiButton(2002, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.usequickplacesign", Miscellaneous.UseQuickPlaceSign)));
     	
     }
     private void DrawInfoLineButtons()
@@ -1183,6 +1184,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	Miscellaneous.ToggleUseEnchancedMiddleClick();
 	            	button.displayString = GetButtonLabel_Boolean("miscellaneous.options.useenhancedmiddleclick", Miscellaneous.UseEnhancedMiddleClick);
 	            	break;
+	            case 2002:	//Use quick place sign
+	            	Miscellaneous.ToggleUseQuickPlaceSign();
+	            	button.displayString = GetButtonLabel_Boolean("miscellaneous.options.usequickplacesign", Miscellaneous.UseQuickPlaceSign);
+	            	break;
 	            	
 	            
             }
@@ -1243,6 +1248,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1804: return Localization.get("healthmonitor.options.playfasterneardeath.tooltip");
 			case 1900: return Localization.get("torchaid.options.tooltip");
 			case 2001: return Localization.get("miscellaneous.options.useenhancedmiddleclick.tooltip");
+			case 2002: return Localization.get("miscellaneous.options.usequickplacesign.tooltip");
 			default: return null;
 		}
 	}

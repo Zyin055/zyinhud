@@ -10,6 +10,7 @@ key.zyinhud.safeoverlay=Safe Overlay
 key.zyinhud.weaponswapper=Weapon Swap
 key.zyinhud.zyinhudoptions=Zyin's HUD Options
 key.zyinhud.itemselector=Item Selector
+key.zyinhud.unknown=Zyin's HUD: ???
 
 animalinfo.name=Animal Info
 animalinfo.infoline=animals
@@ -161,6 +162,8 @@ itemselector.options.sideButtons.tooltip=Instead of using the mousewheel, use th
 miscellaneous.name=Miscellaneous
 miscellaneous.options.useenhancedmiddleclick=Enhanced middle click: 
 miscellaneous.options.useenhancedmiddleclick.tooltip=When enabled, middle clicking will move the mouseovered block into your hotbar if it exists in your inventory._pThe default middle click functionality only works if it exists on your hotbar.
+miscellaneous.options.usequickplacesign=Quick place sign: 
+miscellaneous.options.usequickplacesign.tooltip=When enabled, placing a sign while sneaking will place the sign without opening the sign GUI.
 
 playerlocator.name=Player Locator
 playerlocator.mode.off=Off
