@@ -27,6 +27,12 @@ public class EnderPearlAid extends ZyinHUDModBase
      */
     public static void UseEnderPearl()
     {
+        if(mc.playerController.isInCreativeMode())
+        {
+        	InfoLine.DisplayNotification(Localization.get("enderpearlaid.increative"));
+        	return;
+        }
+        
         if (EatingAid.instance.isEating())
         {
             EatingAid.instance.StopEating();    //it's not good if we have an ender pearl selected and hold right click down...

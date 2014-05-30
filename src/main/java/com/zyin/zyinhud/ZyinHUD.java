@@ -59,7 +59,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-	public static final String MODVERSION = "1.3.1.1";
+	public static final String MODVERSION = "1.3.2";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     
@@ -96,8 +96,8 @@ public class ZyinHUD
         ZyinHUDConfig.LoadConfigSettings(configFile);
 
         //needed for @SubscribeEvent method subscriptions:
-        //MinecraftForge.EVENT_BUS.register() is used for net.minecraftforge events
-        //FMLCommonHandler.instance().bus().register() is used for cpw.mods.fml events
+        //  MinecraftForge.EVENT_BUS.register()          --> is used for net.minecraftforge events
+        //  FMLCommonHandler.instance().bus().register() --> is used for cpw.mods.fml events
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
     	MinecraftForge.EVENT_BUS.register(Miscellaneous.instance);

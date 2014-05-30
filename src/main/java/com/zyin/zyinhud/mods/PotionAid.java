@@ -267,6 +267,7 @@ public class PotionAid extends ZyinHUDModBase
     	boolean hasDamageBoostPotionEffect = false;
     	boolean hasInvisibilityPotionEffect = false;
     	boolean hasRegenerationPotionEffect = false;
+    	boolean hasFireResistancePotionEffect = false;
     	
     	Collection potionEffects = mc.thePlayer.getActivePotionEffects();	//key:potionId, value:potionEffect
         Iterator it = potionEffects.iterator();
@@ -278,7 +279,7 @@ public class PotionAid extends ZyinHUDModBase
         	if(potionEffectName.equals("potion.regeneration"))
         		hasRegenerationPotionEffect = true;
         	else if(potionEffectName.equals("potion.fireResistance"))
-        		hasRegenerationPotionEffect = true;
+        		hasFireResistancePotionEffect = true;
         	else if(potionEffectName.equals("potion.moveSpeed"))
         		hasMoveSpeedPotionEffect = true;
         	else if(potionEffectName.equals("potion.damageBoost"))
@@ -298,7 +299,7 @@ public class PotionAid extends ZyinHUDModBase
         //4) swiftness potion
         //5) strength potion
         //6) invisibility potion
-    	if(fireResistancePotionIndex > -1 && isOnFire)
+    	if(fireResistancePotionIndex > -1 && isOnFire && !hasFireResistancePotionEffect)
     		return fireResistancePotionIndex;
     	if(healPotionIndex > -1 && isInjured)
     		return healPotionIndex;

@@ -24,9 +24,9 @@ animalinfo.options.showhorsestatsonf3menu.tooltip=Show the stats of the horse yo
 animalinfo.options.showhorsestatsoverlay=Horse Stats: 
 animalinfo.options.showhorsestatsoverlay.tooltip=Show speed, hp, and max jump height of horses in the world
 animalinfo.options.showbreedingicons=Breeding Icons: 
-animalinfo.options.showbreedingicons.tooltip=Show a food icon above animals that are able to breed_pE.x: wheat for cows
+animalinfo.options.showbreedingicons.tooltip=Show a food icon above animals that are able to breed_pCows - wheat_pSheep - wheat_pPigs - carrot_pChicken - seeds_pHorse - golden carrot_pWolf - beef_pOcelot - raw fish
 animalinfo.options.showbreedingtimers=Breeding Timers: 
-animalinfo.options.showbreedingtimers.tooltip=Show how long until the animal is ready to breed again
+animalinfo.options.showbreedingtimers.tooltip=Show how long until an animal is ready to breed again
 animalinfo.options.showbreedinghorse=Horse Breeding: 
 animalinfo.options.showbreedingvillagers=Villager Breeding: 
 animalinfo.options.showbreedingcow=Cow Breeding: 
@@ -66,9 +66,9 @@ coordinates.name=Coordinates
 coordinates.mode.xzy=[x, z, y]
 coordinates.mode.xyz=[x, y, z]
 coordinates.options.tooltip=In addition to displaying your coordinates, you can use the designated hotkey to write your current coordinates into the chat box while it is open
-coordinates.options.hotkey.tooltip=Coordinates pasted into the chat box can be formatted in the config file
+coordinates.options.hotkey.tooltip=Use this hotkey while the chat box is open to paste your current coordinates into chat_p_pThe pasted coordinates can be formatted in the config file
 coordinates.options.useycoordinatecolors=Y Colors: 
-coordinates.options.useycoordinatecolors.tooltip=Change the color of the Y coordinate based on what ores are found at that elevation
+coordinates.options.useycoordinatecolors.tooltip=Change the color of the Y coordinate based on what ores are found at that elevation_p_p29+_p_e23-28_r gold_p_912-22_r lapis_p_b5-11_r diamond
 
 distancemeasurer.name=Distance Measurer
 distancemeasurer.mode.off=Off
@@ -110,6 +110,7 @@ eatingaid.options.usepvpsoup=PvP Soup:
 eatingaid.options.usepvpsoup.tooltip=_nIMPORTANT:_r Only enable this if you are connected to a server that uses the _6PvP _6Soup_r or _6Fast _6Soup_r plugin. Eating Aid will treat Mushroom Stew as instant-eat and will always use it when it is available.
 
 enderpearlaid.name=Ender Pearl Aid
+enderpearlaid.increative=Can't use ender pearls in creative
 enderpearlaid.noenderpearls=No ender pearls
 enderpearlaid.options.tooltip=Helps you to throw Ender Pearls even if there are none on your hotbar, or if they are on your hotbar but you don't have it selected.
 
@@ -133,7 +134,7 @@ healthmonitor.mode.aol=AoL
 healthmonitor.options.tooltip=Plays a warning sound when you are low on health, just like in a Zelda game.
 healthmonitor.options.mode.play=Play
 healthmonitor.options.mode.play.tooltip=beep
-healthmonitor.options.mode.tooltip=OoT_pLttP_pOracle_pLA_pLoZ_pAoL
+healthmonitor.options.mode.tooltip=Use sounds from:_pOoT_pLttP_pOracle_pLA_pLoZ_pAoL
 healthmonitor.options.playfasterneardeath=Increases tempo: 
 healthmonitor.options.playfasterneardeath.tooltip=Play the warning sounds quicker the closer you are to death
 healthmonitor.options.lowhealthsoundthreshold=Play when health < 
@@ -142,6 +143,7 @@ infoline.name=Info Line
 infoline.options.tooltip=The text shown in the top left part of the screen which other mods use to display information.
 infoline.options.showbiome=Show Biome: 
 infoline.options.showcansnow=Show if it can snow: 
+infoline.options.showcansnow.tooltip=Shows a snowball in the Info Line if it can show where you're currently standing
 infoline.options.offsetx=Offset X: 
 infoline.options.offsety=Offset Y: 
 
@@ -152,16 +154,16 @@ itemselector.error.emptyslot=That slot no longer has an item
 itemselector.error.enchant=Unable to swap enchanted items in multiplayer
 itemselector.error.empty=Inventory has no selectable items
 itemselector.options.tooltip=Allows you to use the mousewheel to take items out of your inventory without having to open your inventory.
-itemselector.options.hotkey.tooltip=Hold this button while using the mousewheel to select items
+itemselector.options.hotkey.tooltip=Hold this button while using the mousewheel to select items_p_pDefault = Left Alt
 itemselector.options.mode.tooltip=_lAll_r: Select items from your entire inventory_p_lSame Column_r: Select items only from the same column as your currently selected item in the hotbar
 itemselector.options.ticks=Ticks until timeout: 
 itemselector.options.ticks.tooltip=How many in game ticks (20 = 1 sec) before the highlighted item is automatically selected
 itemselector.options.sideButtons=Use mouse buttons: 
-itemselector.options.sideButtons.tooltip=Instead of using the mousewheel, use the mouse forward and back buttons to select items (only works if your  mouse has these buttons)
+itemselector.options.sideButtons.tooltip=Instead of using the mousewheel, use the mouse forward and back buttons to select items (only works if your mouse has these buttons)
 
 miscellaneous.name=Miscellaneous
 miscellaneous.options.useenhancedmiddleclick=Enhanced middle click: 
-miscellaneous.options.useenhancedmiddleclick.tooltip=When enabled, middle clicking will move the mouseovered block into your hotbar if it exists in your inventory._pThe default middle click functionality only works if it exists on your hotbar.
+miscellaneous.options.useenhancedmiddleclick.tooltip=When enabled, middle clicking will move the mouseovered block into your hotbar if it exists in your inventory._p_pIn comparison, the default middle click functionality only works if it exists on your hotbar.
 miscellaneous.options.usequickplacesign=Quick place sign: 
 miscellaneous.options.usequickplacesign.tooltip=When enabled, placing a sign while sneaking will place the sign without opening the sign GUI.
 
@@ -200,8 +202,10 @@ safeoverlay.infoline=safe
 safeoverlay.options.tooltip=Marks blocks as "unsafe" by drawing a yellow X on them, which means that mobs can spawn there at night. A red X means it is dark enough for mobs to spawn there even during the day.
 safeoverlay.options.hotkey.tooltip=Ctrl + key = Toggle X-ray_p+ + key = Increase distance_p- + key = Decrease distance_p0 + key = Reset distance
 safeoverlay.options.drawdistance=Draw Distance: 
+safeoverlay.options.drawdistance.tooltip=Sets how far the safe overlay X marks are rendered. Setting this to a high value will lag the game.
 safeoverlay.options.transparency=Transparency: 
 safeoverlay.options.displayinnether=Show in Nether: 
+safeoverlay.options.displayinnether.tooltip=Mobs in the nether do not depend on light values for spawning, so it is recommended that this be kept off.
 safeoverlay.options.seethroughwalls=X-ray: 
 safeoverlay.seethroughwallsenabled=See through walls Enabled
 safeoverlay.seethroughwallsdisabled=See through walls Disabled
@@ -222,9 +226,9 @@ weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip=Only relevant 
 quickdeposit.name=Quick Deposit
 quickdeposit.options.tooltip=Works like Terraria's quick stack functionality. When looking at a container (chest, horse chest, villager trading menu, etc) it will move any items from your inventory to the container if that item already exists in the container.
 quickdeposit.options.ignoreitemsinhotbar=Ignore Hotbar: 
-quickdeposit.options.ignoreitemsinhotbar.tooltip=Will never place items into a chest if they are on your hotbar
+quickdeposit.options.ignoreitemsinhotbar.tooltip=Will never place items into a chest when they're on your hotbar
 quickdeposit.options.closechestafterdepositing=Closes Chest: 
-quickdeposit.options.closechestafterdepositing.tooltip=Will close the your inventory after you Quick Deposit items into a chest
+quickdeposit.options.closechestafterdepositing.tooltip=Will close your inventory after you Quick Deposit items into a chest
 quickdeposit.options.blacklist=Never deposit:
 quickdeposit.options.blacklisttorch=Torches: 
 quickdeposit.options.blacklistarrow=Arrows: 

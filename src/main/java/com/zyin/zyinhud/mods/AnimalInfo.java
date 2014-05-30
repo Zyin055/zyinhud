@@ -13,9 +13,11 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Items;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -87,12 +89,16 @@ public class AnimalInfo extends ZyinHUDModBase
     public static boolean ShowBreedingTimers;
     public static boolean ShowHorseStatsOnF3Menu;
     public static boolean ShowHorseStatsOverlay;
-    public static boolean ShowBreedingTimerForVillagers;
-    public static boolean ShowBreedingTimerForHorses;
-    public static boolean ShowBreedingTimerForCows;
-    public static boolean ShowBreedingTimerForSheep;
-    public static boolean ShowBreedingTimerForPigs;
-    public static boolean ShowBreedingTimerForChickens;
+    public static boolean ShowBreedingTimerForVillagers = true;
+    public static boolean ShowBreedingTimerForHorses = true;
+    public static boolean ShowBreedingTimerForCows = true;
+    public static boolean ShowBreedingTimerForSheep = true;
+    public static boolean ShowBreedingTimerForPigs = true;
+    public static boolean ShowBreedingTimerForChickens = true;
+    public static boolean ShowBreedingTimerForWolves = true;
+    public static boolean ShowBreedingTimerForOcelots = true;
+    
+    
     
     /** Sets the number of decimal places that will be rendered when displaying horse stats */
     public static int numberOfDecimalsDisplayed = 1;
@@ -277,13 +283,7 @@ public class AnimalInfo extends ZyinHUDModBase
     		if (animalGrowingAge < 0)
         		multilineOverlayArrayList.add(GetHorseBabyGrowingAgeAsPercent(horse) + "%");
     	}
-    	if(ShowBreedingTimers &&
-    			((animal instanceof EntityVillager && ShowBreedingTimerForVillagers) ||
-        		(animal instanceof EntityCow && ShowBreedingTimerForCows) ||
-        		(animal instanceof EntitySheep && ShowBreedingTimerForSheep) ||
-        		(animal instanceof EntityPig && ShowBreedingTimerForPigs) ||
-        		(animal instanceof EntityChicken && ShowBreedingTimerForChickens) ||
-        		(animal instanceof EntityHorse && ShowBreedingTimerForHorses)))
+    	if(ShowBreedingTimers && animal instanceof EntityAgeable)
         {
             if (animalGrowingAge > 0)	//if the animal has recently bred
                 multilineOverlayArrayList.add(GetTimeUntilBreedAgain(animal));
@@ -314,6 +314,12 @@ public class AnimalInfo extends ZyinHUDModBase
 				ZyinHUDUtil.RenderFloatingIcon(Items.carrot, x, y + animal.height, z, partialTickTime);
 			else if(animal instanceof EntityChicken)
 				ZyinHUDUtil.RenderFloatingIcon(Items.wheat_seeds, x, y + animal.height, z, partialTickTime);
+			else if(animal instanceof EntityWolf && ((EntityWolf)animal).isTamed())
+				ZyinHUDUtil.RenderFloatingIcon(Items.beef, x, y + animal.height, z, partialTickTime);
+			else if(animal instanceof EntityWolf && !((EntityWolf)animal).isTamed())
+				ZyinHUDUtil.RenderFloatingIcon(Items.bone, x, y + animal.height, z, partialTickTime);
+			else if(animal instanceof EntityOcelot)
+				ZyinHUDUtil.RenderFloatingIcon(Items.fish, x, y + animal.height, z, partialTickTime);
 		}
     }
 
@@ -349,18 +355,18 @@ public class AnimalInfo extends ZyinHUDModBase
     }
     
 	/**
-	 * Gets the time remaining before this horse can breed again
-	 * @param horse
-	 * @return null if the horse ready to breed or is a baby, otherwise "#:##" formatted string
+	 * Gets the time remaining before this animal can breed again
+	 * @param animal
+	 * @return null if the animal ready to breed or is a baby, otherwise "#:##" formatted string
 	 */
-	private static String GetTimeUntilBreedAgain(EntityAgeable horse)
+	private static String GetTimeUntilBreedAgain(EntityAgeable animal)
 	{
-	    int horseBreedingTime = horse.getGrowingAge();
+	    int animalBreedingTime = animal.getGrowingAge();
 	    
-	    if(horseBreedingTime <= 0)
+	    if(animalBreedingTime <= 0)
 	    	return null;
 	    
-	    int seconds = horseBreedingTime / 20;
+	    int seconds = animalBreedingTime / 20;
 	    int minutes = seconds / 60;
 	    
 	    return minutes + ":" + twoDigitFormat.format(seconds % 60);
@@ -561,55 +567,6 @@ public class AnimalInfo extends ZyinHUDModBase
     public static boolean ToggleShowTextBackgrounds()
     {
     	return ShowTextBackgrounds = !ShowTextBackgrounds;
-    }
-
-    /**
-     * Toggles showing the breeding of this type of entity
-     * @return the new boolean
-     */
-    public static boolean ToggleShowBreedingHorses()
-    {
-    	return ShowBreedingTimerForHorses = !ShowBreedingTimerForHorses;
-    }
-    /**
-     * Toggles showing the breeding of this type of entity
-     * @return the new boolean
-     */
-    public static boolean ToggleShowBreedingVillagers()
-    {
-    	return ShowBreedingTimerForVillagers = !ShowBreedingTimerForVillagers;
-    }
-    /**
-     * Toggles showing the breeding of this type of entity
-     * @return the new boolean
-     */
-    public static boolean ToggleShowBreedingCows()
-    {
-    	return ShowBreedingTimerForCows = !ShowBreedingTimerForCows;
-    }
-    /**
-     * Toggles showing the breeding of this type of entity
-     * @return the new boolean
-     */
-    public static boolean ToggleShowBreedingSheep()
-    {
-    	return ShowBreedingTimerForSheep = !ShowBreedingTimerForSheep;
-    }
-    /**
-     * Toggles showing the breeding of this type of entity
-     * @return the new boolean
-     */
-    public static boolean ToggleShowBreedingPigs()
-    {
-    	return ShowBreedingTimerForPigs = !ShowBreedingTimerForPigs;
-    }
-    /**
-     * Toggles showing the breeding of this type of entity
-     * @return the new boolean
-     */
-    public static boolean ToggleShowBreedingChickens()
-    {
-    	return ShowBreedingTimerForChickens = !ShowBreedingTimerForChickens;
     }
     /**
      * Toggles showing breeding icons

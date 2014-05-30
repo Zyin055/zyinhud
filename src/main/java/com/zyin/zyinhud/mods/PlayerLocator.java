@@ -1,12 +1,8 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
@@ -18,11 +14,9 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -190,7 +184,11 @@ public class PlayerLocator extends ZyinHUDModBase
             x = (x < 0) ? 0 : x;
             y = (y > height - 10 && !ShowPlayerHealth) ? height - 10 : y;
             y = (y > height - 20 && ShowPlayerHealth) ? height - 20 : y;
-            y = (y < 10) ? 10 : y;	//use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
+            if(y < 10 && InfoLine.infoLineLocY <= 1 && 
+            	(x > InfoLine.infoLineLocX + mc.fontRenderer.getStringWidth(InfoLine.infoLineMessage) || x < InfoLine.infoLineLocX - overlayMessageWidth))
+            	y = (y < 0) ? 0 : y;	//if the text is to the right or left of the info line then allow it to render in that open space
+            else
+            	y = (y < 10) ? 10 : y;	//use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
 
             //calculate the color of the overlayMessage based on the distance from me
             int alpha = (int)(0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));

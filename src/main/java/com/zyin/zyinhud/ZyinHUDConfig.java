@@ -620,6 +620,20 @@ public class ZyinHUDConfig
         else
         	p.set(AnimalInfo.ShowBreedingTimerForChickens);
         
+        p = config.get(CATEGORY_ANIMALINFO, "ShowBreedingTimerForWolves", true);
+        p.comment = "Enable/Disable showing a timer that tells you how long until a wolf can breed again.";
+        if(loadSettings)
+        	AnimalInfo.ShowBreedingTimerForWolves = p.getBoolean(true);
+        else
+        	p.set(AnimalInfo.ShowBreedingTimerForWolves);
+        
+        p = config.get(CATEGORY_ANIMALINFO, "ShowBreedingTimerForOcelots", true);
+        p.comment = "Enable/Disable showing a timer that tells you how long until an ocelot can breed again.";
+        if(loadSettings)
+        	AnimalInfo.ShowBreedingTimerForOcelots = p.getBoolean(true);
+        else
+        	p.set(AnimalInfo.ShowBreedingTimerForOcelots);
+        
         
         //CATEGORY_ENDERPEARLAID
         p = config.get(CATEGORY_ENDERPEARLAID, "EnableEnderPearlAid", true);

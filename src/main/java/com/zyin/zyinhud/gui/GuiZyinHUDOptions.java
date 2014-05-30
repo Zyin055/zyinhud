@@ -381,12 +381,6 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	
     	AddButtonAt(1, 0, new GuiButton(916, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingicons", AnimalInfo.ShowBreedingIcons)));
     	AddButtonAt(1, 1, new GuiButton(917, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingtimers", AnimalInfo.ShowBreedingTimers)));
-    	AddButtonAt(1, 2, new GuiButton(910, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedinghorse", AnimalInfo.ShowBreedingTimerForHorses)));
-    	AddButtonAt(1, 3, new GuiButton(911, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingvillagers", AnimalInfo.ShowBreedingTimerForVillagers)));
-    	AddButtonAt(1, 4, new GuiButton(912, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingcow", AnimalInfo.ShowBreedingTimerForCows)));
-    	AddButtonAt(1, 5, new GuiButton(913, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingsheep", AnimalInfo.ShowBreedingTimerForSheep)));
-    	AddButtonAt(1, 6, new GuiButton(914, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingpig", AnimalInfo.ShowBreedingTimerForPigs)));
-    	AddButtonAt(1, 7, new GuiButton(915, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingchicken", AnimalInfo.ShowBreedingTimerForChickens)));
     	
     }
     private void DrawPotionTimerButtons()
@@ -841,31 +835,6 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	AnimalInfo.ToggleShowTextBackgrounds();
 	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showtextbackground", AnimalInfo.ShowTextBackgrounds);
 	            	break;
-	            
-	            case 910:	//Toggle showing breeding horses
-	            	AnimalInfo.ToggleShowBreedingHorses();
-	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedinghorse", AnimalInfo.ShowBreedingTimerForHorses);
-	            	break;
-	            case 911:	//Toggle showing breeding villagers
-	            	AnimalInfo.ToggleShowBreedingVillagers();
-	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingvillagers", AnimalInfo.ShowBreedingTimerForVillagers);
-	            	break;
-	            case 912:	//Toggle showing breeding cows
-	            	AnimalInfo.ToggleShowBreedingCows();
-	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingcow", AnimalInfo.ShowBreedingTimerForCows);
-	            	break;
-	            case 913:	//Toggle showing breeding sheep
-	            	AnimalInfo.ToggleShowBreedingSheep();
-	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingsheep", AnimalInfo.ShowBreedingTimerForSheep);
-	            	break;
-	            case 914:	//Toggle showing breeding pig
-	            	AnimalInfo.ToggleShowBreedingPigs();
-	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingpig", AnimalInfo.ShowBreedingTimerForPigs);
-	            	break;
-	            case 915:	//Toggle showing breeding chicken
-	            	AnimalInfo.ToggleShowBreedingChickens();
-	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingchicken", AnimalInfo.ShowBreedingTimerForChickens);
-	            	break;
 	            case 916:	//Toggle showing breeding icons
 	            	AnimalInfo.ToggleShowBreedingIcons();
 	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingicons", AnimalInfo.ShowBreedingIcons);
@@ -1201,12 +1170,15 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 		switch (buttonId)
 		{
 			case 100: return Localization.get("infoline.options.tooltip");
+			case 105: return Localization.get("infoline.options.showcansnow.tooltip");
 			case 202: return Localization.get("clock.options.mode.tooltip");
 			case 300: return Localization.get("coordinates.options.tooltip");
 			case 302: return Localization.get("coordinates.options.useycoordinatecolors.tooltip");
 			case 303: return Localization.get("coordinates.options.hotkey.tooltip");
 			case 700: return Localization.get("safeoverlay.options.tooltip");
 			case 702: return Localization.get("safeoverlay.options.hotkey.tooltip");
+			case 703: return Localization.get("safeoverlay.options.drawdistance.tooltip");
+			case 705: return Localization.get("safeoverlay.options.displayinnether.tooltip");
 			case 600: return Localization.get("distancemeasurer.options.tooltip");
 			case 800: return Localization.get("playerlocator.options.tooltip");
 			case 803: return Localization.get("playerlocator.options.minviewdistance.tooltip");

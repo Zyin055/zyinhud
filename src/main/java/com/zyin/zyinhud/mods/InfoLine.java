@@ -5,7 +5,6 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
@@ -39,9 +38,7 @@ public class InfoLine extends ZyinHUDModBase
     public static boolean ShowBiome;
     public static boolean ShowCanSnow;
     
-    /**
-     * The padding string that is inserted between different elements of the Info Line
-     */
+    /**  The padding string that is inserted between different elements of the Info Line */
     public static final String SPACER = " ";
     public static int infoLineLocX = 1;
     public static int infoLineLocY = 1;
@@ -49,7 +46,12 @@ public class InfoLine extends ZyinHUDModBase
     private static final int notificationDuration = 1200;	//measured in milliseconds
     private static long notificationTimer = 0;				//timer that goes from notificationDuration to 0
     private static long notificationStartTime;
-    private static String notificationMessage = "";
+    
+    /** The notification string currently being rendered */
+    public static String notificationMessage = "";
+    
+    /** The info line string currently being rendered */
+    public static String infoLineMessage;
     
 
     /**
@@ -65,7 +67,7 @@ public class InfoLine extends ZyinHUDModBase
                 (mc.inGameHasFocus || (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui()))) &&
                 !mc.gameSettings.showDebugInfo)
         {
-        	String infoLineMessage = "";
+        	infoLineMessage = "";
         	
             String clock = Clock.CalculateMessageForInfoLine(infoLineMessage);
             infoLineMessage = infoLineMessage + clock;
