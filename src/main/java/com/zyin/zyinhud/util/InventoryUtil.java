@@ -319,10 +319,11 @@ public class InventoryUtil
 	 * <br>Only works with single chest, double chest, donkey/mules, hopper, dropper, and dispenser. For other containers,
 	 * use their specific methods: DepositAllMatchingItemsInMerchant(), DepositAllMatchingItemsInFurance(), and
 	 * DepositAllMatchingItemsInBrewingStand().
+	 * @param onlyDepositMatchingItems only deposit an item if another one exists in the chest already
 	 * @param ignoreItemsInHotbar if true, won't deposit items that are in the player's hotbar
 	 * @return true if operation completed successfully, false if some items were left behind (aka there was a full chest)
 	 */
-	public static boolean DepositAllMatchingItemsInContainer(boolean ignoreItemsInHotbar)
+	public static boolean DepositAllMatchingItemsInContainer(boolean onlyDepositMatchingItems, boolean ignoreItemsInHotbar)
 	{
 	    //check to see if the player is holding an item
 	    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
@@ -394,13 +395,25 @@ public class InventoryUtil
 			ItemStack itemStack = slot.getStack();
 			if(itemStack != null)
 			{
-			    int itemIndex = GetFirstItemIndexInContainer(itemStack);
 			    
-			    //if the item exists in the chest
-			    if(itemIndex >= 0)
-			    {
-			    	DepositItemInContainer(i, itemIndex);
-			    }
+				if(onlyDepositMatchingItems)
+				{
+				    int itemIndex = GetFirstItemIndexInContainer(itemStack);
+				    
+				    //if the item exists in the chest
+				    if(itemIndex >= 0)
+				    	DepositItemInContainer(i, itemIndex);
+				}
+				else
+				{
+				    int emptyIndex = GetFirstEmptyIndexInContainer(itemStack);
+				    
+				    //if an empty spot exists in the chest
+				    if(emptyIndex >= 0)
+				    	DepositItemInContainer(i, emptyIndex);
+				    else
+				    	return true;
+				}
 			}
 	    }
 	    return true;
@@ -414,27 +427,33 @@ public class InventoryUtil
 	 */
 	public static boolean DepositItemInContainer(int srcIndex, int destIndex)
 	{
-		//horse chest = 53 big
-	    //single chest = 63 big
-	    //double chest = 90 big
-	    //the last 4 rows (9*4=36) are the player's inventory
+		//horse chest + player invetory = 53 big
+	    //single chest + player invetory = 63 big
+	    //double chest + player invetory = 90 big
 	    int numDisplayedSlots = mc.thePlayer.openContainer.inventorySlots.size();
-	    
+
+	    //the last 4 rows (9*4=36) are the player's inventory
 	    int numInventorySlots = 36;
+
+		//horse chest = 17 big
+	    //single chest = 27 big
+	    //double chest = 54 big
 	    int numContainerSlots = numDisplayedSlots - numInventorySlots;
-	    
-	    //check parameters for valid values
-		if(numContainerSlots == 53 && (srcIndex < 18 || srcIndex > 53))
+
+		if(numContainerSlots == 53-numInventorySlots && (srcIndex < 18 || srcIndex > 53))
 			return false;
-		if(numContainerSlots == 63 && (srcIndex < 28 || srcIndex > 63))
+		if(numContainerSlots == 63-numInventorySlots && (srcIndex < 28 || srcIndex > 63))
 			return false;
-		if(numContainerSlots == 90 && (srcIndex < 55 || srcIndex > 90))
+		if(numContainerSlots == 90-numInventorySlots && (srcIndex < 55 || srcIndex > 90))
 			return false;
-		if(numContainerSlots == 53 && (destIndex < 0 || destIndex > 17))
+		
+		if(destIndex < 0)
 			return false;
-		if(numContainerSlots == 63 && (destIndex < 0 || destIndex > 27))
+		if(numContainerSlots == 53-numInventorySlots && (destIndex < 0 || destIndex > 17))
 			return false;
-		if(numContainerSlots == 90 && (destIndex < 0 || destIndex > 54))
+		if(numContainerSlots == 63-numInventorySlots && (destIndex < 0 || destIndex > 27))
+			return false;
+		if(numContainerSlots == 90-numInventorySlots && (destIndex < 0 || destIndex > 54))
 			return false;
 	    
 	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();

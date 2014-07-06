@@ -59,7 +59,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-	public static final String MODVERSION = "1.3.2";
+	public static final String MODVERSION = "1.3.3";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     
@@ -89,8 +89,8 @@ public class ZyinHUD
         FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
         MinecraftForge.EVENT_BUS.register(ZyinHUDKeyHandlers.instance);
 
-        //load language localization files
-        LanguageRegistry.instance().loadLanguagesFor(FMLCommonHandler.instance().findContainerFor(this), Side.CLIENT);
+        //load language localization files (OBSOLETE IN 1.7.10)
+        //LanguageRegistry.instance().loadLanguagesFor(FMLCommonHandler.instance().findContainerFor(this), Side.CLIENT);
 
         //load configuration settings from the ZyinHUD.cfg file
         ZyinHUDConfig.LoadConfigSettings(configFile);
@@ -102,12 +102,6 @@ public class ZyinHUD
         MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
     	MinecraftForge.EVENT_BUS.register(Miscellaneous.instance);
         FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
-    }
-    
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
-    	
     }
     
 

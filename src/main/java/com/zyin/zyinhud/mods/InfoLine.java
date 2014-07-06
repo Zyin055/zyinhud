@@ -190,7 +190,7 @@ public class InfoLine extends ZyinHUDModBase
     {
         if ((mc.inGameHasFocus || mc.currentScreen == null))
         {
-            ScaledResolution res = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+            ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();		//~427
             int height = res.getScaledHeight();	//~240
             int overlayMessageWidth = mc.fontRenderer.getStringWidth(notificationMessage);

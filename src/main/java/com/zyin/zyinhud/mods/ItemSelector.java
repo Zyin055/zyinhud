@@ -242,9 +242,7 @@ public class ItemSelector extends ZyinHUDModBase
 		if (!selecting)
 			return;
 
-		ScaledResolution scaledresolution = new ScaledResolution(
-				mc.gameSettings, mc.displayWidth, mc.displayHeight);
-
+		ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 		int screenWidth = scaledresolution.getScaledWidth();
 		int screenHeight = scaledresolution.getScaledHeight();
 		int invWidth = 182;

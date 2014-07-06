@@ -27,6 +27,7 @@ import com.zyin.zyinhud.mods.QuickDeposit;
 import com.zyin.zyinhud.mods.SafeOverlay;
 import com.zyin.zyinhud.mods.TorchAid;
 import com.zyin.zyinhud.mods.WeaponSwapper;
+import com.zyin.zyinhud.util.Localization;
 
 /**
  * This class is responsible for interacting with the configuration file.
@@ -149,7 +150,7 @@ public class ZyinHUDConfig
         if(loadSettings)
         	InfoLine.ShowCanSnow = p.getBoolean(false);
         else
-        	p.set(InfoLine.ShowBiome);
+        	p.set(InfoLine.ShowCanSnow);
 
         p = config.get(CATEGORY_INFOLINE, "InfoLineLocationVertical", 1);
         p.comment = "The vertical position of the info line. 1 is top, 200 is very bottom.";
@@ -191,8 +192,15 @@ public class ZyinHUDConfig
 
         p = config.get(CATEGORY_COORDINATES, "CoordinatesMode", "XZY");
         p.comment = "Sets the Coordinates mode.";
+        
+        String mode = p.getString();
+        
+        String test = Localization.get("compass.name");
+        
         if(loadSettings)
-        	Coordinates.Mode = Coordinates.Modes.GetMode(p.getString());
+        	Coordinates.Mode = Coordinates.Modes.GetMode(mode);
+        	//Coordinates.Mode = Coordinates.Modes.XZY;
+        	//Coordinates.Mode = null;
         else
         	p.set(Coordinates.Mode.name());
         
@@ -292,6 +300,13 @@ public class ZyinHUDConfig
         	DurabilityInfo.AutoUnequipTools = p.getBoolean(true);
         else
         	p.set(DurabilityInfo.AutoUnequipTools);
+        
+        p = config.get(CATEGORY_DURABILITYINFO, "ShowDamageAsPercentage", true);
+        p.comment = "Toggle showing damaged items as a percentage or their remaining durability.";
+        if(loadSettings)
+        	DurabilityInfo.ShowDamageAsPercentage = p.getBoolean(true);
+        else
+        	p.set(DurabilityInfo.ShowDamageAsPercentage);
         
         
         //CATEGORY_SAFEOVERLAY
@@ -701,6 +716,13 @@ public class ZyinHUDConfig
         	QuickDeposit.BlacklistTorch = p.getBoolean(false);
         else
         	p.set(QuickDeposit.BlacklistTorch);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistWeapons", false);
+        p.comment = "Stop Quick Deposit from putting swords and bows in chests?";
+        if(loadSettings)
+        	QuickDeposit.BlacklistWeapons = p.getBoolean(false);
+        else
+        	p.set(QuickDeposit.BlacklistWeapons);
 
         p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistArrow", false);
         p.comment = "Stop Quick Deposit from putting arrows in chests?";

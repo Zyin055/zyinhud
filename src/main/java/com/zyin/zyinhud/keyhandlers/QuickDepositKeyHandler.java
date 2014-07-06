@@ -23,7 +23,12 @@ public class QuickDepositKeyHandler implements ZyinHUDKeyHandlerBase
         }
         
         if (QuickDeposit.Enabled)
-        	QuickDeposit.QuickDepositItemsInChest();
+        {
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+            	QuickDeposit.QuickDepositItemsInChest(false);
+            else
+            	QuickDeposit.QuickDepositItemsInChest(true);
+        }
 	}
     
     

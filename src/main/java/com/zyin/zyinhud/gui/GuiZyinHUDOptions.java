@@ -1,7 +1,9 @@
 package com.zyin.zyinhud.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.client.event.MouseEvent;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -450,11 +452,12 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 3, new GuiButton(1604, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.closechestafterdepositing", QuickDeposit.CloseChestAfterDepositing)));
     	
     	AddButtonAt(1, 0, new GuiButton(1605, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklisttorch", QuickDeposit.BlacklistTorch)));
-    	AddButtonAt(1, 1, new GuiButton(1606, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistarrow", QuickDeposit.BlacklistArrow)));
-    	AddButtonAt(1, 2, new GuiButton(1607, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistfood", QuickDeposit.BlacklistFood)));
-    	AddButtonAt(1, 3, new GuiButton(1608, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistenderpearl", QuickDeposit.BlacklistEnderPearl)));
-    	AddButtonAt(1, 4, new GuiButton(1609, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistwaterbucket", QuickDeposit.BlacklistWaterBucket)));
-    	AddButtonAt(1, 5, new GuiButton(1610, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
+    	AddButtonAt(1, 1, new GuiButton(1611, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistweapons", QuickDeposit.BlacklistWeapons)));
+    	AddButtonAt(1, 2, new GuiButton(1606, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistarrow", QuickDeposit.BlacklistArrow)));
+    	AddButtonAt(1, 3, new GuiButton(1607, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistfood", QuickDeposit.BlacklistFood)));
+    	AddButtonAt(1, 4, new GuiButton(1608, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistenderpearl", QuickDeposit.BlacklistEnderPearl)));
+    	AddButtonAt(1, 5, new GuiButton(1609, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistwaterbucket", QuickDeposit.BlacklistWaterBucket)));
+    	AddButtonAt(1, 6, new GuiButton(1610, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
     	
     }
     private void DrawItemSelectorButtons()
@@ -502,9 +505,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private static String GetButtonLabel_Enabled(boolean enabled)
     {
     	if(enabled)
-    		return Localization.get("gui.options.enabled") + FontCodes.GREEN + Localization.getMinecraft("options.on") + FontCodes.WHITE;
+    		return Localization.get("gui.options.enabled") + FontCodes.GREEN + Localization.get("options.on") + FontCodes.WHITE;
     	else
-    		return Localization.get("gui.options.enabled") + FontCodes.RED + Localization.getMinecraft("options.off") + FontCodes.WHITE;
+    		return Localization.get("gui.options.enabled") + FontCodes.RED + Localization.get("options.off") + FontCodes.WHITE;
     }
     
     /**
@@ -516,9 +519,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private static String GetButtonLabel_Boolean(String localizationString, boolean bool)
     {
 		if(bool)
-			return Localization.get(localizationString) + Localization.getMinecraft("options.on");
+			return Localization.get(localizationString) + Localization.get("options.on");
 		else
-			return Localization.get(localizationString) + Localization.getMinecraft("options.off");
+			return Localization.get(localizationString) + Localization.get("options.off");
     }
     
     
@@ -609,8 +612,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            // Misc
 	            /////////////////////////////////////////////////////////////////////////
 	            
-	            case 1:	//Save and Exit
-	            	ZyinHUDConfig.SaveConfigSettings();
+	            case 1:	//Save
+	            	//the actual saving is done in onGuiClosed()
 	                mc.displayGuiScreen(parentGuiScreen);
 	            	break;
 	
@@ -971,8 +974,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	button.displayString = GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood);
 	            	break;
 	            case 1306:	//Eat raw food
-	            	EatingAid.ToggleEatingGoldenFood();
-	            	button.displayString = GetButtonLabel_Boolean("eatingaid.options.eatgoldenfood", EatingAid.EatGoldenFood);
+	            	EatingAid.ToggleEatingRawFood();
+	            	button.displayString = GetButtonLabel_Boolean("eatingaid.options.eatrawfood", EatingAid.EatRawFood);
 	            	break;
 	            case 1305:	//Prioritize food in hotbar
 	            	EatingAid.TogglePrioritizeFoodInHotbar();
@@ -1067,6 +1070,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            case 1610:	//Blacklist clock/compass
 	            	QuickDeposit.ToggleBlacklistClockCompass();
 	            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass);
+	            	break;
+	            case 1611:	//Blacklist weapons
+	            	QuickDeposit.ToggleBlacklistWeapons();
+	            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistweapons", QuickDeposit.BlacklistWeapons);
 	            	break;
 	            	
 
@@ -1207,6 +1214,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1500: return Localization.get("weaponswapper.options.tooltip");
 			case 1503: return Localization.get("weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip");
 			case 1600: return Localization.get("quickdeposit.options.tooltip");
+			case 1602: return Localization.get("quickdeposit.options.hotkey.tooltip");
 			case 1603: return Localization.get("quickdeposit.options.ignoreitemsinhotbar.tooltip");
 			case 1604: return Localization.get("quickdeposit.options.closechestafterdepositing.tooltip");
 			case 1700: return Localization.get("itemselector.options.tooltip");
@@ -1335,5 +1343,15 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         DrawMiscText();
         
         super.drawScreen(par1, par2, par3);
+    }
+    
+    /**
+     * Called when the screen is unloaded.
+     */
+    public void onGuiClosed()
+    {
+    	ZyinHUDConfig.SaveConfigSettings();
+    	
+    	super.onGuiClosed();
     }
 }

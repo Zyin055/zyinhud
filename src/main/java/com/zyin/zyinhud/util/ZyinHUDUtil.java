@@ -130,7 +130,7 @@ public class ZyinHUDUtil
 	 * @param y Y coordinate in the game world
 	 * @param z Z coordinate in the game world
 	 * @param offset vertical offset of the text being rendered
-	 * @param color
+	 * @param color 0xRRGGBB
 	 * @param renderBlackBox render a pretty black border behind the text?
 	 * @param partialTickTime Usually taken from RenderWorldLastEvent.partialTicks variable
 	 */
@@ -147,7 +147,7 @@ public class ZyinHUDUtil
 	 * @param y Y coordinate in the game world
 	 * @param z Z coordinate in the game world
 	 * @param offset vertical offset of the text being rendered
-	 * @param color
+	 * @param color 0xRRGGBB
 	 * @param renderBlackBox render a pretty black border behind the text?
 	 * @param partialTickTime Usually taken from RenderWorldLastEvent.partialTicks variable
 	 */

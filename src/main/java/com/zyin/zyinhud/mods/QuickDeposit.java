@@ -11,8 +11,10 @@ import net.minecraft.client.gui.inventory.GuiFurnace;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.util.InventoryUtil;
@@ -38,17 +40,19 @@ public class QuickDeposit extends ZyinHUDModBase
     public static boolean CloseChestAfterDepositing;
 
     public static boolean BlacklistTorch;
+    public static boolean BlacklistWeapons;
+    public static boolean BlacklistArrow;
     public static boolean BlacklistFood;
     public static boolean BlacklistEnderPearl;
-    public static boolean BlacklistArrow;
     public static boolean BlacklistWaterBucket;
     public static boolean BlacklistClockCompass;
     
     
     /**
      * Deposits all items in your inventory into a chest, if the item exists in the chest
+	 * @param onlyDepositMatchingItems only deposit an item if another one exists in the chest already
      */
-    public static void QuickDepositItemsInChest()
+    public static void QuickDepositItemsInChest(boolean onlyDepositMatchingItems)
     {
     	if(!(mc.currentScreen instanceof GuiContainer))
     	{
@@ -83,7 +87,7 @@ public class QuickDeposit extends ZyinHUDModBase
     	}
     	else	//single chest, double chest, donkey/mules, hopper, dropper, dispenser
     	{
-    		InventoryUtil.DepositAllMatchingItemsInContainer(IgnoreItemsInHotbar);
+    		InventoryUtil.DepositAllMatchingItemsInContainer(onlyDepositMatchingItems, IgnoreItemsInHotbar);
         	
         	if(CloseChestAfterDepositing)
         		mc.thePlayer.closeScreen();
@@ -101,15 +105,8 @@ public class QuickDeposit extends ZyinHUDModBase
 	{
 		if(itemStack == null)
 			return false;
-		/* TODO 1.6
-		if((BlacklistTorch && itemStack.itemID == Block.torchWood.blockID)
-				|| (BlacklistArrow && itemStack.itemID == Item.arrow.itemID)
-				|| (BlacklistEnderPearl && itemStack.itemID == Item.enderPearl.itemID)
-				|| (BlacklistWaterBucket && itemStack.itemID == Item.bucketWater.itemID)
-				|| (BlacklistFood && (itemStack.getItem() instanceof ItemFood || itemStack.itemID == Item.cake.itemID))
-				|| (BlacklistClockCompass && (itemStack.itemID == Item.compass.itemID || itemStack.itemID == Item.pocketSundial.itemID)))
-		*/
 		if((BlacklistTorch && itemStack.getItem() == Item.getItemFromBlock(Blocks.torch))
+				|| (BlacklistWeapons && itemStack.getItem() instanceof ItemSword || itemStack.getItem() instanceof ItemBow)
 				|| (BlacklistArrow && itemStack.getItem() == Items.arrow)
 				|| (BlacklistEnderPearl && itemStack.getItem() == Items.ender_pearl)
 				|| (BlacklistWaterBucket && itemStack.getItem() == Items.water_bucket)
@@ -146,6 +143,14 @@ public class QuickDeposit extends ZyinHUDModBase
     public static boolean ToggleBlacklistTorch()
     {
     	return BlacklistTorch = !BlacklistTorch;
+    }
+    /**
+     * Toggles blacklisting this item
+     * @return 
+     */
+    public static boolean ToggleBlacklistWeapons()
+    {
+    	return BlacklistWeapons = !BlacklistWeapons;
     }
     /**
      * Toggles blacklisting this item

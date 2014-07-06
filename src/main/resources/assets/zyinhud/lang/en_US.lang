@@ -225,11 +225,13 @@ weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip=Only relevant 
 
 quickdeposit.name=Quick Deposit
 quickdeposit.options.tooltip=Works like Terraria's quick stack functionality. When looking at a container (chest, horse chest, villager trading menu, etc) it will move any items from your inventory to the container if that item already exists in the container.
+quickdeposit.options.hotkey.tooltip=Hold Shift to force items to deposit regardless if they exist in the chest
 quickdeposit.options.ignoreitemsinhotbar=Ignore Hotbar: 
 quickdeposit.options.ignoreitemsinhotbar.tooltip=Will never place items into a chest when they're on your hotbar
 quickdeposit.options.closechestafterdepositing=Closes Chest: 
 quickdeposit.options.closechestafterdepositing.tooltip=Will close your inventory after you Quick Deposit items into a chest
 quickdeposit.options.blacklist=Never deposit:
+quickdeposit.options.blacklistweapons=Weapons: 
 quickdeposit.options.blacklisttorch=Torches: 
 quickdeposit.options.blacklistarrow=Arrows: 
 quickdeposit.options.blacklistenderpearl=Ender Pearls: 

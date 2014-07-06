@@ -7,6 +7,7 @@ import net.minecraftforge.client.event.MouseEvent;
 
 import org.lwjgl.input.Keyboard;
 
+import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
 import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
 import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
@@ -71,7 +72,7 @@ public class ZyinHUDKeyHandlers
 	}
 
 	@SubscribeEvent
-	public void KeyInputEvent(KeyInputEvent event) 
+	public void KeyInputEvent(KeyInputEvent event)
 	{
 		//KeyInputEvent will not fire when looking at a GuiScreen - 1.7.2
 		
@@ -125,9 +126,11 @@ public class ZyinHUDKeyHandlers
 
         //Mouse side buttons
         if(event.buttonstate)
-        if(event.button == 3 || event.button == 4)
         {
-            ItemSelectorKeyHandler.OnMouseSideButton(event);
+	        if(event.button == 3 || event.button == 4)
+	        {
+	            ItemSelectorKeyHandler.OnMouseSideButton(event);
+	        }
         }
 
         //Middle click

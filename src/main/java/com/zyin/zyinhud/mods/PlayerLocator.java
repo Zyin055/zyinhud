@@ -4,6 +4,7 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
@@ -89,7 +90,7 @@ public class PlayerLocator extends ZyinHUDModBase
 
     private static final double pi = Math.PI;
     
-    private static final String wolfName = Localization.getMinecraft("entity.Wolf.name");
+    private static final String wolfName = Localization.get("entity.Wolf.name");
     private static final String sprintingMessagePrefix = "";
     private static final String sneakingMessagePrefix = FontCodes.ITALICS;
     private static final String ridingMessagePrefix = "    ";	//space for the saddle/minecart/boat/horse armor icon
@@ -172,7 +173,7 @@ public class PlayerLocator extends ZyinHUDModBase
         		overlayMessage = "    " + overlayMessage;	//make room for any icons we render
         	
             int overlayMessageWidth = mc.fontRenderer.getStringWidth(overlayMessage);	//the width in pixels of the message
-            ScaledResolution res = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+            ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();		//~427
             int height = res.getScaledHeight();		//~240
             
@@ -189,7 +190,7 @@ public class PlayerLocator extends ZyinHUDModBase
             	y = (y < 0) ? 0 : y;	//if the text is to the right or left of the info line then allow it to render in that open space
             else
             	y = (y < 10) ? 10 : y;	//use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
-
+            
             //calculate the color of the overlayMessage based on the distance from me
             int alpha = (int)(0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
             int color = (alpha << 24) + rgb;	//alpha:r:g:b, (alpha << 24) turns it into the format: 0x##000000
@@ -204,9 +205,8 @@ public class PlayerLocator extends ZyinHUDModBase
             //also render whatever the player is currently riding on
             if (entity.ridingEntity instanceof EntityHorse)
             {
+            	//armor is 0 when no horse armor is equipped
             	int armor = ((EntityHorse)entity.ridingEntity).func_110241_cb();
-            	
-            	//armor == 0 when no horse armor is equipped
             	
             	if(armor == 1)
                 	RenderHorseArmorIronIcon(x, y);
@@ -255,7 +255,22 @@ public class PlayerLocator extends ZyinHUDModBase
     
     private static boolean PlayerIsWolfsOwner(EntityWolf wolf)
     {
-    	return mc.thePlayer.getDisplayName().equals(wolf.getOwnerName());
+    	return wolf.isOnSameTeam(mc.thePlayer);
+    	/*
+    	EntityLivingBase owner = wolf.getOwner();
+    	
+    	
+    	System.out.println("isOnSameTeam(mc.theplayer)="+wolf.isOnSameTeam(mc.thePlayer));
+    	
+    	
+    	
+    	if(owner == null)
+    		return false;
+    	
+    	String wolfOwnerName = EntityList.getEntityString(owner);
+    	System.out.println("wolf owner:"+wolfOwnerName);
+    	return mc.thePlayer.getDisplayName().equals(wolfOwnerName);	//TODO 1.7.10
+    	*/
     }
     
 	private static String GetOverlayMessageForWolf(EntityWolf wolf, float distanceFromMe)

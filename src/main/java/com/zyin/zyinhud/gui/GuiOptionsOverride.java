@@ -1,7 +1,6 @@
 package com.zyin.zyinhud.gui;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.GameSettings;
@@ -28,7 +27,7 @@ public class GuiOptionsOverride extends GuiOptions
     public void initGui()
     {
     	super.initGui();
-    	this.buttonList.add(new GuiButton(1337, this.width / 2 +2, this.height / 6 + 42, 150, 20, Localization.get("gui.override.options.buttons.options")));
+    	this.buttonList.add(new GuiButton(1337, this.width / 2 + 5, this.height / 6 + 24 - 6, 150, 20, Localization.get("gui.override.options.buttons.options")));
     }
     
     /**
@@ -45,9 +44,3 @@ public class GuiOptionsOverride extends GuiOptions
         }
     }
 }
-
-
-
-
-
-
