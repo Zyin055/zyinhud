@@ -19,6 +19,7 @@ public class HUDEntityTrackerHelper
     private static EntityClientPlayerMP me;
 
     private static final double pi = Math.PI;
+    private static final double twoPi = 2 * Math.PI;
 
 
     /**
@@ -28,11 +29,10 @@ public class HUDEntityTrackerHelper
      * @param entity
      * @param x location on the HUD
      * @param y location on the HUD
-     * @param isEntityBehindUs
      */
-    private static void RenderEntityInfoOnHUD(Entity entity, int x, int y, boolean isEntityBehindUs)
+    private static void RenderEntityInfoOnHUD(Entity entity, int x, int y)
     {
-        PlayerLocator.RenderEntityInfoOnHUD(entity, x, y, isEntityBehindUs);
+        PlayerLocator.RenderEntityInfoOnHUD(entity, x, y);
     }
     
 
@@ -62,61 +62,61 @@ public class HUDEntityTrackerHelper
                 Entity entity = (Entity)object;
                 
                 //start calculating the angles needed to render the overlay message onto the screen in (x,y) coordinates
-                double pitch = ((me.rotationPitch + 90) * Math.PI) / 180;
-                double yaw  = ((me.rotationYaw + 90)  * Math.PI) / 180;
-                
-                //calculate the vector located at the player with respect to the camera's orientation
-                double ax = Math.sin(pitch) * Math.cos(yaw);
-                double ay = Math.cos(pitch);
-                double az = Math.sin(pitch) * Math.sin(yaw);
-                
-                //Vector 3D: a - normalized vector created by the direction the player's camera is facing
+                double pitch = ((-me.rotationPitch) * pi) / 180; //-pi/2 to pi/2; direction inverted
+                double yaw  = (((me.rotationYaw % 360 + 360 + 90 + 180) % 360 - 180) * pi) / 180; //-pi to pi
+                	// +360 to result of first modulo to make sure it's positive
+                    // +90 offset
+                    // +180 shift before second modulo, then -180 shift after to get -180 to 180 range
+
                 //Vector 3D: b - vector from the player's position to the entity's position
-                Vec3 a = Vec3.createVectorHelper(ax, ay, az);
                 Vec3 b = Vec3.createVectorHelper(entity.posX - me.posX, entity.posY - me.posY, entity.posZ - me.posZ);
                 
-                
-                //Vec3 aNorm = a.normalize();	//a is already normalized
-                Vec3 bNorm = b.normalize();
-                
-                //compute the horizontal angle the between the player's corsshair and the location of the entity
-                double horizontalAngleA = Math.atan2(a.zCoord, a.xCoord);		//-pi to pi
+                //compute the horizontal angle the between the player's crosshair and the location of the entity
                 double horizontalAngleB = Math.atan2(b.zCoord, b.xCoord);		//-pi to pi
-                double horizontalAngle = horizontalAngleA - horizontalAngleB;	//-2pi to 2pi
+                double horizontalAngle = ((yaw - horizontalAngleB) % twoPi + twoPi + pi) % twoPi - pi;	//normalize to -pi to pi; similar operations to yaw above
+                horizontalAngle = Math.min(Math.max(horizontalAngle, -pi/2), pi/2); 					//constrain to -pi/2 to pi/2
+                
+                //compute the vertical angle the between the player's crosshair and the location of the entity
+                double verticalAngleB = Math.atan2(b.yCoord, Math.hypot(b.xCoord, b.zCoord));
+                double verticalAngle = pitch - verticalAngleB;					//-pi to pi
+                verticalAngle = Math.min(Math.max(verticalAngle, -pi/2), pi/2);	//constrain to -pi/2 to pi/2
 
-                //compute the vertical angle the between the player's corsshair and the location of the entity
-                double verticalAngleA = Math.asin(a.yCoord);
-                double verticalAngleB = Math.asin(bNorm.yCoord);
-                double verticalAngle = verticalAngleA - verticalAngleB;	//-pi/2 to pi/2
+                //mc.fontRenderer.drawStringWithShadow(Double.toString(verticalAngle * 180 / pi), 1, 20, 0xffffff);
                 
                 //the player's FOV can range from 30 to 110 degrees (30*pi/180 to 110*pi/180)
+                //this seems to be vertical fov
                 double fov = mc.gameSettings.fovSetting;	//float:30 to 110 degrees (default=70)
                 fov *= me.getFOVMultiplier();	//FOV multiplier when sprinting(1.15)/flying(1.1)
                 fov *= (pi / 180);	//convert degrees to radians
                 
-                //skew the horizontalAngle to match our FOV
-                horizontalAngle = horizontalAngle * fov/2;
+                // calculate horizontal fov
+                double hfov = 2 * Math.atan(Math.tan(fov/2) * width / height);
                 
-                //compute the x and y coordinates where the overlayMessage should be rendered on screen
-                int x = (int)(Math.sin(horizontalAngle) * -2 * width / pi) + width / 2;
-                int y = (int)(Math.sin(verticalAngle) * 2 * height / pi) + height / 2;
+                int x = -(int)Math.round(Math.tan(horizontalAngle) / Math.tan(hfov/2) * width / 2) + width / 2;
+                int y = (int)Math.round(Math.tan(verticalAngle) / Math.tan(fov/2) * height / 2) + height / 2;
                 
-                //if we are facing away from target, we need to snap the message to the right or left side of the screen,
+                //if we are facing away from target, we need to snap the message to the edge of the screen,
                 //otherwise it gets displayed in the middle of the screen when looking away from it
-                boolean entityIsBehindUs = false;
 
-                if (horizontalAngle > pi / 2 && horizontalAngle <= pi)
+                if (horizontalAngle >= pi / 2)
                 {
-                    entityIsBehindUs = true;
                     x = 0;
                 }
-                else if (horizontalAngle < 3 * pi / 2 && horizontalAngle > pi)
+                else if (horizontalAngle <= -pi / 2)
                 {
-                    entityIsBehindUs = true;
                     x = width;
                 }
+                
+                if (verticalAngle >= pi / 2)
+                {
+                    y = height;
+                }
+                else if (verticalAngle <= -pi / 2)
+                {
+                    y = 0;
+                }
 
-                RenderEntityInfoOnHUD(entity, x, y, entityIsBehindUs);
+                RenderEntityInfoOnHUD(entity, x, y);
             }
         }
     }

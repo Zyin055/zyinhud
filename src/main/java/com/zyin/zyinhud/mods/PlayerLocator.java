@@ -109,9 +109,8 @@ public class PlayerLocator extends ZyinHUDModBase
      * @param entity
      * @param x location on the HUD
      * @param y location on the HUD
-     * @param isEntityBehindUs
      */
-    public static void RenderEntityInfoOnHUD(Entity entity, int x, int y, boolean isEntityBehindUs)
+    public static void RenderEntityInfoOnHUD(Entity entity, int x, int y)
     {
     	if(numOverlaysRendered > maxNumberOfOverlays)
     		return;
