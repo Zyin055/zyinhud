@@ -39,7 +39,7 @@ public class ZyinHUDRenderer
             DurabilityInfo.RenderOntoHUD();
             PotionTimers.RenderOntoHUD();
             AnimalInfo.RenderOntoDebugMenu();
-            HUDEntityTrackerHelper.RenderEntityInfo();	//calls other mods that need to render things on the HUD near entities
+            HUDEntityTrackerHelper.RenderEntityInfo(event.partialTicks);	//calls other mods that need to render things on the HUD near entities
             ItemSelector.RenderOntoHUD(event.partialTicks);
     	}
     	

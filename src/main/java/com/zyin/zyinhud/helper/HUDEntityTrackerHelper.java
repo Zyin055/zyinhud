@@ -22,7 +22,7 @@ import com.zyin.zyinhud.mods.PlayerLocator;
 public class HUDEntityTrackerHelper
 {
     private static Minecraft mc = Minecraft.getMinecraft();
-    private static EntityClientPlayerMP me;
+    //private static EntityClientPlayerMP me;
 
     private static FloatBuffer modelMatrix = BufferUtils.createFloatBuffer(16);
     private static FloatBuffer projMatrix = BufferUtils.createFloatBuffer(16);
@@ -59,15 +59,18 @@ public class HUDEntityTrackerHelper
 
     /**
      * Calculates the on-screen (x,y) positions of entities and renders various overlays over them.
+     * @param partialTickTime 
      */
-    public static void RenderEntityInfo()
+    public static void RenderEntityInfo(float partialTickTime)
     {
     	PlayerLocator.numOverlaysRendered = 0;
     	
         if (PlayerLocator.Enabled && PlayerLocator.Mode == PlayerLocator.Modes.ON
                 && mc.inGameHasFocus)
         {
-            me = mc.thePlayer;
+        	float playerX = (float) (mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * partialTickTime);
+            float playerY = (float) (mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * partialTickTime);
+            float playerZ = (float) (mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * partialTickTime);
             
             ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();		//~427
@@ -84,6 +87,10 @@ public class HUDEntityTrackerHelper
                 	continue;
                 
                 Entity entity = (Entity)object;
+                
+                float entityX = (float) (entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTickTime);
+                float entityY = (float) (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTickTime);
+                float entityZ = (float) (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTickTime);
                 
                 //start calculating the angles needed to render the overlay message onto the screen in (x,y) coordinates
                 /*double pitch = ((-me.rotationPitch) * pi) / 180; //-pi/2 to pi/2; direction inverted
@@ -140,9 +147,9 @@ public class HUDEntityTrackerHelper
                 
 
                 
-                float x = (float)(me.posX - entity.posX);
-                float y = (float)(me.posY - entity.posY);
-                float z = (float)(me.posZ - entity.posZ);
+                float x = (float)(playerX - entityX);
+                float y = (float)(playerY - entityY);
+                float z = (float)(playerZ - entityZ);
                 FloatBuffer screenCoords = BufferUtils.createFloatBuffer(3);
                 
                 modelMatrix.rewind();
@@ -171,9 +178,7 @@ public class HUDEntityTrackerHelper
                 
                 if (screenCoords.get(2) < 1) // screen Z coord; > 1 if entity in front, < 1 if behind
                 {
-                	//hudX = width / 2 - hudX;//(Integer.signum(width / 2 - hudX) * width + width) / 2;
-                	//hudY = height / 2 - hudY;
-                	//if ()//(Integer.signum(height / 2 - hudY) * height + height) / 2;
+
                 }
   
                 mc.fontRenderer.drawStringWithShadow(Float.toString(screenCoords.get(2)), 1, 40, 0xffffff);
