@@ -65,6 +65,9 @@ public class ZyinHUDRenderer
     	
         //calls other mods that need to render things in the game world nearby other entities
         RenderEntityTrackerHelper.RenderEntityInfo(event.partialTicks);
+        
+        //store world render transform matrices for later use when rendering HUD
+        HUDEntityTrackerHelper.StoreMatrices();
     }
     
     

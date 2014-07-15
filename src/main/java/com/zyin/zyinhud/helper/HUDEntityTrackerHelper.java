@@ -1,12 +1,18 @@
 package com.zyin.zyinhud.helper;
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.util.Vec3;
 
 import com.zyin.zyinhud.mods.PlayerLocator;
 
@@ -18,10 +24,25 @@ public class HUDEntityTrackerHelper
     private static Minecraft mc = Minecraft.getMinecraft();
     private static EntityClientPlayerMP me;
 
+    private static FloatBuffer modelMatrix = BufferUtils.createFloatBuffer(16);
+    private static FloatBuffer projMatrix = BufferUtils.createFloatBuffer(16);
+    
     private static final double pi = Math.PI;
     private static final double twoPi = 2 * Math.PI;
-
-
+    
+    
+    /**
+     * Stores world render transform matrices for later use when rendering HUD.
+     */
+    public static void StoreMatrices()
+    {
+        modelMatrix.rewind();
+        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelMatrix);
+        projMatrix.rewind();
+        GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projMatrix);
+        
+    }
+   
     /**
      * Send information about the positions of entities to mods that need this information.
      * <p>
@@ -51,6 +72,9 @@ public class HUDEntityTrackerHelper
             ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();		//~427
             int height = res.getScaledHeight();	//~240
+            
+            IntBuffer viewport = BufferUtils.createIntBuffer(16);
+            GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
         	
             //iterate over all the loaded Entity objects and find just the entities we are tracking
             for (Object object : mc.theWorld.loadedEntityList)
@@ -62,7 +86,7 @@ public class HUDEntityTrackerHelper
                 Entity entity = (Entity)object;
                 
                 //start calculating the angles needed to render the overlay message onto the screen in (x,y) coordinates
-                double pitch = ((-me.rotationPitch) * pi) / 180; //-pi/2 to pi/2; direction inverted
+                /*double pitch = ((-me.rotationPitch) * pi) / 180; //-pi/2 to pi/2; direction inverted
                 double yaw  = (((me.rotationYaw % 360 + 360 + 90 + 180) % 360 - 180) * pi) / 180; //-pi to pi
                 	// +360 to result of first modulo to make sure it's positive
                     // +90 offset
@@ -80,8 +104,6 @@ public class HUDEntityTrackerHelper
                 double verticalAngleB = Math.atan2(b.yCoord, Math.hypot(b.xCoord, b.zCoord));
                 double verticalAngle = pitch - verticalAngleB;					//-pi to pi
                 verticalAngle = Math.min(Math.max(verticalAngle, -pi/2), pi/2);	//constrain to -pi/2 to pi/2
-
-                //mc.fontRenderer.drawStringWithShadow(Double.toString(verticalAngle * 180 / pi), 1, 20, 0xffffff);
                 
                 //the player's FOV can range from 30 to 110 degrees (30*pi/180 to 110*pi/180)
                 //this seems to be vertical fov
@@ -90,15 +112,15 @@ public class HUDEntityTrackerHelper
                 fov *= (pi / 180);	//convert degrees to radians
                 
                 // calculate horizontal fov
-                double hfov = 2 * Math.atan(Math.tan(fov/2) * width / height);
+                double hfov = 2 * Math.atan(Math.tan(fov/2) * width / height);*/
                 
-                int x = -(int)Math.round(Math.tan(horizontalAngle) / Math.tan(hfov/2) * width / 2) + width / 2;
-                int y = (int)Math.round(Math.tan(verticalAngle) / Math.tan(fov/2) * height / 2) + height / 2;
+                //int x = -(int)Math.round(Math.tan(horizontalAngle) / Math.tan(hfov/2) * width / 2) + width / 2;
+                //int y = (int)Math.round(Math.tan(verticalAngle) / Math.tan(fov/2) * height / 2) + height / 2;
                 
                 //if we are facing away from target, we need to snap the message to the edge of the screen,
                 //otherwise it gets displayed in the middle of the screen when looking away from it
 
-                if (horizontalAngle >= pi / 2)
+                /*if (horizontalAngle >= pi / 2)
                 {
                     x = 0;
                 }
@@ -114,9 +136,50 @@ public class HUDEntityTrackerHelper
                 else if (verticalAngle <= -pi / 2)
                 {
                     y = 0;
-                }
+                }*/
+                
 
-                RenderEntityInfoOnHUD(entity, x, y);
+                
+                float x = (float)(me.posX - entity.posX);
+                float y = (float)(me.posY - entity.posY);
+                float z = (float)(me.posZ - entity.posZ);
+                FloatBuffer screenCoords = BufferUtils.createFloatBuffer(3);
+                
+                modelMatrix.rewind();
+                projMatrix.rewind();
+                GLU.gluProject(x, y, z, modelMatrix, projMatrix, viewport, screenCoords);
+                
+                int hudX = Math.round(screenCoords.get(0)) / res.getScaleFactor();
+                int hudY = height - Math.round(screenCoords.get(1)) / res.getScaleFactor();
+                
+                mc.fontRenderer.drawStringWithShadow(hudX + ", " + hudY, 1, 60, 0xffddff);
+                
+                int newHudX = hudX, newHudY = hudY;
+                
+                if (hudX < 0)
+                	newHudY = (int)((hudY - height / 2) / (1 - (2 * (float)hudX / width)) + height / 2);
+                else if (hudX > width)
+                	newHudY = (int)((hudY - height / 2) / ((2 * (float)hudX / width) - 1) + height / 2);
+                
+                if (hudY < 0)
+                	newHudX = (int)((hudX - width / 2) / (1 - (2 * (float)hudY / height)) + width / 2);
+                else if (hudY > height)
+                	newHudX = (int)((hudX - width / 2) / ((2 * (float)hudY / height) - 1) + width / 2);
+                
+                hudX = newHudX;
+                hudY = newHudY;
+                
+                if (screenCoords.get(2) < 1) // screen Z coord; > 1 if entity in front, < 1 if behind
+                {
+                	//hudX = width / 2 - hudX;//(Integer.signum(width / 2 - hudX) * width + width) / 2;
+                	//hudY = height / 2 - hudY;
+                	//if ()//(Integer.signum(height / 2 - hudY) * height + height) / 2;
+                }
+  
+                mc.fontRenderer.drawStringWithShadow(Float.toString(screenCoords.get(2)), 1, 40, 0xffffff);
+                mc.fontRenderer.drawStringWithShadow(hudX + ", " + hudY, 1, 80, 0xffffff);
+                
+                RenderEntityInfoOnHUD(entity, hudX, hudY);
             }
         }
     }
