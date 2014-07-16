@@ -81,6 +81,14 @@ public class HUDEntityTrackerHelper {
             // direction the player is facing
             Vec3 lookDir = Vec3.createVectorHelper(Math.sin(pitch) * Math.cos(yaw), Math.cos(pitch), Math.sin(pitch) * Math.sin(yaw));
             
+            if (mc.gameSettings.thirdPersonView == 2)
+            {
+            	// reversed 3rd-person view; flip the look direction
+            	lookDir.xCoord *= -1;
+            	lookDir.yCoord *= -1;
+            	lookDir.zCoord *= -1;
+            }
+            
             ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
@@ -104,10 +112,6 @@ public class HUDEntityTrackerHelper {
                 // direction to target entity
                 Vec3 toEntity = Vec3.createVectorHelper(entityX - meX, entityY - meY, entityZ - meZ);
                 
-                mc.fontRenderer.drawStringWithShadow(lookDir.toString(), 1, 10, 0xffffff);
-                mc.fontRenderer.drawStringWithShadow(toEntity.toString(), 1, 20, 0xffffff);
-                mc.fontRenderer.drawStringWithShadow(Double.toString(lookDir.lengthVector()), 1, 30, 0xffffff);
-
             	float x = (float)toEntity.xCoord;
             	float y = (float)toEntity.yCoord;
             	float z = (float)toEntity.zCoord;
