@@ -13,68 +13,77 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.util.Vec3;
 
 import com.zyin.zyinhud.mods.PlayerLocator;
 
 /**
- * The EntityTrackerHUDHelper calculates the (x,y) position on the HUD for entities in the game world.
+ * The EntityTrackerHUDHelper calculates the (x,y) position on the HUD for
+ * entities in the game world.
  */
-public class HUDEntityTrackerHelper
-{
-    private static Minecraft mc = Minecraft.getMinecraft();
-    //private static EntityClientPlayerMP me;
+public class HUDEntityTrackerHelper {
+	private static final Minecraft mc = Minecraft.getMinecraft();
 
-    private static FloatBuffer modelMatrix = BufferUtils.createFloatBuffer(16);
-    private static FloatBuffer projMatrix = BufferUtils.createFloatBuffer(16);
-    
-    private static final double pi = Math.PI;
-    private static final double twoPi = 2 * Math.PI;
-    
-    
-    /**
-     * Stores world render transform matrices for later use when rendering HUD.
-     */
-    public static void StoreMatrices()
-    {
-        modelMatrix.rewind();
-        GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelMatrix);
-        projMatrix.rewind();
-        GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projMatrix);
-        
-    }
-   
-    /**
-     * Send information about the positions of entities to mods that need this information.
-     * <p>
-     * Place new rendering methods for mods in this function.
-     * @param entity
-     * @param x location on the HUD
-     * @param y location on the HUD
-     */
-    private static void RenderEntityInfoOnHUD(Entity entity, int x, int y)
-    {
-        PlayerLocator.RenderEntityInfoOnHUD(entity, x, y);
-    }
-    
+	private static FloatBuffer modelMatrix = BufferUtils.createFloatBuffer(16);
+	private static FloatBuffer projMatrix = BufferUtils.createFloatBuffer(16);
 
-    /**
-     * Calculates the on-screen (x,y) positions of entities and renders various overlays over them.
-     * @param partialTickTime 
-     */
-    public static void RenderEntityInfo(float partialTickTime)
+	private static final double pi = Math.PI;
+	private static final double twoPi = 2 * Math.PI;
+
+	/**
+	 * Stores world render transform matrices for later use when rendering HUD.
+	 */
+	public static void StoreMatrices() {
+		modelMatrix.rewind();
+		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, modelMatrix);
+		projMatrix.rewind();
+		GL11.glGetFloat(GL11.GL_PROJECTION_MATRIX, projMatrix);
+	}
+
+	/**
+	 * Send information about the positions of entities to mods that need this
+	 * information.
+	 * <p>
+	 * Place new rendering methods for mods in this function.
+	 * 
+	 * @param entity
+	 * @param x
+	 *            location on the HUD
+	 * @param y
+	 *            location on the HUD
+	 */
+	private static void RenderEntityInfoOnHUD(Entity entity, int x, int y) {
+		PlayerLocator.RenderEntityInfoOnHUD(entity, x, y);
+	}
+
+	/**
+	 * Calculates the on-screen (x,y) positions of entities and renders various
+	 * overlays over them.
+	 * 
+	 * @param partialTickTime
+	 */
+	public static void RenderEntityInfo(float partialTickTime)
     {
     	PlayerLocator.numOverlaysRendered = 0;
     	
         if (PlayerLocator.Enabled && PlayerLocator.Mode == PlayerLocator.Modes.ON
                 && mc.inGameHasFocus)
         {
-        	float playerX = (float) (mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * partialTickTime);
-            float playerY = (float) (mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * partialTickTime);
-            float playerZ = (float) (mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * partialTickTime);
+        	EntityClientPlayerMP me = mc.thePlayer;
+        	
+        	double meX = me.lastTickPosX + (me.posX - me.lastTickPosX) * partialTickTime;
+        	double meY = me.lastTickPosY + (me.posY - me.lastTickPosY) * partialTickTime;
+        	double meZ = me.lastTickPosZ + (me.posZ - me.lastTickPosZ) * partialTickTime;
+            
+            double pitch = ((me.rotationPitch + 90) * Math.PI) / 180;
+            double yaw  = ((me.rotationYaw + 90)  * Math.PI) / 180;
+
+            // direction the player is facing
+            Vec3 lookDir = Vec3.createVectorHelper(Math.sin(pitch) * Math.cos(yaw), Math.cos(pitch), Math.sin(pitch) * Math.sin(yaw));
             
             ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-            int width = res.getScaledWidth();		//~427
-            int height = res.getScaledHeight();	//~240
+            int width = res.getScaledWidth();
+            int height = res.getScaledHeight();
             
             IntBuffer viewport = BufferUtils.createIntBuffer(16);
             GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
@@ -88,86 +97,82 @@ public class HUDEntityTrackerHelper
                 
                 Entity entity = (Entity)object;
                 
-                float entityX = (float) (entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTickTime);
-                float entityY = (float) (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTickTime);
-                float entityZ = (float) (entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTickTime);
+                double entityX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTickTime;
+                double entityY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTickTime;
+                double entityZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTickTime;
+                                
+                // direction to target entity
+                Vec3 toEntity = Vec3.createVectorHelper(entityX - meX, entityY - meY, entityZ - meZ);
                 
-                //start calculating the angles needed to render the overlay message onto the screen in (x,y) coordinates
-                /*double pitch = ((-me.rotationPitch) * pi) / 180; //-pi/2 to pi/2; direction inverted
-                double yaw  = (((me.rotationYaw % 360 + 360 + 90 + 180) % 360 - 180) * pi) / 180; //-pi to pi
-                	// +360 to result of first modulo to make sure it's positive
-                    // +90 offset
-                    // +180 shift before second modulo, then -180 shift after to get -180 to 180 range
+                mc.fontRenderer.drawStringWithShadow(lookDir.toString(), 1, 10, 0xffffff);
+                mc.fontRenderer.drawStringWithShadow(toEntity.toString(), 1, 20, 0xffffff);
+                mc.fontRenderer.drawStringWithShadow(Double.toString(lookDir.lengthVector()), 1, 30, 0xffffff);
 
-                //Vector 3D: b - vector from the player's position to the entity's position
-                Vec3 b = Vec3.createVectorHelper(entity.posX - me.posX, entity.posY - me.posY, entity.posZ - me.posZ);
+            	float x = (float)toEntity.xCoord;
+            	float y = (float)toEntity.yCoord;
+            	float z = (float)toEntity.zCoord;
                 
-                //compute the horizontal angle the between the player's crosshair and the location of the entity
-                double horizontalAngleB = Math.atan2(b.zCoord, b.xCoord);		//-pi to pi
-                double horizontalAngle = ((yaw - horizontalAngleB) % twoPi + twoPi + pi) % twoPi - pi;	//normalize to -pi to pi; similar operations to yaw above
-                horizontalAngle = Math.min(Math.max(horizontalAngle, -pi/2), pi/2); 					//constrain to -pi/2 to pi/2
-                
-                //compute the vertical angle the between the player's crosshair and the location of the entity
-                double verticalAngleB = Math.atan2(b.yCoord, Math.hypot(b.xCoord, b.zCoord));
-                double verticalAngle = pitch - verticalAngleB;					//-pi to pi
-                verticalAngle = Math.min(Math.max(verticalAngle, -pi/2), pi/2);	//constrain to -pi/2 to pi/2
-                
-                //the player's FOV can range from 30 to 110 degrees (30*pi/180 to 110*pi/180)
-                //this seems to be vertical fov
-                double fov = mc.gameSettings.fovSetting;	//float:30 to 110 degrees (default=70)
-                fov *= me.getFOVMultiplier();	//FOV multiplier when sprinting(1.15)/flying(1.1)
-                fov *= (pi / 180);	//convert degrees to radians
-                
-                // calculate horizontal fov
-                double hfov = 2 * Math.atan(Math.tan(fov/2) * width / height);*/
-                
-                //int x = -(int)Math.round(Math.tan(horizontalAngle) / Math.tan(hfov/2) * width / 2) + width / 2;
-                //int y = (int)Math.round(Math.tan(verticalAngle) / Math.tan(fov/2) * height / 2) + height / 2;
-                
-                //if we are facing away from target, we need to snap the message to the edge of the screen,
-                //otherwise it gets displayed in the middle of the screen when looking away from it
-
-                /*if (horizontalAngle >= pi / 2)
+            	double dist = toEntity.lengthVector();
+            	toEntity = toEntity.normalize();
+            	
+                if (lookDir.dotProduct(toEntity) <= 0.02)
                 {
-                    x = 0;
+                	// angle between vectors is greater than about 89 degrees, so
+                	// create a dummy target location that is 89 degrees away from look direction
+                	// along the arc between look direction and direction to target entity  
+                	
+                	final double angle = 89.0 * pi / 180;
+                	final double sin = Math.sin(angle);
+                	final double cos = Math.cos(angle);
+                	
+                	Vec3 ortho = lookDir.crossProduct(toEntity); // vector orthogonal to look direction and direction to target entity
+                	double ox = ortho.xCoord;
+                	double oy = ortho.yCoord;
+                	double oz = ortho.zCoord;
+                	
+                	// build a rotation matrix to rotate around a vector (ortho) by an angle (89 degrees)
+                	// from http://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
+                	double m00 = cos + ox*ox*(1-cos);
+                	double m01 = ox*oy*(1-cos) - oz*sin;
+                	double m02 = ox*oz*(1-cos) + oy*sin;
+                	double m10 = oy*ox*(1-cos) + oz*sin;
+                	double m11 = cos + oy*oy*(1-cos);
+                	double m12 = oy*oz*(1-cos) - ox*sin;
+                	double m20 = oz*ox*(1-cos) - oy*sin;
+                	double m21 = oz*oy*(1-cos) + ox*sin;
+                	double m22 = cos + oz*oz*(1-cos);                	
+                	
+                	// transform (multiply) look direction vector with rotation matrix and scale by distance to target entity;
+                	// this produces the coordinates for the dummy target
+                	x = (float)(dist * (m00*lookDir.xCoord + m01*lookDir.yCoord + m02*lookDir.zCoord));
+                	y = (float)(dist * (m10*lookDir.xCoord + m11*lookDir.yCoord + m12*lookDir.zCoord));
+                	z = (float)(dist * (m20*lookDir.xCoord + m21*lookDir.yCoord + m22*lookDir.zCoord));
                 }
-                else if (horizontalAngle <= -pi / 2)
-                {
-                    x = width;
-                }
                 
-                if (verticalAngle >= pi / 2)
-                {
-                    y = height;
-                }
-                else if (verticalAngle <= -pi / 2)
-                {
-                    y = 0;
-                }*/
-                
-
-                
-                float x = (float)(playerX - entityX);
-                float y = (float)(playerY - entityY);
-                float z = (float)(playerZ - entityZ);
                 FloatBuffer screenCoords = BufferUtils.createFloatBuffer(3);
                 
                 modelMatrix.rewind();
                 projMatrix.rewind();
+                
+                // map target's object coordinates into window coordinates
+                // using world render transform matrices stored by StoreMatrices()
                 GLU.gluProject(x, y, z, modelMatrix, projMatrix, viewport, screenCoords);
                 
                 int hudX = Math.round(screenCoords.get(0)) / res.getScaleFactor();
                 int hudY = height - Math.round(screenCoords.get(1)) / res.getScaleFactor();
-                
-                mc.fontRenderer.drawStringWithShadow(hudX + ", " + hudY, 1, 60, 0xffddff);
+                 
+                // if <hudX, hudY> is outside the screen, scale the coordinates so they're
+                // at the edge of the screen (to preserve angle)
                 
                 int newHudX = hudX, newHudY = hudY;
                 
+                //use X overshoot to scale Y
                 if (hudX < 0)
                 	newHudY = (int)((hudY - height / 2) / (1 - (2 * (float)hudX / width)) + height / 2);
                 else if (hudX > width)
                 	newHudY = (int)((hudY - height / 2) / ((2 * (float)hudX / width) - 1) + height / 2);
                 
+                //use Y overshoot to scale X
                 if (hudY < 0)
                 	newHudX = (int)((hudX - width / 2) / (1 - (2 * (float)hudY / height)) + width / 2);
                 else if (hudY > height)
@@ -175,14 +180,6 @@ public class HUDEntityTrackerHelper
                 
                 hudX = newHudX;
                 hudY = newHudY;
-                
-                if (screenCoords.get(2) < 1) // screen Z coord; > 1 if entity in front, < 1 if behind
-                {
-
-                }
-  
-                mc.fontRenderer.drawStringWithShadow(Float.toString(screenCoords.get(2)), 1, 40, 0xffffff);
-                mc.fontRenderer.drawStringWithShadow(hudX + ", " + hudY, 1, 80, 0xffffff);
                 
                 RenderEntityInfoOnHUD(entity, hudX, hudY);
             }
