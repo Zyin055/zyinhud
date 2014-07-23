@@ -155,7 +155,7 @@ public class Coordinates extends ZyinHUDModBase
     }
     public static int GetYCoordinate()
     {
-    	return (int) Math.floor(mc.thePlayer.posY - 1.62);	//.posY returns the player's eye height, which is 1.62 blocks off the ground
+    	return (int) Math.floor(mc.thePlayer.boundingBox.minY);	//use feet height; .posY returns the player's eye height, which is normally 1.62 blocks off the ground
     }
     public static int GetZCoordinate()
     {
