@@ -12,6 +12,7 @@ import net.minecraft.block.BlockCactus;
 import net.minecraft.block.BlockCake;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.BlockChest;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -29,6 +30,7 @@ import net.minecraft.block.BlockPistonMoving;
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.BlockSnow;
+import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.BlockWeb;
@@ -509,8 +511,8 @@ public class SafeOverlay extends ZyinHUDModBase
             alpha = unsafeOverlayTransparency;
         }
 
-        //Minecraft bug: the Y-bounds for half slabs change if the user is aimed at them, so set them manually
-        if (block instanceof BlockSlab)
+        //Minecraft bug: the Y-bounds for half slabs change and snow layers if the user is aimed at them, so set them manually
+        if (block instanceof BlockSlab || block instanceof BlockSnow)
         {
             boundingBoxMaxY = 1.0;
         }
@@ -534,6 +536,8 @@ public class SafeOverlay extends ZyinHUDModBase
                 int snowMetadata = mc.theWorld.getBlockMetadata(position.x, position.y+1, position.z);
                 if(snowMetadata == 0)
                 	boundingBoxMaxY = 1 + 0.125;
+                else
+                	return;
             }
         }
         
@@ -614,11 +618,11 @@ public class SafeOverlay extends ZyinHUDModBase
         }
         else if (Mode == Modes.ON)
         {
-            return FontCodes.WHITE + Localization.get("safeoverlay.infoline") + InfoLine.SPACER;
+            return FontCodes.WHITE + Localization.get("safeoverlay.infoline");
         }
         else
         {
-            return FontCodes.WHITE + "???" + InfoLine.SPACER;
+            return FontCodes.WHITE + "???";
         }
     }
 
@@ -868,27 +872,29 @@ public class SafeOverlay extends ZyinHUDModBase
             //for example, they cannot spawn inside of leaves even though they are transparent.
             //  (I wonder if the list shorter for blocks that mobs CAN spawn in?
             //   lever, button, redstone  torches, reeds, rail, plants, crops, etc.)
-            return !(block instanceof BlockSlab
-                     || block instanceof BlockStairs
-                     || block instanceof BlockLiquid
-                     || block instanceof BlockChest
-                     || block instanceof BlockGlass
-                     || block instanceof BlockIce
-                     || block instanceof BlockFence
-                     || block instanceof BlockFenceGate
-                     || block instanceof BlockLeaves
-                     || block instanceof BlockWall
-                     || block instanceof BlockPane
-                     || block instanceof BlockWeb
-                     || block instanceof BlockCactus
-                     || block instanceof BlockAnvil
-                     || block instanceof BlockBed
-                     || block instanceof BlockFarmland
-                     || block instanceof BlockHopper
-                     || block instanceof BlockPistonBase
-                     || block instanceof BlockPistonExtension
-                     || block instanceof BlockPistonMoving
-                     || block instanceof BlockCake);
+            return !(block instanceof BlockAnvil
+                    || block instanceof BlockBed
+                    || block instanceof BlockCactus
+                    || block instanceof BlockCake
+                    || block instanceof BlockChest
+                    || block instanceof BlockFarmland
+                    || block instanceof BlockFence
+                    || block instanceof BlockFenceGate
+					|| block instanceof BlockGlass
+                    || block instanceof BlockHopper
+                    || block instanceof BlockIce
+                    || block instanceof BlockLeaves
+                    || block instanceof BlockLiquid
+                    || block instanceof BlockPane
+                    || block instanceof BlockPistonBase
+                    || block instanceof BlockPistonExtension
+                    || block instanceof BlockPistonMoving
+                    || block instanceof BlockSlab
+                    || (block instanceof BlockSnow && mc.theWorld.getBlockMetadata(dx, dy, dz) != 0)	// 1/8 snow layers
+                    || block instanceof BlockStainedGlass
+                    || block instanceof BlockStairs
+                    || block instanceof BlockWeb
+                    || block instanceof BlockWall);
         }
         
         /**

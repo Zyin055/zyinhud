@@ -119,7 +119,7 @@ public class DistanceMeasurer extends ZyinHUDModBase
                 {
                 	double farthestHorizontalDistance = Math.max(Math.abs(deltaX), Math.abs(deltaZ));
                     double farthestDistance = Math.max(Math.abs(deltaY), farthestHorizontalDistance);
-                    return FontCodes.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]" + InfoLine.SPACER;
+                    return FontCodes.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]";
                 }
                 else if (Mode == Modes.COMPLEX)
                 {
@@ -127,16 +127,16 @@ public class DistanceMeasurer extends ZyinHUDModBase
                     String x = String.format("%1$,.1f", deltaX);
                     String y = String.format("%1$,.1f", deltaY);
                     String z = String.format("%1$,.1f", deltaZ);
-                    return FontCodes.GOLD + "[" + x + ", " + z + ", " + y + " (" + String.format("%1$,.1f", delta) + ")]" + InfoLine.SPACER;
+                    return FontCodes.GOLD + "[" + x + ", " + z + ", " + y + " (" + String.format("%1$,.1f", delta) + ")]";
                 }
                 else
                 {
-                	return FontCodes.GOLD + "[???]" + InfoLine.SPACER;
+                	return FontCodes.GOLD + "[???]";
                 }
             }
             else
             {
-            	return FontCodes.GOLD + "["+Localization.get("distancemeasurer.far")+"]" + InfoLine.SPACER;
+            	return FontCodes.GOLD + "["+Localization.get("distancemeasurer.far")+"]";
             }
         }
 

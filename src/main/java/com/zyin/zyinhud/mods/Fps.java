@@ -25,7 +25,7 @@ public class Fps extends ZyinHUDModBase
         if (Fps.Enabled)
         {
             currentFps = mc.debug.substring(0, mc.debug.indexOf(' '));
-        	return FontCodes.WHITE + currentFps + " " + Localization.get("fps.infoline") + InfoLine.SPACER;
+        	return FontCodes.WHITE + currentFps + " " + Localization.get("fps.infoline");
         }
         else
         {

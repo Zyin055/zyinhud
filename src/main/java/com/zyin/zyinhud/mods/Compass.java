@@ -104,11 +104,11 @@ public class Compass extends ZyinHUDModBase
             	
             	mc.fontRenderer.drawStringWithShadow(FontCodes.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
             	
-            	return FontCodes.GRAY + brackets + InfoLine.SPACER;
+            	return FontCodes.GRAY + brackets;
             }
             else
             {
-                return FontCodes.GRAY + "[" + FontCodes.RED + compassDirection + FontCodes.GRAY + "]" + InfoLine.SPACER;
+                return FontCodes.GRAY + "[" + FontCodes.RED + compassDirection + FontCodes.GRAY + "]";
             }
         }
 

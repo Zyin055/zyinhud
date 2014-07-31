@@ -125,7 +125,7 @@ public class Coordinates extends ZyinHUDModBase
             else
             	coordinatesString = FontCodes.WHITE + "[??, ??, ??]";
             
-            return coordinatesString + InfoLine.SPACER;
+            return coordinatesString;
         }
 
         return "";

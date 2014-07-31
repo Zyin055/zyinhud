@@ -70,34 +70,54 @@ public class InfoLine extends ZyinHUDModBase
         	infoLineMessage = "";
         	
             String clock = Clock.CalculateMessageForInfoLine(infoLineMessage);
-            infoLineMessage = infoLineMessage + clock;
+            if (clock.length() > 0)
+            	clock += SPACER;
+            infoLineMessage += clock;
             
             String coordinates = Coordinates.CalculateMessageForInfoLine();
+            if (coordinates.length() > 0)
+            	coordinates += SPACER;
             infoLineMessage = infoLineMessage + coordinates;
             
             String compass = Compass.CalculateMessageForInfoLine(infoLineMessage);
-            infoLineMessage = infoLineMessage + compass;
+            if (compass.length() > 0)
+            	compass += SPACER;
+            infoLineMessage += compass;
             
             String distance = DistanceMeasurer.CalculateMessageForInfoLine();
-            infoLineMessage = infoLineMessage + distance;
+            if (distance.length() > 0)
+            	distance += SPACER;
+            infoLineMessage += distance;
             
             String fps = Fps.CalculateMessageForInfoLine();
-            infoLineMessage = infoLineMessage + fps;
+            if (fps.length() > 0)
+            	fps += SPACER;
+            infoLineMessage += fps;
             
             String snow = ShowCanSnow ? CalculateCanSnowForInfoLine(infoLineMessage) : "";
-            infoLineMessage = infoLineMessage + snow;
+            if (snow.length() > 0)
+            	snow += SPACER;
+            infoLineMessage += snow;
             
             String biome = ShowBiome ? CalculateBiomeForInfoLine() : "";
-            infoLineMessage = infoLineMessage + biome;
+            if (biome.length() > 0)
+            	biome += SPACER;
+            infoLineMessage += biome;
             
             String safe = SafeOverlay.CalculateMessageForInfoLine();
-            infoLineMessage = infoLineMessage + safe;
+            if (safe.length() > 0)
+            	safe += SPACER;
+            infoLineMessage += safe;
             
             String players = PlayerLocator.CalculateMessageForInfoLine();
-            infoLineMessage = infoLineMessage + players;
+            if (players.length() > 0)
+            	players += SPACER;
+            infoLineMessage += players;
             
             String animals = AnimalInfo.CalculateMessageForInfoLine();
-            infoLineMessage = infoLineMessage + animals;
+            if (animals.length() > 0)
+            	animals += SPACER;
+            infoLineMessage += animals;
             
             mc.fontRenderer.drawStringWithShadow(infoLineMessage, infoLineLocX, infoLineLocY, 0xffffff);
         }

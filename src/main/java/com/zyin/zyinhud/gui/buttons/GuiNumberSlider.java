@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 
 import org.lwjgl.opengl.GL11;
 
+import com.zyin.zyinhud.util.Localization;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
@@ -23,20 +25,33 @@ public class GuiNumberSlider extends GuiButton
     
     /** The text displayed before the number */
     public String label;
-    
-    /** The text displayed before the number */
-    public boolean renderValuesAsIntegers;
-    
+
+    /** The display mode used to be used to format the number */
+    public Modes mode;
+
     private static DecimalFormat twoDecimals = new DecimalFormat("#.00");
+    private static DecimalFormat zeroDecimals = new DecimalFormat("#");
     
-	public GuiNumberSlider(int id, int x, int y, int width, int height, String displayString, float minValue, float maxValue, float currentValue, boolean renderValuesAsIntegers)
+    /** The display modes available that can be used to format the number */
+    public static enum Modes
+    {
+        INTEGER,
+        DECIMAL,
+        PERCENT;
+    }
+    
+	public GuiNumberSlider(int id, int x, int y, int width, int height, String displayString, float minValue, float maxValue, float currentValue, Modes mode)
 	{
-		super(id, x, y, width, height, renderValuesAsIntegers == true ? displayString+((int)currentValue) : displayString+twoDecimals.format(currentValue));
+		super(id, x, y, width, height, 
+				mode == Modes.INTEGER ? displayString+((int)currentValue) : 
+				mode == Modes.DECIMAL ? displayString+twoDecimals.format(currentValue) : 
+				mode == Modes.PERCENT ? displayString+(zeroDecimals.format(currentValue*100)) + "%" :
+					displayString+((int)currentValue));
 		this.label = displayString;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.sliderValue = (currentValue-minValue) / (maxValue-minValue);
-        this.renderValuesAsIntegers = renderValuesAsIntegers;
+        this.mode = mode;
 	}
 
 	/**
@@ -53,7 +68,15 @@ public class GuiNumberSlider extends GuiButton
 	 */
 	public int GetValueAsInteger()
 	{
-		return (int)((maxValue - minValue)*sliderValue + minValue);
+		return (int) GetValueAsFloat();
+	}
+	/**
+	 * Gets the decimal value of the slider.
+	 * @return
+	 */
+	public String GetValueAsPercent()
+	{
+		return zeroDecimals.format(GetValueAsFloat() * 100) + "%";
 	}
 	
 	/**
@@ -62,10 +85,14 @@ public class GuiNumberSlider extends GuiButton
 	 */
 	public String GetLabel()
 	{
-		if(renderValuesAsIntegers)
+		if(mode == Modes.INTEGER)
 			return label + GetValueAsInteger();
-		else
+		else if(mode == Modes.DECIMAL)
 			return label + twoDecimals.format(GetValueAsFloat());
+		else if(mode == Modes.PERCENT)
+			return label + GetValueAsPercent();
+		else
+			return "Unknown mode";
 	}
 	
 	/**

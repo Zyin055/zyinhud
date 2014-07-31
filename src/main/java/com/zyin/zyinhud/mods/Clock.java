@@ -92,7 +92,7 @@ public class Clock extends ZyinHUDModBase
                 long hours = time / 1000;
                 long seconds = (long)((time % 1000) * (60.0/1000.0));
                 
-                String clockString = FontCodes.WHITE + String.format("%02d", hours) + ":" + String.format("%02d", seconds) + InfoLine.SPACER;
+                String clockString = FontCodes.WHITE + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
                 return clockString;
         	}
         	else if(Clock.Mode == Modes.COUNTDOWN)
@@ -107,7 +107,7 @@ public class Clock extends ZyinHUDModBase
         			long minutes = secondsTillDay / 60;
         			long seconds = secondsTillDay - minutes*60;
         			
-                    String nighttimeTimerString = FontCodes.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + InfoLine.SPACER;
+                    String nighttimeTimerString = FontCodes.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
                     return nighttimeTimerString;
         		}
         		else
@@ -122,7 +122,7 @@ public class Clock extends ZyinHUDModBase
         			long minutes = secondsTillNight / 60;
         			long seconds = secondsTillNight - minutes*60;
 
-                    String daytimeTimerString = FontCodes.YELLOW + String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + InfoLine.SPACER;
+                    String daytimeTimerString = FontCodes.YELLOW + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
                     return daytimeTimerString;
         		}
         	}

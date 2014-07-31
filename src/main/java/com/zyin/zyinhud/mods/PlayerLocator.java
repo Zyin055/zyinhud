@@ -392,11 +392,11 @@ public class PlayerLocator extends ZyinHUDModBase
         }
         else if (Mode == Modes.ON)
         {
-            return FontCodes.WHITE + Localization.get("playerlocator.infoline") + InfoLine.SPACER;
+            return FontCodes.WHITE + Localization.get("playerlocator.infoline");
         }
         else
         {
-            return FontCodes.WHITE + "???" + InfoLine.SPACER;
+            return FontCodes.WHITE + "???";
         }
     }
 

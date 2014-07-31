@@ -18,11 +18,11 @@ buildscript {
 apply plugin: 'forge'
 
 archivesBaseName = "ZyinsHUD"
-version = "(1.7.10)-v.1.3.3"
+version = "(1.7.10)-v.1.3.4"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 minecraft {
-    version = "1.7.10-10.13.0.1160"
+    version = "1.7.10-10.13.0.1180"
     assetDir = "eclipse/assets"
 }
 processResources

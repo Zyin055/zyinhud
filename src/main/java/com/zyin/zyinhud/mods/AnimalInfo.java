@@ -335,11 +335,11 @@ public class AnimalInfo extends ZyinHUDModBase
         }
         else if (Mode == Modes.ON)
         {
-            return FontCodes.WHITE + Localization.get("animalinfo.infoline") + InfoLine.SPACER;
+            return FontCodes.WHITE + Localization.get("animalinfo.infoline");
         }
         else
         {
-            return FontCodes.WHITE + "???" + InfoLine.SPACER;
+            return FontCodes.WHITE + "???";
         }
     }
 
