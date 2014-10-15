@@ -79,6 +79,7 @@ distancemeasurer.options.tooltip=Pressing the hotkey once shows you how far away
 
 durabilityinfo.name=Durability Info
 durabilityinfo.options.tooltip=Shows the durability of any armor you have equipped as well as any tools or weapons you have on your hotbar. They will only be displayed when their durabilities are below a specified threshold (default 10%%).
+durabilityinfo.options.usecolorednumbers=Colored Numbers: 
 durabilityinfo.options.showitemdurability=Show Tools: 
 durabilityinfo.options.showarmordurability=Show Armor: 
 durabilityinfo.options.itemdurabilitythreshold=Tool Threshold: 
@@ -153,6 +154,7 @@ itemselector.mode.column=Same Column
 itemselector.error.emptyslot=That slot no longer has an item
 itemselector.error.enchant=Unable to swap enchanted items in multiplayer
 itemselector.error.empty=Inventory has no selectable items
+itemselector.error.unsupportedhotbar=Invalid hotbar slot
 itemselector.options.tooltip=Allows you to use the mousewheel to take items out of your inventory without having to open your inventory.
 itemselector.options.hotkey.tooltip=Hold this button while using the mousewheel to select items_p_pDefault = Left Alt
 itemselector.options.mode.tooltip=_lAll_r: Select items from your entire inventory_p_lSame Column_r: Select items only from the same column as your currently selected item in the hotbar
@@ -166,6 +168,8 @@ miscellaneous.options.useenhancedmiddleclick=Enhanced middle click:
 miscellaneous.options.useenhancedmiddleclick.tooltip=When enabled, middle clicking will move the mouseovered block into your hotbar if it exists in your inventory._p_pIn comparison, the default middle click functionality only works if it exists on your hotbar.
 miscellaneous.options.usequickplacesign=Quick place sign: 
 miscellaneous.options.usequickplacesign.tooltip=When enabled, placing a sign while sneaking will place the sign without opening the sign GUI.
+miscellaneous.options.useunlimitedsprinting=Unlimited sprinting: 
+miscellaneous.options.useunlimitedsprinting.tooltip=This overrides the default sprinting behavior by letting you run for more than 30 seconds at a time
 
 playerlocator.name=Player Locator
 playerlocator.mode.off=Off
@@ -178,6 +182,8 @@ playerlocator.options.showdistancetoplayers=Display Distances:
 playerlocator.options.showplayerhealth=Display Health: 
 playerlocator.options.showwolves=Show your wolves: 
 playerlocator.options.showwolves.tooltip=In addition to showing other players it will also show any tamed wolves that you own
+playerlocator.options.showwitherskeletons=Show wither skeletons: 
+playerlocator.options.showwitherskeletons.tooltip=In addition to showing other players it will also show any nearby wither skeletons to make it easier to farm for wither skulls
 playerlocator.options.usewolfcolors=Use wolf colors: 
 playerlocator.options.usewolfcolors.tooltip=Use the color of the wolf's collar to color their name (default collar color is red)
 
@@ -214,7 +220,7 @@ safeoverlay.distance.max=max
 safeoverlay.distance.default=default
 
 torchaid.name=Torch Aid
-torchaid.notorches=No torches
+;torchaid.notorches=No torches
 torchaid.options.tooltip=Place torches without keeping them on your hotbar by right clicking while holding an axe, pickaxe, shovel, or when you have nothing in your hand.
 
 weaponswapper.name=Weapon Swapper

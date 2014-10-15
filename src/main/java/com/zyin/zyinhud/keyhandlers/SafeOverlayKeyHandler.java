@@ -7,18 +7,13 @@ import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.SafeOverlay;
 import com.zyin.zyinhud.mods.SafeOverlay.Modes;
 import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
 {
     public static final String HotkeyDescription = "key.zyinhud.safeoverlay";
-
-    /**
-     * Since we enable this key handler to repeat when the user holds the key down, we
-     * want to be able to execute some code only on the initial key press.
-     */
-    //private static boolean isFirstKeypress = true;	//TODO 1.7 need an OnKeyUp event for this...
     
 	public static void Pressed(KeyInputEvent event) 
 	{
@@ -38,11 +33,11 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
 
             if (drawDistance == SafeOverlay.maxDrawDistance)
             {
-                InfoLine.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance + " ("+Localization.get("safeoverlay.distance.max")+")");
+                ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance + " ("+Localization.get("safeoverlay.distance.max")+")");
             }
             else
             {
-                InfoLine.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
+                ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
             }
 
             SafeOverlay.instance.RecalculateUnsafePositions();
@@ -53,7 +48,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         if (Keyboard.isKeyDown(Keyboard.KEY_MINUS))
         {
             int drawDistance = SafeOverlay.instance.DecreaseDrawDistance();
-            InfoLine.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
+            ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
             
             SafeOverlay.instance.RecalculateUnsafePositions();
             return;
@@ -64,7 +59,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         {
             int drawDistance = SafeOverlay.instance.SetDrawDistance(SafeOverlay.defaultDrawDistance);
             SafeOverlay.instance.SetSeeUnsafePositionsThroughWalls(false);
-            InfoLine.DisplayNotification(Localization.get("safeoverlay.distance") + " " + Localization.get("safeoverlay.distance.default") + " (" + drawDistance + ")");
+            ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.distance") + " " + Localization.get("safeoverlay.distance.default") + " (" + drawDistance + ")");
             
             SafeOverlay.instance.RecalculateUnsafePositions();
         	ZyinHUDSound.PlayButtonPress();
@@ -79,11 +74,11 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
 
             if (seeThroughWalls)
             {
-                InfoLine.DisplayNotification(Localization.get("safeoverlay.seethroughwallsenabled"));
+                ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.seethroughwallsenabled"));
             }
             else
             {
-                InfoLine.DisplayNotification(Localization.get("safeoverlay.seethroughwallsdisabled"));
+                ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.seethroughwallsdisabled"));
             }
 
             SafeOverlay.instance.RecalculateUnsafePositions();

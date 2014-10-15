@@ -12,6 +12,7 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.util.Vec3;
 
@@ -99,8 +100,10 @@ public class HUDEntityTrackerHelper {
             //iterate over all the loaded Entity objects and find just the entities we are tracking
             for (Object object : mc.theWorld.loadedEntityList)
             {
-                //only track entities that we are tracking (i.e. other players/wolves)
-                if(!(object instanceof EntityOtherPlayerMP || object instanceof EntityWolf))
+                //only track entities that we are tracking (i.e. other players/wolves/witherskeletons)
+                if(!(object instanceof EntityOtherPlayerMP || 
+                	 object instanceof EntityWolf ||
+                	 (object instanceof EntitySkeleton) && ((EntitySkeleton)object).getSkeletonType() == 1))
                     continue;
                 
                 Entity entity = (Entity)object;

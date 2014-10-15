@@ -129,6 +129,13 @@ public class ZyinHUDConfig
         else
         	p.set(Miscellaneous.UseQuickPlaceSign);
         
+        p = config.get(CATEGORY_MISCELLANEOUS, "UseUnlimitedSprinting", false);
+        p.comment = "Enable/Disable overriding the default sprint behavior and run forever.";
+        if(loadSettings)
+        	Miscellaneous.UseUnlimitedSprinting = p.getBoolean(false);
+        else
+        	p.set(Miscellaneous.UseUnlimitedSprinting);
+        
 
         //CATEGORY_INFOLINE
         p = config.get(CATEGORY_INFOLINE, "EnableInfoLine", true);
@@ -308,6 +315,13 @@ public class ZyinHUDConfig
         else
         	p.set(DurabilityInfo.ShowDamageAsPercentage);
         
+        p = config.get(CATEGORY_DURABILITYINFO, "UseColoredNumbers", false);
+        p.comment = "Toggle using colored numbering.";
+        if(loadSettings)
+        	DurabilityInfo.UseColoredNumbers = p.getBoolean(true);
+        else
+        	p.set(DurabilityInfo.UseColoredNumbers);
+        
         
         //CATEGORY_SAFEOVERLAY
         p = config.get(CATEGORY_SAFEOVERLAY, "EnableSafeOverlay", true);
@@ -456,6 +470,13 @@ public class ZyinHUDConfig
         	PlayerLocator.UseWolfColors = p.getBoolean(true);
         else
         	p.set(PlayerLocator.UseWolfColors);
+        
+        p = config.get(CATEGORY_PLAYERLOCATOR, "ShowWitherSkeletons", false);
+        p.comment = "Show wither skeletons in addition to other players.";
+        if(loadSettings)
+        	PlayerLocator.ShowWitherSkeletons = p.getBoolean(false);
+        else
+        	p.set(PlayerLocator.ShowWitherSkeletons);
         
         
         //CATEGORY_EATINGAID

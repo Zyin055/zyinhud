@@ -148,7 +148,7 @@ public class EatingAid extends ZyinHUDModBase
             foodItemIndex = GetFoodItemIndexFromInventory();
         	if(foodItemIndex < 0)
             {
-                InfoLine.DisplayNotification(Localization.get("eatingaid.nofood"));
+                ZyinHUDUtil.DisplayNotification(Localization.get("eatingaid.nofood"));
                 return;
             }
             

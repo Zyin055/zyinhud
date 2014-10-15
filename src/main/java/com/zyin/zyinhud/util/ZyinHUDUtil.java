@@ -61,8 +61,8 @@ public class ZyinHUDUtil
 	 */
 	public static boolean IsBlockRightClickable(Block block)
 	{
-        //couldn't find a way to see if a block is 'right click-able' without running the onBlockActivation() method
-        //which we don't want to do
+        //couldn't find a way to see if a block is 'right click-able' without running the onBlockActivated() method
+        //for that block, which we don't want to do
         return block instanceof BlockContainer	//BlockContainer = beacons, brewing stand, chest, command block, daylight detector, dispenser, enchantment table, ender chest, end portal, flower pot, furnace, hopper, jukebox, mob spawner, note block, piston moving, sign, skull
                 || block instanceof BlockButton
                 || block instanceof BlockLever
@@ -248,6 +248,16 @@ public class ZyinHUDUtil
         mc.ingameGUI.drawTexturedModalRect(x, y, u, v, width, height);
         
         GL11.glPopMatrix();
+    }
+    
+
+    /**
+     * Displays a short notification to the user. Uses the Minecraft code to display messages.
+     * @param message the message to be displayed
+     */
+    public static void DisplayNotification(String message)
+    {
+        mc.ingameGUI.func_110326_a(message, false);
     }
     
     /**

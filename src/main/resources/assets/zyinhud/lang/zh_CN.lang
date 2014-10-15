@@ -207,7 +207,7 @@ safeoverlay.distance.max=最大
 safeoverlay.distance.default=默认
 
 torchaid.name=火把辅助
-torchaid.notorches=未找到火把
+;torchaid.notorches=未找到火把
 torchaid.options.tooltip=不用将火把放在快捷栏,使用斧子,镐,锹和空手右击方块会放置火把.
 
 weaponswapper.name=武器转换

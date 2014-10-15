@@ -48,6 +48,7 @@ public class DurabilityInfo extends ZyinHUDModBase
     public static boolean ShowDamageAsPercentage;
     public static boolean AutoUnequipArmor;
     public static boolean AutoUnequipTools;
+    public static boolean UseColoredNumbers;
 
     public static final int durabilityUpdateFrequency = 1000;
 
@@ -91,8 +92,7 @@ public class DurabilityInfo extends ZyinHUDModBase
         //and not in a menu (except for chat and the custom Options menu)
         //and F3 not shown
         if (DurabilityInfo.Enabled &&
-                mc.inGameHasFocus ||
-                (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui())) &&
+                (mc.inGameHasFocus || (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui()))) &&
         		!mc.gameSettings.showDebugInfo)
         {
             //don't waste time recalculating things every tick
@@ -177,13 +177,34 @@ public class DurabilityInfo extends ZyinHUDModBase
 		{
 			boolean unicodeFlag = mc.fontRenderer.getUnicodeFlag();
 			mc.fontRenderer.setUnicodeFlag(true);
-			String damageString = GetDamageString(itemStack.getItemDamage(), itemStack.getMaxDamage());
+			
+			String damageString;
+			if(ShowDamageAsPercentage)
+				damageString = 100 - (int)((double)itemStack.getItemDamage() / itemStack.getMaxDamage() * 100) + "%";
+			else
+				damageString = Integer.toString(itemStack.getMaxDamage() - itemStack.getItemDamage());
+			
 			int damageX = x + toolX - mc.fontRenderer.getStringWidth(damageString);
 			int damageY = y + toolY - mc.fontRenderer.FONT_HEIGHT - 1;
-			mc.fontRenderer.drawStringWithShadow(damageString, damageX, damageY, 0xffffff);
+			int damageColor = 0xffffff;
+			if(UseColoredNumbers)
+				damageColor = GetDamageColor(itemStack.getItemDamage(), itemStack.getMaxDamage());
+			
+			mc.fontRenderer.drawStringWithShadow(damageString, damageX, damageY, damageColor);
 			mc.fontRenderer.setUnicodeFlag(unicodeFlag);
 		}
 	}
+	
+	protected static int GetDamageColor(int currentDamage, int maxDamage)
+	{
+		float percent = 100 - (int)((double)currentDamage / maxDamage * 100);
+		
+		if(percent < 50)
+			return (int)(0xff0000 + ((int)(0xff * percent/50) << 8));
+		else
+			return (int)(0x00ff00 + ((int)(0xff * (100 - (percent-50)*2)/100) << 16));
+	}
+	
     
     /***
      * Draws the broken durability image
@@ -376,14 +397,6 @@ public class DurabilityInfo extends ZyinHUDModBase
 		durabilityDisplayThresholdForItem = durabilityDisplayThreshold;
 		CalculateDurabilityIcons();
 	}
-    
-    private static String GetDamageString(int currentDamage, int maxDamage)
-    {
-        if(ShowDamageAsPercentage)
-        	return 100 - (int)((double)currentDamage / maxDamage * 100) + "%";
-        else
-        	return (maxDamage - currentDamage) + "";
-    }
 
     /**
      * Gets the horizontal location where the durability icons are rendered.
@@ -474,5 +487,13 @@ public class DurabilityInfo extends ZyinHUDModBase
     public static boolean ToggleAutoUnequipTools()
     {
     	return AutoUnequipTools = !AutoUnequipTools;
+    }
+    /**
+     * Toggles using color
+     * @return 
+     */
+    public static boolean ToggleUseColoredNumbers()
+    {
+    	return UseColoredNumbers = !UseColoredNumbers;
     }
 }

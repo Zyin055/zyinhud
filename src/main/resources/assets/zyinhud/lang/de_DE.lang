@@ -201,7 +201,7 @@ safeoverlay.distance.max=Maximal
 safeoverlay.distance.default=Normal
 
 torchaid.name=Fackelhelfer
-torchaid.notorches=Keine Fackeln!
+;torchaid.notorches=Keine Fackeln!
 torchaid.options.tooltip=Setzt eine Fackel durch Rechtsklick mit Axt, Spitzhacke, Schaufel oder gar nichts in der Hand, auch wenn keine Fackeln im Hotbar sind.
 
 weaponswapper.name=Waffentausch

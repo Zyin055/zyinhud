@@ -182,8 +182,7 @@ public class AnimalInfo extends ZyinHUDModBase
         //and not in a menu
         //and F3 is shown
         if (AnimalInfo.Enabled && ShowHorseStatsOnF3Menu &&
-                (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
-                && mc.gameSettings.showDebugInfo)
+                (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat))
         {
             if (mc.thePlayer.isRidingHorse())
             {
@@ -321,6 +320,28 @@ public class AnimalInfo extends ZyinHUDModBase
 			else if(animal instanceof EntityOcelot)
 				ZyinHUDUtil.RenderFloatingIcon(Items.fish, x, y + animal.height, z, partialTickTime);
 		}
+		
+		
+		//TODO: 1.8 villager breeding/trading mechanics testing
+        /*
+        if(animal instanceof EntityVillager)
+        {
+			int timeUntilReset = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "timeUntilReset","field_");
+			int wealth = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "wealth","field_");
+			float field_82191_bN = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_82191_bN","field_");
+			boolean isMating = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "isMating","field_");
+			boolean isPlaying = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "isPlaying","field_");
+			boolean needsInitilization = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "needsInitilization","field_");
+            
+
+            ZyinHUDUtil.RenderFloatingText("timeUntilReset: "+timeUntilReset, x, y, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+            ZyinHUDUtil.RenderFloatingText("wealth : "+wealth, x, y+0.1f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+            ZyinHUDUtil.RenderFloatingText("field_82191_bN: "+field_82191_bN, x, y+0.2f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+            ZyinHUDUtil.RenderFloatingText("isMating: "+isMating, x, y+0.3f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+            ZyinHUDUtil.RenderFloatingText("isPlaying: "+isPlaying, x, y+0.4f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+            ZyinHUDUtil.RenderFloatingText("needsInitilization: "+needsInitilization, x, y+0.5f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+        }
+		*/
     }
 
     /**

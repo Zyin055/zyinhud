@@ -59,8 +59,7 @@ public class PotionTimers extends ZyinHUDModBase
         //and not in a menu (except for chat and the custom Options menu)
         //and F3 not shown
         if (PotionTimers.Enabled &&
-                mc.inGameHasFocus ||
-                (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui())) &&
+                (mc.inGameHasFocus || (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui()))) &&
         		!mc.gameSettings.showDebugInfo)
         {
             Collection potionEffects = mc.thePlayer.getActivePotionEffects();	//key:potionId, value:potionEffect

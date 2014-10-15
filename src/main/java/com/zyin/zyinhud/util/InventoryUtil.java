@@ -141,19 +141,21 @@ public class InventoryUtil
 		
 		int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
     	mc.thePlayer.inventory.currentItem = itemToUseHotbarIndex;
-    	
+
+		boolean wasUsedSuccessfully = false;
+		
     	if(object instanceof Item)
     	{
-    		SendUseItem();
+    		wasUsedSuccessfully = SendUseItem();
     	}
     	else if(object instanceof Block)
     	{
-    		SendUseBlock();
+    		wasUsedSuccessfully = SendUseBlock();
     	}
     	
     	mc.thePlayer.inventory.currentItem = previouslySelectedHotbarSlotIndex;
         
-    	return true;
+    	return wasUsedSuccessfully;
 	}
 
 	
@@ -180,43 +182,51 @@ public class InventoryUtil
 	{
 		if(itemSlotIndex < 0 || itemSlotIndex > 35)
 			return false;
+		
+		int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
+		mc.thePlayer.inventory.currentItem = 0;	//use the first hotbar slot so that mods that extend the vanilla hotbar will be compatible
 
 		int currentItemInventoryIndex = TranslateHotbarIndexToInventoryIndex(mc.thePlayer.inventory.currentItem);
 
 		Swap(itemSlotIndex, currentItemInventoryIndex);
 		
+		boolean wasUsedSuccessfully = false;
+		
     	if(object instanceof Item)
     	{
-    		SendUseItem();
+    		wasUsedSuccessfully = SendUseItem();
     	}
     	else if(object instanceof Block)
     	{
-    		SendUseBlock();
+    		wasUsedSuccessfully = SendUseBlock();
     	}
 		
         instance.SwapWithDelay(itemSlotIndex, currentItemInventoryIndex, GetSuggestedItemSwapDelay());
+        
+        mc.thePlayer.inventory.currentItem = previouslySelectedHotbarSlotIndex;
 
-    	return true;
+    	return wasUsedSuccessfully;
 	}
 	
 	/**
 	 * Makes the player use the Item in their currently selected hotbar slot.
 	 * To use Blocks, use SendUseBlock()
+	 * @return 
 	 */
-	public static void SendUseItem()
+	public static boolean SendUseItem()
 	{
 		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
-		mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, mc.thePlayer.getHeldItem());
+		return mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, mc.thePlayer.getHeldItem());
 	}
 	
 	/**
 	 * Makes the player use the Block in their currently selected hotbar slot.
 	 * To use Items, use SendUseItem()
 	 */
-	public static void SendUseBlock()
+	public static boolean SendUseBlock()
 	{
 		//Blocks need to use the onPlayerRightClick() function to work properly
-		mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem(), mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
+		return mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem(), mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
 	}
 
 	

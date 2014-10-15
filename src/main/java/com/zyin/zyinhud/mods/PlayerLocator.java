@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
@@ -83,6 +84,7 @@ public class PlayerLocator extends ZyinHUDModBase
     /** Shows how far you are from other players next to their name */
     public static boolean ShowDistanceToPlayers;
     public static boolean ShowPlayerHealth;
+    public static boolean ShowWitherSkeletons;
     public static boolean ShowWolves;
     public static boolean UseWolfColors;
     
@@ -116,7 +118,9 @@ public class PlayerLocator extends ZyinHUDModBase
     		return;
     	
         //if(!(entity instanceof EntityCow))	//for single player testing/debugging!
-        if (!(entity instanceof EntityOtherPlayerMP || entity instanceof EntityWolf))
+        if (!(entity instanceof EntityOtherPlayerMP ||
+        	  entity instanceof EntityWolf ||
+        	  (entity instanceof EntitySkeleton) && ((EntitySkeleton)entity).getSkeletonType() == 1))
         {
             return;    //we only care about other players and wolves
         }
@@ -166,6 +170,15 @@ public class PlayerLocator extends ZyinHUDModBase
 	                b = (0xFF - b)/2;
 	                rgb = rgb + ((r << 4*4) + (g << 4*2) + b);	//a more white version of the collar color
         		}
+        	}
+        	else if(entity instanceof EntitySkeleton && (((EntitySkeleton)entity).getSkeletonType() == 1))
+        	{
+        		if(!ShowWitherSkeletons)
+        			return;
+        		
+        		overlayMessage = GetOverlayMessageForWitherSkeleton((EntitySkeleton)entity, distanceFromMe);
+        		
+        		rgb = 0x555555;
         	}
         	
         	if(entity.ridingEntity != null)
@@ -255,22 +268,21 @@ public class PlayerLocator extends ZyinHUDModBase
     private static boolean PlayerIsWolfsOwner(EntityWolf wolf)
     {
     	return wolf.isOnSameTeam(mc.thePlayer);
-    	/*
-    	EntityLivingBase owner = wolf.getOwner();
-    	
-    	
-    	System.out.println("isOnSameTeam(mc.theplayer)="+wolf.isOnSameTeam(mc.thePlayer));
-    	
-    	
-    	
-    	if(owner == null)
-    		return false;
-    	
-    	String wolfOwnerName = EntityList.getEntityString(owner);
-    	System.out.println("wolf owner:"+wolfOwnerName);
-    	return mc.thePlayer.getDisplayName().equals(wolfOwnerName);	//TODO 1.7.10
-    	*/
     }
+    
+    
+	private static String GetOverlayMessageForWitherSkeleton(EntitySkeleton witherSkeleton, float distanceFromMe)
+	{
+		String overlayMessage = "Wither Skeleton";
+		
+        //add distance to this wither skeleton into the message
+        if (ShowDistanceToPlayers)
+        {
+        	overlayMessage = FontCodes.GRAY + "[" + (int)distanceFromMe + "] " + FontCodes.RESET + overlayMessage;
+        }
+        
+        return overlayMessage;
+	}
     
 	private static String GetOverlayMessageForWolf(EntityWolf wolf, float distanceFromMe)
 	{
@@ -281,7 +293,7 @@ public class PlayerLocator extends ZyinHUDModBase
 		else
 			overlayMessage = wolf.getCustomNameTag();
 
-        //add distance to this player into the message
+        //add distance to this wolf into the message
         if (ShowDistanceToPlayers)
         {
         	overlayMessage = FontCodes.GRAY + "[" + (int)distanceFromMe + "] " + FontCodes.RESET + overlayMessage;
@@ -434,6 +446,15 @@ public class PlayerLocator extends ZyinHUDModBase
     public static boolean ToggleUseWolfColors()
     {
     	return UseWolfColors = !UseWolfColors;
+    }
+    
+    /**
+     * Toggle showing wolves in addition to other players
+     * @return The new Clock mode
+     */
+    public static boolean ToggleShowWitherSkeletons()
+    {
+    	return ShowWitherSkeletons = !ShowWitherSkeletons;
     }
     
 }

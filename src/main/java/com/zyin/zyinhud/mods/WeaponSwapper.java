@@ -1,5 +1,8 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
@@ -47,7 +50,7 @@ public class WeaponSwapper extends ZyinHUDModBase
         if (swordSlot < 0 && bowSlot < 0)
         {
             //we dont have a sword or a bow
-            InfoLine.DisplayNotification("No weapons in hotbar");
+            ZyinHUDUtil.DisplayNotification(Localization.get("weaponswapper.noweaponsinhotbar"));
         }
         else if (swordSlot >= 0 && bowSlot < 0)
         {

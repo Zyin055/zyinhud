@@ -91,7 +91,7 @@ public class PotionAid extends ZyinHUDModBase
             potionItemIndex = GetMostAppropriatePotionItemIndexFromInventory();
         	if (potionItemIndex < 0)
             {
-                InfoLine.DisplayNotification(Localization.get("potionaid.noappropriatepotions"));
+                ZyinHUDUtil.DisplayNotification(Localization.get("potionaid.noappropriatepotions"));
                 return;
             }
             

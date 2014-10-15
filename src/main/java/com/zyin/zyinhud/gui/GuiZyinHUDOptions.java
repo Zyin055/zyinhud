@@ -307,6 +307,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     {
     	AddButtonAt(0, 0, new GuiButton(2001, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.useenhancedmiddleclick", Miscellaneous.UseEnhancedMiddleClick)));
     	AddButtonAt(0, 1, new GuiButton(2002, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.usequickplacesign", Miscellaneous.UseQuickPlaceSign)));
+    	AddButtonAt(0, 2, new GuiButton(2003, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.useunlimitedsprinting", Miscellaneous.UseUnlimitedSprinting)));
     	
     }
     private void DrawInfoLineButtons()
@@ -366,8 +367,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 3, new GuiButton(804, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers)));
     	AddButtonAt(0, 4, new GuiButton(805, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showplayerhealth", PlayerLocator.ShowPlayerHealth)));
     	
-    	AddButtonAt(1, 0, new GuiButton(806, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showwolves", PlayerLocator.ShowWolves)));
-    	AddButtonAt(1, 1, new GuiButton(807, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.usewolfcolors", PlayerLocator.UseWolfColors)));
+    	AddButtonAt(1, 0, new GuiButton(808, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showwitherskeletons", PlayerLocator.ShowWitherSkeletons)));
+    	AddButtonAt(1, 1, new GuiButton(806, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showwolves", PlayerLocator.ShowWolves)));
+    	AddButtonAt(1, 2, new GuiButton(807, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.usewolfcolors", PlayerLocator.UseWolfColors)));
     	
     }
     private void DrawAnimalInfoButtons()
@@ -407,6 +409,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 6, new GuiNumberSlider(1109, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, GuiNumberSlider.Modes.INTEGER));
     	
     	//AddButtonAt(1, 0, new GuiNumberSlider(1107, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 100, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
+    	AddButtonAt(1, 0, new GuiButton(1113, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.usecolorednumbers", DurabilityInfo.UseColoredNumbers)));
     	AddButtonAt(1, 1, new GuiButton(1105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
     	AddButtonAt(1, 2, new GuiNumberSlider(1106, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), GuiNumberSlider.Modes.PERCENT));
     	AddButtonAt(1, 3, new GuiButton(1112, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiptools", DurabilityInfo.AutoUnequipTools)));
@@ -804,6 +807,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	PlayerLocator.ToggleUseWolfColors();
 	            	button.displayString = GetButtonLabel_Boolean("playerlocator.options.usewolfcolors", PlayerLocator.UseWolfColors);
 	            	break;
+	            case 808:	//Show wither skeletons
+	            	PlayerLocator.ToggleShowWitherSkeletons();
+	            	button.displayString = GetButtonLabel_Boolean("playerlocator.options.showwitherskeletons", PlayerLocator.ShowWitherSkeletons);
+	            	break;
 	            
 	            /////////////////////////////////////////////////////////////////////////
 	            // Horse Info
@@ -929,6 +936,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            case 1112:	//Auto unequip Tools
 	            	DurabilityInfo.ToggleAutoUnequipTools();
 	            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.autounequiptools", DurabilityInfo.AutoUnequipTools);
+	            	break;
+	            case 1113:	//Use colored numbers
+	            	DurabilityInfo.ToggleUseColoredNumbers();
+	            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.usecolorednumbers", DurabilityInfo.UseColoredNumbers);
 	            	break;
 	            
 	            
@@ -1164,6 +1175,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	Miscellaneous.ToggleUseQuickPlaceSign();
 	            	button.displayString = GetButtonLabel_Boolean("miscellaneous.options.usequickplacesign", Miscellaneous.UseQuickPlaceSign);
 	            	break;
+	            case 2003:	//Use unlimited sprinting
+	            	Miscellaneous.ToggleUseUnlimitedSprinting();
+	            	button.displayString = GetButtonLabel_Boolean("miscellaneous.options.useunlimitedsprinting", Miscellaneous.UseUnlimitedSprinting);
+	            	break;
 	            	
 	            
             }
@@ -1191,6 +1206,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 803: return Localization.get("playerlocator.options.minviewdistance.tooltip");
 			case 806: return Localization.get("playerlocator.options.showwolves.tooltip");
 			case 807: return Localization.get("playerlocator.options.usewolfcolors.tooltip");
+			case 808: return Localization.get("playerlocator.options.showwitherskeletons.tooltip");
 			case 900: return Localization.get("animalinfo.options.tooltip");
 			case 907: return Localization.get("animalinfo.options.showtextbackground.tooltip");
 			case 905: return Localization.get("animalinfo.options.showhorsestatsonf3menu.tooltip");
@@ -1229,6 +1245,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1900: return Localization.get("torchaid.options.tooltip");
 			case 2001: return Localization.get("miscellaneous.options.useenhancedmiddleclick.tooltip");
 			case 2002: return Localization.get("miscellaneous.options.usequickplacesign.tooltip");
+			case 2003: return Localization.get("miscellaneous.options.useunlimitedsprinting.tooltip");
 			default: return null;
 		}
 	}

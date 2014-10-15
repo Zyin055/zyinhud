@@ -203,7 +203,7 @@ safeoverlay.distance.max=max
 safeoverlay.distance.default=default
 
 torchaid.name=Ayuda de Antorchas
-torchaid.notorches=No hay Antorchas
+;torchaid.notorches=No hay Antorchas
 torchaid.options.tooltip=Coloca antorchas sin tenerlas en tu barra de acceso rápido haciendo click derecho con un hacha, pico, pala, o cuando no tienes nada en tu mano.
 
 weaponswapper.name=Cambio de Armas

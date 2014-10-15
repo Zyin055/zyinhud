@@ -43,9 +43,9 @@ public class InfoLine extends ZyinHUDModBase
     public static int infoLineLocX = 1;
     public static int infoLineLocY = 1;
 
-    private static final int notificationDuration = 1200;	//measured in milliseconds
+    /*private static final int notificationDuration = 1200;	//measured in milliseconds
     private static long notificationTimer = 0;				//timer that goes from notificationDuration to 0
-    private static long notificationStartTime;
+    private static long notificationStartTime;*/
     
     /** The notification string currently being rendered */
     public static String notificationMessage = "";
@@ -118,14 +118,14 @@ public class InfoLine extends ZyinHUDModBase
             if (animals.length() > 0)
             	animals += SPACER;
             infoLineMessage += animals;
-            
+
             mc.fontRenderer.drawStringWithShadow(infoLineMessage, infoLineLocX, infoLineLocY, 0xffffff);
         }
 
-        if (notificationTimer > 0)
+        /*if (notificationTimer > 0)
         {
             RenderNotification(notificationMessage);
-        }
+        }*/
     }
     
     private static void renderGlint(int par1, int par2, int par3, int par4, int par5)
@@ -195,18 +195,18 @@ public class InfoLine extends ZyinHUDModBase
      * Displays a short notification to the user.
      * @param message the message to be displayed
      */
-    public static void DisplayNotification(String message)
+    /*public static void DisplayNotification(String message)
     {
         notificationMessage = message;
         notificationTimer = notificationDuration;
         notificationStartTime = System.currentTimeMillis();
-    }
+    }*/
 
     /**
      * Renders a short message on the screen.
      * @param message the message to be displayed
      */
-    private static void RenderNotification(String message)
+    /*private static void RenderNotification(String message)
     {
         if ((mc.inGameHasFocus || mc.currentScreen == null))
         {
@@ -235,7 +235,7 @@ public class InfoLine extends ZyinHUDModBase
         }
 
         notificationTimer = notificationStartTime - System.currentTimeMillis() + notificationDuration;	//counts down from 1000 to 0
-    }
+    }*/
     
 
     /**

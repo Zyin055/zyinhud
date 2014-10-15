@@ -1,7 +1,6 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.item.Item;
 import net.minecraft.util.MovingObjectPosition;
@@ -10,6 +9,7 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import com.zyin.zyinhud.util.InventoryUtil;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 /**
  * The Miscellaneous mod has other functionality not relating to anything specific.
@@ -20,6 +20,7 @@ public class Miscellaneous extends ZyinHUDModBase
 
 	public static boolean UseEnhancedMiddleClick;
 	public static boolean UseQuickPlaceSign;
+	public static boolean UseUnlimitedSprinting;
 	
 
     @SubscribeEvent
@@ -70,6 +71,31 @@ public class Miscellaneous extends ZyinHUDModBase
             }
         }
 	}
+
+    @SubscribeEvent
+	public void ClientTickEvent(ClientTickEvent event)
+	{
+		//only play the sound if it's not playing already
+		if(UseUnlimitedSprinting)
+		{
+			MakeSprintingUnlimited();
+		}
+	}
+	
+    
+    /**
+     * Lets the player sprint longer than 30 seconds at a time. Needs to be called on every game tick to be effective.
+     */
+	public static void MakeSprintingUnlimited()
+	{
+		if(mc.thePlayer == null)
+			return;
+		
+		if(!mc.thePlayer.isSprinting())
+			mc.thePlayer.sprintingTicksLeft = 0;
+		else
+			mc.thePlayer.sprintingTicksLeft = 600;	//sprintingTicksLeft is set to 600 when EntityPlayerSP.setSprinting() is called
+	}
 	
 	
 
@@ -89,5 +115,14 @@ public class Miscellaneous extends ZyinHUDModBase
     public static boolean ToggleUseQuickPlaceSign()
     {
     	return UseQuickPlaceSign = !UseQuickPlaceSign;
+    }
+    
+    /**
+     * Toggles unlimited sprinting
+     * @return 
+     */
+    public static boolean ToggleUseUnlimitedSprinting()
+    {
+    	return UseUnlimitedSprinting = !UseUnlimitedSprinting;
     }
 }

@@ -203,7 +203,7 @@ safeoverlay.distance.max=maks
 safeoverlay.distance.default=default
 
 torchaid.name=Bantuan Obor
-torchaid.notorches=Tidak ada obor
+;torchaid.notorches=Tidak ada obor
 torchaid.options.tooltip=Meletakkan obor tanpa menaruhnya di hotbar dengan klik kanan mouse ketika memegang kapak, pickaxe, shovel, atau ketika tidak memiliki apa-apa di tangan.
 
 weaponswapper.name=Penukar Senjata

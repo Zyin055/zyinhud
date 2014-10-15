@@ -4,6 +4,7 @@ import net.minecraft.init.Items;
 
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * EnderPearl Aid allows the player to easily use an ender pearl on their hotbar by calling its UseEnderPearl() method.
@@ -29,7 +30,7 @@ public class EnderPearlAid extends ZyinHUDModBase
     {
         if(mc.playerController.isInCreativeMode())
         {
-        	InfoLine.DisplayNotification(Localization.get("enderpearlaid.increative"));
+        	ZyinHUDUtil.DisplayNotification(Localization.get("enderpearlaid.increative"));
         	return;
         }
         
@@ -42,7 +43,7 @@ public class EnderPearlAid extends ZyinHUDModBase
         
         if (!usedEnderPearlSuccessfully)
         {
-            InfoLine.DisplayNotification(Localization.get("enderpearlaid.noenderpearls"));
+        	ZyinHUDUtil.DisplayNotification(Localization.get("enderpearlaid.noenderpearls"));
         }
     }
 }

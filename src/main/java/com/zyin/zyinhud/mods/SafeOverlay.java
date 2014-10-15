@@ -35,10 +35,18 @@ import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.BlockWeb;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.multiplayer.ChunkProviderClient;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.WorldProviderHell;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.ChunkProviderGenerate;
+import net.minecraft.world.gen.ChunkProviderHell;
+import net.minecraft.world.gen.ChunkProviderServer;
 //import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
@@ -48,6 +56,7 @@ import org.lwjgl.opengl.GL11;
 import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -170,9 +179,6 @@ public class SafeOverlay extends ZyinHUDModBase
     private Position cachePosition = new Position();
     private static List<Position> unsafePositionCache;
 
-    private Minecraft mc;
-    private EntityPlayer player;
-
     /**
      * When this flag is set to true Safe Overlay will recalculate the unsafe position cache.
      */
@@ -184,10 +190,9 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     public static SafeOverlay instance = new SafeOverlay();
 
+    
     protected SafeOverlay()
     {
-        mc = Minecraft.getMinecraft();
-        player = mc.thePlayer;
         playerPosition = new Position();
         
         //Don't let multiple threads access this list at the same time by making it a Synchronized List
@@ -217,29 +222,17 @@ public class SafeOverlay extends ZyinHUDModBase
         int blockFace = event.face;	// Bottom = 0, Top = 1, Sides = 2-5
 
         if (blockFace == 0)
-        {
             y--;
-        }
         else if (blockFace == 1)
-        {
             y++;
-        }
         else if (blockFace == 2)
-        {
             z--;
-        }
         else if (blockFace == 3)
-        {
             z++;
-        }
         else if (blockFace == 4)
-        {
             x--;
-        }
         else if (blockFace == 5)
-        {
             x++;
-        }
         
         Block blockPlaced = mc.theWorld.getBlock(x, y, z);
         if (blockPlaced != Blocks.air)	//if it's not an Air block
@@ -329,40 +322,6 @@ public class SafeOverlay extends ZyinHUDModBase
             }
         }
     }
-/*
-    class SafeCalculatorThread extends Thread
-    {
-    	//this is the y-coordinate this thread is responsible for calculating
-        private int y;
-
-        SafeCalculatorThread(int y)
-        {
-            super("Safe Overlay Calculator Thread at y=" + y);
-            this.y = y;
-
-            //Start the thread
-            start();
-        }
-
-        //This is the entry point for the thread after start() is called.
-        public void run()
-        {
-            Position pos = new Position();
-
-            for (int x = -drawDistance; x < drawDistance; x++)
-            for (int z = -drawDistance; z < drawDistance; z++)
-            {
-                pos.x = playerPosition.x + x;
-                pos.y = playerPosition.y + y;
-                pos.z = playerPosition.z + z;
-                
-                if(CanMobsSpawnAtPosition(pos))
-                {
-                    unsafePositionCache.add(new Position(pos));
-                }
-            }
-        }
-    }*/
     
     /**
      * Determines if any mob can spawn at a position. Works very well at detecting
@@ -380,11 +339,24 @@ public class SafeOverlay extends ZyinHUDModBase
         if (pos.CanMobsSpawnOnBlock(0, 0, 0) && pos.CanMobsSpawnInBlock(0, 1, 0) && pos.GetLightLevelWithoutSky() < 8)
         {
             //4) 2 blocks above needs to be air for bipeds
-        	if(pos.IsAirBlock(0, 2, 0))
-        		return true;
+        	if(mc.thePlayer.dimension != 1)
+    		{
+        		if(pos.IsAirBlock(0, 2, 0))
+            		return true;
+        	}
+        	
+        	//4.5) 3 blocks above for Enderman (in the End)
+        	else if(mc.thePlayer.dimension == 1)
+    		{
+        		if(pos.IsAirBlock(0, 2, 0) && pos.IsAirBlock(0, 3, 0))
+        			return true;
+            	else
+            		return false;
+    		}
+    		
 
-            //4.5) 2 blocks above needs to be transparent (air, glass, stairs, etc) for spiders
-        	if(!pos.IsOpaqueBlock(0, 2, 0))	//block is see through like air, stairs, glass, etc.
+            //5) 2 blocks above needs to be transparent (air, glass, stairs, etc) for spiders
+        	if(!pos.IsOpaqueBlock(0, 2, 0))	//block is not solid (like air, glass, stairs, etc)
         	{
         		//check to see if a spider can spawn here by checking the 8 neighboring blocks
         		if(pos.CanMobsSpawnInBlock(-1, 1, 1) &&
@@ -415,16 +387,14 @@ public class SafeOverlay extends ZyinHUDModBase
             return;
         }
 
-        player = mc.thePlayer;
-
-        if (!displayInNether && player.dimension == -1)	//turn off in the nether, mobs can spawn no matter what
+        if (!displayInNether && mc.thePlayer.dimension == -1)	//turn off in the nether, mobs can spawn no matter what
         {
             return;
         }
 
-        double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTickTime;
-        double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTickTime;
-        double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTickTime;
+        double x = mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * partialTickTime;
+        double y = mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * partialTickTime;
+        double z = mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * partialTickTime;
         
         playerPosition = new Position((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
 
@@ -490,13 +460,13 @@ public class SafeOverlay extends ZyinHUDModBase
         float r, g, b, alpha;
         int lightLevelWithSky = position.GetLightLevelWithSky();
         int lightLevelWithoutSky = position.GetLightLevelWithoutSky();
-
+        
         if (lightLevelWithSky > lightLevelWithoutSky && lightLevelWithSky > 7)
         {
-            //yellow
-            //decrease the brightness of the yellow "X" marks if the surrounding area is dark
+            //yellow, but decrease the brightness of the "X" marks if the surrounding area is dark
             int blockLightLevel = Math.max(lightLevelWithSky, lightLevelWithoutSky);
-            float colorBrightnessModifier = blockLightLevel / 15f;
+            float colorBrightnessModifier = (blockLightLevel) / 15f;
+            
             r = 1f * colorBrightnessModifier;
             g = 1f * colorBrightnessModifier;
             b = 0f;
@@ -504,14 +474,17 @@ public class SafeOverlay extends ZyinHUDModBase
         }
         else
         {
-            //red
-            r = 0.5f;
+            //red, but decrease the brightness of the "X" marks if the surrounding area is dark
+        	int blockLightLevel = Math.max(lightLevelWithSky, lightLevelWithoutSky);
+            float colorBrightnessModifier = (blockLightLevel) / 15f + 0.5f;
+            
+            r = 0.5f * colorBrightnessModifier;
             g = 0f;
             b = 0f;
             alpha = unsafeOverlayTransparency;
         }
 
-        //Minecraft bug: the Y-bounds for half slabs change and snow layers if the user is aimed at them, so set them manually
+        //Minecraft bug: the Y-bounds for half slabs and snow layers change if the user is aimed at them, so set them manually
         if (block instanceof BlockSlab || block instanceof BlockSnow)
         {
             boundingBoxMaxY = 1.0;
