@@ -12,7 +12,6 @@ import net.minecraft.block.BlockCactus;
 import net.minecraft.block.BlockCake;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -34,29 +33,17 @@ import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.BlockWeb;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.multiplayer.ChunkProviderClient;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.WorldProviderHell;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.ChunkProviderGenerate;
-import net.minecraft.world.gen.ChunkProviderHell;
-import net.minecraft.world.gen.ChunkProviderServer;
 //import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import org.lwjgl.opengl.GL11;
 
-import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -305,7 +292,6 @@ public class SafeOverlay extends ZyinHUDModBase
         //This is the entry point for the thread after start() is called.
         public void run()
         {
-            
             Position pos = new Position();
 
             for (int x = -drawDistance; x < drawDistance; x++)
@@ -331,7 +317,7 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     public static boolean CanMobsSpawnAtPosition(Position pos)
     {
-        //if a mob can spawn here, add it to the unsafe positions cache so it can be rendered as unsafe
+    	//if a mob can spawn here, add it to the unsafe positions cache so it can be rendered as unsafe
         //4 things must be true for a mob to be able to spawn here:
         //1) mobs need to be able to spawn on top of this block (block with a solid top surface)
         //2) mobs need to be able to spawn inside of the block above (air, button, lever, etc)
@@ -840,7 +826,7 @@ public class SafeOverlay extends ZyinHUDModBase
             {
                 return false;
             }
-
+            
             //list of transparent blocks mobs can NOT spawn inside of.
             //for example, they cannot spawn inside of leaves even though they are transparent.
             //  (I wonder if the list shorter for blocks that mobs CAN spawn in?

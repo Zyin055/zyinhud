@@ -10,6 +10,4 @@ public abstract class ZyinHUDModBase
 	
 	//We can't move the static variable Enabled to this base mod because then if one mod sets it to false
 	//then ALL mods will be set to false
-	
-	//We can't move the enum Modes here because enum cannot values can only be added where it is declared
 }

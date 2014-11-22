@@ -1,12 +1,10 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
-import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
@@ -91,15 +89,23 @@ public class Clock extends ZyinHUDModBase
                 
                 long hours = time / 1000;
                 long seconds = (long)((time % 1000) * (60.0/1000.0));
-                
-                String clockString = FontCodes.WHITE + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
-                return clockString;
+
+                if(IsNight())
+        		{
+                    String nighttimeClockString = FontCodes.GRAY + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
+                    return nighttimeClockString;
+        		}
+                else
+        		{
+                    String daytimeClockString = FontCodes.YELLOW + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
+                    return daytimeClockString;
+        		}
         	}
         	else if(Clock.Mode == Modes.COUNTDOWN)
         	{
                 long time = (mc.theWorld.getWorldTime()) % 24000;
                 
-        		if(time >= mobSpawningStartTime && time < mobSpawningStopTime)
+        		if(IsNight())
         		{
         			//night time
         			long secondsTillDay = (mobSpawningStopTime - time) / 20;
@@ -107,8 +113,8 @@ public class Clock extends ZyinHUDModBase
         			long minutes = secondsTillDay / 60;
         			long seconds = secondsTillDay - minutes*60;
         			
-                    String nighttimeTimerString = FontCodes.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-                    return nighttimeTimerString;
+                    String nighttimeCountdownString = FontCodes.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+                    return nighttimeCountdownString;
         		}
         		else
         		{
@@ -122,8 +128,8 @@ public class Clock extends ZyinHUDModBase
         			long minutes = secondsTillNight / 60;
         			long seconds = secondsTillNight - minutes*60;
 
-                    String daytimeTimerString = FontCodes.YELLOW + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-                    return daytimeTimerString;
+                    String daytimeCountdownString = FontCodes.YELLOW + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+                    return daytimeCountdownString;
         		}
         	}
         	else if(Clock.Mode == Modes.GRAPHIC)
@@ -134,23 +140,16 @@ public class Clock extends ZyinHUDModBase
         		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the RenderItem.renderItem() methods enable lighting
         		GL11.glDisable(GL11.GL_DEPTH_TEST);
         		
-        		return "    ";
+        		return "    ";	//about the length of the clock graphic
         	}
         }
 
         return "";
     }
     
-    /**
-     * Increments the Clock mode
-     * @return The new Clock mode
-     */
-    /*public static int ToggleMode()
+    public static boolean IsNight()
     {
-    	Mode++;
-    	if(Mode >= NumberOfModes)
-    		Mode = 0;
-    	return Mode;
+    	long time = (mc.theWorld.getWorldTime()) % 24000;
+    	return time >= mobSpawningStartTime && time < mobSpawningStopTime;
     }
-    */
 }

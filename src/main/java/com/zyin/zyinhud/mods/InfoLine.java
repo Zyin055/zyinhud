@@ -2,7 +2,6 @@ package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Items;
@@ -83,11 +82,6 @@ public class InfoLine extends ZyinHUDModBase
             if (compass.length() > 0)
             	compass += SPACER;
             infoLineMessage += compass;
-            
-            String distance = DistanceMeasurer.CalculateMessageForInfoLine();
-            if (distance.length() > 0)
-            	distance += SPACER;
-            infoLineMessage += distance;
             
             String fps = Fps.CalculateMessageForInfoLine();
             if (fps.length() > 0)

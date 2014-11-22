@@ -20,6 +20,7 @@ import org.lwjgl.opengl.GL11;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ModCompatibility;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
@@ -49,8 +50,9 @@ public class DurabilityInfo extends ZyinHUDModBase
     public static boolean AutoUnequipArmor;
     public static boolean AutoUnequipTools;
     public static boolean UseColoredNumbers;
+    public static float DurabilityScale = 1f;
 
-    public static final int durabilityUpdateFrequency = 1000;
+    public static final int durabilityUpdateFrequency = 600;
 
     //U and V is the top left part of the image
     //X and Y is the width and height of the image
@@ -96,7 +98,7 @@ public class DurabilityInfo extends ZyinHUDModBase
         		!mc.gameSettings.showDebugInfo)
         {
             //don't waste time recalculating things every tick
-        	if(System.currentTimeMillis() - lastGenerate > durabilityUpdateFrequency)	//update every 1 second
+        	if(System.currentTimeMillis() - lastGenerate > durabilityUpdateFrequency)
             {
                 CalculateDurabilityIcons();
             }
@@ -115,37 +117,55 @@ public class DurabilityInfo extends ZyinHUDModBase
             for (ItemStack itemStack : damagedItemsList)
             {
                 Item tool = itemStack.getItem();
-
+                
+                
                 //if this tool is an armor
                 if (tool instanceof ItemArmor)
                 {
                     if (ShowArmorDurability)
                     {
+                        GL11.glScalef(DurabilityScale, DurabilityScale, DurabilityScale);
+                        
                     	if(ShowIndividualArmorIcons)
                     	{
-                            int x = durabalityLocX;
-                            int y = durabalityLocY + (numArmors * toolY);
+                            int x = (int) Math.floor(durabalityLocX / DurabilityScale);
+                            int y = (int) Math.floor(durabalityLocY / DurabilityScale) + (numArmors * toolY);
+
                             
                             DrawItemIcon(itemStack, x, y);
+                            
                             numArmors++;
                     	}
                     	else
                     	{
-                            DrawBrokenArmorTexture(durabalityLocX, durabalityLocY);
+                            int x = (int) Math.floor(durabalityLocX / DurabilityScale);
+                            int y = (int) Math.floor(durabalityLocY / DurabilityScale);
+                            
+                            DrawBrokenArmorTexture(x, y);
                     	}
+                        
+                        GL11.glScalef(1f/DurabilityScale, 1f/DurabilityScale, 1f/DurabilityScale);
                     }
                 }
                 else //if this tool is an equipment/tool
                 {
                     if (ShowItemDurability)
                     {
-                        int x = durabalityLocX;
-                        int y = durabalityLocY + (numTools * toolY);
+                        int x = (int) Math.floor(durabalityLocX / DurabilityScale);
+                        int y = (int) Math.floor(durabalityLocY / DurabilityScale) + (numTools * toolY);
 
                         if (armorExists && ShowArmorDurability)
-                            x = equipmentLocX;    //if armor is being rendered then push this to the right
-
+                            //x = (int) Math.floor(equipmentLocX / DurabilityScale);    //if armor is being rendered then push this to the right
+                        	x += toolX;
+                        
+                        //x /= DurabilityScale;
+                        //y /= DurabilityScale;
+                        GL11.glScalef(DurabilityScale, DurabilityScale, DurabilityScale);
+                        
                         DrawItemIcon(itemStack, x, y);
+                        
+                        GL11.glScalef(1f/DurabilityScale, 1f/DurabilityScale, 1f/DurabilityScale);
+                        
                         numTools++;
                     }
                 }
@@ -179,10 +199,29 @@ public class DurabilityInfo extends ZyinHUDModBase
 			mc.fontRenderer.setUnicodeFlag(true);
 			
 			String damageString;
+			int itemDamage = itemStack.getItemDamage();
+			int itemMaxDamage = itemStack.getMaxDamage();
+			
 			if(ShowDamageAsPercentage)
-				damageString = 100 - (int)((double)itemStack.getItemDamage() / itemStack.getMaxDamage() * 100) + "%";
+				damageString = 100 - (int)((double)itemDamage / itemMaxDamage * 100) + "%";
 			else
-				damageString = Integer.toString(itemStack.getMaxDamage() - itemStack.getItemDamage());
+			{
+				if(ModCompatibility.TConstruct.IsTConstructItem(itemStack.getItem()))
+				{
+					Integer temp = ModCompatibility.TConstruct.GetDamage(itemStack);
+					if(temp != null)
+					{
+						itemDamage = temp;
+						itemMaxDamage = ModCompatibility.TConstruct.GetMaxDamage(itemStack);
+						damageString = Integer.toString(itemMaxDamage - itemDamage);
+					}
+					else
+						damageString = "";
+				}
+				else
+					damageString = Integer.toString(itemMaxDamage - itemDamage);
+				
+			}
 			
 			int damageX = x + toolX - mc.fontRenderer.getStringWidth(damageString);
 			int damageY = y + toolY - mc.fontRenderer.FONT_HEIGHT - 1;
@@ -248,8 +287,8 @@ public class DurabilityInfo extends ZyinHUDModBase
     }
 
     /**
-     * Examines the players first 9 inventory slots (the players inventory) and sees if any tools are damaged.
-     * It adds damaged tools to the damagedItemsList list.
+     * Examines the players first 9 inventory slots (the players hotbar) and sees if any tools are damaged.
+     * It adds damaged tools to the static damagedItemsList list.
      */
     private static void CalculateDurabilityIconsForTools()
     {
@@ -262,9 +301,7 @@ public class DurabilityInfo extends ZyinHUDModBase
             if (itemStack != null)
             {
                 Item item = itemStack.getItem();
-
-                if (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemBow || item instanceof ItemHoe
-                        || item instanceof ItemShears || item instanceof ItemFishingRod)
+                if (IsTool(item))
                 {
                     int itemDamage = itemStack.getItemDamage();
                     int maxDamage = itemStack.getMaxDamage();
@@ -281,7 +318,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 
     /**
      * Examines the players current armor and sees if any of them are damaged.
-     * It adds damaged armors to the damagedItemsList list.
+     * It adds damaged armors to the static damagedItemsList list.
      */
     private static void CalculateDurabilityIconsForArmor()
     {
@@ -303,6 +340,24 @@ public class DurabilityInfo extends ZyinHUDModBase
                 }
             }
         }
+    }
+    
+    /**
+     * Determines if the item is a tool. Pickaxe, sword, bow, shears, etc.
+     * @param item
+     * @return
+     */
+    private static boolean IsTool(Item item)
+    {
+    	return item instanceof ItemTool
+	    	|| item instanceof ItemSword
+	    	|| item instanceof ItemBow
+	    	|| item instanceof ItemHoe
+	        || item instanceof ItemShears
+	        || item instanceof ItemFishingRod
+	        || ModCompatibility.TConstruct.IsTConstructHarvestTool(item)
+	        || ModCompatibility.TConstruct.IsTConstructWeapon(item)
+	        || ModCompatibility.TConstruct.IsTConstructBow(item);
     }
     
     /**

@@ -1,9 +1,7 @@
 package com.zyin.zyinhud.gui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.client.event.MouseEvent;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -149,7 +147,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     protected static int tabbedPage = 0;
     
     /** The amount of tabs shown on each page. */
-    protected static int tabbedPageSize = 11;
+    protected static int tabbedPageSize = 12;
     protected static int tabbedMaxPages;
     
     
@@ -182,11 +180,11 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         tabbedButtonWidth = 130;
         tabbedButtonHeight = 14;
         tabbedButtonX = width/2 - (tabbedButtonWidth + buttonWidth_double)/2;
-        tabbedButtonY = (int)(height*0.16);
+        tabbedButtonY = (int)(height*0.13);	//0.16
 
         //button variables
     	buttonHeight = 20;
-    	buttonY = (int)(height*0.17);
+    	buttonY = (int)(height*0.13);	//0.17
     	
     	//paging buttons
     	pagingButtonWidth = 15;
@@ -199,6 +197,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 
     protected void DrawAllButtons()
     {
+    	this.zLevel = 0f;
+    	
         buttonList.clear();
         currentlySelectedTabButton = null;
         DrawOtherButtons();
@@ -290,9 +290,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     /**
      * Helper method for adding buttons at specific positions when a tab is clicked. This will correctly set
      * the button's xPosition and yPosition based on the specified row and column arguments.
-     * There are 2 columns and 7 rows visible on screen.
+     * There are 2 columns and 8 rows visible on screen.
      * @param column values: [0, 1]
-     * @param row values: [0, 1, 2, 3, 4, 5, 6]
+     * @param row values: [0, 1, 2, 3, 4, 5, 6, 7]
      * @param button
      */
     private void AddButtonAt(int column, int row, GuiButton button)
@@ -315,8 +315,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 0, new GuiButton(101, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
     	AddButtonAt(0, 1, new GuiButton(102, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
     	AddButtonAt(0, 2, new GuiButton(105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showcansnow", InfoLine.ShowCanSnow)));
-    	AddButtonAt(0, 5, new GuiNumberSlider(103, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsetx"), 1, width - 25, InfoLine.GetHorizontalLocation(), GuiNumberSlider.Modes.INTEGER));
-    	AddButtonAt(0, 6, new GuiNumberSlider(104, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 6, new GuiNumberSlider(103, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsetx"), 1, width - 25, InfoLine.GetHorizontalLocation(), GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 7, new GuiNumberSlider(104, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), GuiNumberSlider.Modes.INTEGER));
     	
     }
     private void DrawClockButtons()
@@ -393,9 +393,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 1, new GuiButton(1002, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons)));
     	AddButtonAt(0, 2, new GuiButton(1005, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors)));
     	AddButtonAt(0, 3, new GuiButton(1007, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.hidepotioneffectsininventory", PotionTimers.HidePotionEffectsInInventory)));
-    	AddButtonAt(0, 4, new GuiNumberSlider(1006, 0, 0, buttonWidth, buttonHeight, Localization.get("potiontimers.options.potionscale"), 1.0f, 4.0f, PotionTimers.PotionScale, GuiNumberSlider.Modes.PERCENT));
-    	AddButtonAt(0, 5, new GuiNumberSlider(1003, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), GuiNumberSlider.Modes.INTEGER));
-    	AddButtonAt(0, 6, new GuiNumberSlider(1004, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 5, new GuiNumberSlider(1006, 0, 0, buttonWidth, buttonHeight, Localization.get("potiontimers.options.potionscale"), 1.0f, 4.0f, PotionTimers.PotionScale, GuiNumberSlider.Modes.PERCENT));
+    	AddButtonAt(0, 6, new GuiNumberSlider(1003, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 7, new GuiNumberSlider(1004, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), GuiNumberSlider.Modes.INTEGER));
     	
     }
     private void DrawDurabilityInfoButtons()
@@ -405,10 +405,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 2, new GuiNumberSlider(1103, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForArmor(), GuiNumberSlider.Modes.PERCENT));
     	AddButtonAt(0, 3, new GuiButton(1111, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiparmor", DurabilityInfo.AutoUnequipArmor)));
     	AddButtonAt(0, 4, new GuiButton(1104, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons)));
-    	AddButtonAt(0, 5, new GuiNumberSlider(1108, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, GuiNumberSlider.Modes.INTEGER));
-    	AddButtonAt(0, 6, new GuiNumberSlider(1109, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 5, new GuiNumberSlider(1114, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.durabilityscale"), 1.0f, 4.0f, DurabilityInfo.DurabilityScale, GuiNumberSlider.Modes.PERCENT));
+    	AddButtonAt(0, 6, new GuiNumberSlider(1108, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 7, new GuiNumberSlider(1109, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, GuiNumberSlider.Modes.INTEGER));
     	
-    	//AddButtonAt(1, 0, new GuiNumberSlider(1107, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.updatefrequency"), 100, 4000, DurabilityInfo.DurabilityUpdateFrequency, true));
     	AddButtonAt(1, 0, new GuiButton(1113, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.usecolorednumbers", DurabilityInfo.UseColoredNumbers)));
     	AddButtonAt(1, 1, new GuiButton(1105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
     	AddButtonAt(1, 2, new GuiNumberSlider(1106, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), GuiNumberSlider.Modes.PERCENT));
@@ -940,6 +940,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            case 1113:	//Use colored numbers
 	            	DurabilityInfo.ToggleUseColoredNumbers();
 	            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.usecolorednumbers", DurabilityInfo.UseColoredNumbers);
+	            	break;
+	            case 1114:	//Durability scale slider
+	            	DurabilityInfo.DurabilityScale = ((GuiNumberSlider)button).GetValueAsFloat();
 	            	break;
 	            
 	            

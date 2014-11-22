@@ -83,7 +83,7 @@ public class InventoryUtil
     	//on single player there is very little lag, so we can set the delay betwen swapping items around
     	//to be very small, but the ping on servers requires us to have a larger value in order to work more reliably.
     	if(mc.isSingleplayer())
-    		return suggestedItemSwapDelay = 150;
+    		return suggestedItemSwapDelay = 170;
     	else
     		return suggestedItemSwapDelay = 450;
 	}
@@ -394,6 +394,10 @@ public class InventoryUtil
 	    
 	    int iStart = numChestSlots;
 	    int iEnd = numDisplayedSlots;
+		System.out.println("numDisplayedSlots="+numDisplayedSlots);
+		System.out.println("numChestSlots="+numChestSlots);
+		System.out.println("iStart="+iStart);
+		System.out.println("iEnd="+iEnd);
 	    
 	    if(ignoreItemsInHotbar)
 	    	iEnd -= 9;
@@ -411,8 +415,11 @@ public class InventoryUtil
 				    int itemIndex = GetFirstItemIndexInContainer(itemStack);
 				    
 				    //if the item exists in the chest
-				    if(itemIndex >= 0)
+				    if(itemIndex >= 0) {
 				    	DepositItemInContainer(i, itemIndex);
+
+						System.out.println("found i["+i+"] at "+itemIndex+"="+itemStack);
+				    }
 				}
 				else
 				{
@@ -449,6 +456,11 @@ public class InventoryUtil
 	    //single chest = 27 big
 	    //double chest = 54 big
 	    int numContainerSlots = numDisplayedSlots - numInventorySlots;
+
+	    System.out.println("numContainerSlots:"+numContainerSlots);
+	    System.out.println("numInventorySlots:"+numInventorySlots);
+	    System.out.println("srcIndex:"+srcIndex);
+	    System.out.println("destIndex:"+destIndex);
 
 		if(numContainerSlots == 53-numInventorySlots && (srcIndex < 18 || srcIndex > 53))
 			return false;
@@ -568,6 +580,8 @@ public class InventoryUtil
 	    		//3: if the combined stacks fit into one slot
 	    		else
 	    		{
+	    		    System.out.println("the combined stacks fit into one slot");
+	    		    //System.out.println("the combined stacks fit into one slot:"+destIndex);
 			    	LeftClickContainerSlot(srcIndex);
 				    LeftClickContainerSlot(destIndex);
 				    
@@ -1273,7 +1287,7 @@ public class InventoryUtil
      */
     private static void SendContainerClick(int itemIndex, boolean rightClick, boolean shiftHold)
     {
-        if (itemIndex < 0 || itemIndex > 90)
+        if (itemIndex < 0)	//don't check for an upper bounds in case a mod increases the size of a container past a double chest
         	return;
         
         try
@@ -1287,7 +1301,8 @@ public class InventoryUtil
         }
         catch(Exception e)
         {
-        	//Sometimes netManager in NetClientHandler.addToSendQueue() will throw a null pointer exception for an unknown reason
+        	//Sometimes netManager in NetClientHandler.addToSendQueue() will throw a null pointer exception for an unknown reason.
+        	//catching this seemingly random exception will prevent the game from crashing.
         }
     }
     

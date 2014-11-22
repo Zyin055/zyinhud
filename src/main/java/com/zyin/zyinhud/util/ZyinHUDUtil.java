@@ -231,7 +231,7 @@ public class ZyinHUDUtil
      * @param v Y coordinate of the texture inside of the .png
      * @param width width of the texture
      * @param height height of the texture
-     * @param resourceLocation A reference to the texture's ResourceLocation
+     * @param resourceLocation A reference to the texture's ResourceLocation. If null, it'll use the last used resource.
      * @param scaler How much to scale the texture by when rendering it
      */
     public static void DrawTexture(int x, int y, int u, int v, int width, int height, ResourceLocation resourceLocation, float scaler)
@@ -243,7 +243,8 @@ public class ZyinHUDUtil
         //GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glScalef(scaler, scaler, scaler);
         
-        mc.getTextureManager().bindTexture(resourceLocation);
+        if(resourceLocation != null)
+        	mc.getTextureManager().bindTexture(resourceLocation);
         
         mc.ingameGUI.drawTexturedModalRect(x, y, u, v, width, height);
         

@@ -93,7 +93,7 @@ public class ItemSelector extends ZyinHUDModBase
 	private static int[] slotMemory = new int[InventoryPlayer.getHotbarSize()];
 	private static int ticksToShow = 0;
 
-	private static boolean selecting = false;
+	private static boolean isCurrentlySelecting = false;
 	private static int scrollAmount = 0;
 	private static int previousDir = 0;
 	private static int targetInvSlot = -1;
@@ -101,9 +101,7 @@ public class ItemSelector extends ZyinHUDModBase
 	private static ItemStack[] currentInventory = null;
 
 	/**
-	 * Scrolls the selector towards the specified direction. This will cause the
-	 * item selector overlay to show.
-	 * 
+	 * Scrolls the selector towards the specified direction. This will cause the item selector overlay to show.
 	 * @param direction
 	 *            Direction player is scrolling toward
 	 */
@@ -126,12 +124,11 @@ public class ItemSelector extends ZyinHUDModBase
 
 		scrollAmount++;
 		ticksToShow = timeout;
-		selecting = true;
+		isCurrentlySelecting = true;
 	}
 
 	/**
 	 * Swaps the currently selected item by one toward the given direction
-	 * 
 	 * @param direction
 	 *            Direction player is scrolling toward
 	 */
@@ -150,9 +147,7 @@ public class ItemSelector extends ZyinHUDModBase
 	}
 
 	/**
-	 * Calculates the adjustment of the currently selected hotbar slot by the
-	 * given direction
-	 * 
+	 * Calculates the adjustment of the currently selected hotbar slot by the given direction
 	 * @param direction
 	 *            Direction to adjust towards
 	 * @return True if successful, false if attempting to switch enchanted item
@@ -208,27 +203,24 @@ public class ItemSelector extends ZyinHUDModBase
 	}
 
 	/**
-	 * Tick event that checks if selection is ongoing and the modifier key gets
-	 * de-pressed
+	 * Checks if selection is ongoing and the modifier key gets de-pressed.
 	 */
 	public static void OnHotkeyReleased()
 	{
 		if (!ItemSelector.Enabled)
 			return;
 
-		if (selecting)
+		if (isCurrentlySelecting)
 			SelectItem();
 	}
 
 	/**
-	 * If selecting an item, this draws the player's inventory on-screen with
-	 * the current selection.
-	 * 
+	 * If selecting an item, this draws the player's inventory on-screen with the current selection.
 	 * @param partialTicks
 	 */
 	public static void RenderOntoHUD(float partialTicks)
 	{
-		if (!selecting)
+		if (!isCurrentlySelecting)
 			return;
 
 		ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
@@ -359,7 +351,7 @@ public class ItemSelector extends ZyinHUDModBase
 		currentInventory = null;
 
 		ticksToShow = 0;
-		selecting = false;
+		isCurrentlySelecting = false;
 	}
 	
 

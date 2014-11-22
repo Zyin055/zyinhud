@@ -36,7 +36,7 @@ public class PotionTimers extends ZyinHUDModBase
     	return Enabled = !Enabled;
     }
     
-    private static final ResourceLocation inventoryResourceLocation = new ResourceLocation("textures/gui/container/inventory.png");
+    private static ResourceLocation inventoryResourceLocation = new ResourceLocation("textures/gui/container/inventory.png");
     
     public static boolean ShowPotionIcons;
     public static boolean UsePotionColors;
@@ -153,16 +153,21 @@ public class PotionTimers extends ZyinHUDModBase
      */
     protected static void DrawPotionIcon(int x, int y, Potion potion)
     {
-        int iconIndex = potion.getStatusIconIndex();
-        int u = iconIndex % 8 * 18;
-        int v = 198 + iconIndex / 8 * 18;
-        int width = 18;
-        int height = 18;
-        float scaler = 0.5f;
+        mc.getTextureManager().bindTexture(inventoryResourceLocation);
         
-        GL11.glColor4f(1f, 1f, 1f, 1f);
-        
-    	ZyinHUDUtil.DrawTexture(x, y, u, v, width, height, inventoryResourceLocation, scaler);
+        if(potion.hasStatusIcon())	//some modded potions use a custom Resource Location for potion drawing, typically done in the .hasStatusIcon() method
+        {
+        	int iconIndex = potion.getStatusIconIndex();
+            int u = iconIndex % 8 * 18;
+            int v = 198 + iconIndex / 8 * 18;
+            int width = 18;
+            int height = 18;
+            float scaler = 0.5f;
+            
+            GL11.glColor4f(1f, 1f, 1f, 1f);
+            
+        	ZyinHUDUtil.DrawTexture(x, y, u, v, width, height, null, scaler);
+        }
     }
     
     /**

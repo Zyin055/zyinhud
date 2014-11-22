@@ -321,6 +321,13 @@ public class ZyinHUDConfig
         	DurabilityInfo.UseColoredNumbers = p.getBoolean(true);
         else
         	p.set(DurabilityInfo.UseColoredNumbers);
+
+        p = config.get(CATEGORY_DURABILITYINFO, "DurabilityScale", 1.0);
+        p.comment = "How large the durability icons are rendered, 1.0 being the normal size.";
+        if(loadSettings)
+        	DurabilityInfo.DurabilityScale = (float)p.getDouble(1.0);
+        else
+        	p.set(DurabilityInfo.DurabilityScale);
         
         
         //CATEGORY_SAFEOVERLAY

@@ -2,12 +2,10 @@ package com.zyin.zyinhud;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.init.Items;
 import net.minecraftforge.client.event.MouseEvent;
 
 import org.lwjgl.input.Keyboard;
 
-import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
 import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
 import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
@@ -22,8 +20,6 @@ import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
 import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
 import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.mods.TorchAid;
-import com.zyin.zyinhud.util.InventoryUtil;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -32,6 +28,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ZyinHUDKeyHandlers
 {
+	private final static Minecraft mc = Minecraft.getMinecraft();
     /**
      * An array of all of Zyin's HUD custom key bindings. Don't reorder them since they are referenced by their position in the array.<br><ul>
      * <li>[0] Animal Info
@@ -78,7 +75,7 @@ public class ZyinHUDKeyHandlers
 		
 		//if 2 KeyBindings have the same hotkey, only 1 will be flagged as "pressed" in getIsKeyPressed(),
 		//which one ends up getting pressed in that scenario is undetermined
-
+		
 		if(KEY_BINDINGS[0].getIsKeyPressed())
 			AnimalInfoKeyHandler.Pressed(event);
 		//else if(keyBindings[1].getIsKeyPressed())
@@ -101,8 +98,11 @@ public class ZyinHUDKeyHandlers
 			WeaponSwapperKeyHandler.Pressed(event);
 		else if(KEY_BINDINGS[10].getIsKeyPressed())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
-		//else if(KEY_BINDINGS[11].getIsKeyPressed())
-			//ItemSelectorKeyHandler.Pressed(event);	//needs an OnKeyUp event, getIsKeyPressed() only is for OnKeyDown
+		else if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode() && !Keyboard.getEventKeyState())	//on key released
+			ItemSelectorKeyHandler.Released(event);
+		else if(mc.gameSettings.keyBindUseItem.getIsKeyPressed())
+			TorchAid.Pressed(event);
+		
 	}
 
     @SubscribeEvent
@@ -117,6 +117,9 @@ public class ZyinHUDKeyHandlers
     	//event.dwheel =  120 = mouse wheel up
     	//event.dwheel = -120 = mouse wheel down
     	
+    	if(event.dx != 0 || event.dy != 0)	//mouse movement event
+    		return;
+    	
     	//Mouse wheel scroll
         if(event.dwheel != 0)
         {
@@ -125,43 +128,42 @@ public class ZyinHUDKeyHandlers
         }
 
         //Mouse side buttons
-        if(event.buttonstate)
+        if(event.button == 3 || event.button == 4)
         {
-	        if(event.button == 3 || event.button == 4)
+	        if(event.buttonstate)
 	        {
 	            ItemSelectorKeyHandler.OnMouseSideButton(event);
 	        }
-        }
+	    }
 
         //Middle click
-        if(event.button == 2 && event.buttonstate == true)
+        if(event.button == 2)
         {
-        	Miscellaneous.OnMiddleClick();
+        	if(event.buttonstate)
+        	{
+            	Miscellaneous.OnMiddleClick();
+        	}
         }
         
-        //Right click
-        if(event.button == 1 && event.buttonstate == true)
+
+        if(mc.gameSettings.keyBindUseItem.getKeyCode() == -100 + event.button)	//shorthand so we don't need a bunch of if statements
         {
-        	TorchAid.OnRightClick();
+        	if(event.buttonstate)
+        	{
+	        	TorchAid.Pressed(event);
+        	}
         }
-        
-        
     }
 	
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
     {
     	//This tick handler is to overcome the GuiScreen + KeyInputEvent limitation
-    	//for Coordinates and QuickDeposit, as well as having an OnKeyUp event for
-    	//Item Selector
-    	
-    	//ItemSelector needs it for an OnKeyUp event
+    	//for Coordinates and QuickDeposit
     	
 		if (Keyboard.getEventKey() == KEY_BINDINGS[1].getKeyCode())
 	    	CoordinatesKeyHandler.ClientTickEvent(event);
 		else if(Keyboard.getEventKey() == KEY_BINDINGS[7].getKeyCode())
 			QuickDepositKeyHandler.ClientTickEvent(event);
-		else if(Keyboard.getEventKey() == KEY_BINDINGS[11].getKeyCode())
-			ItemSelectorKeyHandler.ClientTickEvent(event);
     }
 }

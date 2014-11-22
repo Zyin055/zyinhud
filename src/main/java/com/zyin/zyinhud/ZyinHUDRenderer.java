@@ -8,6 +8,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import com.zyin.zyinhud.helper.HUDEntityTrackerHelper;
 import com.zyin.zyinhud.helper.RenderEntityTrackerHelper;
 import com.zyin.zyinhud.mods.AnimalInfo;
+import com.zyin.zyinhud.mods.DistanceMeasurer;
 import com.zyin.zyinhud.mods.DurabilityInfo;
 import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.ItemSelector;
@@ -36,6 +37,7 @@ public class ZyinHUDRenderer
     	if(event.type == RenderGameOverlayEvent.ElementType.TEXT)
     	{
     		InfoLine.RenderOntoHUD();
+    		DistanceMeasurer.RenderOntoHUD();
             DurabilityInfo.RenderOntoHUD();
             PotionTimers.RenderOntoHUD();
             HUDEntityTrackerHelper.RenderEntityInfo(event.partialTicks);	//calls other mods that need to render things on the HUD near entities

@@ -11,7 +11,7 @@
  * do this with a Tick Handler (already setup for you in ZyinHUDRenderer.java), a Hotkey (follow the
  * examples in ZyinHUDKeyHandlers.java), or a single-player only command (see com.zyin.zyinhud.command).
  * 
- * To add configurable options to you mod, you need to add a new tab to GuiZyinHUDOptions.java.
+ * To add configurable options to your mod, you need to add a new tab to GuiZyinHUDOptions.java.
  * You do this by modifing the tabbedButtonNames and tabbedButtonIDs variables. Then add your new button 
  * actions in the actionPerformed() method. To have these configurable options persist after logging out,
  * you need to follow the examples in ZyinHUDConfig.java to write your data to the config file.
@@ -37,8 +37,10 @@ import com.zyin.zyinhud.command.CommandZyinHUDOptions;
 import com.zyin.zyinhud.gui.GuiOptionsOverride;
 import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.Miscellaneous;
+import com.zyin.zyinhud.util.ModCompatibility;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
@@ -47,8 +49,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = ZyinHUD.MODID, version = ZyinHUD.MODVERSION)
 public class ZyinHUD
@@ -59,7 +59,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-	public static final String MODVERSION = "1.3.5";
+	public static final String MODVERSION = "1.3.6";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     
@@ -69,6 +69,7 @@ public class ZyinHUD
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
     private File configFile;
+    
     
     public ZyinHUD()
     {
@@ -101,7 +102,12 @@ public class ZyinHUD
         FMLCommonHandler.instance().bus().register(Miscellaneous.instance);
         FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
     }
-    
+
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event)
+	{
+		ModCompatibility.TConstruct.isLoaded = Loader.isModLoaded("TConstruct");
+	}
 
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event)
@@ -125,6 +131,5 @@ public class ZyinHUD
     		event.gui = new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings);
         }
     }
-    
 }
 

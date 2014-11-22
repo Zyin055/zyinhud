@@ -1,8 +1,9 @@
 package com.zyin.zyinhud.mods;
 
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.MovingObjectPosition;
 
-import com.zyin.zyinhud.mods.Clock.Modes;
 import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
@@ -32,7 +33,7 @@ public class DistanceMeasurer extends ZyinHUDModBase
     {
         OFF(Localization.get("distancemeasurer.mode.off")),
         SIMPLE(Localization.get("distancemeasurer.mode.simple")),
-        COMPLEX(Localization.get("distancemeasurer.mode.complex"));
+        COORDINATE(Localization.get("distancemeasurer.mode.complex"));
         
         private String friendlyName;
         
@@ -67,18 +68,40 @@ public class DistanceMeasurer extends ZyinHUDModBase
     }
     
 
+    public static void RenderOntoHUD()
+    {
+        //if the player is in the world
+        //and not looking at a menu
+        //and F3 not pressed
+        if (DistanceMeasurer.Enabled && Mode != Modes.OFF &&
+                (mc.inGameHasFocus || (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat))) &&
+                !mc.gameSettings.showDebugInfo)
+        {
+        	String distanceString = CalculateDistanceString();
+        	
+            ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+            int width = res.getScaledWidth();
+            int height = res.getScaledHeight();
+            int distanceStringWidth = mc.fontRenderer.getStringWidth(distanceString);
+            
+            mc.fontRenderer.drawStringWithShadow(distanceString, width/2 - distanceStringWidth/2, height/2 - 10, 0xffffff);
+        }
+    }
+    
+    
+    
+
     /**
      * Calculates the distance of the block the player is pointing at
      * @return the distance to a block if Distance Measurer is enabled, otherwise "".
      */
-    protected static String CalculateMessageForInfoLine()
+    protected static String CalculateDistanceString()
     {
-        if (DistanceMeasurer.Enabled && Mode != Modes.OFF)
+        MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
+        
+        if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
-            MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
-            String distanceMeasurerString = "";
-            
-            if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+            if (Mode == Modes.SIMPLE)
             {
             	double coordX = mc.thePlayer.posX;
                 double coordY = mc.thePlayer.posY;
@@ -114,32 +137,27 @@ public class DistanceMeasurer extends ZyinHUDModBase
                 else
                 	deltaZ = coordZ - blockZ;
                 
-
-                if (Mode == Modes.SIMPLE)
-                {
-                	double farthestHorizontalDistance = Math.max(Math.abs(deltaX), Math.abs(deltaZ));
-                    double farthestDistance = Math.max(Math.abs(deltaY), farthestHorizontalDistance);
-                    return FontCodes.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]";
-                }
-                else if (Mode == Modes.COMPLEX)
-                {
-                    double delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-                    String x = String.format("%1$,.1f", deltaX);
-                    String y = String.format("%1$,.1f", deltaY);
-                    String z = String.format("%1$,.1f", deltaZ);
-                    return FontCodes.GOLD + "[" + x + ", " + z + ", " + y + " (" + String.format("%1$,.1f", delta) + ")]";
-                }
-                else
-                {
-                	return FontCodes.GOLD + "[???]";
-                }
+            	double farthestHorizontalDistance = Math.max(Math.abs(deltaX), Math.abs(deltaZ));
+                double farthestDistance = Math.max(Math.abs(deltaY), farthestHorizontalDistance);
+                return FontCodes.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]";
+            }
+            else if (Mode == Modes.COORDINATE)
+            {
+                double blockX = objectMouseOver.blockX;
+                double blockY = objectMouseOver.blockY;
+                double blockZ = objectMouseOver.blockZ;
+                
+                return FontCodes.GOLD + "[" + blockX + ", " + blockY + ", " + blockZ + "]";
             }
             else
             {
-            	return FontCodes.GOLD + "["+Localization.get("distancemeasurer.far")+"]";
+            	return FontCodes.GOLD + "[???]";
             }
         }
-
-        return "";
+        else
+        {
+        	return FontCodes.GOLD + "["+Localization.get("distancemeasurer.far")+"]";
+        }
     }
+    
 }
