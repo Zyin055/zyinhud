@@ -2,10 +2,10 @@ package com.zyin.zyinhud.mods;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.opengl.GL11;
 
-import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 /**
@@ -92,12 +92,12 @@ public class Clock extends ZyinHUDModBase
 
                 if(IsNight())
         		{
-                    String nighttimeClockString = FontCodes.GRAY + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
+                    String nighttimeClockString = EnumChatFormatting.GRAY + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
                     return nighttimeClockString;
         		}
                 else
         		{
-                    String daytimeClockString = FontCodes.YELLOW + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
+                    String daytimeClockString = EnumChatFormatting.YELLOW + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
                     return daytimeClockString;
         		}
         	}
@@ -113,7 +113,8 @@ public class Clock extends ZyinHUDModBase
         			long minutes = secondsTillDay / 60;
         			long seconds = secondsTillDay - minutes*60;
         			
-                    String nighttimeCountdownString = FontCodes.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+                    //String nighttimeCountdownString = FontCodes.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+        			String nighttimeCountdownString = EnumChatFormatting.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
                     return nighttimeCountdownString;
         		}
         		else
@@ -128,14 +129,15 @@ public class Clock extends ZyinHUDModBase
         			long minutes = secondsTillNight / 60;
         			long seconds = secondsTillNight - minutes*60;
 
-                    String daytimeCountdownString = FontCodes.YELLOW + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+                    String daytimeCountdownString = EnumChatFormatting.YELLOW + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
                     return daytimeCountdownString;
         		}
         	}
         	else if(Clock.Mode == Modes.GRAPHIC)
         	{
-        		int infoLineWidth = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
-        		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.clock), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);
+        		int infoLineWidth = mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint);
+        		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.clock), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);
+        		itemRenderer.func_180450_b(new ItemStack(Items.clock), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);	//func_180450_b() is renderItemAndEffectIntoGUI()
         		
         		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the RenderItem.renderItem() methods enable lighting
         		GL11.glDisable(GL11.GL_DEPTH_TEST);

@@ -1,7 +1,6 @@
 package com.zyin.zyinhud.util;
 
 import net.minecraft.client.resources.I18n;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class Localization
 {

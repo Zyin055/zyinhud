@@ -2,8 +2,9 @@ package com.zyin.zyinhud.mods;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -18,13 +19,14 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.apache.commons.lang3.text.WordUtils;
 
-import com.zyin.zyinhud.util.FontCodes;
+import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * Shows information about horses in the F3 menu.
@@ -105,7 +107,7 @@ public class AnimalInfo extends ZyinHUDModBase
     public static int minNumberOfDecimalsDisplayed = 0;
     public static int maxNumberOfDecimalsDisplayed = 20;
     
-    private static EntityClientPlayerMP me;
+    private static EntityPlayer me;
     
     //values above the perfect value are aqua
     //values between the perfect and good values are green
@@ -178,11 +180,8 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     public static void RenderOntoDebugMenu()
     {
-    	//if the player is in the world
-        //and not in a menu
-        //and F3 is shown
-        if (AnimalInfo.Enabled && ShowHorseStatsOnF3Menu &&
-                (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat))
+    	//if F3 is shown
+        if (AnimalInfo.Enabled && ShowHorseStatsOnF3Menu && mc.gameSettings.showDebugInfo)
         {
             if (mc.thePlayer.isRidingHorse())
             {
@@ -193,20 +192,32 @@ public class AnimalInfo extends ZyinHUDModBase
                 String horseColor = Localization.get("animalinfo.debug.color") + " " + GetHorseColoringText(horse);
                 String horseMarking = Localization.get("animalinfo.debug.markings") + " " + GetHorseMarkingText(horse);
                 
-                //TODO: 1.8 F3 menu rendering done different
-                
-                mc.fontRenderer.drawStringWithShadow(horseSpeedMessage, 2, 130, 0xffffff);
-                mc.fontRenderer.drawStringWithShadow(horseJumpMessage, 2, 140, 0xffffff);
-                mc.fontRenderer.drawStringWithShadow(horseHPMessage, 2, 150, 0xffffff);
-                
+            	List list = new ArrayList<String>(5);
+            	
+            	list.add(horseSpeedMessage);
+            	list.add(horseJumpMessage);
+            	list.add(horseHPMessage);
+            	
                 if(horse.getHorseType() == 0)	//not a donkey
                 {
-                    mc.fontRenderer.drawStringWithShadow(horseColor, 2, 170, 0xffffff);
-                    mc.fontRenderer.drawStringWithShadow(horseMarking, 2, 180, 0xffffff);
+                	list.add(horseColor);
+                	list.add(horseMarking);
+                }
+
+                for (int i = 0; i < list.size(); ++i)
+                {
+                    String s = (String)list.get(i);
+                    
+                    int height = mc.fontRendererObj.FONT_HEIGHT;
+                    int width = mc.fontRendererObj.getStringWidth(s);
+                    int y = 2 + height * i + 144;
+                    Gui.drawRect(1, y - 1, 2 + width + 1, y + height - 1, -0xa9AFAFB0);
+                    mc.fontRendererObj.drawString(s, 2, y, 0xE0E0E0);
                 }
             }
         }
     }
+    
     
     
     /**
@@ -235,7 +246,7 @@ public class AnimalInfo extends ZyinHUDModBase
         	
             EntityAgeable animal = (EntityAgeable)entity;
 
-            if (animal.riddenByEntity instanceof EntityClientPlayerMP)
+            if (animal.riddenByEntity instanceof EntityPlayer)
             {
                 return;    //don't render stats of the horse/animal we are currently riding
             }
@@ -294,7 +305,7 @@ public class AnimalInfo extends ZyinHUDModBase
         if(multilineOverlayMessage[0] != null)
         {
             //render the overlay message
-            ZyinHUDUtil.RenderFloatingText(multilineOverlayMessage, x, y, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+            ZyinHUDRenderer.RenderFloatingText(multilineOverlayMessage, x, y, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
         }
         
 		if(ShowBreedingIcons && 
@@ -304,44 +315,72 @@ public class AnimalInfo extends ZyinHUDModBase
 		{
 	        //render the overlay icon
 			if(animal instanceof EntityHorse && ((EntityHorse)animal).isTame())
-				ZyinHUDUtil.RenderFloatingIcon(Items.golden_carrot, x, y + animal.height, z, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.golden_carrot, partialTickTime);
 			else if(animal instanceof EntityCow)
-				ZyinHUDUtil.RenderFloatingIcon(Items.wheat, x, y + animal.height, z, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat, partialTickTime);
 			else if(animal instanceof EntitySheep)
-				ZyinHUDUtil.RenderFloatingIcon(Items.wheat, x, y + animal.height, z, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat, partialTickTime);
 			else if(animal instanceof EntityPig)
-				ZyinHUDUtil.RenderFloatingIcon(Items.carrot, x, y + animal.height, z, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.carrot, partialTickTime);
 			else if(animal instanceof EntityChicken)
-				ZyinHUDUtil.RenderFloatingIcon(Items.wheat_seeds, x, y + animal.height, z, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat_seeds, partialTickTime);
 			else if(animal instanceof EntityWolf && ((EntityWolf)animal).isTamed())
-				ZyinHUDUtil.RenderFloatingIcon(Items.beef, x, y + animal.height, z, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.beef, partialTickTime);
 			else if(animal instanceof EntityWolf && !((EntityWolf)animal).isTamed())
-				ZyinHUDUtil.RenderFloatingIcon(Items.bone, x, y + animal.height, z, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.bone, partialTickTime);
 			else if(animal instanceof EntityOcelot)
-				ZyinHUDUtil.RenderFloatingIcon(Items.fish, x, y + animal.height, z, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.fish, partialTickTime);
 		}
 		
 		
 		//TODO: 1.8 villager breeding/trading mechanics testing
-        /*
+        
         if(animal instanceof EntityVillager)
         {
-			int timeUntilReset = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "timeUntilReset","field_");
-			int wealth = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "wealth","field_");
-			float field_82191_bN = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_82191_bN","field_");
-			boolean isMating = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "isMating","field_");
-			boolean isPlaying = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "isPlaying","field_");
-			boolean needsInitilization = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "needsInitilization","field_");
-            
+			String getDisplayName = ((EntityVillager)animal).getDisplayName().getFormattedText();
+            ZyinHUDRenderer.RenderFloatingText(getDisplayName, x, y + animal.getEyeHeight() + 0.8f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+			
+        	/*
+        	try{
+    			int timeUntilReset = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "timeUntilReset","field_");
+    			int wealth = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "wealth","field_");
+    			//float field_82191_bN = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_82191_bN","field_");
+    			boolean isMating = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "isMating","field_");
+    			boolean isPlaying = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "isPlaying","field_");
+    			boolean needsInitilization = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "needsInitilization","field_");
 
-            ZyinHUDUtil.RenderFloatingText("timeUntilReset: "+timeUntilReset, x, y, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-            ZyinHUDUtil.RenderFloatingText("wealth : "+wealth, x, y+0.1f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-            ZyinHUDUtil.RenderFloatingText("field_82191_bN: "+field_82191_bN, x, y+0.2f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-            ZyinHUDUtil.RenderFloatingText("isMating: "+isMating, x, y+0.3f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-            ZyinHUDUtil.RenderFloatingText("isPlaying: "+isPlaying, x, y+0.4f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-            ZyinHUDUtil.RenderFloatingText("needsInitilization: "+needsInitilization, x, y+0.5f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+    			int field_175563_bv = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_175563_bv","field_");
+    			int field_175562_bw = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_175562_bw","field_");
+    			boolean field_175564_by = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_175564_by","field_");
+    			int getProfession = ((EntityVillager)animal).getProfession();
+    			String getDisplayName = ((EntityVillager)animal).getDisplayName().getFormattedText();
+    			InventoryBasic villagerInventory = ((EntityVillager)animal).func_175551_co();
+    			boolean field_175565_bs = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_175565_bs","field_");
+    			Village villageObj = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "villageObj","field_");
+    			//int getNumVillageDoors = villageObj.getNumVillageDoors();
+    			
+    			
+    			
+                ZyinHUDRenderer.RenderFloatingText("timeUntilReset: "+timeUntilReset, x, y, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("wealth : "+wealth, x, y+0.3f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                //ZyinHUDRenderer.RenderFloatingText("field_82191_bN: "+field_82191_bN, x, y+0.2f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("isMating: "+isMating, x, y+0.6f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("isPlaying: "+isPlaying, x, y+0.9f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("needsInitilization: "+needsInitilization, x, y+1.2f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("field_175563_bv: "+field_175563_bv, x, y+1.5f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("field_175562_bw: "+field_175562_bw, x, y+1.8f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("field_175564_by: "+field_175564_by, x, y+2.1f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("villageObj: "+villageObj, x, y+2.4f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                ZyinHUDRenderer.RenderFloatingText("field_175565_bs: "+field_175565_bs, x, y+2.7f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                //ZyinHUDRenderer.RenderFloatingText("getNumVillageDoors: "+getNumVillageDoors, x, y+3.0f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
+                
+        	}
+        	catch (Exception e){
+        		System.out.println(e);
+        	}
+        	*/
         }
-		*/
+		
     }
 
     /**
@@ -352,15 +391,15 @@ public class AnimalInfo extends ZyinHUDModBase
     {
         if (Mode == Modes.OFF)
         {
-            return FontCodes.WHITE + "";
+            return "";
         }
         else if (Mode == Modes.ON)
         {
-            return FontCodes.WHITE + Localization.get("animalinfo.infoline");
+            return EnumChatFormatting.WHITE + Localization.get("animalinfo.infoline");
         }
         else
         {
-            return FontCodes.WHITE + "???";
+            return EnumChatFormatting.WHITE + "???";
         }
     }
 
@@ -404,11 +443,11 @@ public class AnimalInfo extends ZyinHUDModBase
         String horseSpeedString = decimalFormat.format(horseSpeed);
 
         if (horseSpeed > perfectHorseSpeedThreshold)
-            horseSpeedString = FontCodes.AQUA + horseSpeedString + FontCodes.WHITE;
+            horseSpeedString = EnumChatFormatting.AQUA + horseSpeedString + EnumChatFormatting.WHITE;
         else if (horseSpeed > goodHorseSpeedThreshold)
-            horseSpeedString = FontCodes.GREEN + horseSpeedString + FontCodes.WHITE;
+            horseSpeedString = EnumChatFormatting.GREEN + horseSpeedString + EnumChatFormatting.WHITE;
         else if (horseSpeed < badHorseSpeedThreshold)
-            horseSpeedString = FontCodes.RED + horseSpeedString + FontCodes.WHITE;
+            horseSpeedString = EnumChatFormatting.RED + horseSpeedString + EnumChatFormatting.WHITE;
 
         return horseSpeedString;
     }
@@ -424,11 +463,11 @@ public class AnimalInfo extends ZyinHUDModBase
         String horseHPString = decimalFormat.format(GetEntityMaxHP(horse));
 
         if (horseHP > perfectHorseHPThreshold)
-            horseHPString = FontCodes.AQUA + horseHPString + FontCodes.WHITE;
+            horseHPString = EnumChatFormatting.AQUA + horseHPString + EnumChatFormatting.WHITE;
         else if (horseHP > goodHorseHPThreshold)
-            horseHPString = FontCodes.GREEN + horseHPString + FontCodes.WHITE;
+            horseHPString = EnumChatFormatting.GREEN + horseHPString + EnumChatFormatting.WHITE;
         else if (horseHP < badHorseHPThreshold)
-            horseHPString = FontCodes.RED + horseHPString + FontCodes.WHITE;
+            horseHPString = EnumChatFormatting.RED + horseHPString + EnumChatFormatting.WHITE;
 
         return horseHPString;
     }
@@ -445,11 +484,11 @@ public class AnimalInfo extends ZyinHUDModBase
         String horseHeartsString = "" + horseHearts;
 
         if (horseHP > perfectHorseHPThreshold)
-            horseHeartsString = FontCodes.AQUA + horseHeartsString + FontCodes.WHITE;
+            horseHeartsString = EnumChatFormatting.AQUA + horseHeartsString + EnumChatFormatting.WHITE;
         else if (horseHP > goodHorseHPThreshold)
-                horseHeartsString = FontCodes.GREEN + horseHeartsString + FontCodes.WHITE;
+                horseHeartsString = EnumChatFormatting.GREEN + horseHeartsString + EnumChatFormatting.WHITE;
         else if (horseHP < badHorseHPThreshold)
-            horseHeartsString = FontCodes.RED + horseHeartsString + FontCodes.WHITE;
+            horseHeartsString = EnumChatFormatting.RED + horseHeartsString + EnumChatFormatting.WHITE;
 
         return horseHeartsString;
     }
@@ -465,11 +504,11 @@ public class AnimalInfo extends ZyinHUDModBase
         String horseJumpString = decimalFormat.format(horseJump);
 
         if (horseJump > perfectHorseJumpThreshold)
-            horseJumpString = FontCodes.AQUA + horseJumpString + FontCodes.WHITE;
+            horseJumpString = EnumChatFormatting.AQUA + horseJumpString + EnumChatFormatting.WHITE;
         else if (horseJump > goodHorseJumpThreshold)
-            horseJumpString = FontCodes.GREEN + horseJumpString + FontCodes.WHITE;
+            horseJumpString = EnumChatFormatting.GREEN + horseJumpString + EnumChatFormatting.WHITE;
         else if (horseJump < badHorseJumpThreshold)
-            horseJumpString = FontCodes.RED + horseJumpString + FontCodes.WHITE;
+            horseJumpString = EnumChatFormatting.RED + horseJumpString + EnumChatFormatting.WHITE;
 
         return horseJumpString;
     }

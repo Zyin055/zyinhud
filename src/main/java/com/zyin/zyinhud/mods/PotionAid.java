@@ -15,6 +15,7 @@ import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 
+import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -91,7 +92,7 @@ public class PotionAid extends ZyinHUDModBase
             potionItemIndex = GetMostAppropriatePotionItemIndexFromInventory();
         	if (potionItemIndex < 0)
             {
-                ZyinHUDUtil.DisplayNotification(Localization.get("potionaid.noappropriatepotions"));
+        		ZyinHUDRenderer.DisplayNotification(Localization.get("potionaid.noappropriatepotions"));
                 return;
             }
             

@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
@@ -70,7 +70,7 @@ public class HUDEntityTrackerHelper {
         if (PlayerLocator.Enabled && PlayerLocator.Mode == PlayerLocator.Modes.ON
                 && mc.inGameHasFocus)
         {
-            EntityClientPlayerMP me = mc.thePlayer;
+        	EntityPlayer me = mc.thePlayer;
             
             double meX = me.lastTickPosX + (me.posX - me.lastTickPosX) * partialTickTime;
             double meY = me.lastTickPosY + (me.posY - me.lastTickPosY) * partialTickTime;
@@ -78,16 +78,14 @@ public class HUDEntityTrackerHelper {
             
             double pitch = ((me.rotationPitch + 90) * Math.PI) / 180;
             double yaw  = ((me.rotationYaw + 90)  * Math.PI) / 180;
-
+            
             // direction the player is facing
-            Vec3 lookDir = Vec3.createVectorHelper(Math.sin(pitch) * Math.cos(yaw), Math.cos(pitch), Math.sin(pitch) * Math.sin(yaw));
+            Vec3 lookDir = new Vec3(Math.sin(pitch) * Math.cos(yaw), Math.cos(pitch), Math.sin(pitch) * Math.sin(yaw));
             
             if (mc.gameSettings.thirdPersonView == 2)
             {
                 // reversed 3rd-person view; flip the look direction
-                lookDir.xCoord *= -1;
-                lookDir.yCoord *= -1;
-                lookDir.zCoord *= -1;
+                lookDir = new Vec3(lookDir.xCoord * -1, lookDir.yCoord * -1, lookDir.zCoord * -1);
             }
             
             ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
@@ -111,9 +109,9 @@ public class HUDEntityTrackerHelper {
                 double entityX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTickTime;
                 double entityY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTickTime;
                 double entityZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTickTime;
-                                
+                
                 // direction to target entity
-                Vec3 toEntity = Vec3.createVectorHelper(entityX - meX, entityY - meY, entityZ - meZ);
+                Vec3 toEntity = new Vec3(entityX - meX, entityY - meY, entityZ - meZ);
                 
                 float x = (float)toEntity.xCoord;
                 float y = (float)toEntity.yCoord;

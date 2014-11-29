@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 
-import com.zyin.zyinhud.util.FontCodes;
+import net.minecraft.util.EnumChatFormatting;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
@@ -138,10 +138,10 @@ public abstract class GuiTooltipScreen extends GuiScreen
 			
 			if(GetButtonTooltip(button.id) != null)
 			{
-				boolean flag = mc.fontRenderer.getUnicodeFlag();
-				mc.fontRenderer.setUnicodeFlag(true);
-				mc.fontRenderer.drawStringWithShadow("?", button.xPosition+button.getButtonWidth()-5, button.yPosition, 0x99FFFFFF);
-				mc.fontRenderer.setUnicodeFlag(flag);
+				boolean flag = mc.fontRendererObj.getUnicodeFlag();
+				mc.fontRendererObj.setUnicodeFlag(true);
+				mc.fontRendererObj.drawString("?", button.xPosition+button.getButtonWidth()-5, button.yPosition, 0x99FFFFFF);
+				mc.fontRendererObj.setUnicodeFlag(flag);
 			}
 		}
 	}
@@ -152,10 +152,10 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	 */
 	protected void RenderTooltipButtonMouseoverEffect(GuiButton button)
 	{
-		boolean flag = mc.fontRenderer.getUnicodeFlag();
-		mc.fontRenderer.setUnicodeFlag(true);
-		mc.fontRenderer.drawStringWithShadow(FontCodes.AQUA + "?", button.xPosition+button.getButtonWidth()-5, button.yPosition, 0xFFFFFF);
-		mc.fontRenderer.setUnicodeFlag(flag);
+		boolean flag = mc.fontRendererObj.getUnicodeFlag();
+		mc.fontRendererObj.setUnicodeFlag(true);
+		mc.fontRendererObj.drawString(EnumChatFormatting.AQUA + "?", button.xPosition+button.getButtonWidth()-5, button.yPosition, 0xFFFFFF);
+		mc.fontRendererObj.setUnicodeFlag(flag);
 	}
 	
 	/**
@@ -199,7 +199,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
         int lineCount = 0;
         for (String s : tooltipArray)
         {
-            mc.fontRenderer.drawStringWithShadow(s, tooltipX + 2, tooltipY + 2 + lineCount * LINE_HEIGHT, 0xFFFFFF);
+            mc.fontRendererObj.drawString(s, tooltipX + 2, tooltipY + 2 + lineCount * LINE_HEIGHT, 0xFFFFFF);
             lineCount++;
         }
 	}
@@ -222,7 +222,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 			
 			for(int i = 0; i < tooltipWords.length; i++)
 			{
-				int lineWidthWithNextWord = mc.fontRenderer.getStringWidth(tooltip + tooltipWords[i]);
+				int lineWidthWithNextWord = mc.fontRendererObj.getStringWidth(tooltip + tooltipWords[i]);
 				if(lineWidthWithNextWord > tooltipMaxWidth)
 				{
 					tooltipArrayList.add(tooltip.trim());
@@ -250,28 +250,28 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	 */
 	private String DecodeStringCodes(String s)
 	{
-		return s.replace("_0", FontCodes.BLACK)
-			.replace("_1", FontCodes.DARK_BLUE)
-			.replace("_2", FontCodes.DARK_GREEN)
-			.replace("_3", FontCodes.DARK_AQUA)
-			.replace("_4", FontCodes.DARK_RED)
-			.replace("_5", FontCodes.DARK_PURPLE)
-			.replace("_6", FontCodes.GOLD)
-			.replace("_7", FontCodes.GRAY)
-			.replace("_8", FontCodes.DARK_GREY)
-			.replace("_9", FontCodes.BLUE)
-			.replace("_a", FontCodes.GREEN)
-			.replace("_b", FontCodes.AQUA)
-			.replace("_c", FontCodes.RED)
-			.replace("_d", FontCodes.LIGHT_PURPLE)
-			.replace("_e", FontCodes.YELLOW)
-			.replace("_f", FontCodes.WHITE)
-			.replace("_k", FontCodes.OBFUSCATED)
-			.replace("_l", FontCodes.BOLD)
-			.replace("_m", FontCodes.STRIKETHROUGH)
-			.replace("_n", FontCodes.UNDERLINE)
-			.replace("_o", FontCodes.ITALICS)
-			.replace("_r", FontCodes.RESET);
+		return s.replace("_0", EnumChatFormatting.BLACK.toString())
+			.replace("_1", EnumChatFormatting.DARK_BLUE.toString())
+			.replace("_2", EnumChatFormatting.DARK_GREEN.toString())
+			.replace("_3", EnumChatFormatting.DARK_AQUA.toString())
+			.replace("_4", EnumChatFormatting.DARK_RED.toString())
+			.replace("_5", EnumChatFormatting.DARK_PURPLE.toString())
+			.replace("_6", EnumChatFormatting.GOLD.toString())
+			.replace("_7", EnumChatFormatting.GRAY.toString())
+			.replace("_8", EnumChatFormatting.DARK_GRAY.toString())
+			.replace("_9", EnumChatFormatting.BLUE.toString())
+			.replace("_a", EnumChatFormatting.GREEN.toString())
+			.replace("_b", EnumChatFormatting.AQUA.toString())
+			.replace("_c", EnumChatFormatting.RED.toString())
+			.replace("_d", EnumChatFormatting.LIGHT_PURPLE.toString())
+			.replace("_e", EnumChatFormatting.YELLOW.toString())
+			.replace("_f", EnumChatFormatting.WHITE.toString())
+			.replace("_k", EnumChatFormatting.OBFUSCATED.toString())
+			.replace("_l", EnumChatFormatting.BOLD.toString())
+			.replace("_m", EnumChatFormatting.STRIKETHROUGH.toString())
+			.replace("_n", EnumChatFormatting.UNDERLINE.toString())
+			.replace("_o", EnumChatFormatting.ITALIC.toString())
+			.replace("_r", EnumChatFormatting.RESET.toString());
 	}
 	
 	/***
@@ -284,7 +284,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 		int longestWidth = 0;
 		for(String s : tooltipArray)
 		{
-			int width = mc.fontRenderer.getStringWidth(s);
+			int width = mc.fontRendererObj.getStringWidth(s);
 			if(width > longestWidth)
 				longestWidth = width;
 		}
@@ -298,7 +298,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	 */
 	private int GetTooltipHeight(String[] tooltipArray)
 	{
-		int tooltipHeight = mc.fontRenderer.FONT_HEIGHT - 2;
+		int tooltipHeight = mc.fontRendererObj.FONT_HEIGHT - 2;
         if (tooltipArray.length > 1)
         {
         	tooltipHeight += (tooltipArray.length - 1) * LINE_HEIGHT;

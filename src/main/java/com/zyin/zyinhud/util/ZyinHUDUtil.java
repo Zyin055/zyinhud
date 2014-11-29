@@ -1,6 +1,8 @@
 package com.zyin.zyinhud.util;
 
 import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAnvil;
@@ -14,17 +16,34 @@ import net.minecraft.block.BlockLever;
 import net.minecraft.block.BlockRedstoneDiode;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.BlockWorkbench;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+//import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3i;
 
 import org.lwjgl.opengl.GL11;
 
@@ -34,7 +53,7 @@ import org.lwjgl.opengl.GL11;
 public class ZyinHUDUtil
 {
     protected static Minecraft mc = Minecraft.getMinecraft();
-    protected static final RenderItem itemRenderer = new RenderItem();
+    protected static final RenderItem itemRenderer = mc.getRenderItem();
     protected static final TextureManager textureManager = mc.getTextureManager();
 	
     /***
@@ -46,7 +65,7 @@ public class ZyinHUDUtil
 	{
         if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
-            Block block = mc.theWorld.getBlock(mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ);
+        	Block block = GetMouseOveredBlock();
 
             if(ZyinHUDUtil.IsBlockRightClickable(block))
             	return true;
@@ -76,191 +95,6 @@ public class ZyinHUDUtil
                 || block instanceof BlockWorkbench;
 	}
 	
-	/**
-	 * Renders an Item icon in the 3D world at the specified coordinates
-	 * @param item
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param partialTickTime
-	 */
-	public static void RenderFloatingIcon(Item item, float x, float y, float z, float partialTickTime)
-    {
-    	RenderManager renderManager = RenderManager.instance;
-        FontRenderer fontRenderer = mc.fontRenderer;
-        
-        float playerX = (float) (mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * partialTickTime);
-        float playerY = (float) (mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * partialTickTime);
-        float playerZ = (float) (mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * partialTickTime);
-
-        float dx = x-playerX;
-        float dy = y-playerY;
-        float dz = z-playerZ;
-        float scale = 0.025f;
-        
-        GL11.glColor4f(1f, 1f, 1f, 0.75f);
-        GL11.glPushMatrix();
-        GL11.glTranslatef(dx, dy, dz);
-        GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-        GL11.glScalef(-scale, -scale, scale);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        
-        ResourceLocation resource = textureManager.getResourceLocation(new ItemStack(item).getItemSpriteNumber());
-        IIcon icon = new ItemStack(item).getIconIndex();
-        
-        textureManager.bindTexture(resource);
-        itemRenderer.renderIcon(-8, -8, icon, 16, 16);
-
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glPopMatrix();
-    }
-	
-	
-	
-	/**
-	 * Renders floating text in the 3D world at a specific position.
-	 * @param text The text to render
-	 * @param x X coordinate in the game world
-	 * @param y Y coordinate in the game world
-	 * @param z Z coordinate in the game world
-	 * @param offset vertical offset of the text being rendered
-	 * @param color 0xRRGGBB
-	 * @param renderBlackBox render a pretty black border behind the text?
-	 * @param partialTickTime Usually taken from RenderWorldLastEvent.partialTicks variable
-	 */
-    public static void RenderFloatingText(String text, float x, float y, float z, int color, boolean renderBlackBox, float partialTickTime)
-    {
-    	String textArray[] = {text};
-    	RenderFloatingText(textArray, x, y, z, color, renderBlackBox, partialTickTime);
-    }
-    
-    /**
-	 * Renders floating lines of text in the 3D world at a specific position.
-	 * @param text The string array of text to render
-	 * @param x X coordinate in the game world
-	 * @param y Y coordinate in the game world
-	 * @param z Z coordinate in the game world
-	 * @param offset vertical offset of the text being rendered
-	 * @param color 0xRRGGBB
-	 * @param renderBlackBox render a pretty black border behind the text?
-	 * @param partialTickTime Usually taken from RenderWorldLastEvent.partialTicks variable
-	 */
-    public static void RenderFloatingText(String[] text, float x, float y, float z, int color, boolean renderBlackBox, float partialTickTime)
-    {
-    	//Thanks to Electric-Expansion mod for the majority of this code
-    	//https://github.com/Alex-hawks/Electric-Expansion/blob/master/src/electricexpansion/client/render/RenderFloatingText.java
-    	
-    	RenderManager renderManager = RenderManager.instance;
-        FontRenderer fontRenderer = mc.fontRenderer;
-        
-        float playerX = (float) (mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * partialTickTime);
-        float playerY = (float) (mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * partialTickTime);
-        float playerZ = (float) (mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * partialTickTime);
-
-        float dx = x-playerX;
-        float dy = y-playerY;
-        float dz = z-playerZ;
-        float distance = (float) Math.sqrt(dx*dx + dy*dy + dz*dz);
-        float multiplier = distance / 120f;	//mobs only render ~120 blocks away
-        float scale = 0.45f * multiplier;
-        
-        GL11.glColor4f(1f, 1f, 1f, 0.5f);
-        GL11.glPushMatrix();
-        GL11.glTranslatef(dx, dy, dz);
-        GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
-        GL11.glScalef(-scale, -scale, scale);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        
-        int textWidth = 0;
-        for (String thisMessage : text)
-        {
-            int thisMessageWidth = mc.fontRenderer.getStringWidth(thisMessage);
-
-            if (thisMessageWidth > textWidth)
-            	textWidth = thisMessageWidth;
-        }
-        
-        int lineHeight = 10;
-        
-        if(renderBlackBox)
-        {
-        	Tessellator tessellator = Tessellator.instance;
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            tessellator.startDrawingQuads();
-            int stringMiddle = textWidth / 2;
-            tessellator.setColorRGBA_F(0.0F, 0.0F, 0.0F, 0.5F);
-            tessellator.addVertex(-stringMiddle - 1, -1 + 0, 0.0D);
-            tessellator.addVertex(-stringMiddle - 1, 8 + lineHeight*text.length-lineHeight, 0.0D);
-            tessellator.addVertex(stringMiddle + 1, 8 + lineHeight*text.length-lineHeight, 0.0D);
-            tessellator.addVertex(stringMiddle + 1, -1 + 0, 0.0D);
-            tessellator.draw();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-        }
-        
-        int i = 0;
-        for(String message : text)
-        {
-            fontRenderer.drawString(message, -textWidth / 2, i*lineHeight, color);
-        	i++;
-        }
-        
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glPopMatrix();
-    }
-	
-    
-
-    /**
-     * Draws a texture at the specified 2D coordinates
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @param u X coordinate of the texture inside of the .png
-     * @param v Y coordinate of the texture inside of the .png
-     * @param width width of the texture
-     * @param height height of the texture
-     * @param resourceLocation A reference to the texture's ResourceLocation. If null, it'll use the last used resource.
-     * @param scaler How much to scale the texture by when rendering it
-     */
-    public static void DrawTexture(int x, int y, int u, int v, int width, int height, ResourceLocation resourceLocation, float scaler)
-    {
-        x /= scaler;
-        y /= scaler;
-        
-        GL11.glPushMatrix();
-        //GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glScalef(scaler, scaler, scaler);
-        
-        if(resourceLocation != null)
-        	mc.getTextureManager().bindTexture(resourceLocation);
-        
-        mc.ingameGUI.drawTexturedModalRect(x, y, u, v, width, height);
-        
-        GL11.glPopMatrix();
-    }
-    
-
-    /**
-     * Displays a short notification to the user. Uses the Minecraft code to display messages.
-     * @param message the message to be displayed
-     */
-    public static void DisplayNotification(String message)
-    {
-        mc.ingameGUI.func_110326_a(message, false);
-    }
-    
     /**
      * Gets a protected/private field from a class using reflection.
      * @param <T> The return type of the field you are getting
@@ -268,7 +102,7 @@ public class ZyinHUDUtil
      * @param classToAccess The ".class" of the class the field is in
      * @param instance The instance of the class
      * @param fieldNames comma seperated names the field may have (i.e. obfuscated, non obfuscated).
-     * Obfustated field names can be found in fml/conf/fields.csv
+     * Obfustated field names can be found in %USERPROFILE%\.gradle\caches\minecraft\de\oceanlabs\mcp\...\fields.csv
      * @return
      */
     public static <T, E> T GetFieldByReflection(Class<? super E> classToAccess, E instance, String... fieldNames)
@@ -303,5 +137,21 @@ public class ZyinHUDUtil
 		return null;
     }
     
+    public static Block GetMouseOveredBlock()
+    {
+    	int x = mc.objectMouseOver.func_178782_a().getX();	//func_178782_a() friendly name is probably getBlockPos()
+    	int y = mc.objectMouseOver.func_178782_a().getY();
+    	int z = mc.objectMouseOver.func_178782_a().getZ();
+    	return GetBlock(x, y, z);
+    }
+    public static Block GetBlock(int x, int y, int z)
+    {
+        return GetBlockState(x, y, z).getBlock();
+    }
+    public static IBlockState GetBlockState(int x, int y, int z)
+    {
+    	BlockPos pos = new BlockPos(x, y, z);
+    	return mc.theWorld.getBlockState(pos);
+    }
 	
 }

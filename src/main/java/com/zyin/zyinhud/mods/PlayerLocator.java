@@ -4,7 +4,6 @@ import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
@@ -14,14 +13,15 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.zyin.zyinhud.util.FontCodes;
+import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * The Player Locator checks for nearby players and displays their name on screen wherever they are.
@@ -94,7 +94,7 @@ public class PlayerLocator extends ZyinHUDModBase
     
     private static final String wolfName = Localization.get("entity.Wolf.name");
     private static final String sprintingMessagePrefix = "";
-    private static final String sneakingMessagePrefix = FontCodes.ITALICS;
+    private static final String sneakingMessagePrefix = EnumChatFormatting.ITALIC.toString();
     private static final String ridingMessagePrefix = "    ";	//space for the saddle/minecart/boat/horse armor icon
 
     /** Don't render players that are closer than this */
@@ -159,10 +159,12 @@ public class PlayerLocator extends ZyinHUDModBase
         		
         		if(UseWolfColors)
         		{
-	                int collarColor = ((EntityWolf)entity).getCollarColor();
-	                int r = (int)(EntitySheep.fleeceColorTable[collarColor][0] * 255);
-	                int g = (int)(EntitySheep.fleeceColorTable[collarColor][1] * 255);
-	                int b = (int)(EntitySheep.fleeceColorTable[collarColor][2] * 255);
+        			EnumDyeColor collarColor = ((EntityWolf)entity).func_175546_cu();
+        			float[] dyeRGBColors = EntitySheep.func_175513_a(collarColor);	//func_175513_a() friendly name is propabably "getHexColorsFromDye"
+
+	                int r = (int)(dyeRGBColors[0]*255);
+	                int g = (int)(dyeRGBColors[1]*255);
+	                int b = (int)(dyeRGBColors[2]*255);
 	                rgb = (r << 4*4) + (g << 4*2) + b;	//actual collar color
 	                
 	                r = (0xFF - r)/2;
@@ -184,7 +186,7 @@ public class PlayerLocator extends ZyinHUDModBase
         	if(entity.ridingEntity != null)
         		overlayMessage = "    " + overlayMessage;	//make room for any icons we render
         	
-            int overlayMessageWidth = mc.fontRenderer.getStringWidth(overlayMessage);	//the width in pixels of the message
+            int overlayMessageWidth = mc.fontRendererObj.getStringWidth(overlayMessage);	//the width in pixels of the message
             ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();		//~427
             int height = res.getScaledHeight();		//~240
@@ -198,7 +200,7 @@ public class PlayerLocator extends ZyinHUDModBase
             y = (y > height - 10 && !ShowPlayerHealth) ? height - 10 : y;
             y = (y > height - 20 && ShowPlayerHealth) ? height - 20 : y;
             if(y < 10 && InfoLine.infoLineLocY <= 1 && 
-            	(x > InfoLine.infoLineLocX + mc.fontRenderer.getStringWidth(InfoLine.infoLineMessage) || x < InfoLine.infoLineLocX - overlayMessageWidth))
+            	(x > InfoLine.infoLineLocX + mc.fontRendererObj.getStringWidth(InfoLine.infoLineMessage) || x < InfoLine.infoLineLocX - overlayMessageWidth))
             	y = (y < 0) ? 0 : y;	//if the text is to the right or left of the info line then allow it to render in that open space
             else
             	y = (y < 10) ? 10 : y;	//use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
@@ -212,7 +214,7 @@ public class PlayerLocator extends ZyinHUDModBase
     		GL11.glEnable(GL11.GL_BLEND);
     		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             
-            mc.fontRenderer.drawStringWithShadow(overlayMessage, x, y, color);
+            mc.fontRendererObj.func_175063_a(overlayMessage, x, y, color);
             
             //also render whatever the player is currently riding on
             if (entity.ridingEntity instanceof EntityHorse)
@@ -248,14 +250,14 @@ public class PlayerLocator extends ZyinHUDModBase
                 int numHearts = (int)((((EntityLivingBase)entity).getHealth()+1) / 2);
             	String hpOverlayMessage = numHearts + "";
             	
-                int hpOverlayMessageWidth = mc.fontRenderer.getStringWidth(hpOverlayMessage);
+                int hpOverlayMessageWidth = mc.fontRendererObj.getStringWidth(hpOverlayMessage);
                 int offsetX = (overlayMessageWidth - hpOverlayMessageWidth - 9) / 2;
 
-                mc.fontRenderer.drawStringWithShadow(hpOverlayMessage, x+offsetX, y+10, (alpha << 24) + 0xFFFFFF);
+                mc.fontRendererObj.func_175063_a(hpOverlayMessage, x+offsetX, y+10, (alpha << 24) + 0xFFFFFF);
                 
                 GL11.glColor4f(1f, 1f, 1f, ((float)alpha) / 0xFF);
-                ZyinHUDUtil.DrawTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);	//black outline of the heart icon
-                ZyinHUDUtil.DrawTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 52, 0, 9, 9, iconsResourceLocation, 1f);	//red interior of the heart icon
+                ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);	//black outline of the heart icon
+                ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 52, 0, 9, 9, iconsResourceLocation, 1f);	//red interior of the heart icon
                 GL11.glColor4f(1f, 1f, 1f, 1f);
             }
 
@@ -278,7 +280,7 @@ public class PlayerLocator extends ZyinHUDModBase
         //add distance to this wither skeleton into the message
         if (ShowDistanceToPlayers)
         {
-        	overlayMessage = FontCodes.GRAY + "[" + (int)distanceFromMe + "] " + FontCodes.RESET + overlayMessage;
+        	overlayMessage = EnumChatFormatting.GRAY + "[" + (int)distanceFromMe + "] " + EnumChatFormatting.RESET + overlayMessage;
         }
         
         return overlayMessage;
@@ -296,7 +298,7 @@ public class PlayerLocator extends ZyinHUDModBase
         //add distance to this wolf into the message
         if (ShowDistanceToPlayers)
         {
-        	overlayMessage = FontCodes.GRAY + "[" + (int)distanceFromMe + "] " + FontCodes.RESET + overlayMessage;
+        	overlayMessage = EnumChatFormatting.GRAY + "[" + (int)distanceFromMe + "] " + EnumChatFormatting.RESET + overlayMessage;
         }
         
         return overlayMessage;
@@ -305,13 +307,13 @@ public class PlayerLocator extends ZyinHUDModBase
 
 	private static String GetOverlayMessageForOtherPlayer(EntityOtherPlayerMP otherPlayer, float distanceFromMe)
 	{
-            String overlayMessage = otherPlayer.getDisplayName();
+            String overlayMessage = otherPlayer.getDisplayNameString();
 
             //add distance to this player into the message
             if (ShowDistanceToPlayers)
             {
                 //overlayMessage = "[" + (int)distanceFromMe + "] " + overlayMessage;
-            	overlayMessage = FontCodes.GRAY + "[" + (int)distanceFromMe + "] " + FontCodes.RESET + overlayMessage;
+            	overlayMessage = EnumChatFormatting.GRAY + "[" + (int)distanceFromMe + "] " + EnumChatFormatting.RESET + overlayMessage;
             }
 
             //add special effects based on what the other player is doing
@@ -330,36 +332,41 @@ public class PlayerLocator extends ZyinHUDModBase
             
             return overlayMessage;
 	}
-
-
+	
 	private static void RenderBoatIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.boat), x, y - 4);
+		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.boat), x, y - 4);
+		itemRenderer.func_180450_b(new ItemStack(Items.boat), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderMinecartIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.minecart), x, y - 4);
+		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.minecart), x, y - 4);
+		itemRenderer.func_180450_b(new ItemStack(Items.minecart), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorDiamondIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.diamond_horse_armor), x, y - 4);
+		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.diamond_horse_armor), x, y - 4);
+		itemRenderer.func_180450_b( new ItemStack(Items.diamond_horse_armor), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorGoldIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.golden_horse_armor), x, y - 4);
+		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.golden_horse_armor), x, y - 4);
+		itemRenderer.func_180450_b(new ItemStack(Items.golden_horse_armor), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorIronIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.iron_horse_armor), x, y - 4);
+		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.iron_horse_armor), x, y - 4);
+		itemRenderer.func_180450_b(new ItemStack(Items.iron_horse_armor), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderSaddleIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.saddle), x, y - 4);
+		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.saddle), x, y - 4);
+		itemRenderer.func_180450_b(new ItemStack(Items.saddle), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	
@@ -400,15 +407,15 @@ public class PlayerLocator extends ZyinHUDModBase
     {
         if (Mode == Modes.OFF)
         {
-            return FontCodes.WHITE + "";
+            return "";
         }
         else if (Mode == Modes.ON)
         {
-            return FontCodes.WHITE + Localization.get("playerlocator.infoline");
+            return EnumChatFormatting.WHITE + Localization.get("playerlocator.infoline");
         }
         else
         {
-            return FontCodes.WHITE + "???";
+            return EnumChatFormatting.WHITE + "???";
         }
     }
 

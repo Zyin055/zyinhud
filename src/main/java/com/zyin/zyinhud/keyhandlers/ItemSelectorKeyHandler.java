@@ -4,7 +4,7 @@ import net.minecraftforge.client.event.MouseEvent;
 
 import com.zyin.zyinhud.mods.ItemSelector;
 
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class ItemSelectorKeyHandler implements ZyinHUDKeyHandlerBase
 {

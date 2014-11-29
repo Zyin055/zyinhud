@@ -10,14 +10,13 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import org.lwjgl.opengl.GL11;
 
+import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
-
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 /**
  * Potion Timers displays the remaining time left on any potion effects the user has.
@@ -43,7 +42,7 @@ public class PotionTimers extends ZyinHUDModBase
     public static float PotionScale;
     public static boolean HidePotionEffectsInInventory;
 
-    protected static final int[] blinkingThresholds = {3 * 20, 6 * 20, 16 * 20};	//the time at which blinking starts
+    protected static final int[] blinkingThresholds = {3 * 20, 5 * 20, 16 * 20};	//the time at which blinking starts
     protected static final int[] blinkingSpeed = {5, 10, 20};					//how often the blinking occurs
     protected static final int[] blinkingDuration = {2, 3, 3};					//how long the blink lasts
 
@@ -117,13 +116,13 @@ public class PotionTimers extends ZyinHUDModBase
 			colorInt = potion.getLiquidColor();
 		
 		
-		boolean unicodeFlag = mc.fontRenderer.getUnicodeFlag();
-        mc.fontRenderer.setUnicodeFlag(true);
+		boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
+        mc.fontRendererObj.setUnicodeFlag(true);
 		
 		//render the potion duration text onto the screen
 		if (potionDuration >= blinkingThresholds[blinkingThresholds.length - 1])	//if the text is not blinking then render it normally
 		{
-		    mc.fontRenderer.drawStringWithShadow(durationString, x, y, colorInt);
+		    mc.fontRendererObj.func_175063_a(durationString, x, y, colorInt);
 		}
 		else //else if the text is blinking, have a chance to not render it based on the blinking variables
 		{
@@ -134,7 +133,7 @@ public class PotionTimers extends ZyinHUDModBase
 		        {
 		            if (potionDuration % blinkingSpeed[j] > blinkingDuration[j])
 		            {
-		                mc.fontRenderer.drawStringWithShadow(durationString, x, y, colorInt);
+		                mc.fontRendererObj.func_175063_a(durationString, x, y, colorInt);
 		            }
 
 		            break;
@@ -142,7 +141,7 @@ public class PotionTimers extends ZyinHUDModBase
 		    }
 		}
 
-        mc.fontRenderer.setUnicodeFlag(unicodeFlag);
+        mc.fontRendererObj.setUnicodeFlag(unicodeFlag);
 	}
     
     /**
@@ -166,7 +165,7 @@ public class PotionTimers extends ZyinHUDModBase
             
             GL11.glColor4f(1f, 1f, 1f, 1f);
             
-        	ZyinHUDUtil.DrawTexture(x, y, u, v, width, height, null, scaler);
+            ZyinHUDRenderer.RenderCustomTexture(x, y, u, v, width, height, null, scaler);
         }
     }
     

@@ -2,6 +2,7 @@ package com.zyin.zyinhud.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -41,7 +42,6 @@ import com.zyin.zyinhud.mods.QuickDeposit;
 import com.zyin.zyinhud.mods.SafeOverlay;
 import com.zyin.zyinhud.mods.TorchAid;
 import com.zyin.zyinhud.mods.WeaponSwapper;
-import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 /**
@@ -130,7 +130,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 
     private GuiHotkeyButton currentlySelectedHotkeyButton;
     private GuiButton currentlySelectedTabButton = null;
-    private String currentlySelectedTabButtonColor = FontCodes.YELLOW;
+    private String currentlySelectedTabButtonColor = EnumChatFormatting.YELLOW.toString();
     
     
     //variables influencing the placement/sizing of the tab buttons on the left
@@ -235,18 +235,18 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         		int yOffset = -(lineHeight * (text.length - i));
 
                 GL11.glEnable(GL11.GL_BLEND);	//for transparent text
-            	fontRendererObj.drawStringWithShadow(text[i], x + xOffset, y + yOffset, 0x22ffffff);
+            	fontRendererObj.drawString(text[i], x + xOffset, y + yOffset, 0x22ffffff);
                 GL11.glDisable(GL11.GL_BLEND);
         	}
     	}
     	else if(currentlySelectedTabButton.id == 1600)	//Quick Deposit
     	{
-    		String text = FontCodes.UNDERLINE + Localization.get("quickdeposit.options.blacklist");
+    		String text = EnumChatFormatting.UNDERLINE + Localization.get("quickdeposit.options.blacklist");
     		
         	int x = tabbedButtonWidth + tabbedButtonX + buttonSpacing*2 + buttonWidth + buttonSpacing*2 + buttonWidth/2 - fontRendererObj.getStringWidth(text)/2;
         	int y = buttonY - buttonHeight/2 - fontRendererObj.FONT_HEIGHT/2 + 3;
         	
-        	fontRendererObj.drawStringWithShadow(text, x, y, 0xffffff);
+        	fontRendererObj.drawString(text, x, y, 0xffffff);
     	}
     }
     private void DrawOtherButtons()
@@ -308,6 +308,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 0, new GuiButton(2001, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.useenhancedmiddleclick", Miscellaneous.UseEnhancedMiddleClick)));
     	AddButtonAt(0, 1, new GuiButton(2002, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.usequickplacesign", Miscellaneous.UseQuickPlaceSign)));
     	AddButtonAt(0, 2, new GuiButton(2003, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.useunlimitedsprinting", Miscellaneous.UseUnlimitedSprinting)));
+    	AddButtonAt(0, 3, new GuiButton(2004, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("miscellaneous.options.showanvilrepairs", Miscellaneous.ShowAnvilRepairs)));
     	
     }
     private void DrawInfoLineButtons()
@@ -508,9 +509,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private static String GetButtonLabel_Enabled(boolean enabled)
     {
     	if(enabled)
-    		return Localization.get("gui.options.enabled") + FontCodes.GREEN + Localization.get("options.on") + FontCodes.WHITE;
+    		return Localization.get("gui.options.enabled") + EnumChatFormatting.GREEN + Localization.get("options.on") + EnumChatFormatting.WHITE;
     	else
-    		return Localization.get("gui.options.enabled") + FontCodes.RED + Localization.get("options.off") + FontCodes.WHITE;
+    		return Localization.get("gui.options.enabled") + EnumChatFormatting.RED + Localization.get("options.off") + EnumChatFormatting.WHITE;
     }
     
     /**
@@ -535,7 +536,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
     	//play a sound and fire the actionPerformed() method when a button is left clicked
-        if (mouseButton == 0)
+        if (mouseButton == 0)	//left click
         {
             for (int l = 0; l < this.buttonList.size(); ++l)
             {
@@ -544,41 +545,31 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
                 if (guibutton.mousePressed(this.mc, mouseX, mouseY))
                 {
                     selectedButton = guibutton;
-                    guibutton.func_146113_a(this.mc.getSoundHandler());
+                    guibutton.playPressSound(this.mc.getSoundHandler());
                     actionPerformed(guibutton);
                 }
             }
         }
     }
-
-    /**
-     * Called when the mouse is moved or a mouse button is released.  Signature: (mouseX, mouseY, which) which==-1 is
-     * mouseMove, which==0 or which==1 is mouseUp
-     */
-    protected void mouseMovedOrUp(int mouseX, int mouseY, int which)
+    
+    protected void mouseReleased(int mouseX, int mouseY, int state)
     {
-        if (this.selectedButton != null && which == 0)
+        if (this.selectedButton != null && state == 0)	//released the mouse click
         {
-            selectedButton.mouseReleased(mouseX, mouseY);
-            
-            //this line was changed from the original GuiScreen class in order to make our
-            //GuiNumberSlider's to update their values properly when sliding the slider.
-            actionPerformed_MouseUp(selectedButton);
-            
-            selectedButton = null;
+            this.selectedButton.mouseReleased(mouseX, mouseY);
+            this.selectedButton = null;
         }
     }
 
-    /**
-     * Fired when a button is hovered over when the mouse is releated.
-     */
-    protected void actionPerformed_MouseUp(GuiButton button)
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)
     {
-    	if(button instanceof GuiNumberSlider)
+    	if(clickedMouseButton == 0)	//left click
     	{
-    		//in order to have our values updated when the user clicks, drags, then releases the mouse,
-    		//we fake a click on mouseup
-    		actionPerformed(button);
+    		if(selectedButton != null && selectedButton instanceof GuiNumberSlider)
+    		{
+    			//continuously apply updates for any GuiNumberSlider buttons as they are being dragged
+    			actionPerformed(selectedButton);
+    		}
     	}
     }
     
@@ -1182,6 +1173,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	Miscellaneous.ToggleUseUnlimitedSprinting();
 	            	button.displayString = GetButtonLabel_Boolean("miscellaneous.options.useunlimitedsprinting", Miscellaneous.UseUnlimitedSprinting);
 	            	break;
+	            case 2004:	//Show anvil repairs
+	            	Miscellaneous.ToggleShowAnvilRepairs();
+	            	button.displayString = GetButtonLabel_Boolean("miscellaneous.options.showanvilrepairs", Miscellaneous.ShowAnvilRepairs);
+	            	break;
 	            	
 	            
             }
@@ -1249,6 +1244,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 2001: return Localization.get("miscellaneous.options.useenhancedmiddleclick.tooltip");
 			case 2002: return Localization.get("miscellaneous.options.usequickplacesign.tooltip");
 			case 2003: return Localization.get("miscellaneous.options.useunlimitedsprinting.tooltip");
+			case 2004: return Localization.get("miscellaneous.options.showanvilrepairs.tooltip");
 			default: return null;
 		}
 	}

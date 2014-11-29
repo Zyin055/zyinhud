@@ -1,18 +1,15 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.chunk.Chunk;
 
 import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
-import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 /**
@@ -113,38 +110,7 @@ public class InfoLine extends ZyinHUDModBase
             	animals += SPACER;
             infoLineMessage += animals;
 
-            mc.fontRenderer.drawStringWithShadow(infoLineMessage, infoLineLocX, infoLineLocY, 0xffffff);
-        }
-
-        /*if (notificationTimer > 0)
-        {
-            RenderNotification(notificationMessage);
-        }*/
-    }
-    
-    private static void renderGlint(int par1, int par2, int par3, int par4, int par5)
-    {
-        for (int j1 = 0; j1 < 2; ++j1)
-        {
-            OpenGlHelper.glBlendFunc(772, 1, 0, 0);
-            float f = 0.00390625F;
-            float f1 = 0.00390625F;
-            float f2 = (float)(Minecraft.getSystemTime() % (long)(3000 + j1 * 1873)) / (3000.0F + (float)(j1 * 1873)) * 256.0F;
-            float f3 = 0.0F;
-            Tessellator tessellator = Tessellator.instance;
-            float f4 = 4.0F;
-
-            if (j1 == 1)
-            {
-                f4 = -1.0F;
-            }
-
-            tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV((double)(par2 + 0), (double)(par3 + par5), (double)itemRenderer.zLevel, (double)((f2 + (float)par5 * f4) * f), (double)((f3 + (float)par5) * f1));
-            tessellator.addVertexWithUV((double)(par2 + par4), (double)(par3 + par5), (double)itemRenderer.zLevel, (double)((f2 + (float)par4 + (float)par5 * f4) * f), (double)((f3 + (float)par5) * f1));
-            tessellator.addVertexWithUV((double)(par2 + par4), (double)(par3 + 0), (double)itemRenderer.zLevel, (double)((f2 + (float)par4) * f), (double)((f3 + 0.0F) * f1));
-            tessellator.addVertexWithUV((double)(par2 + 0), (double)(par3 + 0), (double)itemRenderer.zLevel, (double)((f2 + 0.0F) * f), (double)((f3 + 0.0F) * f1));
-            tessellator.draw();
+            mc.fontRendererObj.func_175063_a(infoLineMessage, infoLineLocX, infoLineLocY, 0xffffff);	//func_175063_a() is drawStringWithShadow()
         }
     }
     
@@ -154,17 +120,19 @@ public class InfoLine extends ZyinHUDModBase
         int yCoord = MathHelper.floor_double(mc.thePlayer.posY) - 1;
         int zCoord = MathHelper.floor_double(mc.thePlayer.posZ);
         
-    	boolean canSnowAtPlayersFeet = mc.theWorld.canSnowAtBody(xCoord, yCoord, zCoord, false);
+        BlockPos pos = new BlockPos(xCoord, yCoord, zCoord);
+        
+    	boolean canSnowAtPlayersFeet = mc.theWorld.canSnowAtBody(pos, false);
     	
     	if(canSnowAtPlayersFeet)
     	{
     		float scaler = 0.66f;
     		GL11.glScalef(scaler, scaler, scaler);
     		
-    		int x = (int)(mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint) / scaler);
+    		int x = (int)(mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint) / scaler);
     		int y = (int)(-1);
     		
-    		itemRenderer.renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, new ItemStack(Items.snowball), x, y);
+    		itemRenderer.func_180450_b(new ItemStack(Items.snowball), x, y);
     		
     		GL11.glDisable(GL11.GL_LIGHTING);
     		GL11.glScalef(1/scaler, 1/scaler, 1/scaler);
@@ -179,59 +147,10 @@ public class InfoLine extends ZyinHUDModBase
     	int xCoord = MathHelper.floor_double(mc.thePlayer.posX);
         int zCoord = MathHelper.floor_double(mc.thePlayer.posZ);
         
-    	Chunk chunk = mc.theWorld.getChunkFromBlockCoords(xCoord, zCoord);
-    	String biomeName = chunk.getBiomeGenForWorldCoords(xCoord & 15, zCoord & 15, mc.theWorld.getWorldChunkManager()).biomeName;
-    	
-    	return FontCodes.WHITE + biomeName + " ";
+    	String biomeName = mc.theWorld.getBiomeGenForCoords(new BlockPos(xCoord, 64, zCoord)).biomeName;
+    	return EnumChatFormatting.WHITE + biomeName;
     }
-
-    /**
-     * Displays a short notification to the user.
-     * @param message the message to be displayed
-     */
-    /*public static void DisplayNotification(String message)
-    {
-        notificationMessage = message;
-        notificationTimer = notificationDuration;
-        notificationStartTime = System.currentTimeMillis();
-    }*/
-
-    /**
-     * Renders a short message on the screen.
-     * @param message the message to be displayed
-     */
-    /*private static void RenderNotification(String message)
-    {
-        if ((mc.inGameHasFocus || mc.currentScreen == null))
-        {
-            ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-            int width = res.getScaledWidth();		//~427
-            int height = res.getScaledHeight();	//~240
-            int overlayMessageWidth = mc.fontRenderer.getStringWidth(notificationMessage);
-            int x = width / 2 - overlayMessageWidth / 2;
-            int y = height - 65;
-            double alphaLevel;	//ranges from [0..1]
-
-            if ((double)notificationTimer * 2 / notificationDuration > 1)
-            {
-                alphaLevel = 1;    //for the first half of the notifications rendering we want it 100% opaque.
-            }
-            else
-            {
-                alphaLevel = (double)notificationTimer * 2 / notificationDuration;    //for the second half, we want it to fade out.
-            }
-
-            int alpha = (int)(0x33 + 0xCC * alphaLevel);
-            alpha = alpha << 24;	//turns it into the format: 0x##000000
-            int rgb = 0xFFFFFF;
-            int color = rgb + alpha;	//alpha:r:g:b
-            mc.fontRenderer.drawStringWithShadow(notificationMessage, x, y, color);
-        }
-
-        notificationTimer = notificationStartTime - System.currentTimeMillis() + notificationDuration;	//counts down from 1000 to 0
-    }*/
     
-
     /**
      * Checks to see if the Info Line, Clock, Coordinates, Compass, or FPS tabs are selected in GuiZyinHUDOptions
      * @return
@@ -245,7 +164,7 @@ public class InfoLine extends ZyinHUDModBase
 			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("compass.name")) ||
 			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("fps.name")));
     }
-
+    
 
     /**
      * Toggles showing the biome in the Info Line

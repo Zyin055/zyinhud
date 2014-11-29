@@ -136,6 +136,13 @@ public class ZyinHUDConfig
         else
         	p.set(Miscellaneous.UseUnlimitedSprinting);
         
+        p = config.get(CATEGORY_MISCELLANEOUS, "ShowAnvilRepairs", true);
+        p.comment = "Enable/Disable showing the repair count on items while using the anvil.";
+        if(loadSettings)
+        	Miscellaneous.ShowAnvilRepairs = p.getBoolean(true);
+        else
+        	p.set(Miscellaneous.ShowAnvilRepairs);
+        
 
         //CATEGORY_INFOLINE
         p = config.get(CATEGORY_INFOLINE, "EnableInfoLine", true);

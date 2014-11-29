@@ -1,15 +1,14 @@
 package com.zyin.zyinhud.keyhandlers;
 
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+
 import org.lwjgl.input.Keyboard;
 
+import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.ZyinHUDSound;
-import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.SafeOverlay;
 import com.zyin.zyinhud.mods.SafeOverlay.Modes;
 import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
-
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
 {
@@ -33,11 +32,11 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
 
             if (drawDistance == SafeOverlay.maxDrawDistance)
             {
-                ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance + " ("+Localization.get("safeoverlay.distance.max")+")");
+            	ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance + " ("+Localization.get("safeoverlay.distance.max")+")");
             }
             else
             {
-                ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
+            	ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
             }
 
             SafeOverlay.instance.RecalculateUnsafePositions();
@@ -48,7 +47,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         if (Keyboard.isKeyDown(Keyboard.KEY_MINUS))
         {
             int drawDistance = SafeOverlay.instance.DecreaseDrawDistance();
-            ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
+            ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.distance") + " " + drawDistance);
             
             SafeOverlay.instance.RecalculateUnsafePositions();
             return;
@@ -59,7 +58,7 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
         {
             int drawDistance = SafeOverlay.instance.SetDrawDistance(SafeOverlay.defaultDrawDistance);
             SafeOverlay.instance.SetSeeUnsafePositionsThroughWalls(false);
-            ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.distance") + " " + Localization.get("safeoverlay.distance.default") + " (" + drawDistance + ")");
+            ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.distance") + " " + Localization.get("safeoverlay.distance.default") + " (" + drawDistance + ")");
             
             SafeOverlay.instance.RecalculateUnsafePositions();
         	ZyinHUDSound.PlayButtonPress();
@@ -74,11 +73,11 @@ public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
 
             if (seeThroughWalls)
             {
-                ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.seethroughwallsenabled"));
+            	ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.seethroughwallsenabled"));
             }
             else
             {
-                ZyinHUDUtil.DisplayNotification(Localization.get("safeoverlay.seethroughwallsdisabled"));
+            	ZyinHUDRenderer.DisplayNotification(Localization.get("safeoverlay.seethroughwallsdisabled"));
             }
 
             SafeOverlay.instance.RecalculateUnsafePositions();

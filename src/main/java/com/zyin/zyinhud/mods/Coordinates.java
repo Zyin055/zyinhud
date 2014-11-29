@@ -1,11 +1,9 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.EnumChatFormatting;
 
-import com.zyin.zyinhud.mods.Clock.Modes;
-import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
 
@@ -85,11 +83,11 @@ public class Coordinates extends ZyinHUDModBase
     };
     private static final String oreBoundaryColors[] =
     {
-        FontCodes.WHITE,	//nothing below 5
-        FontCodes.AQUA,		//diamonds stop
-        FontCodes.BLUE,		//lapis lazuli stops
-        FontCodes.YELLOW	//gold stops
-        //FontCodes.GRAY		//coal stops
+        EnumChatFormatting.WHITE.toString(),	//nothing below 5
+        EnumChatFormatting.AQUA.toString(),		//diamonds stop
+        EnumChatFormatting.BLUE.toString(),		//lapis lazuli stops
+        EnumChatFormatting.YELLOW.toString()	//gold stops
+        //EnumChatFormatting.GRAY		//coal stops
     };
 
     /**
@@ -119,11 +117,11 @@ public class Coordinates extends ZyinHUDModBase
 
             String coordinatesString;
             if(Mode == Modes.XZY)
-            	coordinatesString = FontCodes.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + FontCodes.WHITE + "]";
+            	coordinatesString = EnumChatFormatting.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + EnumChatFormatting.WHITE + "]";
             else if(Mode == Modes.XYZ)
-            	coordinatesString = FontCodes.WHITE + "[" + coordX + ", " + yColor + coordY + FontCodes.WHITE + ", " + coordZ + "]";
+            	coordinatesString = EnumChatFormatting.WHITE + "[" + coordX + ", " + yColor + coordY + EnumChatFormatting.WHITE + ", " + coordZ + "]";
             else
-            	coordinatesString = FontCodes.WHITE + "[??, ??, ??]";
+            	coordinatesString = EnumChatFormatting.WHITE + "[??, ??, ??]";
             
             return coordinatesString;
         }
@@ -155,7 +153,7 @@ public class Coordinates extends ZyinHUDModBase
     }
     public static int GetYCoordinate()
     {
-    	return (int) Math.floor(mc.thePlayer.boundingBox.minY);	//use feet height; .posY returns the player's eye height, which is normally 1.62 blocks off the ground
+    	return (int) Math.floor(mc.thePlayer.posY);
     }
     public static int GetZCoordinate()
     {

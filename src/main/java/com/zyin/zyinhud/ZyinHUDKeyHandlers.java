@@ -3,6 +3,10 @@ package com.zyin.zyinhud;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -21,11 +25,6 @@ import com.zyin.zyinhud.keyhandlers.WeaponSwapperKeyHandler;
 import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
 import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.mods.TorchAid;
-
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class ZyinHUDKeyHandlers
 {
@@ -144,7 +143,8 @@ public class ZyinHUDKeyHandlers
         	}
         }
     }
-	
+    
+
 	
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
@@ -200,4 +200,5 @@ public class ZyinHUDKeyHandlers
     {
     	TorchAid.instance.Released();
     }
+    
 }

@@ -7,8 +7,8 @@ import org.lwjgl.input.Keyboard;
 import com.zyin.zyinhud.ZyinHUDKeyHandlers;
 import com.zyin.zyinhud.mods.Coordinates;
 
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 public class CoordinatesKeyHandler implements ZyinHUDKeyHandlerBase
 {

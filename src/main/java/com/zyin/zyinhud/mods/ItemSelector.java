@@ -11,9 +11,9 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.EXTRescaleNormal;
 import org.lwjgl.opengl.GL11;
 
+import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
 
 /**
  * Item Selector allows the player to conveniently swap their currently selected
@@ -159,7 +159,7 @@ public class ItemSelector extends ZyinHUDModBase
 		{
 			if (currentInventory[currentHotbarSlot] != null && currentInventory[currentHotbarSlot].isItemEnchanted())
 			{
-				ZyinHUDUtil.DisplayNotification(Localization.get("itemselector.error.enchant"));
+				ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.enchant"));
 				return false;
 			}
 		}
@@ -195,7 +195,7 @@ public class ItemSelector extends ZyinHUDModBase
 
 		if (targetInvSlot == -1)
 		{
-			ZyinHUDUtil.DisplayNotification(Localization.get("itemselector.error.empty"));
+			ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.empty"));
 			return false;
 		}
 		else
@@ -232,14 +232,14 @@ public class ItemSelector extends ZyinHUDModBase
 		int originZ = screenHeight - invHeight - 48;
 
 		String labelText = currentInventory[targetInvSlot].getDisplayName();
-		int labelWidth = mc.fontRenderer.getStringWidth(labelText);
-		mc.fontRenderer.drawString(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRenderer.FONT_HEIGHT - 2, 0xFFFFAA00, true);
+		int labelWidth = mc.fontRendererObj.getStringWidth(labelText);
+		mc.fontRendererObj.func_175063_a(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRendererObj.FONT_HEIGHT - 2, 0xFFFFAA00);
 
 		GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
 		GL11.glEnable(GL11.GL_DEPTH_TEST); // so the enchanted item effect is rendered properly
 		
 		RenderHelper.enableGUIStandardItemLighting();
-		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		//OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
 		int idx = 0;
 		for (int z = 0; z < 3; z++) // 3 rows of the inventory
@@ -248,8 +248,7 @@ public class ItemSelector extends ZyinHUDModBase
 			{
 				if (Mode == Modes.SAME_COLUMN && x != currentHotbarSlot)
 				{
-					// don't draw items that we will never be able to select if
-					// Same Column mode is active
+					// don't draw items that we will never be able to select if Same Column mode is active
 					idx++;
 					continue;
 				}
@@ -260,9 +259,9 @@ public class ItemSelector extends ZyinHUDModBase
 				if (idx + 9 == targetInvSlot)
 				{
 					GL11.glEnable(GL11.GL_BLEND);
-					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.5F);
-					ZyinHUDUtil.DrawTexture(originX + (x * 20) - 1, originZ
-							+ (z * 22) - 1, 0, 22, 24, 24, widgetTexture, 1f);
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
+					ZyinHUDRenderer.RenderCustomTexture(originX + (x * 20) - 1, originZ + (z * 22) - 1, 0, 22, 24, 24, widgetTexture, 1f);
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 					GL11.glDisable(GL11.GL_BLEND);
 				}
 
@@ -273,7 +272,7 @@ public class ItemSelector extends ZyinHUDModBase
 					float anim = itemStack.animationsToGo - partialTicks;
 					int dimX = originX + (x * 20) + 3;
 					int dimZ = originZ + (z * 22) + 3;
-
+					
 					if (anim > 0.0F)
 					{
 						GL11.glPushMatrix();
@@ -282,15 +281,15 @@ public class ItemSelector extends ZyinHUDModBase
 						GL11.glScalef(1.0F / f2, (f2 + 1.0F) / 2.0F, 1.0F);
 						GL11.glTranslatef(-(dimX + 8), -(dimZ + 12), 0.0F);
 					}
-
-					itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer,
-							mc.getTextureManager(), itemStack, dimX, dimZ);
+					
+					//itemRenderer.renderItemAndEffectIntoGUI(mc.fontRendererObj, mc.getTextureManager(), itemStack, dimX, dimZ);
+					itemRenderer.func_180450_b(itemStack, dimX, dimZ);
 
 					if (anim > 0.0F)
 						GL11.glPopMatrix();
 
-					itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer,
-							mc.getTextureManager(), itemStack, dimX, dimZ);
+					//itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, mc.getTextureManager(), itemStack, dimX, dimZ);
+					itemRenderer.func_175030_a(mc.fontRendererObj, itemStack, dimX, dimZ);
 				}
 
 				idx++;
@@ -319,7 +318,7 @@ public class ItemSelector extends ZyinHUDModBase
 				if ((currentStack != null && currentStack.isItemEnchanted())
 						|| targetStack.isItemEnchanted())
 				{
-					ZyinHUDUtil.DisplayNotification(Localization.get("itemselector.error.enchant"));
+					ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.enchant"));
 					Done();
 					return;
 				}
@@ -330,7 +329,7 @@ public class ItemSelector extends ZyinHUDModBase
 			if(currentInvSlot < 0)
 			{
 				//this can happen if the player is using a mod to increase the size of their hotbar
-				ZyinHUDUtil.DisplayNotification(Localization.get("itemselector.error.unsupportedhotbar"));
+				ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.unsupportedhotbar"));
 				Done();
 				return;
 			}
@@ -338,7 +337,7 @@ public class ItemSelector extends ZyinHUDModBase
 			InventoryUtil.Swap(currentInvSlot, targetInvSlot);
 		}
 		else
-			ZyinHUDUtil.DisplayNotification(Localization.get("itemselector.error.emptyslot"));
+			ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.emptyslot"));
 
 		Done();
 	}

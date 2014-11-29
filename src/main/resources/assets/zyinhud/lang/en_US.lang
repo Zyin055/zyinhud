@@ -84,9 +84,9 @@ durabilityinfo.options.usecolorednumbers=Colored Numbers:
 durabilityinfo.options.showitemdurability=Show Tools: 
 durabilityinfo.options.showarmordurability=Show Armor: 
 durabilityinfo.options.itemdurabilitythreshold=Tools shown at: 
-durabilityinfo.options.itemdurabilitythreshold.tooltip=Tools with more durability than this threshold will be hidden. Settings this to 100%% will always show your tools.
+durabilityinfo.options.itemdurabilitythreshold.tooltip=Tools with more durability than this threshold will be hidden. Setting this to 100%% will always show your tools.
 durabilityinfo.options.armordurabilitythreshold=Armor shown at: 
-durabilityinfo.options.armordurabilitythreshold.tooltip=Armor with more durability than this threshold will be hidden. Settings this to 100%% will always show your armor.
+durabilityinfo.options.armordurabilitythreshold.tooltip=Armor with more durability than this threshold will be hidden. Setting this to 100%% will always show your armor.
 durabilityinfo.options.autounequiparmor=Auto Unequip Armor: 
 durabilityinfo.options.autounequiparmor.tooltip=Will automatically take off your armor when it is about to break
 durabilityinfo.options.autounequiptools=Auto Unequip Tools: 
@@ -166,10 +166,12 @@ itemselector.options.sideButtons=Use mouse buttons:
 itemselector.options.sideButtons.tooltip=Instead of using the mousewheel, use the mouse forward and back buttons to select items (only works if your mouse has these buttons)
 
 miscellaneous.name=Miscellaneous
+miscellaneous.options.showanvilrepairs=Anvil repair count: 
+miscellaneous.options.showanvilrepairs.tooltip=Shows the number of times an item has been repaired while using the Anvil
 miscellaneous.options.useenhancedmiddleclick=Enhanced middle click: 
 miscellaneous.options.useenhancedmiddleclick.tooltip=When enabled, middle clicking will move the mouseovered block into your hotbar if it exists in your inventory._p_pIn comparison, the default middle click functionality only works if it exists on your hotbar.
 miscellaneous.options.usequickplacesign=Quick place sign: 
-miscellaneous.options.usequickplacesign.tooltip=When enabled, placing a sign while sneaking will place the sign without opening the sign GUI.
+miscellaneous.options.usequickplacesign.tooltip=When enabled, placing a sign while sneaking will place the sign without opening the sign GUI._pDon't forget to turn this off when you're done using it!
 miscellaneous.options.useunlimitedsprinting=Unlimited sprinting: 
 miscellaneous.options.useunlimitedsprinting.tooltip=This overrides the default sprinting behavior by letting you run for more than 30 seconds at a time
 

@@ -11,8 +11,8 @@ import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.mods.EatingAid.Modes;
 import com.zyin.zyinhud.util.Localization;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
 /**
  * Plays a warning sound when the player is low on health.
@@ -96,6 +96,8 @@ public class HealthMonitor extends ZyinHUDModBase
 	/**
 	 * We use a ClientTickEvent instead of a LivingHurtEvent because a LivingHurtEvent will only
 	 * fire in single player, whereas a ClientTickEvent fires in both single and multi player.
+	 * PlayerTickEvent ticks for every player rendered.
+	 * WorldTickEvent doesn't work on servers.
 	 * @param event
 	 */
     @SubscribeEvent

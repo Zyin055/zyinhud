@@ -3,15 +3,14 @@ package com.zyin.zyinhud.mods;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.zyin.zyinhud.ZyinHUD;
-import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ModCompatibility;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+
+import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ModCompatibility;
 
 /**
  * Weapon Swap allows the player to quickly equip their sword and bow.
@@ -41,13 +40,9 @@ public class WeaponSwapper extends ZyinHUDModBase
     public static void SwapWeapons()
     {
         ItemStack currentItemStack = mc.thePlayer.getHeldItem();
-        Item currentItem;
+        Item currentItem = null;
 
-        if (currentItemStack == null)
-        {
-            currentItem = null;
-        }
-        else
+        if (currentItemStack != null)
         {
             currentItem = currentItemStack.getItem();
         }
@@ -61,7 +56,7 @@ public class WeaponSwapper extends ZyinHUDModBase
         if (meleeWeaponSlot < 0 && rangedWeaponSlot < 0)
         {
             //we dont have a sword or a bow
-            ZyinHUDUtil.DisplayNotification(Localization.get("weaponswapper.noweaponsinhotbar"));
+        	ZyinHUDRenderer.DisplayNotification(Localization.get("weaponswapper.noweaponsinhotbar"));
         }
         else if (meleeWeaponSlot >= 0 && rangedWeaponSlot < 0)
         {

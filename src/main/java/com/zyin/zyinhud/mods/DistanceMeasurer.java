@@ -2,9 +2,10 @@ package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 
-import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 /**
@@ -82,9 +83,9 @@ public class DistanceMeasurer extends ZyinHUDModBase
             ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
-            int distanceStringWidth = mc.fontRenderer.getStringWidth(distanceString);
+            int distanceStringWidth = mc.fontRendererObj.getStringWidth(distanceString);
             
-            mc.fontRenderer.drawStringWithShadow(distanceString, width/2 - distanceStringWidth/2, height/2 - 10, 0xffffff);
+            mc.fontRendererObj.func_175063_a(distanceString, width/2 - distanceStringWidth/2, height/2 - 10, 0xffffff);
         }
     }
     
@@ -97,66 +98,67 @@ public class DistanceMeasurer extends ZyinHUDModBase
      */
     protected static String CalculateDistanceString()
     {
-        MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
+        //MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
+    	MovingObjectPosition objectMouseOver = mc.thePlayer.func_174822_a(300, 1);	//friendly name is probably rayTrace()
         
         if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
             if (Mode == Modes.SIMPLE)
             {
-            	double coordX = mc.thePlayer.posX;
-                double coordY = mc.thePlayer.posY;
-                double coordZ = mc.thePlayer.posZ;
-            	
-                //add 0.5 to center the coordinate into the middle of the block
-                double blockX = objectMouseOver.blockX + 0.5;
-                double blockY = objectMouseOver.blockY + 0.5;
-                double blockZ = objectMouseOver.blockZ + 0.5;
+            	double playerX = mc.thePlayer.posX;
+                double playerY = mc.thePlayer.posY + mc.thePlayer.getEyeHeight();
+                double playerZ = mc.thePlayer.posZ;
+                
+                double blockX = objectMouseOver.hitVec.xCoord;
+                double blockY = objectMouseOver.hitVec.yCoord;
+                double blockZ = objectMouseOver.hitVec.zCoord;
                 
                 double deltaX;
                 double deltaY;
                 double deltaZ;
 
-                if(coordX < blockX - 0.5)
-                	deltaX = (blockX - 0.5) - coordX;
-                else if(coordX > blockX + 0.5)
-                	deltaX = coordX - (blockX + 0.5);
+                System.out.println("-----------------");
+                System.out.println("player="+playerX+", "+ playerY+", "+ playerZ);
+                System.out.println("block ="+blockX+", "+ blockY+", "+ blockZ);
+
+                if(playerX < blockX)
+                	deltaX = blockX - playerX;
+                else if(playerX > blockX + 0.5)
+                	deltaX = playerX - blockX;
                 else
-                	deltaX = coordX - blockX;
+                	deltaX = playerX - blockX;
                 
-                if(coordY < blockY - 0.5)
-                	deltaY = (blockY - 0.5) - coordY;
-                else if(coordY > blockY + 0.5)
-                	deltaY = coordY - (blockY + 0.5);
+                if(playerY < blockY)
+                	deltaY = blockY - playerY;
+                else if(playerY > blockY)
+                	deltaY = playerY - blockY;
                 else
-                	deltaY = coordY - blockY;
+                	deltaY = playerY - blockY;
                 
-                if(coordZ < blockZ - 0.5)
-                	deltaZ = (blockZ - 0.5) - coordZ;
-                else if(coordZ > blockZ + 0.5)
-                	deltaZ = coordZ - (blockZ + 0.5);
+                if(playerZ < blockZ)
+                	deltaZ = blockZ - playerZ;
+                else if(playerZ > blockZ)
+                	deltaZ = playerZ - blockZ;
                 else
-                	deltaZ = coordZ - blockZ;
+                	deltaZ = playerZ - blockZ;
                 
             	double farthestHorizontalDistance = Math.max(Math.abs(deltaX), Math.abs(deltaZ));
                 double farthestDistance = Math.max(Math.abs(deltaY), farthestHorizontalDistance);
-                return FontCodes.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]";
+                return EnumChatFormatting.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]";
             }
             else if (Mode == Modes.COORDINATE)
             {
-                double blockX = objectMouseOver.blockX;
-                double blockY = objectMouseOver.blockY;
-                double blockZ = objectMouseOver.blockZ;
-                
-                return FontCodes.GOLD + "[" + blockX + ", " + blockY + ", " + blockZ + "]";
+            	BlockPos pos = objectMouseOver.func_178782_a(); //friendly name is probably getBlockPos()
+                return EnumChatFormatting.GOLD + "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
             }
             else
             {
-            	return FontCodes.GOLD + "[???]";
+            	return EnumChatFormatting.GOLD + "[???]";
             }
         }
         else
         {
-        	return FontCodes.GOLD + "["+Localization.get("distancemeasurer.far")+"]";
+        	return EnumChatFormatting.GOLD + "["+Localization.get("distancemeasurer.far")+"]";
         }
     }
     

@@ -5,7 +5,7 @@ import org.lwjgl.input.Keyboard;
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class ZyinHUDOptionsKeyHandler implements ZyinHUDKeyHandlerBase
 {

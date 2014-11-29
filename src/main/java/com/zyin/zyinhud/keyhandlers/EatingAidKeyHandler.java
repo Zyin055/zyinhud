@@ -2,7 +2,7 @@ package com.zyin.zyinhud.keyhandlers;
 
 import com.zyin.zyinhud.mods.EatingAid;
 
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public class EatingAidKeyHandler implements ZyinHUDKeyHandlerBase
 {

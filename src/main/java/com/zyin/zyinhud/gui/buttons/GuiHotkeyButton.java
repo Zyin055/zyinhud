@@ -3,10 +3,10 @@ package com.zyin.zyinhud.gui.buttons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.input.Keyboard;
 
-import com.zyin.zyinhud.util.FontCodes;
 import com.zyin.zyinhud.util.Localization;
 
 /**
@@ -58,7 +58,7 @@ public class GuiHotkeyButton extends GuiButton
 	protected void UpdateDisplayString()
 	{
     	if(waitingForHotkeyInput)
-    		displayString = Localization.get("gui.options.hotkey") + FontCodes.WHITE + "> " + FontCodes.YELLOW + GetHotkey() + FontCodes.WHITE + " <";
+    		displayString = Localization.get("gui.options.hotkey") + EnumChatFormatting.WHITE + "> " + EnumChatFormatting.YELLOW + GetHotkey() + EnumChatFormatting.WHITE + " <";
     	else
     		displayString = Localization.get("gui.options.hotkey") + GetHotkey();
 		
