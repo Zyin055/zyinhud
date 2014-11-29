@@ -18,13 +18,30 @@ buildscript {
 apply plugin: 'forge'
 
 archivesBaseName = "ZyinsHUD"
-version = "(1.7.10)-v.1.3.6"
+version = "(1.7.10)-v.1.3.7"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 minecraft {
     version = "1.7.10-10.13.2.1230"
-    assetDir = "eclipse/assets"
+    runDir = "eclipse/assets"
 }
+
+dependencies {
+    // you may put jars on which you depend on in ./libs
+    // or you may define them like so..
+    //compile "some.group:artifact:version:classifier"
+    //compile "some.group:artifact:version"
+      
+    // real examples
+    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
+    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+
+    // for more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+}
+
 processResources
 {
 	// this will ensure that this task is redone when the versions change.

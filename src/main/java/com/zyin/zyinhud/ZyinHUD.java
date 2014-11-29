@@ -50,7 +50,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.MODVERSION)
+@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION)
 public class ZyinHUD
 {
 	/**
@@ -59,7 +59,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version"
 	 * <li>build.gradle:version
 	 */
-	public static final String MODVERSION = "1.3.6";
+	public static final String VERSION = "1.3.7";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     

@@ -253,7 +253,9 @@ public class InventoryUtil
 	 */
 	public static boolean Swap(int srcIndex, int destIndex)
 	{
-		if(srcIndex == destIndex)
+		if(srcIndex == destIndex
+			|| srcIndex < 0
+			|| destIndex < 0)
 			return false;
 
 		List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;

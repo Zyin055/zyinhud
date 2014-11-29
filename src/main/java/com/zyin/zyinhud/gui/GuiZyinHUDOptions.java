@@ -218,7 +218,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         	
         	String[] text = {
         			ZyinHUD.MODNAME,
-        			"v." + ZyinHUD.MODVERSION,
+        			"v." + ZyinHUD.VERSION,
         			"",
         			"To reset values to their default",
         			"setting, delete it in the configuration",

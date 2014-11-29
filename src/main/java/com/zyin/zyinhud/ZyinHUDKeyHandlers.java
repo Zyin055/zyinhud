@@ -5,6 +5,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.MouseEvent;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
 import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
@@ -100,8 +101,6 @@ public class ZyinHUDKeyHandlers
 			ZyinHUDOptionsKeyHandler.Pressed(event);
 		else if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode() && !Keyboard.getEventKeyState())	//on key released
 			ItemSelectorKeyHandler.Released(event);
-		else if(mc.gameSettings.keyBindUseItem.getIsKeyPressed())
-			TorchAid.Pressed(event);
 		
 	}
 
@@ -144,16 +143,8 @@ public class ZyinHUDKeyHandlers
             	Miscellaneous.OnMiddleClick();
         	}
         }
-        
-
-        if(mc.gameSettings.keyBindUseItem.getKeyCode() == -100 + event.button)	//shorthand so we don't need a bunch of if statements
-        {
-        	if(event.buttonstate)
-        	{
-	        	TorchAid.Pressed(event);
-        	}
-        }
     }
+	
 	
     @SubscribeEvent
     public void ClientTickEvent(ClientTickEvent event)
@@ -165,5 +156,48 @@ public class ZyinHUDKeyHandlers
 	    	CoordinatesKeyHandler.ClientTickEvent(event);
 		else if(Keyboard.getEventKey() == KEY_BINDINGS[7].getKeyCode())
 			QuickDepositKeyHandler.ClientTickEvent(event);
+		
+		//since this method is in the ClientTickEvent, it'll overcome the GuiScreen limitation of not handling mouse clicks
+		FireUseBlockEvents();
+    }
+
+
+    private static boolean useBlockButtonPreviouslyDown = false;
+    
+    private static void FireUseBlockEvents()
+    {
+    	//.keyBindUseItem		isButtonDown()
+    	//keyboard key = postive
+    	//forward click = -96	4
+    	//backward click = -97	3
+    	//middle click = -98	2
+    	//right click = -99		1
+    	//left click = -100		0
+    	
+    	boolean useBlockButtonDown;
+    	
+    	if(mc.gameSettings.keyBindUseItem.getKeyCode() < 0)	//the Use Block hotkey is bound to the mouse
+    	{
+            useBlockButtonDown = Mouse.isButtonDown(100 + mc.gameSettings.keyBindUseItem.getKeyCode());
+    	}
+    	else	//the Use Block hotkey is bound to the keyboard
+    	{
+            useBlockButtonDown = Keyboard.isKeyDown(mc.gameSettings.keyBindUseItem.getKeyCode());
+    	}
+    	
+    	if(useBlockButtonDown == true & useBlockButtonPreviouslyDown == false)
+    		OnUseBlockPressed();
+    	else if(useBlockButtonDown == false & useBlockButtonPreviouslyDown == true)
+    		OnUseBlockReleased();
+    	
+    	useBlockButtonPreviouslyDown = useBlockButtonDown;
+    }
+    private static void OnUseBlockPressed()
+    {
+    	TorchAid.instance.Pressed();
+    }
+    private static void OnUseBlockReleased()
+    {
+    	TorchAid.instance.Released();
     }
 }

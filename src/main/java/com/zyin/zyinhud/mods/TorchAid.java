@@ -1,21 +1,21 @@
 package com.zyin.zyinhud.mods;
 
 
-import net.minecraft.block.Block;
+import java.awt.AWTException;
+import java.awt.Robot;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.ModCompatibility;
 
-import cpw.mods.fml.common.eventhandler.Event;
-
 /**
- * TorchAid Aid allows the player to easily use an torch without having it selected.
+ * TorchAid Aid allows the player to easily use a torch without having it selected. It does this by
+ * selecting a torch before the Use Block key is pressed, then unselecting the torch after the Use Block
+ * key is released.
  */
 public class TorchAid extends ZyinHUDModBase
 {
@@ -32,103 +32,145 @@ public class TorchAid extends ZyinHUDModBase
     }
     
     
+    private Robot r = null;
+    
     /**
-     * When the player right clicks
+     * Use this instance for all method calls.
      */
-    public static void Pressed(Event event)
+    public static TorchAid instance = new TorchAid();
+
+    private TorchAid()
     {
-    	if(TorchAid.Enabled)
-    		UseTorchIfToolIsEquipped(event);
+        try
+        {
+            r = new Robot();
+        }
+        catch (AWTException e)
+        {
+            e.printStackTrace();
+        }
     }
     
+    /** After the <code>EquipTorchIfToolIsEquipped()</code> function fires, this is set to the index of where the torch was in the inventory,
+     * or the index of the hotbar slot that was selected. The <code>UnequipTorch()</code> function uses this value to determine
+     * what to do next. -1 means there are no torches in inventory.*/
+    private static int previousTorchIndex = -1;
+    
+
+    public void Pressed()
+    {
+    	if(TorchAid.Enabled)
+    		EquipTorchIfToolIsEquipped();
+    }
+    
+    public void Released()
+    {
+    	if(TorchAid.Enabled)
+    		UnequipTorch();
+    }
     
     /**
      * Makes the player place a Torch if they are currently using an axe, pickaxe, shovel, or have nothing in hand.
      */
-    public static void UseTorchIfToolIsEquipped(Event event)
+    public void EquipTorchIfToolIsEquipped()
     {
     	if(mc.currentScreen == null && mc.inGameHasFocus)
     	{
     		ItemStack currentItemStack = mc.thePlayer.getHeldItem();
-    		//if(currentItemStack == null	|| currentItemStack.getItem() instanceof ItemTool)	//hand or tool (axe, pickaxe, shovel) selected
     		if(currentItemStack == null
     			|| currentItemStack.getItem() instanceof ItemTool
     			|| ModCompatibility.TConstruct.IsTConstructToolWithoutARightClickAction(currentItemStack.getItem()))
     		{
-    			UseTorch(event);
+    			UseTorch();
     		}
     	}
     }
     
     /**
-     * Makes the player place a Torch if they have any.
+     * Makes the player place a Torch if they have any by selecting a Torch in their inventory then right clicking.
      */
-    public static void UseTorch(Event event)
+    public void UseTorch()
     {
         if (EatingAid.instance.isEating())
         {
             EatingAid.instance.StopEating();    //it's not good if we have a torch selected and hold right click down...
         }
         
-        
         if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
-        	int x = mc.objectMouseOver.blockX;
-        	int y = mc.objectMouseOver.blockY;
-        	int z = mc.objectMouseOver.blockZ;
-        	int sideHit = mc.objectMouseOver.sideHit;
-        	
-            if (sideHit == 0)
-                y--;
-            else if (sideHit == 1)
-                y++;
-            else if (sideHit == 2)
-                z--;
-            else if (sideHit == 3)
-                z++;
-            else if (sideHit == 4)
-                x--;
-            else if (sideHit == 5)
-                x++;
+            int torchHotbarIndex = InventoryUtil.GetItemIndexFromHotbar(Blocks.torch);
             
-            if(CanPlaceTorchAt(mc.theWorld, x, y, z, sideHit))
+            if(torchHotbarIndex < 0)
             {
-            	boolean attemptedToUseTorch = InventoryUtil.UseItem(Blocks.torch);
-            	
-            	if(event.isCancelable())	//MouseEvents are cancelable, KeyInputEvents are not
-            		event.setCanceled(true);	//cancel the original right click since we sent our own with InventoryUtil.UseItem()
+                int torchInventoryIndex = InventoryUtil.GetItemIndexFromInventory(Blocks.torch);
+
+    			if(torchInventoryIndex >= 0)
+    			{
+    				previousTorchIndex = torchInventoryIndex;
+    				EquipItemFromInventory(torchInventoryIndex);
+    			}
+    			else
+    			{
+    				//player has no torches
+    				//don't display a notification because the player may be trying to interact with a useable block
+    			}
+            }
+            else
+            {
+            	previousTorchIndex = InventoryUtil.TranslateHotbarIndexToInventoryIndex(mc.thePlayer.inventory.currentItem);
+            	EquipItemFromHotbar(torchHotbarIndex);
             }
         }
     }
     
-
     /**
-     * Checks to see if its valid to put this torch at the specified coordinates.
-     * Copy/pasted from BlockTorch.CanPlaceBlockAt()
+     * Selects the item at the specified inventory index by swapping it with the currently held item.
+     * @param inventoryIndex 9-35
      */
-    protected static boolean CanPlaceTorchAt(World world, int x, int y, int z, int side)
+    private void EquipItemFromInventory(int inventoryIndex)
     {
-        return world.isSideSolid(x - 1, y, z, ForgeDirection.EAST,  true) ||
-                world.isSideSolid(x + 1, y, z, ForgeDirection.WEST,  true) ||
-                world.isSideSolid(x, y, z - 1, ForgeDirection.SOUTH, true) ||
-                world.isSideSolid(x, y, z + 1, ForgeDirection.NORTH, true) ||
-                CanPlaceTorchOnTopOf(world, x, y - 1, z);
+    	if(inventoryIndex < 9 || inventoryIndex > 35)
+    		return;
+
+        int currentItemInventoryIndex = InventoryUtil.GetCurrentlySelectedItemInventoryIndex();
+        
+        InventoryUtil.Swap(currentItemInventoryIndex, inventoryIndex);
     }
     
     /**
-     * Checks to see if its valid to put this torch on top of the block at the specified coordinates.
-     * Copy/pasted from BlockTorch.func_150107_m()
+     * Selects the item at specified hotbar index.
+     * @param hotbarIndex 36-44
      */
-    private static boolean CanPlaceTorchOnTopOf(World world, int x, int y, int z)
+    private void EquipItemFromHotbar(int hotbarIndex)
     {
-        if (World.doesBlockHaveSolidTopSurface(world, x, y, z))
-        {
-            return true;
-        }
-        else
-        {
-            Block block = world.getBlock(x, y, z);
-            return block.canPlaceTorchOnTop(world, x, y, z);
-        }
+    	if(hotbarIndex < 36 || hotbarIndex > 44)
+    		return;
+    	
+    	hotbarIndex = InventoryUtil.TranslateInventoryIndexToHotbarIndex(hotbarIndex);
+    	
+    	mc.thePlayer.inventory.currentItem = hotbarIndex;
+    }
+    
+
+    /**
+     * Uses the <code>previousTorchIndex</code> variable to determine how to unequip the currently held torch.
+     * after placing one.
+     */
+    private void UnequipTorch()
+    {
+    	if(previousTorchIndex < 0)
+    		return;
+    	else
+    	{
+        	if(previousTorchIndex >= 36 && previousTorchIndex <= 44)	//on the hotbar
+        	{
+        		mc.thePlayer.inventory.currentItem = InventoryUtil.TranslateInventoryIndexToHotbarIndex(previousTorchIndex);
+        	}
+        	else
+        	{
+        		InventoryUtil.Swap(InventoryUtil.TranslateHotbarIndexToInventoryIndex(mc.thePlayer.inventory.currentItem), previousTorchIndex);
+        	}
+    	}
+    	previousTorchIndex = -1;
     }
 }
