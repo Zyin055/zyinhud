@@ -218,7 +218,7 @@ public class InventoryUtil
 	{
 		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
 		boolean sendUseItem = mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, mc.thePlayer.getHeldItem());
-		System.out.println("sendUseItem:"+sendUseItem);
+		//System.out.println("sendUseItem:"+sendUseItem);
 		return sendUseItem;
 	}
 	
@@ -238,7 +238,7 @@ public class InventoryUtil
 				mc.objectMouseOver.field_178784_b, //EnumFacing
 				mc.objectMouseOver.hitVec);
 		BlockPos pos = new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord);
-		System.out.println("sendUseBlock:"+sendUseBlock+" ("+pos+") "+mc.theWorld.getBlockState(pos).getBlock().getUnlocalizedName());
+		//System.out.println("sendUseBlock:"+sendUseBlock+" ("+pos+") "+mc.theWorld.getBlockState(pos).getBlock().getUnlocalizedName());
 		return sendUseBlock;
 	}
 	
@@ -408,10 +408,10 @@ public class InventoryUtil
 	    
 	    int iStart = numChestSlots;
 	    int iEnd = numDisplayedSlots;
-		System.out.println("numDisplayedSlots="+numDisplayedSlots);
-		System.out.println("numChestSlots="+numChestSlots);
-		System.out.println("iStart="+iStart);
-		System.out.println("iEnd="+iEnd);
+		//System.out.println("numDisplayedSlots="+numDisplayedSlots);
+		//System.out.println("numChestSlots="+numChestSlots);
+		//System.out.println("iStart="+iStart);
+		//System.out.println("iEnd="+iEnd);
 	    
 	    if(ignoreItemsInHotbar)
 	    	iEnd -= 9;
@@ -432,7 +432,7 @@ public class InventoryUtil
 				    if(itemIndex >= 0) {
 				    	DepositItemInContainer(i, itemIndex);
 
-						System.out.println("found i["+i+"] at "+itemIndex+"="+itemStack);
+						//System.out.println("found i["+i+"] at "+itemIndex+"="+itemStack);
 				    }
 				}
 				else
@@ -471,10 +471,10 @@ public class InventoryUtil
 	    //double chest = 54 big
 	    int numContainerSlots = numDisplayedSlots - numInventorySlots;
 
-	    System.out.println("numContainerSlots:"+numContainerSlots);
-	    System.out.println("numInventorySlots:"+numInventorySlots);
-	    System.out.println("srcIndex:"+srcIndex);
-	    System.out.println("destIndex:"+destIndex);
+	    //System.out.println("numContainerSlots:"+numContainerSlots);
+	    //System.out.println("numInventorySlots:"+numInventorySlots);
+	    //System.out.println("srcIndex:"+srcIndex);
+	    //System.out.println("destIndex:"+destIndex);
 
 		if(numContainerSlots == 53-numInventorySlots && (srcIndex < 18 || srcIndex > 53))
 			return false;
@@ -594,7 +594,7 @@ public class InventoryUtil
 	    		//3: if the combined stacks fit into one slot
 	    		else
 	    		{
-	    		    System.out.println("the combined stacks fit into one slot");
+	    		    //System.out.println("the combined stacks fit into one slot");
 	    		    //System.out.println("the combined stacks fit into one slot:"+destIndex);
 			    	LeftClickContainerSlot(srcIndex);
 				    LeftClickContainerSlot(destIndex);

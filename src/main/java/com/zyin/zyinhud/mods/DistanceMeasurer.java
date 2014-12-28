@@ -117,9 +117,9 @@ public class DistanceMeasurer extends ZyinHUDModBase
                 double deltaY;
                 double deltaZ;
 
-                System.out.println("-----------------");
-                System.out.println("player="+playerX+", "+ playerY+", "+ playerZ);
-                System.out.println("block ="+blockX+", "+ blockY+", "+ blockZ);
+                // System.out.println("-----------------");
+                // System.out.println("player="+playerX+", "+ playerY+", "+ playerZ);
+                // System.out.println("block ="+blockX+", "+ blockY+", "+ blockZ);
 
                 if(playerX < blockX)
                 	deltaX = blockX - playerX;
