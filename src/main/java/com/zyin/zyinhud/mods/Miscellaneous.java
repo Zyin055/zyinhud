@@ -67,7 +67,7 @@ public class Miscellaneous extends ZyinHUDModBase
         if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
             Block block = ZyinHUDUtil.GetMouseOveredBlock();
-            System.out.println(block);
+            // System.out.println(block);
             
             Item blockItem = Item.getItemFromBlock(block);
             
