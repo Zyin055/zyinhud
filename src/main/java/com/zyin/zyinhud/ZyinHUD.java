@@ -80,6 +80,12 @@ public class ZyinHUD
     public void preInit(FMLPreInitializationEvent event)
     {
         configFile = event.getSuggestedConfigurationFile();
+        
+        //Version Checker
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setString("curseProjectName", "59953-zyins-hud");
+        compound.setString("curseFilenameParser", "ZyinsHUD-[].jar");
+        FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "ZyinHUD", "addCurseCheck", compound);
     }
 	
     @EventHandler
