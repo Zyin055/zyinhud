@@ -29,6 +29,7 @@ import java.io.File;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiOptions;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -37,6 +38,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -81,11 +83,7 @@ public class ZyinHUD
     {
         configFile = event.getSuggestedConfigurationFile();
         
-        //Version Checker
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setString("curseProjectName", "59953-zyins-hud");
-        compound.setString("curseFilenameParser", "ZyinsHUD-[].jar");
-        FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "ZyinHUD", "addCurseCheck", compound);
+        AddVersionChecker();
     }
 	
     @EventHandler
@@ -120,6 +118,18 @@ public class ZyinHUD
     	//THIS EVENT IS NOT FIRED ON SMP SERVERS
     	event.registerServerCommand(new CommandFps());
     	event.registerServerCommand(new CommandZyinHUDOptions());
+    }
+    
+    /**
+     * Adds support for the Version Checker mod.
+     * @link http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2091981-version-checker-auto-update-mods-and-clean
+     */
+    public void AddVersionChecker()
+    {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setString("curseProjectName", "59953-zyins-hud");	//http://minecraft.curseforge.com/mc-mods/59953-zyins-hud
+        compound.setString("curseFilenameParser", "ZyinsHUD-[].jar");
+        FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "ZyinHUD", "addCurseCheck", compound);
     }
     
     
