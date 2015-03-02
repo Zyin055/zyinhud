@@ -49,7 +49,7 @@ import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.util.ModCompatibility;
 
-@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION)
+@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME)
 public class ZyinHUD
 {
 	/**
@@ -58,7 +58,7 @@ public class ZyinHUD
 	 * <li>src/main/resources/mcmod.info:"version", "mcversion"
 	 * <li>build.gradle:version
 	 */
-	public static final String VERSION = "1.4.0";
+	public static final String VERSION = "1.4.1";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     

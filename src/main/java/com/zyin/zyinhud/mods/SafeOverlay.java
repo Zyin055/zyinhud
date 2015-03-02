@@ -104,27 +104,6 @@ public class SafeOverlay extends ZyinHUDModBase
         	return friendlyName;
         }
     }
-    
-    /**
-     * Time in MS between re-calculations. This value changes based on the drawDistance
-     * from updateFrequencyMin to updateFrequencyMax.
-     * <p>
-     * Examples:
-     * <br>drawDistance = 2, updateFrequency = 100ms
-     * <br>drawDistance = 20, updateFrequency = ~1000ms
-     * <br>drawDistance = 175, updateFrequency = 8000ms
-     */
-    protected int updateFrequency;
-    /**
-     * The fastest the update frequency should be set to, in milliseconds.
-     * It will be set to this value when the drawDistance = minDrawDistance.
-     */
-    protected static final  int updateFrequencyMin = 100;
-    /**
-     * The slowest the update frequency should be set to, in milliseconds.
-     * It will be set to this value when the drawDistance = maxDrawDistance.
-     */
-    protected static final int updateFrequencyMax = 8000;
 
     /**
      * USE THE Getter/Setter METHODS FOR THIS!!
@@ -153,23 +132,15 @@ public class SafeOverlay extends ZyinHUDModBase
     private float unsafeOverlayMinTransparency = 0.11f;
     private float unsafeOverlayMaxTransparency = 1f;
 
-    /**
-     * The last time the overlay cache was generated
-     */
-    private long lastGenerate;
-
-    public boolean displayInNether = false;
+    private boolean displayInNether = false;
     private boolean renderUnsafePositionsThroughWalls = false;
 
     private Position playerPosition;
-    private Position cachePosition = new Position();
-    private static List<Position> unsafePositionCache;
+    
+    private static List<Position> unsafePositionCache = new ArrayList<Position>();	//used during threaded calculations
+    private static List<Position> unsafePositions = new ArrayList<Position>();		//used during renderinig
 
-    /**
-     * When this flag is set to true Safe Overlay will recalculate the unsafe position cache.
-     */
-    private static boolean recalculateUnsafePositionsFlag = false;
-    private List<Thread> safeCalculatorThreads = Collections.synchronizedList(new ArrayList<Thread>(drawDistance * 2 + 1));
+    private Thread safeCalculatorThread = null;
 
     /**
      * Use this instance of the Safe Overlay for method calls.
@@ -184,84 +155,6 @@ public class SafeOverlay extends ZyinHUDModBase
         //Don't let multiple threads access this list at the same time by making it a Synchronized List
         unsafePositionCache = Collections.synchronizedList(new ArrayList<Position>());
     }
-
-    /**
-     * Event fired when the player interacts with another block.
-     * <p>
-     * This event only fires on single player worlds!
-     * @param event
-     */
-    /*
-    @SubscribeEvent
-    public void PlayerInteractEvent(PlayerInteractEvent event)
-    {
-    	//THIS EVENT IS NOT FIRED ON SMP SERVERS
-    	
-        if (event.action != Action.RIGHT_CLICK_BLOCK)
-        {
-            return;    //can only place blocks by right clicking
-        }
-
-        int x = event.x;
-        int y = event.y;
-        int z = event.z;
-        //int blockClickedId = mc.theWorld.getBlockId(x, y, z);
-        int blockFace = event.face;	// Bottom = 0, Top = 1, Sides = 2-5
-
-        if (blockFace == 0)
-            y--;
-        else if (blockFace == 1)
-            y++;
-        else if (blockFace == 2)
-            z--;
-        else if (blockFace == 3)
-            z++;
-        else if (blockFace == 4)
-            x--;
-        else if (blockFace == 5)
-            x++;
-        
-        Block blockPlaced = mc.theWorld.getBlock(x, y, z);
-        if (blockPlaced != Blocks.air)	//if it's not an Air block
-        {
-            OnBlockPlaced(blockPlaced, x, y , z);
-        }
-    }*/
-
-    /**
-     * ONLY WORKS IN SINGLE PLAYER<p>
-     * Psuedo event handler for blocks being placed.
-     * Will fire when the player ATTEMPTS to placed a block
-     * (it will fire even if the block isn't succesfully placed).
-     * @param block
-     * @param x
-     * @param y
-     * @param z
-     */
-    /*
-    public void OnBlockPlaced(Block block, int x, int y, int z)
-    {
-        if (block.getLightValue() > 0)
-        {
-            OnLightEmittingBlockPlaced(block, x, y, z);
-        }
-    }*/
-
-    /**
-     * ONLY WORKS IN SINGLE PLAYER<p>
-     * Psuedo event handler for a light emitting block being placed.
-     * Will fire when the player ATTEMPTS to placed a block
-     * (it will fire even if the block isn't succesfully placed).
-     * @param block
-     * @param x
-     * @param y
-     * @param z
-     */
-    /*
-    public void OnLightEmittingBlockPlaced(Block block, int x, int y, int z)
-    {
-        RecalculateUnsafePositions();
-    }*/
 
     /**
      * This thead will calculate unsafe positions around the player given a Y coordinate.
@@ -279,13 +172,12 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     class SafeCalculatorThread extends Thread
     {
-    	//this is the y-coordinate this thread is responsible for calculating
-        private int y;
-
-        SafeCalculatorThread(int y)
+    	Position cachedPlayerPosition;
+    	
+        SafeCalculatorThread(Position playerPosition)
         {
-            super("Safe Overlay Calculator Thread at y=" + y);
-            this.y = y;
+            super("Safe Overlay Calculator Thread");
+            this.cachedPlayerPosition = playerPosition;
 
             //Start the thread
             start();
@@ -294,20 +186,35 @@ public class SafeOverlay extends ZyinHUDModBase
         //This is the entry point for the thread after start() is called.
         public void run()
         {
+        	unsafePositionCache.clear();
+        	
             Position pos = new Position();
 
-            for (int x = -drawDistance; x < drawDistance; x++)
-            for (int z = -drawDistance; z < drawDistance; z++)
-            {
-                pos.x = playerPosition.x + x;
-                pos.y = playerPosition.y + y;
-                pos.z = playerPosition.z + z;
-                
-                if(CanMobsSpawnAtPosition(pos))
-                {
-                	unsafePositionCache.add(new Position(pos));
-                }
+            try {
+
+	            for (int x = -drawDistance; x < drawDistance; x++)
+	            {
+		            for (int y = -drawDistance; y < drawDistance; y++)
+		            {
+			            for (int z = -drawDistance; z < drawDistance; z++)
+			            {
+			                pos.x = cachedPlayerPosition.x + x;
+			                pos.y = cachedPlayerPosition.y + y;
+			                pos.z = cachedPlayerPosition.z + z;
+			                
+			                if(CanMobsSpawnAtPosition(pos))
+			                {
+			                	unsafePositionCache.add(new Position(pos));
+			                }
+						}
+		            }
+					sleep(8);
+	            }
             }
+            catch (InterruptedException e)
+            {
+				//this can happen if the Safe Overlay is turned off or if Minecraft closes while the thread is sleeping
+			}
         }
     }
     
@@ -386,10 +293,21 @@ public class SafeOverlay extends ZyinHUDModBase
         double z = mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * partialTickTime;
         
         playerPosition = new Position((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
-
-        if (recalculateUnsafePositionsFlag || System.currentTimeMillis() - lastGenerate > updateFrequency)
+        
+        if(safeCalculatorThread == null || !safeCalculatorThread.isAlive())
         {
-            CalculateUnsafePositionsMultithreaded();
+        	if(unsafePositions != null)
+        		unsafePositions.clear();
+        	
+        	if(unsafePositionCache != null && unsafePositions != null)
+        		unsafePositions = new ArrayList<Position>(unsafePositionCache);
+        	
+        	safeCalculatorThread = new SafeCalculatorThread(playerPosition);
+        }
+
+        if(unsafePositions == null)
+        {
+        	return;
         }
         
         GL11.glPushMatrix();
@@ -413,7 +331,7 @@ public class SafeOverlay extends ZyinHUDModBase
         GL11.glBegin(GL11.GL_LINES);	//begin drawing lines defined by 2 vertices
 
         //render unsafe areas
-        for (Position position : unsafePositionCache)
+        for (Position position : unsafePositions)
         {
         	RenderUnsafeMarker(position);
         }
@@ -523,53 +441,6 @@ public class SafeOverlay extends ZyinHUDModBase
     }
 
     /**
-     * Calculates which areas around the player are unsafe and adds these Positions
-     * to the unsafePositionCache. The cache is used when the unsafe positions are
-     * rendered (a.k.a. every frame). The cache is used to save CPU cycles from not
-     * having to recalculate the unsafe locations every frame.
-     * <p>
-     * This is a multithreaded method that makes a new thread to calculate unsafe
-     * areas for each elevation (Y coordinate) around the player. This means that
-     * if the drawDistance=20, then a 40*40*40 cube is analyzed, which means we make
-     * 40 new threads to help calculate unsafe areas.
-     */
-    protected void CalculateUnsafePositionsMultithreaded()
-    {
-        unsafePositionCache.clear();
-
-        for (int y = -drawDistance; y < drawDistance; y++)
-        {
-            safeCalculatorThreads.add(new SafeCalculatorThread(y));
-        }
-        
-        recalculateUnsafePositionsFlag = false;
-        cachePosition = playerPosition;
-
-        //wait for all the threads to finish calculation before rendering the unsafe positions
-        for (Thread t : safeCalculatorThreads)
-        {
-            try
-            {
-                t.join();
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        
-        lastGenerate = System.currentTimeMillis();
-    }
-
-    /**
-     * Sets a flag for the Safe Overlay to recalculate unsafe positions on the next screen render.
-     */
-    public void RecalculateUnsafePositions()
-    {
-        recalculateUnsafePositionsFlag = true;
-    }
-
-    /**
      * Gets the status of the Safe Overlay
      * @return the string "safe" if the Safe Overlay is enabled, otherwise "".
      */
@@ -606,9 +477,6 @@ public class SafeOverlay extends ZyinHUDModBase
     public int SetDrawDistance(int newDrawDistance)
     {
         drawDistance = MathHelper.clamp_int(newDrawDistance, minDrawDistance, maxDrawDistance);
-        double percent = (double)drawDistance / maxDrawDistance;
-        updateFrequency = (int)((double)(updateFrequencyMax - updateFrequencyMin) * percent  + updateFrequencyMin);
-        RecalculateUnsafePositions();
         return drawDistance;
     }
 

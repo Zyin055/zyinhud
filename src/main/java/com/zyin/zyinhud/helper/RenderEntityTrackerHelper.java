@@ -35,10 +35,12 @@ public class RenderEntityTrackerHelper
                 && mc.inGameHasFocus)
         {
             //iterate over all the loaded Entity objects and find just the players
-            for (Object object : mc.theWorld.loadedEntityList)
+            for (int i = 0; i < mc.theWorld.loadedEntityList.size(); i++)
             {
-                if(!(object instanceof EntityAnimal ||
-                		object instanceof EntityVillager))
+            	Object object = mc.theWorld.loadedEntityList.get(i);
+            	
+                if(object == null
+                	|| !(object instanceof EntityAnimal || object instanceof EntityVillager))
                 {
                 	continue;
                 }

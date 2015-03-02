@@ -266,10 +266,10 @@ public class ZyinHUDConfig
         else
         	p.set(DurabilityInfo.ShowItemDurability);
 
-        p = config.get(CATEGORY_DURABILITYINFO, "ShowIndividualArmorIcons", false);
+        p = config.get(CATEGORY_DURABILITYINFO, "ShowIndividualArmorIcons", true);
         p.comment = "Enable/Disable showing armor peices instead of the big broken armor icon.";
         if(loadSettings)
-        	DurabilityInfo.ShowIndividualArmorIcons = p.getBoolean(false);
+        	DurabilityInfo.ShowIndividualArmorIcons = p.getBoolean(true);
         else
         	p.set(DurabilityInfo.ShowIndividualArmorIcons);
         
@@ -315,10 +315,10 @@ public class ZyinHUDConfig
         else
         	p.set(DurabilityInfo.AutoUnequipTools);
         
-        p = config.get(CATEGORY_DURABILITYINFO, "ShowDamageAsPercentage", true);
+        p = config.get(CATEGORY_DURABILITYINFO, "ShowDamageAsPercentage", false);
         p.comment = "Toggle showing damaged items as a percentage or their remaining durability.";
         if(loadSettings)
-        	DurabilityInfo.ShowDamageAsPercentage = p.getBoolean(true);
+        	DurabilityInfo.ShowDamageAsPercentage = p.getBoolean(false);
         else
         	p.set(DurabilityInfo.ShowDamageAsPercentage);
         
@@ -547,13 +547,14 @@ public class ZyinHUDConfig
         else
         	p.set(WeaponSwapper.Enabled);
         
+        /*
         p = config.get(CATEGORY_WEAPONSWAP, "ScanHotbarForWeaponsFromLeftToRight", true);
         p.comment = "Set to false to scan the hotbar for swords and bows from right to left. Only matters if you have multiple swords/bows in your hotbar.";
         if(loadSettings)
         	WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight = p.getBoolean(true);
         else
         	p.set(WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight);
-        
+        */
         
         //CATEGORY_FPS
         p = config.get(CATEGORY_FPS, "EnableFPS", false);
@@ -620,14 +621,17 @@ public class ZyinHUDConfig
         	AnimalInfo.ShowBreedingIcons = p.getBoolean(true);
         else
         	p.set(AnimalInfo.ShowBreedingIcons);
-
+        
+        /* Breeding timers info not available on cliennt in 1.8
         p = config.get(CATEGORY_ANIMALINFO, "ShowBreedingTimers", true);
         p.comment = "Enable/Disable showing a timer counting down to when the animal is ready to breed again.";
         if(loadSettings)
         	AnimalInfo.ShowBreedingTimers = p.getBoolean(true);
         else
         	p.set(AnimalInfo.ShowBreedingTimers);
-
+        */
+        
+        /*
         p = config.get(CATEGORY_ANIMALINFO, "ShowBreedingTimerForHorses", true);
         p.comment = "Enable/Disable showing a timer that tells you how long until a horse can breed again.";
         if(loadSettings)
@@ -683,6 +687,7 @@ public class ZyinHUDConfig
         	AnimalInfo.ShowBreedingTimerForOcelots = p.getBoolean(true);
         else
         	p.set(AnimalInfo.ShowBreedingTimerForOcelots);
+        */
         
         
         //CATEGORY_ENDERPEARLAID
@@ -847,10 +852,10 @@ public class ZyinHUDConfig
         	p.set(HealthMonitor.PlayFasterNearDeath);
         
         //CATEGORY_TORCHAID
-        p = config.get(CATEGORY_TORCHAID, "EnableTorchAid", true);
+        p = config.get(CATEGORY_TORCHAID, "EnableTorchAid", false);
         p.comment = "Enable/Disable using Torch Aid to help you place torches more easily.";
         if(loadSettings)
-        	TorchAid.Enabled = p.getBoolean(true);
+        	TorchAid.Enabled = p.getBoolean(false);
         else
         	p.set(TorchAid.Enabled);
         

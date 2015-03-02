@@ -1,13 +1,16 @@
 package com.zyin.zyinhud.mods;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
 
+import com.google.common.collect.Multimap;
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
@@ -29,10 +32,9 @@ public class WeaponSwapper extends ZyinHUDModBase
     	return Enabled = !Enabled;
     }
     
-    public static boolean ScanHotbarForWeaponsFromLeftToRight;
-    
-    private static List<Class> meleeWeaponClasses = null;
+    //private static List<Class> meleeWeaponClasses = null;
     private static List<Class> rangedWeaponClasses = null;
+    
 
     /**
      * Makes the player select their sword. If a sword is already selected, it selects the bow instead.
@@ -50,7 +52,7 @@ public class WeaponSwapper extends ZyinHUDModBase
         InitializeListOfWeaponClasses();
         
 
-        int meleeWeaponSlot = GetItemSlotFromHotbar(meleeWeaponClasses);
+        int meleeWeaponSlot = GetMostDamagingWeaponSlot();
         int rangedWeaponSlot = GetItemSlotFromHotbar(rangedWeaponClasses);
 
         if (meleeWeaponSlot < 0 && rangedWeaponSlot < 0)
@@ -71,45 +73,73 @@ public class WeaponSwapper extends ZyinHUDModBase
         else
         {
         	//we have both a bow and a sword
-        	
-            if (IsMeleeWeapon(currentItem))
-            {
-                //currently selected sword, so equip bow
-                SelectHotbarSlot(rangedWeaponSlot);
-            }
-            else if (IsRangedWeapon(currentItem))
-            {
-                //currently selected bow, so equip sword
+        	if(mc.thePlayer.inventory.currentItem == meleeWeaponSlot)
+        	{
+        		//we are selected on the best melee weapon, so select the ranged weapon
+        		SelectHotbarSlot(rangedWeaponSlot);
+        	}
+        	else
+        	{
+                //we are not selecting the best melee weapon, so select the melee weapon
                 SelectHotbarSlot(meleeWeaponSlot);
-            }
-            else
+        	}
+        }
+    }
+    
+    /**
+     * Gets the hotbar index of the most damaging melee weapon on the hotbar.
+     * @return 0-9
+     */
+    public static int GetMostDamagingWeaponSlot()
+    {
+        ItemStack[] items = mc.thePlayer.inventory.mainInventory;
+        double highestWeapopnDamage = -1;
+        int highestWeapopnDamageSlot = -1;
+        
+        for (int i = 0; i < 9; i++)
+        {
+            ItemStack itemStack = items[i];
+
+            if (itemStack != null)
             {
-                //we have weapons but they are not selected, so select the sword
-                SelectHotbarSlot(meleeWeaponSlot);
+                double weaponDamage = GetItemWeaponDamage(itemStack);
+                if(weaponDamage > highestWeapopnDamage)
+                {
+                	highestWeapopnDamage = weaponDamage;
+                	highestWeapopnDamageSlot = i;
+                }
             }
         }
+        return highestWeapopnDamageSlot;
+    }
+    
+    /**
+     * Gets the amount of melee damage delt by the specified item
+     * @param itemStack
+     * @return -1 if it doesn't have a damage modifier
+     */
+    public static double GetItemWeaponDamage(ItemStack itemStack)
+    {
+		Multimap multimap = itemStack.getItem().getAttributeModifiers(itemStack);
+		
+		if (multimap.containsKey(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName()))
+		{
+			Collection attributes = multimap.get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
+			if (attributes.size() > 0)
+			{
+				Object attribute = attributes.iterator().next();
+				if (attribute instanceof AttributeModifier)
+				{
+					AttributeModifier weaponModifier = (AttributeModifier)attribute;
+					return weaponModifier.getAmount();
+				}
+			}
+		}
+		return -1;
     }
     
 	private static void InitializeListOfWeaponClasses()
 	{
-		if(meleeWeaponClasses == null)
-        {
-        	meleeWeaponClasses = new ArrayList<Class>();
-        	meleeWeaponClasses.add(ItemSword.class);
-        	
-            if(ModCompatibility.TConstruct.isLoaded)
-            {
-    			try
-    			{
-    	        	meleeWeaponClasses.add(Class.forName(ModCompatibility.TConstruct.tConstructWeaponClass));
-    			}
-    			catch (ClassNotFoundException e)
-    			{
-    				e.printStackTrace();
-    			}
-            }
-        }
-		
         if(rangedWeaponClasses == null)
         {
         	rangedWeaponClasses = new ArrayList<Class>();
@@ -134,7 +164,8 @@ public class WeaponSwapper extends ZyinHUDModBase
      * @param item
      * @return
      */
-    private static boolean IsMeleeWeapon(Item item)
+    /*
+	private static boolean IsMeleeWeapon(Item item)
     {
     	if(meleeWeaponClasses == null)
     		return false;
@@ -148,6 +179,7 @@ public class WeaponSwapper extends ZyinHUDModBase
         }
 		return false;
 	}
+    */
     
     /**
      * Determines if an item is a melee weapon.
@@ -193,58 +225,24 @@ public class WeaponSwapper extends ZyinHUDModBase
     {
         ItemStack[] items = mc.thePlayer.inventory.mainInventory;
 
-        if (ScanHotbarForWeaponsFromLeftToRight)
+        for (int i = 0; i < 9; i++)
         {
-            for (int i = 0; i < 9; i++)
-            {
-                ItemStack itemStack = items[i];
+            ItemStack itemStack = items[i];
 
-                if (itemStack != null)
+            if (itemStack != null)
+            {
+                Item item = itemStack.getItem();
+                
+                for(int j = 0; j < itemClasses.size(); j++)
                 {
-                    Item item = itemStack.getItem();
-                    
-                    for(int j = 0; j < itemClasses.size(); j++)
+                    if (itemClasses.get(j).isInstance(item))
                     {
-                        //System.out.println(i+" "+item.getClass()+" --- " + itemClasses.get(j));
-                        if (itemClasses.get(j).isInstance(item))
-                        {
-                            return i;
-                        }
+                        return i;
                     }
                 }
             }
         }
-        else
-        {
-            for (int i = 8; i >= 0; i--)
-            {
-                ItemStack itemStack = items[i];
-
-                if (itemStack != null)
-                {
-                    Item item = itemStack.getItem();
-
-                    for(int j = 0; j < itemClasses.size(); j++)
-                    {
-                        if (itemClasses.get(j).isInstance(item))
-                        {
-                            return i;
-                        }
-                    }
-                }
-            }
-        }
-
+            
         return -1;
-    }
-    
-    
-    /**
-     * Toggles between scanning the hotbar starting from left or right
-     * @return The state new scanning method
-     */
-    public static boolean ToggleScanHotbarFromLeftToRight()
-    {
-    	return ScanHotbarForWeaponsFromLeftToRight = !ScanHotbarForWeaponsFromLeftToRight;
     }
 }

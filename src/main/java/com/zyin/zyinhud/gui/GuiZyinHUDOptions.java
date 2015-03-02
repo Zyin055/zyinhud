@@ -9,7 +9,9 @@ import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.ZyinHUD;
 import com.zyin.zyinhud.ZyinHUDConfig;
+import com.zyin.zyinhud.ZyinHUDKeyHandlers;
 import com.zyin.zyinhud.gui.buttons.GuiHotkeyButton;
+import com.zyin.zyinhud.gui.buttons.GuiLabeledButton;
 import com.zyin.zyinhud.gui.buttons.GuiNumberSlider;
 import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
 import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
@@ -82,52 +84,29 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     /** The button that was just pressed. */
     protected GuiButton selectedButton;
     
-    protected String[] tabbedButtonNames = {
-    		Localization.get("miscellaneous.name"),
-    		Localization.get("infoline.name"),
-    		Localization.get("clock.name"),
-    		Localization.get("coordinates.name"),
-    		Localization.get("compass.name"),
-    		Localization.get("fps.name"),
-    		Localization.get("distancemeasurer.name"),
-    		Localization.get("safeoverlay.name"),
-    		Localization.get("playerlocator.name"),
-    		Localization.get("animalinfo.name"),
-    		Localization.get("durabilityinfo.name"),
-    		Localization.get("potiontimers.name"),
-    		Localization.get("enderpearlaid.name"),
-    		Localization.get("eatingaid.name"),
-    		Localization.get("potionaid.name"),
-    		Localization.get("torchaid.name"),
-    		Localization.get("weaponswapper.name"),
-    		Localization.get("quickdeposit.name"),
-    		Localization.get("itemselector.name"),
-            Localization.get("healthmonitor.name")
-    	};
+    protected Object[][] tabbedButtons = {
+    		{2000, Localization.get("miscellaneous.name"), null},
+    		{100, Localization.get("infoline.name"), null},
+    		{200, Localization.get("clock.name"), null},
+    		{300, Localization.get("coordinates.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[1].getKeyCode())},
+    		{400, Localization.get("compass.name"), null},
+    		{500, Localization.get("fps.name"), null},
+    		{600, Localization.get("distancemeasurer.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[2].getKeyCode())},
+    		{700, Localization.get("safeoverlay.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode())},
+    		{800, Localization.get("playerlocator.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[5].getKeyCode())},
+    		{900, Localization.get("animalinfo.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[0].getKeyCode())},
+    		{1100, Localization.get("durabilityinfo.name"), null},
+    		{1000, Localization.get("potiontimers.name"), null},
+    		{1200, Localization.get("enderpearlaid.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[4].getKeyCode())},
+    		{1300, Localization.get("eatingaid.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[3].getKeyCode())},
+    		{1400, Localization.get("potionaid.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[6].getKeyCode())},
+    		{1900, Localization.get("torchaid.name"), null},
+    		{1500, Localization.get("weaponswapper.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[9].getKeyCode())},
+    		{1600, Localization.get("quickdeposit.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[7].getKeyCode())},
+    		{1700, Localization.get("itemselector.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode())},
+    		{1800, Localization.get("healthmonitor.name"), null}
+    };
     
-    protected int[] tabbedButtonIDs = {
-    		2000,
-    		100,
-    		200,
-    		300,
-    		400,
-    		500,
-    		600,
-    		700,
-    		800,
-    		900,
-    		1100,
-    		1000,
-    		1200,
-    		1300,
-    		1400,
-    		1900,
-    		1500,
-    		1600,
-    		1700,
-            1800
-    	};
-
     private GuiHotkeyButton currentlySelectedHotkeyButton;
     private GuiButton currentlySelectedTabButton = null;
     private String currentlySelectedTabButtonColor = EnumChatFormatting.YELLOW.toString();
@@ -162,7 +141,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     public GuiZyinHUDOptions(GuiScreen parentGuiScreen)
     {
         this.parentGuiScreen = parentGuiScreen;
-        tabbedMaxPages = (int) Math.ceil((double)(tabbedButtonNames.length)/tabbedPageSize);
+        tabbedMaxPages = (int) Math.ceil((double)(tabbedButtons.length)/tabbedPageSize);
     }
     
     /**
@@ -276,12 +255,13 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	for(int i = 0; i < tabbedPageSize; i++)
     	{
     		int index = (tabbedPage * tabbedPageSize + i);
-    		if(index >= tabbedButtonIDs.length)
+    		if(index >= tabbedButtons.length)
     			break;
-    		int id = tabbedButtonIDs[index];
-    		String buttonName = tabbedButtonNames[tabbedPage * tabbedPageSize + i];
+    		int id = (Integer) tabbedButtons[index][0];
+    		String buttonName = (String) tabbedButtons[index][1];
+    		String buttonLabel = (String) tabbedButtons[index][2];
     		
-    		buttonList.add(new GuiButton(id, tabbedButtonX, Y, tabbedButtonWidth, tabbedButtonHeight, buttonName));
+    		buttonList.add(new GuiLabeledButton(id, tabbedButtonX, Y, tabbedButtonWidth, tabbedButtonHeight, buttonName, buttonLabel));
     		
     		Y += tabbedButtonHeight;
     	}
@@ -385,7 +365,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 6, new GuiButton(906, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsoverlay", AnimalInfo.ShowHorseStatsOverlay)));
     	
     	AddButtonAt(1, 0, new GuiButton(916, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingicons", AnimalInfo.ShowBreedingIcons)));
-    	AddButtonAt(1, 1, new GuiButton(917, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingtimers", AnimalInfo.ShowBreedingTimers)));
+    	//AddButtonAt(1, 1, new GuiButton(917, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showbreedingtimers", AnimalInfo.ShowBreedingTimers)));
     	
     }
     private void DrawPotionTimerButtons()
@@ -445,7 +425,6 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     {
     	AddButtonAt(0, 0, new GuiButton(1501, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(WeaponSwapper.Enabled)));
     	AddButtonAt(0, 1, new GuiHotkeyButton(1502, 0, 0, buttonWidth, buttonHeight, WeaponSwapperKeyHandler.HotkeyDescription));
-    	AddButtonAt(0, 2, new GuiButton(1503, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("weaponswapper.options.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight)));
     	
     }
     private void DrawQuickDepositButtons()
@@ -840,11 +819,12 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	AnimalInfo.ToggleShowBreedingIcons();
 	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingicons", AnimalInfo.ShowBreedingIcons);
 	            	break;
+	            /*
 	            case 917:	//Toggle showing breeding timers
 	            	AnimalInfo.ToggleShowBreedingTimers();
 	            	button.displayString = GetButtonLabel_Boolean("animalinfo.options.showbreedingtimers", AnimalInfo.ShowBreedingTimers);
 	            	break;
-	            
+	            */
 	            
 	            /////////////////////////////////////////////////////////////////////////
 	            // Potion Timers
@@ -1022,10 +1002,6 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	break;
 	            case 1502:	//Hotkey
 	            	HotkeyButtonClicked((GuiHotkeyButton)button);
-	            	break;
-	            case 1503:	//Scan hotbar from left to right
-	            	WeaponSwapper.ToggleScanHotbarFromLeftToRight();
-	            	button.displayString = GetButtonLabel_Boolean("weaponswapper.options.scanhotbarforweaponsfromlefttoright", WeaponSwapper.ScanHotbarForWeaponsFromLeftToRight);
 	            	break;
 	            
 	            
@@ -1210,7 +1186,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 905: return Localization.get("animalinfo.options.showhorsestatsonf3menu.tooltip");
 			case 906: return Localization.get("animalinfo.options.showhorsestatsoverlay.tooltip");
 			case 916: return Localization.get("animalinfo.options.showbreedingicons.tooltip");
-			case 917: return Localization.get("animalinfo.options.showbreedingtimers.tooltip");
+			//case 917: return Localization.get("animalinfo.options.showbreedingtimers.tooltip");
 			case 1000: return Localization.get("potiontimers.options.tooltip");
 			case 1007: return Localization.get("potiontimers.options.hidepotioneffectsininventory.tooltip");
 			case 1100: return Localization.get("durabilityinfo.options.tooltip");

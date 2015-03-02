@@ -200,7 +200,7 @@ potiontimers.options.tooltip=Shows a simple display in the top left part of the 
 potiontimers.options.showpotionicons=Show Icons: 
 potiontimers.options.usepotioncolors=Colored Text: 
 potiontimers.options.hidepotioneffectsininventory=Hide in Inventory: 
-potiontimers.options.hidepotioneffectsininventory.tooltip=Hides the default potion effect timers that are displayed when looking at your inventory
+potiontimers.options.hidepotioneffectsininventory.tooltip=Hides the default potion effect timers that are displayed on the left side of your inventory
 potiontimers.options.potionscale=Size: 
 potiontimers.options.offsetx=Offset X: 
 potiontimers.options.offsety=Offset Y: 
@@ -225,7 +225,7 @@ safeoverlay.distance.default=default
 
 torchaid.name=Torch Aid
 ;torchaid.notorches=No torches
-torchaid.options.tooltip=Place torches without keeping them on your hotbar by right clicking while holding an axe, pickaxe, shovel, or when you have nothing in your hand.
+torchaid.options.tooltip=Place torches without keeping them on your hotbar by right clicking while holding an axe, pickaxe, shovel, or when you have nothing in your hand._p_pNote: Using torches from inventory is somewhat buggy so keep some torches on the hotbar for a better experience.
 
 weaponswapper.name=Weapon Swapper
 weaponswapper.noweaponsinhotbar=No weapons in hotbar

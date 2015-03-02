@@ -1,8 +1,6 @@
 package com.zyin.zyinhud.util;
 
 import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAnvil;
@@ -18,34 +16,11 @@ import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.BlockWorkbench;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 //import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3i;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * General utility class for ZyinHUD.
@@ -136,7 +111,7 @@ public class ZyinHUDUtil
 		
 		return null;
     }
-    
+
     public static Block GetMouseOveredBlock()
     {
     	int x = mc.objectMouseOver.func_178782_a().getX();	//func_178782_a() friendly name is probably getBlockPos()
@@ -144,14 +119,40 @@ public class ZyinHUDUtil
     	int z = mc.objectMouseOver.func_178782_a().getZ();
     	return GetBlock(x, y, z);
     }
+    
+    public static BlockPos GetMouseOveredBlockPos()
+    {
+    	int x = mc.objectMouseOver.func_178782_a().getX();	//func_178782_a() friendly name is probably getBlockPos()
+    	int y = mc.objectMouseOver.func_178782_a().getY();
+    	int z = mc.objectMouseOver.func_178782_a().getZ();
+    	return new BlockPos(x, y, z);
+    }
+
     public static Block GetBlock(int x, int y, int z)
     {
-        return GetBlockState(x, y, z).getBlock();
+    	BlockPos pos = new BlockPos(x, y, z);
+    	return GetBlock(pos);
     }
+    public static Block GetBlock(BlockPos pos)
+    {
+    	IBlockState blockState = GetBlockState(pos);
+    	if(blockState == null)
+    		return null;
+    	else
+    		return blockState.getBlock();
+    }
+
     public static IBlockState GetBlockState(int x, int y, int z)
     {
     	BlockPos pos = new BlockPos(x, y, z);
-    	return mc.theWorld.getBlockState(pos);
+    	return GetBlockState(pos);
+    }
+    public static IBlockState GetBlockState(BlockPos pos)
+    {
+    	if(mc.theWorld != null)
+    		return mc.theWorld.getBlockState(pos);
+    	else
+    		return null;
     }
 	
 }

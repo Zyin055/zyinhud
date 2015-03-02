@@ -17,7 +17,6 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -88,19 +87,9 @@ public class AnimalInfo extends ZyinHUDModBase
 
     public static boolean ShowTextBackgrounds;
     public static boolean ShowBreedingIcons;
-    public static boolean ShowBreedingTimers;
+    //public static boolean ShowBreedingTimers;
     public static boolean ShowHorseStatsOnF3Menu;
     public static boolean ShowHorseStatsOverlay;
-    public static boolean ShowBreedingTimerForVillagers = true;
-    public static boolean ShowBreedingTimerForHorses = true;
-    public static boolean ShowBreedingTimerForCows = true;
-    public static boolean ShowBreedingTimerForSheep = true;
-    public static boolean ShowBreedingTimerForPigs = true;
-    public static boolean ShowBreedingTimerForChickens = true;
-    public static boolean ShowBreedingTimerForWolves = true;
-    public static boolean ShowBreedingTimerForOcelots = true;
-    
-    
     
     /** Sets the number of decimal places that will be rendered when displaying horse stats */
     public static int numberOfDecimalsDisplayed = 1;
@@ -293,11 +282,13 @@ public class AnimalInfo extends ZyinHUDModBase
     		if (animalGrowingAge < 0)
         		multilineOverlayArrayList.add(GetHorseBabyGrowingAgeAsPercent(horse) + "%");
     	}
+    	/* Breeding timer info no longer available on client in 1.8
     	if(ShowBreedingTimers && animal instanceof EntityAgeable)
         {
             if (animalGrowingAge > 0)	//if the animal has recently bred
                 multilineOverlayArrayList.add(GetTimeUntilBreedAgain(animal));
         }
+        */
     	
     	String[] multilineOverlayMessage = new String[1];
         multilineOverlayMessage = (String[])multilineOverlayArrayList.toArray(multilineOverlayMessage);
@@ -333,54 +324,14 @@ public class AnimalInfo extends ZyinHUDModBase
 		}
 		
 		
-		//TODO: 1.8 villager breeding/trading mechanics testing
-        
+        /* EntityVillager profession is not available on client
         if(animal instanceof EntityVillager)
         {
 			String getDisplayName = ((EntityVillager)animal).getDisplayName().getFormattedText();
             ZyinHUDRenderer.RenderFloatingText(getDisplayName, x, y + animal.getEyeHeight() + 0.8f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
 			
-        	/*
-        	try{
-    			int timeUntilReset = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "timeUntilReset","field_");
-    			int wealth = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "wealth","field_");
-    			//float field_82191_bN = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_82191_bN","field_");
-    			boolean isMating = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "isMating","field_");
-    			boolean isPlaying = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "isPlaying","field_");
-    			boolean needsInitilization = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "needsInitilization","field_");
-
-    			int field_175563_bv = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_175563_bv","field_");
-    			int field_175562_bw = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_175562_bw","field_");
-    			boolean field_175564_by = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_175564_by","field_");
-    			int getProfession = ((EntityVillager)animal).getProfession();
-    			String getDisplayName = ((EntityVillager)animal).getDisplayName().getFormattedText();
-    			InventoryBasic villagerInventory = ((EntityVillager)animal).func_175551_co();
-    			boolean field_175565_bs = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "field_175565_bs","field_");
-    			Village villageObj = ZyinHUDUtil.GetFieldByReflection(EntityVillager.class, (EntityVillager)animal, "villageObj","field_");
-    			//int getNumVillageDoors = villageObj.getNumVillageDoors();
-    			
-    			
-    			
-                ZyinHUDRenderer.RenderFloatingText("timeUntilReset: "+timeUntilReset, x, y, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("wealth : "+wealth, x, y+0.3f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                //ZyinHUDRenderer.RenderFloatingText("field_82191_bN: "+field_82191_bN, x, y+0.2f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("isMating: "+isMating, x, y+0.6f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("isPlaying: "+isPlaying, x, y+0.9f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("needsInitilization: "+needsInitilization, x, y+1.2f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("field_175563_bv: "+field_175563_bv, x, y+1.5f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("field_175562_bw: "+field_175562_bw, x, y+1.8f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("field_175564_by: "+field_175564_by, x, y+2.1f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("villageObj: "+villageObj, x, y+2.4f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                ZyinHUDRenderer.RenderFloatingText("field_175565_bs: "+field_175565_bs, x, y+2.7f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                //ZyinHUDRenderer.RenderFloatingText("getNumVillageDoors: "+getNumVillageDoors, x, y+3.0f, z, 0xFFFFFF, ShowTextBackgrounds, partialTickTime);
-                
-        	}
-        	catch (Exception e){
-        		System.out.println(e);
-        	}
-        	*/
         }
-		
+		*/
     }
 
     /**
@@ -640,8 +591,10 @@ public class AnimalInfo extends ZyinHUDModBase
      * Toggles showing breeding timers
      * @return the new boolean
      */
+    /*
     public static boolean ToggleShowBreedingTimers()
     {
     	return ShowBreedingTimers = !ShowBreedingTimers;
     }
+    */
 }

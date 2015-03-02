@@ -126,6 +126,7 @@ public class ZyinHUDRenderer
         
         RenderItemTexture(-8, -8, item, 16, 16);
 
+        GL11.glColor4f(1f, 1f, 1f, 1f);
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glPopMatrix();

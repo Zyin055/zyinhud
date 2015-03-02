@@ -96,8 +96,13 @@ public class HUDEntityTrackerHelper {
             GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
             
             //iterate over all the loaded Entity objects and find just the entities we are tracking
-            for (Object object : mc.theWorld.loadedEntityList)
+            for (int i = 0; i < mc.theWorld.loadedEntityList.size(); i++)
             {
+            	Object object = mc.theWorld.loadedEntityList.get(i);
+            	
+            	if(object == null)
+            		continue;
+            	
                 //only track entities that we are tracking (i.e. other players/wolves/witherskeletons)
                 if(!(object instanceof EntityOtherPlayerMP || 
                 	 object instanceof EntityWolf ||

@@ -1,23 +1,13 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiRepair;
 import net.minecraft.client.gui.inventory.GuiEditSign;
-import net.minecraft.inventory.ContainerRepair;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.AnvilUpdateEvent;
 
-import com.zyin.zyinhud.gui.GuiOptionsOverride;
 import com.zyin.zyinhud.gui.GuiRepairOverride;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -66,13 +56,15 @@ public class Miscellaneous extends ZyinHUDModBase
 	{
         if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
-            Block block = ZyinHUDUtil.GetMouseOveredBlock();
-            System.out.println(block);
+            //Block block = ZyinHUDUtil.GetMouseOveredBlock();
+        	BlockPos blockPos = ZyinHUDUtil.GetMouseOveredBlockPos();
             
-            Item blockItem = Item.getItemFromBlock(block);
+            //Item blockItem = Item.getItemFromBlock(block);
             
     		//first, scan the hotbar to see if the mouseovered block already exists on the hotbar
-            int itemIndexInHotbar = InventoryUtil.GetItemIndexFromHotbar(blockItem);
+            System.out.println("checking hotbar...");
+            int itemIndexInHotbar = InventoryUtil.GetItemIndexFromHotbar(blockPos);
+            System.out.println("returned "+itemIndexInHotbar);
             if(itemIndexInHotbar > 0)
             {
             	//if it does then do nothing since Minecraft takes care of it already
@@ -80,7 +72,9 @@ public class Miscellaneous extends ZyinHUDModBase
             else
             {
             	//if it is not on the hotbar, check to see if it is in our inventory
-            	int itemIndexInInventory = InventoryUtil.GetItemIndexFromInventory(blockItem);
+                System.out.println("checking inventory...");
+            	int itemIndexInInventory = InventoryUtil.GetItemIndexFromInventory(blockPos);
+                System.out.println("returned "+itemIndexInInventory);
             	if(itemIndexInInventory > 0)
             	{
             		//if it is in our inventory, swap it out to the hotbar

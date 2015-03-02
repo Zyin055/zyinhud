@@ -252,7 +252,14 @@ public class InventoryUtil
 	public TimerTask SwapWithDelay(int srcIndex, int destIndex, int delay)
 	{
 		TimerTask swapTimerTask = new SwapTimerTask(srcIndex, destIndex);
-		timer.schedule(swapTimerTask, delay);
+		try
+		{
+			timer.schedule(swapTimerTask, delay);
+		}
+		catch (IllegalStateException e)
+		{
+			//IllegalStateException: Timer already cancelled.
+		}
 		return swapTimerTask;
 	}
 
@@ -978,24 +985,48 @@ public class InventoryUtil
 	    }
 	}
 	
+
 	/**
-	 * Gets the index of an item class in your inventory.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
-	 * @return 5-44, -1 if not found
+	 * Gets the index of an item class.
+	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl, or the BlockPos of a block
+	 * @param iStart index in the inventory to start looking
+	 * @param iEnd index in the inventory to stop looking
+	 * @return 9-44, -1 if not found
 	 */
-	public static int GetItemIndexFromInventory(Object object)
+	private static int GetItemIndex(Object object, int iStart, int iEnd)
     {
 		List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
 
-		//iterate over the main inventory (9-35)
-    	for (int i = 9; i <= 35; i++)
+		//iterate over the main inventory (9~44)
+    	for (int i = iStart; i <= iEnd; i++)
         {
     		Slot slot = (Slot)inventorySlots.get(i);
 			ItemStack itemStack = slot.getStack();
 			if(itemStack != null)
 			{
-                if((object instanceof Block && Block.getBlockFromItem(itemStack.getItem()) == object) ||
-                   (object instanceof Item  && itemStack.getItem() == object))
+            	if(object instanceof BlockPos)
+            	{
+            		Block blockToFind = ZyinHUDUtil.GetBlock((BlockPos)object);
+            		
+            		if(Block.getBlockFromItem(itemStack.getItem()) == blockToFind)
+            		{
+                		int blockToFindDamage = blockToFind.getDamageValue(mc.theWorld, (BlockPos)object);
+                		int inventoryBlockDamage = itemStack.getItemDamage();
+                		
+                    	//check to see if their damage value matches (applicable to blocks such as wood planks)
+                    	if(blockToFindDamage == inventoryBlockDamage)
+                    	{
+                    		return i;
+                    	}
+            		}
+            	}
+            	else if((object instanceof Block
+                			&& Block.getBlockFromItem(itemStack.getItem()) == object))
+                {
+                	return i;
+                }
+            	else if(object instanceof Item
+                			&& itemStack.getItem() == object)
                 {
                 	return i;
                 }
@@ -1003,6 +1034,16 @@ public class InventoryUtil
         }
 
         return -1;
+    }
+	
+	/**
+	 * Gets the index of an item class in your inventory.
+	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 * @return 9-44, -1 if not found
+	 */
+	public static int GetItemIndexFromInventory(Object object)
+    {
+		return GetItemIndex(object, 9, 35);
     }
 	
 	
@@ -1013,24 +1054,7 @@ public class InventoryUtil
 	 */
 	public static int GetItemIndexFromHotbar(Object object)
     {
-		List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
-
-		//iterate over the hotbar (36-44)
-    	for (int i = 36; i <= 44; i++)
-        {
-    		Slot slot = (Slot)inventorySlots.get(i);
-			ItemStack itemStack = slot.getStack();
-			if(itemStack != null)
-			{
-                if((object instanceof Block && Block.getBlockFromItem(itemStack.getItem()) == object) ||
-                   (object instanceof Item  && itemStack.getItem() == object))
-                {
-                	return i;
-                }
-			}
-        }
-    	
-        return -1;
+		return GetItemIndex(object, 36, 44);
     }
 	
 	
