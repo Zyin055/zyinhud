@@ -128,8 +128,8 @@ public class ZyinHUD
     {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setString("curseProjectName", "59953-zyins-hud");	//http://minecraft.curseforge.com/mc-mods/59953-zyins-hud
-        compound.setString("curseFilenameParser", "ZyinsHUD-[].jar");
-        FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "ZyinHUD", "addCurseCheck", compound);
+        compound.setString("curseFilenameParser", "ZyinsHUD-(1.8)-v.[].jar");
+        FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "VersionChecker", "addCurseCheck", compound);
     }
     
     
