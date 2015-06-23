@@ -88,28 +88,41 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		{2000, Localization.get("miscellaneous.name"), null},
     		{100, Localization.get("infoline.name"), null},
     		{200, Localization.get("clock.name"), null},
-    		{300, Localization.get("coordinates.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[1].getKeyCode())},
+    		{300, Localization.get("coordinates.name"), GetKeyBindingAsString(1)},
     		{400, Localization.get("compass.name"), null},
     		{500, Localization.get("fps.name"), null},
-    		{600, Localization.get("distancemeasurer.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[2].getKeyCode())},
-    		{700, Localization.get("safeoverlay.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode())},
-    		{800, Localization.get("playerlocator.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[5].getKeyCode())},
-    		{900, Localization.get("animalinfo.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[0].getKeyCode())},
+    		{600, Localization.get("distancemeasurer.name"), GetKeyBindingAsString(2)},
+    		{700, Localization.get("safeoverlay.name"), GetKeyBindingAsString(8)},
+    		{800, Localization.get("playerlocator.name"), GetKeyBindingAsString(5)},
+    		{900, Localization.get("animalinfo.name"), GetKeyBindingAsString(0)},
     		{1100, Localization.get("durabilityinfo.name"), null},
     		{1000, Localization.get("potiontimers.name"), null},
-    		{1200, Localization.get("enderpearlaid.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[4].getKeyCode())},
-    		{1300, Localization.get("eatingaid.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[3].getKeyCode())},
-    		{1400, Localization.get("potionaid.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[6].getKeyCode())},
+    		{1200, Localization.get("enderpearlaid.name"), GetKeyBindingAsString(4)},
+    		{1300, Localization.get("eatingaid.name"), GetKeyBindingAsString(3)},
+    		{1400, Localization.get("potionaid.name"), GetKeyBindingAsString(6)},
     		{1900, Localization.get("torchaid.name"), null},
-    		{1500, Localization.get("weaponswapper.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[9].getKeyCode())},
-    		{1600, Localization.get("quickdeposit.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[7].getKeyCode())},
-    		{1700, Localization.get("itemselector.name"), Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode())},
+    		{1500, Localization.get("weaponswapper.name"), GetKeyBindingAsString(9)},
+    		{1600, Localization.get("quickdeposit.name"), GetKeyBindingAsString(7)},
+    		{1700, Localization.get("itemselector.name"), GetKeyBindingAsString(11)},
     		{1800, Localization.get("healthmonitor.name"), null}
     };
+    /**
+     * @param keyBindingIndex the index in <code>ZyinHUDKeyHandlers.KEY_BINDINGS[]</code>
+     * @return hotkey as a string
+     */
+    private String GetKeyBindingAsString(int keyBindingIndex)
+    {
+    	try {
+    		return Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[keyBindingIndex].getKeyCode());
+    	}
+    	catch (ArrayIndexOutOfBoundsException e) {
+    		return "[?]";	//A user reported having getKeyCode() returning -89 and causing this exception
+    	}
+    }
     
     private GuiHotkeyButton currentlySelectedHotkeyButton;
-    private GuiButton currentlySelectedTabButton = null;
-    private String currentlySelectedTabButtonColor = EnumChatFormatting.YELLOW.toString();
+    private static GuiButton currentlySelectedTabButton = null;
+    private final String currentlySelectedTabButtonColor = EnumChatFormatting.YELLOW.toString();
     
     
     //variables influencing the placement/sizing of the tab buttons on the left
@@ -172,6 +185,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         screenTitle = Localization.get("gui.options.title");
         
         DrawAllButtons();
+        
+        //simulate a click on the last tabbed button that was clicked to re-open it
+        actionPerformed(currentlySelectedTabButton);
     }
 
     protected void DrawAllButtons()
@@ -179,7 +195,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	this.zLevel = 0f;
     	
         buttonList.clear();
-        currentlySelectedTabButton = null;
+        //currentlySelectedTabButton = null;
         DrawOtherButtons();
         DrawTabbedButtons();
     }
@@ -312,6 +328,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 1, new GuiHotkeyButton(303, 0, 0, buttonWidth, buttonHeight, CoordinatesKeyHandler.HotkeyDescription));
     	AddButtonAt(0, 2, new GuiButton(304, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(Coordinates.Mode.GetFriendlyName())));
     	AddButtonAt(0, 3, new GuiButton(302, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("coordinates.options.useycoordinatecolors", Coordinates.UseYCoordinateColors)));
+    	AddButtonAt(0, 4, new GuiButton(305, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("coordinates.options.showchunkcoordinates", Coordinates.ShowChunkCoordinates)));
     	
     }
     private void DrawCompassButtons()
@@ -558,7 +575,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
      */
     protected void actionPerformed(GuiButton button)
     {
-        if (button.enabled)
+        if (button != null && button.enabled)
         {
             /////////////////////////////////////////////////////////////////////////
             // Tab buttons
@@ -667,6 +684,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            case 304:	//Mode
 	            	Coordinates.Modes.ToggleMode();
 	            	button.displayString = GetButtonLabel_Mode(Coordinates.Mode.GetFriendlyName());
+	            	break;
+	            case 305:	//Chunk coords
+	            	Coordinates.ToggleShowChunkCoordinates();
+	            	button.displayString = GetButtonLabel_Boolean("coordinates.options.showchunkcoordinates", Coordinates.ShowChunkCoordinates);
 	            	break;
 	
 	            /////////////////////////////////////////////////////////////////////////
@@ -1171,6 +1192,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 300: return Localization.get("coordinates.options.tooltip");
 			case 302: return Localization.get("coordinates.options.useycoordinatecolors.tooltip");
 			case 303: return Localization.get("coordinates.options.hotkey.tooltip");
+			case 305: return Localization.get("coordinates.options.showchunkcoordinates.tooltip");
 			case 700: return Localization.get("safeoverlay.options.tooltip");
 			case 702: return Localization.get("safeoverlay.options.hotkey.tooltip");
 			case 703: return Localization.get("safeoverlay.options.drawdistance.tooltip");
@@ -1304,6 +1326,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	else
     	{
     		screenTitle = Localization.get("gui.options.title");
+    		currentlySelectedTabButton = null;
     		DrawAllButtons();
     	}
     }
@@ -1319,6 +1342,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	else
     	{
     		screenTitle = Localization.get("gui.options.title");
+    		currentlySelectedTabButton = null;
     		DrawAllButtons();
     	}
     }

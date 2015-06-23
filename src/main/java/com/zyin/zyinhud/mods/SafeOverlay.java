@@ -335,6 +335,7 @@ public class SafeOverlay extends ZyinHUDModBase
         {
         	RenderUnsafeMarker(position);
         }
+        GL11.glColor4f(0, 0, 0, 1);	//change alpha back to 100% after we're done rendering
         
         GL11.glEnd();
         GL11.glEnable(GL11.GL_TEXTURE_2D);

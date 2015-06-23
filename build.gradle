@@ -17,12 +17,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "(1.8)-v.1.4.1"
+version = "(1.8)-v.1.4.2"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ZyinsHUD"
 
 minecraft {
-    version = "1.8-11.14.0.1245-1.8"
+    version = "1.8-11.14.3.1450"	//rerun the gradlew commands after changing the version
     runDir = "eclipse"
     
     // the mappings can be changed at any time, and must be in the following format.

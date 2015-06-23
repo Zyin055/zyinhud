@@ -117,30 +117,30 @@ public class HealthMonitor extends ZyinHUDModBase
 	 */
 	protected static void PlayLowHealthSoundIfHurt()
 	{
-		if(mc.thePlayer == null)
-			return;
+		if(mc.thePlayer != null)
+		{
+			int playerHealth = (int)mc.thePlayer.getHealth();
+			if(playerHealth < LowHealthSoundThreshold && playerHealth > 0)
+			{
+				//don't play the sound if the user is looking at a screen or in creative
+				if(!mc.playerController.isInCreativeMode() && !mc.isGamePaused())// && mc.inGameHasFocus)
+					PlayLowHealthSound();
+				
+				isPlayingLowHealthSound = true;
+				
+				int soundDelay = repeatDelay;
+				
+				if(PlayFasterNearDeath)
+					soundDelay = repeatDelay/2 + (int)((float)repeatDelay/2 * ((float)playerHealth / (float)LowHealthSoundThreshold));
+				
+				TimerTask t = new PlayLowHealthSoundTimerTask();
+				timer.schedule(t, soundDelay);
+				
+				return;
+			}
+		}
 		
-		int playerHealth = (int)mc.thePlayer.getHealth();
-		if(playerHealth < LowHealthSoundThreshold && playerHealth > 0)
-		{
-			//don't play the sound if the user is looking at a screen or in creative
-			if(!mc.playerController.isInCreativeMode() && !mc.isGamePaused() && mc.inGameHasFocus)
-				PlayLowHealthSound();
-			
-			isPlayingLowHealthSound = true;
-			
-			int soundDelay = repeatDelay;
-			
-			if(PlayFasterNearDeath)
-				soundDelay = repeatDelay/2 + (int)((float)repeatDelay/2 * ((float)playerHealth / (float)LowHealthSoundThreshold));
-			
-			TimerTask t = new PlayLowHealthSoundTimerTask();
-			timer.schedule(t, soundDelay);
-		}
-		else
-		{
-			isPlayingLowHealthSound = false;
-		}
+		isPlayingLowHealthSound = false;
 	}
 	
 	

@@ -1305,15 +1305,25 @@ public class InventoryUtil
      */
     private static void SendInventoryClick(int itemIndex, boolean rightClick, boolean shiftHold)
     {
-        if (itemIndex < 0 || itemIndex > 44)
+        if (itemIndex < 0 || itemIndex > 44)	//0-44 is the size of the players inventory
         	return;
         
-        mc.playerController.windowClick(
-        		mc.thePlayer.inventoryContainer.windowId,
-        		itemIndex,
-        		(rightClick) ? 1 : 0,
-				(shiftHold) ? 1 : 0,
-				mc.thePlayer);
+        try
+        {
+	        mc.playerController.windowClick(
+	        		mc.thePlayer.inventoryContainer.windowId,
+	        		itemIndex,
+	        		(rightClick) ? 1 : 0,
+					(shiftHold) ? 1 : 0,
+					mc.thePlayer);
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+        	//fix for a bug with an unknown cause:
+        	//https://github.com/Zyin055/zyinhud/issues/39#issuecomment-77441332
+        	//https://github.com/Zyin055/zyinhud/issues/40#issuecomment-96220702
+        	return;
+        }
     }
     
     /**

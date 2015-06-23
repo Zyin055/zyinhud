@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
@@ -100,7 +101,7 @@ public class PlayerLocator extends ZyinHUDModBase
     /** Don't render players that are closer than this */
     public static int viewDistanceCutoff = 10;
     public static final int minViewDistanceCutoff = 0;
-    public static final int maxViewDistanceCutoff = 120;	//realistic max distance the game will render entities: up to ~115 blocks away
+    public static final int maxViewDistanceCutoff = 130;	//realistic max distance the game will render entities: up to ~115 blocks away
 
     public static int numOverlaysRendered;
     public static final int maxNumberOfOverlays = 50;	//render only the first nearest 50 players
@@ -145,6 +146,8 @@ public class PlayerLocator extends ZyinHUDModBase
             
         	String overlayMessage = "";
             int rgb = 0xFFFFFF;
+            //calculate the color of the overlayMessage based on the distance from me
+            int alpha = (int)(0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
         	
         	if(entity instanceof EntityOtherPlayerMP)
         	{
@@ -181,6 +184,7 @@ public class PlayerLocator extends ZyinHUDModBase
         		overlayMessage = GetOverlayMessageForWitherSkeleton((EntitySkeleton)entity, distanceFromMe);
         		
         		rgb = 0x555555;
+        		alpha = alpha / 6;
         	}
         	
         	if(entity.ridingEntity != null)
@@ -205,15 +209,13 @@ public class PlayerLocator extends ZyinHUDModBase
             else
             	y = (y < 10) ? 10 : y;	//use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
             
-            //calculate the color of the overlayMessage based on the distance from me
-            int alpha = (int)(0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
-            int color = (alpha << 24) + rgb;	//alpha:r:g:b, (alpha << 24) turns it into the format: 0x##000000
             
             //render the overlay message
             GL11.glDisable(GL11.GL_LIGHTING);
     		GL11.glEnable(GL11.GL_BLEND);
     		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            
+
+            int color = (alpha << 24) + rgb;	//alpha:r:g:b, (alpha << 24) turns it into the format: 0x##000000
             mc.fontRendererObj.func_175063_a(overlayMessage, x, y, color);
             
             //also render whatever the player is currently riding on
@@ -245,7 +247,7 @@ public class PlayerLocator extends ZyinHUDModBase
             }
             
             //if showing player health is turned on, render the hp and a heart icon under their name
-            if(ShowPlayerHealth)
+            if(ShowPlayerHealth && !(entity instanceof EntityMob))	//but don't show health for mobs, such as Wither Skeletons
             {
                 int numHearts = (int)((((EntityLivingBase)entity).getHealth()+1) / 2);
             	String hpOverlayMessage = numHearts + "";
@@ -275,7 +277,7 @@ public class PlayerLocator extends ZyinHUDModBase
     
 	private static String GetOverlayMessageForWitherSkeleton(EntitySkeleton witherSkeleton, float distanceFromMe)
 	{
-		String overlayMessage = "Wither Skeleton";
+		String overlayMessage = "Wither " + witherSkeleton.getName();
 		
         //add distance to this wither skeleton into the message
         if (ShowDistanceToPlayers)

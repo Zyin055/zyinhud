@@ -3,7 +3,10 @@ package com.zyin.zyinhud.mods;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,6 +16,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFishFood.FishType;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.potion.Potion;
 
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.InventoryUtil;
@@ -349,9 +354,17 @@ public class EatingAid extends ZyinHUDModBase
                 ItemFood food = (ItemFood)item;
                 float saturationModifier = food.getSaturationModifier(itemStack);
                 
+                Integer potionId = ZyinHUDUtil.GetFieldByReflection(ItemFood.class, food, "potionId", "aaaaaa");
+                if (potionId == null) potionId = -1;
+                
                 if (UsePvPSoup && item.equals(Items.mushroom_stew))
                 {
                 	saturationModifier = 1000f;	//setting the saturation value very high will make it appealing to the food selection algorithm
+                }
+                else if (potionId == Potion.saturation.id
+                		|| potionId == Potion.heal.id)	//modded foods like [Botania] Mana Cookie may have these effects
+                {
+                	saturationModifier = 999;	//setting the saturation value very high will make it appealing to the food selection algorithm
                 }
                 else if (item.equals(Items.golden_carrot)
                         || item.equals(Items.golden_apple))
@@ -363,17 +376,13 @@ public class EatingAid extends ZyinHUDModBase
 
                     saturationModifier = 0.0001f;	//setting the saturation value low will make it unappealing to the food selection algorithm
                 }
-                else if (item.equals(Items.rotten_flesh)
-                         || item.equals(Items.poisonous_potato)
-                         || item.equals(Items.spider_eye)
-                         || FishType.getFishTypeForItemStack(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
-                {
-                	saturationModifier = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
-                }
-                else if (item.equals(Items.chicken)
-                        || item.equals(Items.porkchop)
-                        || item.equals(Items.beef)
-                    	|| item.equals(Items.fish))	//Items.fish refers to UNCOOKED fish: Raw Fish, Raw Salmon, Pufferfish, Clownfish
+                /*else if (item.equals(Items.chicken)	//raw chicken gives Potion.hunger effect
+		        		|| item.equals(Items.porkchop)
+		        		|| item.equals(Items.beef)
+		        		|| item.equals(Items.mutton)
+		        		|| item.equals(Items.rabbit)
+		            	|| item.equals(Items.fish))*/	//Items.fish refers to UNCOOKED fish: Raw Fish, Raw Salmon, Pufferfish, Clownfish. All have a Potion id of 0
+                else if(HasSmeltingRecipe(itemStack))
                 {
                     if (!EatRawFood)
                     {
@@ -381,6 +390,13 @@ public class EatingAid extends ZyinHUDModBase
                     }
 
                     saturationModifier = 0.0003f;	//setting the saturation value low will make it unappealing to the food selection algorithm
+                }
+                else if (potionId == Potion.poison.id
+                		|| potionId == Potion.hunger.id
+                        || potionId == Potion.confusion.id
+                        || FishType.getFishTypeForItemStack(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
+                {
+                	saturationModifier = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
                 }
                 
                 if(saturationModifier > bestFoodMatchSaturation)
@@ -437,13 +453,21 @@ public class EatingAid extends ZyinHUDModBase
                 int heal = food.getHealAmount(itemStack);	//amount of hunger restored by eating this food
                 int overeat = foodNeeded - heal;
                 overeat = (overeat > 0) ? 0 : Math.abs(overeat);	//positive number, amount we would overeat by eating this food
+                
+                Integer potionId = ZyinHUDUtil.GetFieldByReflection(ItemFood.class, food, "potionId", "field_77851_ca");
+                if (potionId == null) potionId = -1;
 
                 if (UsePvPSoup && item.equals(Items.mushroom_stew))
                 {
                 	overeat = -1000;	//setting the overeat value very low will make it appealing to the food selection algorithm
                 }
+                else if (potionId == Potion.saturation.id
+                		|| potionId == Potion.heal.id)	//modded foods like [Botania] Mana Cookie may have these effects
+                {
+                	overeat = -999;	//setting the overeat value very low will make it appealing to the food selection algorithm
+                }
                 else if (item.equals(Items.golden_carrot)
-                        || item.equals(Items.golden_apple))
+                        || item.equals(Items.golden_apple))	//golden food gives Potion.regeneration effect
                 {
                     if (!EatGoldenFood)
                     {
@@ -452,17 +476,13 @@ public class EatingAid extends ZyinHUDModBase
 
                     overeat = 999;	//setting the overeat value high will make it unappealing to the food selection algorithm
                 }
-                else if (item.equals(Items.rotten_flesh)
-                        || item.equals(Items.poisonous_potato)
-                        || item.equals(Items.spider_eye)
-                        || FishType.getFishTypeForItemStack(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
-                {
-                    overeat = 998;	//setting the overeat value high will make it unappealing to the food selection algorithm
-                }
-                else if (item.equals(Items.chicken)
-                        || item.equals(Items.porkchop)
-                        || item.equals(Items.beef)
-                        || item.equals(Items.fish))	//Items.fish refers to UNCOOKED fish: Raw Fish, Raw Salmon, Pufferfish, Clownfish
+                /*else if (item.equals(Items.chicken)	//raw chicken gives Potion.hunger effect
+                		|| item.equals(Items.porkchop)
+                		|| item.equals(Items.beef)
+                		|| item.equals(Items.mutton)
+                		|| item.equals(Items.rabbit)
+                    	|| item.equals(Items.fish))*/	//Items.fish refers to UNCOOKED fish: Raw Fish, Raw Salmon, Pufferfish, Clownfish. All have a Potion id of 0
+                else if(HasSmeltingRecipe(itemStack))
                 {
                     if (!EatRawFood)
                     {
@@ -470,6 +490,13 @@ public class EatingAid extends ZyinHUDModBase
                     }
 
                     overeat = 997;	//setting the overeat value high will make it unappealing to the food selection algorithm
+                }
+                else if (potionId == Potion.poison.id
+                		|| potionId == Potion.hunger.id
+                        || potionId == Potion.confusion.id
+                        || FishType.getFishTypeForItemStack(itemStack) == FishType.PUFFERFISH)	//Pufferfish has a Potion id of 0, but still adds posion+hunger+confusion
+                {
+                    overeat = 998;	//setting the overeat value high will make it unappealing to the food selection algorithm
                 }
                 
                 //this food is better if we overeat less, or the overeat is the same but it heals more hunger
@@ -488,6 +515,33 @@ public class EatingAid extends ZyinHUDModBase
             return bestFoodMatchIndex;
         else
             return -1;
+    }
+    
+    /**
+     * Determines if the itemStack has a smelting recipe in the furnace.
+     * @param itemStack
+     * @return
+     */
+    private static boolean HasSmeltingRecipe(ItemStack itemStack)
+    {
+    	//if this function ends up taking a long time to run we can save the values into our own Map (without meta values) for fast lookup
+    	
+        Map smeltingList = FurnaceRecipes.instance().getSmeltingList();
+        
+        //if(smeltingList.containsKey(itemStack)) ... ;	//this doesn't work since the meta values for the item stacks are different
+        
+        Iterator it = smeltingList.entrySet().iterator();
+        while(it.hasNext())
+        {
+        	Entry entry = (Entry)it.next();
+        	ItemStack furnaceRecipeItemStack = (ItemStack)entry.getKey();
+        	
+        	if(furnaceRecipeItemStack.getItem().equals(itemStack.getItem()))
+        	{
+        		return true;
+        	}
+        }
+        return false;
     }
     
 

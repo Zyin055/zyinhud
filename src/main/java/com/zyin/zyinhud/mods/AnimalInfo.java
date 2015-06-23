@@ -16,6 +16,7 @@ import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -315,6 +316,8 @@ public class AnimalInfo extends ZyinHUDModBase
 				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.carrot, partialTickTime);
 			else if(animal instanceof EntityChicken)
 				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat_seeds, partialTickTime);
+			else if(animal instanceof EntityRabbit)
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.carrot, partialTickTime);
 			else if(animal instanceof EntityWolf && ((EntityWolf)animal).isTamed())
 				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.beef, partialTickTime);
 			else if(animal instanceof EntityWolf && !((EntityWolf)animal).isTamed())
