@@ -37,7 +37,7 @@ animalinfo.debug.hp=PV du cheval:
 animalinfo.debug.color=Couleur du cheval:
 
 clock.name=Horloge
-clock.options.mode.tooltip=_lStandard_r: Montre l'heure minecraft actuelle_p_lCountdown_r: Temps restant avant le prochain jour minecraft.
+clock.options.mode.tooltip=§lStandard§r: Montre l'heure minecraft actuelle_p§lCountdown§r: Temps restant avant le prochain jour minecraft.
 clock.mode.standard=Standard
 clock.mode.countdown=Compte à rebours
 clock.mode.graphic=Graphique
@@ -68,7 +68,7 @@ eatingaid.name=Aide pour manger
 eatingaid.mode.basic=Basique
 eatingaid.mode.intelligent=Intelligent
 eatingaid.nofood=Sans nourriture
-eatingaid.options.mode.tooltip=_lBasic_r: Mange la nourriture qui rend le plus de points_p_lIntelligent_r: Mange la nourriture qui restaure le plus longtemps
+eatingaid.options.mode.tooltip=§lBasic§r: Mange la nourriture qui rend le plus de points_p§lIntelligent§r: Mange la nourriture qui restaure le plus longtemps
 eatingaid.options.eatgoldenfood=Mange la nourriture en or
 eatingaid.options.eatrawfood=Mange la nourriture crue: 
 eatingaid.options.prioritizefoodinhotbar=Priorité à la nourriture dans la barre d'actions.

@@ -217,7 +217,7 @@ public class ZyinHUDConfig
         	p.set(Coordinates.Mode.name());
         
         p = config.get(CATEGORY_COORDINATES, "ShowChunkCoordinates", false);
-        p.comment = "Shows how far into a 16x16 chunk you are in.";
+        p.comment = "Shows how far into the 16x16 chunk you're in.";
         if(loadSettings)
         	Coordinates.ShowChunkCoordinates = p.getBoolean(false);
         else
@@ -319,13 +319,13 @@ public class ZyinHUDConfig
         	DurabilityInfo.AutoUnequipTools = p.getBoolean(false);
         else
         	p.set(DurabilityInfo.AutoUnequipTools);
-        
-        p = config.get(CATEGORY_DURABILITYINFO, "ShowDamageAsPercentage", false);
-        p.comment = "Toggle showing damaged items as a percentage or their remaining durability.";
+
+        p = config.get(CATEGORY_DURABILITYINFO, "DurabilityInfoTextMode", "NONE");
+        p.comment = "Sets Durability Info's number display mode.";
         if(loadSettings)
-        	DurabilityInfo.ShowDamageAsPercentage = p.getBoolean(false);
+        	DurabilityInfo.TextMode = DurabilityInfo.TextModes.GetMode(p.getString());
         else
-        	p.set(DurabilityInfo.ShowDamageAsPercentage);
+        	p.set(DurabilityInfo.TextMode.name());
         
         p = config.get(CATEGORY_DURABILITYINFO, "UseColoredNumbers", false);
         p.comment = "Toggle using colored numbering.";

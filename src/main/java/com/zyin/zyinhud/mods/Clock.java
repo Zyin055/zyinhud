@@ -140,9 +140,8 @@ public class Clock extends ZyinHUDModBase
         		itemRenderer.func_180450_b(new ItemStack(Items.clock), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);	//func_180450_b() is renderItemAndEffectIntoGUI()
         		
         		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the RenderItem.renderItem() methods enable lighting
-        		GL11.glDisable(GL11.GL_DEPTH_TEST);
         		
-        		return "    ";	//about the length of the clock graphic
+        		return "     ";	//about the length of the clock graphic
         	}
         }
 

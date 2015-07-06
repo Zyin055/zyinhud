@@ -43,7 +43,7 @@ animalinfo.debug.color=Pferdefarbe:
 animalinfo.debug.markings=Pferdemuster:
 
 clock.name=Uhr
-clock.options.mode.tooltip=_lStandard_r: Zeigt die momentane Minecraft-Zeit_p_lCountdown_r: Ein Timer bis zum nächsten Tag / zur nächsten Nacht beginnt_p_lGrafik_r: Zeigt eine Minecraftuhr
+clock.options.mode.tooltip=§lStandard§r: Zeigt die momentane Minecraft-Zeit_p§lCountdown§r: Ein Timer bis zum nächsten Tag / zur nächsten Nacht beginnt_p§lGrafik§r: Zeigt eine Minecraftuhr
 clock.mode.standard=Standard
 clock.mode.countdown=Countdown
 clock.mode.graphic=Grafik
@@ -74,12 +74,12 @@ distancemeasurer.far=Weit
 distancemeasurer.options.tooltip=Durch einmaliges Drücken des Hotkeys wird die Entfernung zum anvisierten Block im Format [max(x,y,z)] angezeigt._pNochmaliges Drücken öffnet die Anzeige [x, y, z (diagonal distance)]
 
 durabilityinfo.name=Haltbarkeitsinfo
-durabilityinfo.options.tooltip=Zeigt die Haltbarkeit der Rüstung im Inventar, sowie der Waffen und Werkzeuge im Hotbar an. Dies wird nur angezeigt, wenn die Haltbarkeit sich unter einem eingestelltem Schwellwert befindet. (Standardmäßig 10%).
+durabilityinfo.options.tooltip=Zeigt die Haltbarkeit der Rüstung im Inventar, sowie der Waffen und Werkzeuge im Hotbar an. Dies wird nur angezeigt, wenn die Haltbarkeit sich unter einem eingestelltem Schwellwert befindet. (Standardmäßig 10%%).
 durabilityinfo.options.showitemdurability=Werkzeuge anzeigen: 
 durabilityinfo.options.showarmordurability=Rüstung anzeigen: 
-durabilityinfo.options.itemdurabilitythreshold=Schwellwert für Werkzeuge in % : 
+durabilityinfo.options.itemdurabilitythreshold=Schwellwert für Werkzeuge in %% : 
 durabilityinfo.options.itemdurabilitythreshold.tooltip=Wenn dieser Wert 1.00 beträgt, wird die Haltbarkeit von Werkzeugen immer angezeigt.
-durabilityinfo.options.armordurabilitythreshold=Schwellwert für Rüstung in % : 
+durabilityinfo.options.armordurabilitythreshold=Schwellwert für Rüstung in %% : 
 durabilityinfo.options.armordurabilitythreshold.tooltip=Wenn dieser Wert 1.00 beträgt, wird die Haltbarkeit von Rüstung immer angezeigt.
 durabilityinfo.options.autounequiparmor=Automatisch Rüstung ausziehen: 
 durabilityinfo.options.autounequiparmor.tooltip=Zieht automatisch die Rüstung aus, wenn diese kurz davor ist, zu zerbrechen
@@ -98,7 +98,7 @@ eatingaid.mode.basic=Basic
 eatingaid.mode.intelligent=Intelligent
 eatingaid.nofood=Kein Essen
 eatingaid.options.tooltip=Hilft, Nahrung zu essen, auch wenn diese sich nicht in der Hand befindet.
-eatingaid.options.mode.tooltip=_lEinfach_r: Isst das nahrhafteste Essen_p_lIntelligent_r: Isst das Essen, das am sparsamsten den Hunger beendet
+eatingaid.options.mode.tooltip=§lEinfach§r: Isst das nahrhafteste Essen_p§lIntelligent§r: Isst das Essen, das am sparsamsten den Hunger beendet
 eatingaid.options.eatgoldenfood=Goldene Nahrung essen: 
 eatingaid.options.eatrawfood=Ungekochte Nahrung essen: 
 eatingaid.options.prioritizefoodinhotbar=Essen in Hotbar oberste Priorität geben: 
@@ -147,7 +147,7 @@ itemselector.error.enchant=Im Mehrspielermodus können keine Verzauberungen vert
 itemselector.error.empty=Das Inventar hat keine wählbaren Gegenstände mehr!
 itemselector.options.tooltip=Erlaubt, Gegenstände mit dem Mausrad aus dem Inventar zu wählen, ohne es zu öffnen.
 itemselector.options.hotkey.tooltip=Taste gedrückt halten, um mit dem Mausrad Gegenstände zu wählen
-itemselector.options.mode.tooltip=_lAlles_r: Wählt Gegenstände aus dem gesamten Inventar_p_lGleiche Spalte_r: Wählt nur Gegenstände aus der gleichen Spalte des gehaltenen Gegenstandes im Inventar
+itemselector.options.mode.tooltip=§lAlles§r: Wählt Gegenstände aus dem gesamten Inventar_p§lGleiche Spalte§r: Wählt nur Gegenstände aus der gleichen Spalte des gehaltenen Gegenstandes im Inventar
 itemselector.options.ticks=Ticks bis Timeout: 
 itemselector.options.ticks.tooltip=Wieviele Ticks (20 = 1 sec) bevor der fokussierte Gegenstand automatisch gewählt wird
 

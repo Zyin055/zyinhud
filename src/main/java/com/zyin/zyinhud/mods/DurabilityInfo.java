@@ -2,6 +2,7 @@ package com.zyin.zyinhud.mods;
 
 import java.util.ArrayList;
 
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -12,13 +13,16 @@ import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
+import com.zyin.zyinhud.mods.Clock.Modes;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
@@ -41,12 +45,54 @@ public class DurabilityInfo extends ZyinHUDModBase
     	return Enabled = !Enabled;
     }
     
+    /** The current mode for this mod */
+	public static TextModes TextMode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum TextModes
+    {
+        NONE(Localization.get("durabilityinfo.textmode.none")),
+        TEXT(Localization.get("durabilityinfo.textmode.text")),
+        PERCENTAGE(Localization.get("durabilityinfo.textmode.percentage"));
+        
+        private String friendlyName;
+        
+        private TextModes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
+
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static TextModes ToggleMode()
+        {
+        	return TextMode = TextMode.ordinal() < TextModes.values().length - 1 ? TextModes.values()[TextMode.ordinal() + 1] : TextModes.values()[0];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static TextModes GetMode(String modeName)
+        {
+        	try {return TextModes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[1];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
+    
 	protected static final ResourceLocation durabilityIconsResourceLocation = new ResourceLocation("zyinhud:textures/durability_icons.png");
     
     public static boolean ShowArmorDurability;
     public static boolean ShowItemDurability;
 	public static boolean ShowIndividualArmorIcons;
-    public static boolean ShowDamageAsPercentage;
+    //public static boolean ShowDamageAsPercentage;
     public static boolean AutoUnequipArmor;
     public static boolean AutoUnequipTools;
     public static boolean UseColoredNumbers;
@@ -132,7 +178,7 @@ public class DurabilityInfo extends ZyinHUDModBase
                             int y = (int) Math.floor(durabalityLocY / DurabilityScale) + (numArmors * toolY);
 
                             
-                            DrawItemIcon(itemStack, x, y);
+                            RenderItemIcon(itemStack, x, y);
                             
                             numArmors++;
                     	}
@@ -162,7 +208,7 @@ public class DurabilityInfo extends ZyinHUDModBase
                         //y /= DurabilityScale;
                         GL11.glScalef(DurabilityScale, DurabilityScale, DurabilityScale);
                         
-                        DrawItemIcon(itemStack, x, y);
+                        RenderItemIcon(itemStack, x, y);
                         
                         GL11.glScalef(1f/DurabilityScale, 1f/DurabilityScale, 1f/DurabilityScale);
                         
@@ -179,7 +225,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      * @param x
      * @param y
      */
-	protected static void DrawItemIcon(ItemStack itemStack, int x, int y)
+	protected static void RenderItemIcon(ItemStack itemStack, int x, int y)
 	{
 		GL11.glEnable(GL11.GL_DEPTH_TEST);	//so the enchanted item effect is rendered properly
 		
@@ -192,50 +238,69 @@ public class DurabilityInfo extends ZyinHUDModBase
 		itemRenderer.func_175030_a(mc.fontRendererObj, itemStack, x, y);	//func_175030_a() is renderItemOverlayIntoGUI()
 		
 		GL11.glDisable(GL11.GL_LIGHTING);	//the itemRenderer.renderItem() method enables lighting
-		GL11.glDisable(GL11.GL_DEPTH_TEST);	//so the text renders above the item
 		
-		//render the number of durability it has left
-		if(itemStack.getItemDamage() != 0)
+		if(TextMode == TextModes.NONE)
 		{
-			boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
-			mc.fontRendererObj.setUnicodeFlag(true);
-			
-			String damageString;
-			int itemDamage = itemStack.getItemDamage();
-			int itemMaxDamage = itemStack.getMaxDamage();
-			
-			if(ShowDamageAsPercentage)
-				damageString = 100 - (int)((double)itemDamage / itemMaxDamage * 100) + "%";
-			else
+			return;
+		}
+		else
+		{
+			//render the number of durability it has left
+			if(itemStack.getItemDamage() != 0)
 			{
-				if(ModCompatibility.TConstruct.IsTConstructItem(itemStack.getItem()))
+				boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
+				mc.fontRendererObj.setUnicodeFlag(true);
+				
+				String damageStringText;
+				int itemDamage = itemStack.getItemDamage();
+				int itemMaxDamage = itemStack.getMaxDamage();
+				
+				if(TextMode == TextModes.PERCENTAGE)
+					damageStringText = 100 - (int)((double)itemDamage / itemMaxDamage * 100) + "%";
+				else if(TextMode == TextModes.TEXT)
 				{
-					Integer temp = ModCompatibility.TConstruct.GetDamage(itemStack);
-					if(temp != null)
+					if(ModCompatibility.TConstruct.IsTConstructItem(itemStack.getItem()))
 					{
-						itemDamage = temp;
-						itemMaxDamage = ModCompatibility.TConstruct.GetMaxDamage(itemStack);
-						damageString = Integer.toString(itemMaxDamage - itemDamage);
+						Integer temp = ModCompatibility.TConstruct.GetDamage(itemStack);
+						if(temp != null)
+						{
+							itemDamage = temp;
+							itemMaxDamage = ModCompatibility.TConstruct.GetMaxDamage(itemStack);
+							damageStringText = Integer.toString(itemMaxDamage - itemDamage);
+						}
+						else
+							damageStringText = "";
 					}
 					else
-						damageString = "";
+						damageStringText = Integer.toString(itemMaxDamage - itemDamage);
+					
 				}
 				else
-					damageString = Integer.toString(itemMaxDamage - itemDamage);
+				{
+					damageStringText = "";
+				}
 				
+				int damageStringX = x + toolX - mc.fontRendererObj.getStringWidth(damageStringText);
+				int damageStringY = y + toolY - mc.fontRendererObj.FONT_HEIGHT - 2;
+				int damageStringColor = 0xffffff;
+				
+				if(UseColoredNumbers)
+					damageStringColor = GetDamageColor(itemStack.getItemDamage(), itemStack.getMaxDamage());
+
+				GL11.glDisable(GL11.GL_DEPTH_TEST);	//so the text renders above the item
+				mc.fontRendererObj.func_175063_a(damageStringText, damageStringX, damageStringY, damageStringColor);
+				mc.fontRendererObj.setUnicodeFlag(unicodeFlag);
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
 			}
-			
-			int damageX = x + toolX - mc.fontRendererObj.getStringWidth(damageString);
-			int damageY = y + toolY - mc.fontRendererObj.FONT_HEIGHT - 1;
-			int damageColor = 0xffffff;
-			if(UseColoredNumbers)
-				damageColor = GetDamageColor(itemStack.getItemDamage(), itemStack.getMaxDamage());
-			
-			mc.fontRendererObj.func_175063_a(damageString, damageX, damageY, damageColor);
-			mc.fontRendererObj.setUnicodeFlag(unicodeFlag);
 		}
 	}
 	
+	/**
+	 * Returns a green/yellow/red color spectrum based on the different between currentDamage and maxDamage.
+	 * @param currentDamage
+	 * @param maxDamage
+	 * @return
+	 */
 	protected static int GetDamageColor(int currentDamage, int maxDamage)
 	{
 		float percent = 100 - (int)((double)currentDamage / maxDamage * 100);
@@ -247,7 +312,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 	}
 	
     
-    /***
+    /**
      * Draws the broken durability image
      * @param x
      * @param y
@@ -264,7 +329,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 				(int)(armorDurabilityIconX/armorDurabilityScaler), (int)(armorDurabilityIconY/armorDurabilityScaler), 
 				durabilityIconsResourceLocation, armorDurabilityScaler);
 		
-		GL11.glDisable(GL11.GL_BLEND);
+		//GL11.glDisable(GL11.GL_BLEND);	//this turned the screen dark in the options menu
 	}
     
     /**
@@ -370,21 +435,24 @@ public class DurabilityInfo extends ZyinHUDModBase
     {
     	if(AutoUnequipArmor)
     	{
-            ItemStack[] armorStacks = mc.thePlayer.inventory.armorInventory;
+            ItemStack[] itemStacks = mc.thePlayer.inventory.armorInventory;
             
             //iterate over the armor the user is wearing
-            for(int i = 0; i < armorStacks.length; i++)
+            for(int i = 0; i < itemStacks.length; i++)
             {
-            	ItemStack armorStack = armorStacks[i];
-                if (armorStack != null)
+            	ItemStack itemStack = itemStacks[i];
+                if (itemStack != null)
                 {
-                    int itemDamage = armorStack.getItemDamage();
-                    int maxDamage = armorStack.getMaxDamage();
+                    int itemDamage = itemStack.getItemDamage();
+                    int maxDamage = itemStack.getMaxDamage();
                     
                     if (maxDamage != 0 &&
                     		maxDamage - itemDamage < 5)
                     {
                        InventoryUtil.MoveArmorIntoPlayerInventory(i);
+	                   	ZyinHUDSound.PlayPlopSound();
+	                   	ZyinHUDRenderer.DisplayNotification(Localization.get("durabilityinfo.name") + Localization.get("durabilityinfo.unequippeditem") + itemStack.getDisplayName());
+	                   	System.out.println("Unequipped " + itemStack.getDisplayName() + " because it was at low durability (" + itemDamage + "/" + maxDamage + ")");
                     }
                 }
             }
@@ -411,11 +479,15 @@ public class DurabilityInfo extends ZyinHUDModBase
                     int itemDamage = itemStack.getItemDamage();
                     int maxDamage = itemStack.getMaxDamage();
                     int threshold = (item instanceof ItemFishingRod) ? 5 : 15;
-
-                    if (maxDamage != 0 &&
-                    		maxDamage - itemDamage < threshold)
+                    
+                    if (maxDamage != 0
+                    	&& maxDamage - itemDamage < threshold				//less than 15 durability
+                    	&& (float)itemDamage / (float)maxDamage > 0.9)		//less than 10%
                     {
                     	InventoryUtil.MoveHeldItemIntoPlayerInventory();
+                    	ZyinHUDSound.PlayPlopSound();
+                    	ZyinHUDRenderer.DisplayNotification(Localization.get("durabilityinfo.name") + Localization.get("durabilityinfo.unequippeditem") + item.getItemStackDisplayName(itemStack));
+                    	System.out.println("Unequipped " + item.getItemStackDisplayName(itemStack) + " because it was at low durability (" + itemDamage + "/" + maxDamage + ")");
                     }
                 }
             }
@@ -517,9 +589,9 @@ public class DurabilityInfo extends ZyinHUDModBase
      * Toggles showing percentages for item durability
      * @return 
      */
-    public static boolean ToggleShowDamageAsPercent()
+    public static TextModes ToggleTextMode()
     {
-    	return ShowDamageAsPercentage = !ShowDamageAsPercentage;
+    	return TextMode.ToggleMode();
     }
     /**
      * Toggles showing icons or an image for broken armor

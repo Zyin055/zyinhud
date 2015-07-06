@@ -44,7 +44,7 @@ animalinfo.debug.color=Horse Color:
 animalinfo.debug.markings=Horse Markings:
 
 clock.name=Clock
-clock.options.mode.tooltip=_lStandard_r: Shows the current Minecraft time_p_lCountdown_r: Timer till the next day/night begins_p_lGraphic_r: Shows a Minecraft clock
+clock.options.mode.tooltip=§lStandard§r: Shows the current Minecraft time_p§lCountdown§r: Timer till the next day/night begins_p§lGraphic§r: Shows a Minecraft clock
 clock.mode.standard=Standard
 clock.mode.countdown=Countdown
 clock.mode.graphic=Graphic
@@ -68,7 +68,9 @@ coordinates.mode.xyz=[x, y, z]
 coordinates.options.tooltip=In addition to displaying your coordinates, you can use the designated hotkey to write your current coordinates into the chat box while it is open
 coordinates.options.hotkey.tooltip=Use this hotkey while the chat box is open to paste your current coordinates into chat_p_pThe pasted coordinates can be formatted in the config file
 coordinates.options.useycoordinatecolors=Y Colors: 
-coordinates.options.useycoordinatecolors.tooltip=Change the color of the Y coordinate based on what ores are found at that elevation_p_p29+_p_e23-28_r gold_p_912-22_r lapis_p_b5-11_r diamond
+coordinates.options.useycoordinatecolors.tooltip=Change the color of the Y coordinate based on what ores are found at that elevation_p_p29+_p§e23-28§r gold_p§912-22§r lapis_p§b5-11§r diamond
+coordinates.options.showchunkcoordinates=Chunk coords: 
+coordinates.options.showchunkcoordinates.tooltip=Shows how far into the 16x16x16 chunk you're in
 
 distancemeasurer.name=Distance Measurer
 distancemeasurer.mode.off=Off
@@ -79,6 +81,10 @@ distancemeasurer.far=far
 distancemeasurer.options.tooltip=Pressing the hotkey once shows you how far away the block you're looking at is._pPressing it again will show you the block's coordinates.
 
 durabilityinfo.name=Durability Info
+durabilityinfo.textmode.none=None
+durabilityinfo.textmode.text=Text
+durabilityinfo.textmode.percentage=Percentage
+durabilityinfo.unequippeditem= unequipped 
 durabilityinfo.options.tooltip=Shows the durability of any armor you have equipped as well as any tools or weapons you have on your hotbar. They will only be displayed when their durabilities are below a specified threshold (default 10%%).
 durabilityinfo.options.usecolorednumbers=Colored Numbers: 
 durabilityinfo.options.showitemdurability=Show Tools: 
@@ -97,20 +103,22 @@ durabilityinfo.options.offsety=Offset Y:
 durabilityinfo.options.updatefrequency=Update Freq (ms): 
 durabilityinfo.options.showindividualarmoricons=Use Armor Icons: 
 durabilityinfo.options.showindividualarmoricons.tooltip=If set to OFF, it will show a damaged armor icon (similar to Diablo 3) instead of individual armor icons
-durabilityinfo.options.showdamageaspercent=Use Percentages: 
-durabilityinfo.options.showdamageaspercent.tooltip=Display the remaining durability as a percentage rather than the amount of durability points it has left
+;durabilityinfo.options.showdamageaspercent=Use Percentages: 
+;durabilityinfo.options.showdamageaspercent.tooltip=Display the remaining durability as a percentage rather than the amount of durability points it has left
+durabilityinfo.options.textmode=Number display: 
+durabilityinfo.options.textmode.tooltip=Changes how the durability text is drawn on the icon:_p§lNone§r_p§lText§r_p§lPercentage§r
 
 eatingaid.name=Eating Aid
 eatingaid.mode.basic=Basic
 eatingaid.mode.intelligent=Intelligent
 eatingaid.nofood=No food
 eatingaid.options.tooltip=Helps you eat food even if it's not on your hotbar, or if it is on your hotbar but you don't have it selected.
-eatingaid.options.mode.tooltip=_lBasic_r: Eats the most filling food_p_lIntelligent_r: Eats whichever food best tops off your hunger
+eatingaid.options.mode.tooltip=§lBasic§r: Eats the most filling food_p§lIntelligent§r: Eats whichever food best tops off your hunger
 eatingaid.options.eatgoldenfood=Eat Golden Food: 
 eatingaid.options.eatrawfood=Eat Uncooked Food: 
 eatingaid.options.prioritizefoodinhotbar=Prioritize Food in Hotbar: 
 eatingaid.options.usepvpsoup=PvP Soup: 
-eatingaid.options.usepvpsoup.tooltip=_nIMPORTANT:_r Only enable this if you are connected to a server that uses the _6PvP _6Soup_r or _6Fast _6Soup_r plugin. Eating Aid will treat Mushroom Stew as instant-eat and will always use it when it is available.
+eatingaid.options.usepvpsoup.tooltip=§nIMPORTANT:§r Only enable this if you are connected to a server that uses the §6PvP §6Soup§r or §6Fast §6Soup§r plugin. Eating Aid will treat Mushroom Stew as instant-eat and will always use it when it is available.
 
 enderpearlaid.name=Ender Pearl Aid
 enderpearlaid.increative=Can't use ender pearls in creative
@@ -159,7 +167,7 @@ itemselector.error.empty=Inventory has no selectable items
 itemselector.error.unsupportedhotbar=Invalid hotbar slot
 itemselector.options.tooltip=Allows you to use the mousewheel to take items out of your inventory without having to open your inventory.
 itemselector.options.hotkey.tooltip=Hold this button while using the mousewheel to select items_p_pDefault = Left Alt
-itemselector.options.mode.tooltip=_lAll_r: Select items from your entire inventory_p_lSame Column_r: Select items only from the same column as your currently selected item in the hotbar
+itemselector.options.mode.tooltip=§lAll§r: Select items from your entire inventory_p§lSame Column§r: Select items only from the same column as your currently selected item in the hotbar
 itemselector.options.ticks=Ticks until timeout: 
 itemselector.options.ticks.tooltip=How many in game ticks (20 = 1 sec) before the highlighted item is automatically selected
 itemselector.options.sideButtons=Use mouse buttons: 
@@ -228,7 +236,8 @@ torchaid.name=Torch Aid
 torchaid.options.tooltip=Place torches without keeping them on your hotbar by right clicking while holding an axe, pickaxe, shovel, or when you have nothing in your hand._p_pNote: Using torches from inventory is somewhat buggy so keep some torches on the hotbar for a better experience.
 
 weaponswapper.name=Weapon Swapper
-weaponswapper.noweaponsinhotbar=No weapons in hotbar
+weaponswapper.noweapons=No weapons
+;weaponswapper.noweaponsinhotbar=No weapons in hotbar
 weaponswapper.options.tooltip=Press the hotkey to select your sword. Press again to select your bow.
 weaponswapper.options.scanhotbarforweaponsfromlefttoright=Search Hotbar Left to Right: 
 weaponswapper.options.scanhotbarforweaponsfromlefttoright.tooltip=Only relevant if you have multiple swords/bows on your hotbar. If enabled, it will select the left most weapon in your hotbar. If disabled, it will select the right most weapon in your hotbar.

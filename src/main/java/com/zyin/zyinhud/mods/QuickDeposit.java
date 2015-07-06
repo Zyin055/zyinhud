@@ -87,7 +87,6 @@ public class QuickDeposit extends ZyinHUDModBase
     	}
     	else	//single chest, double chest, donkey/mules, hopper, dropper, dispenser
     	{
-    		System.out.println("mc.currentScreen="+mc.currentScreen);
     		InventoryUtil.DepositAllMatchingItemsInContainer(onlyDepositMatchingItems, IgnoreItemsInHotbar);
         	
         	if(CloseChestAfterDepositing)

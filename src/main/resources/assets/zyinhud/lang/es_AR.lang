@@ -43,7 +43,7 @@ animalinfo.debug.color=Color del caballo:
 animalinfo.debug.markings=Marcas del caballo:
 
 clock.name=Reloj
-clock.options.mode.tooltip=_lEstándar_r: Muestra el tiempo actual de Minecraft_p_lCuenta Atrás_r: Contador hasta el próximo día/noche comienza_p_lGráfico_r: Muestra un reloj de Minecraft
+clock.options.mode.tooltip=§lEstándar§r: Muestra el tiempo actual de Minecraft_p§lCuenta Atrás§r: Contador hasta el próximo día/noche comienza_p§lGráfico§r: Muestra un reloj de Minecraft
 clock.mode.standard=Estándar
 clock.mode.countdown=Cuenta Atrás
 clock.mode.graphic=Gráfico
@@ -74,12 +74,12 @@ distancemeasurer.far=Lejos
 distancemeasurer.options.tooltip=Pulsando la tecla de acceso rápido ona vez muestra cómo de lejos está el bloque al que estás mirando usando este formato: [max(x,y,z)]._pPulsándola otra vez mostrará cómo de lejos está en un formato más detallado: [x, y, z (distancia diagonal)]
 
 durabilityinfo.name=Info de Durabilidad
-durabilityinfo.options.tooltip=Muestra la durabilidad de la armadura que lleves equipada así como las herramientas o armas que tienes en tu barra de acceso rápido. Sólo serán mostrados cuando sus durabilidades estén por debajo de un umbral (10% por defecto).
+durabilityinfo.options.tooltip=Muestra la durabilidad de la armadura que lleves equipada así como las herramientas o armas que tienes en tu barra de acceso rápido. Sólo serán mostrados cuando sus durabilidades estén por debajo de un umbral (10%% por defecto).
 durabilityinfo.options.showitemdurability=Mostrar Herramientas: 
 durabilityinfo.options.showarmordurability=Mostrar Armadura: 
-durabilityinfo.options.itemdurabilitythreshold=Umbral Herram. % : 
+durabilityinfo.options.itemdurabilitythreshold=Umbral Herram. %% : 
 durabilityinfo.options.itemdurabilitythreshold.tooltip=Configurar esto a 1.00 siempre mostrará tus herramientas
-durabilityinfo.options.armordurabilitythreshold=Umbral Armadura % : 
+durabilityinfo.options.armordurabilitythreshold=Umbral Armadura %% : 
 durabilityinfo.options.armordurabilitythreshold.tooltip=Configurar esto a 1.00 siempre mostrará tu armadura
 durabilityinfo.options.autounequiparmor=Autoretirar Armadura: 
 durabilityinfo.options.autounequiparmor.tooltip=Te desequipará tu armadura cuando se vaya a romper
@@ -98,7 +98,7 @@ eatingaid.mode.basic=Básico
 eatingaid.mode.intelligent=Inteligente
 eatingaid.nofood=No hay comida
 eatingaid.options.tooltip=Te ayuda a comer comida incluso si no está en tu barra de acceso rápido, o si está en tu barra de acceso rápido pero no la tienes seleccionada.
-eatingaid.options.mode.tooltip=_lBásico_r: Come la comida que más recupera_p_lInteligente_r: Come cualquier comida que mejor sacie el hambre
+eatingaid.options.mode.tooltip=§lBásico§r: Come la comida que más recupera_p§lInteligente§r: Come cualquier comida que mejor sacie el hambre
 eatingaid.options.eatgoldenfood=Comer Comida Dorada: 
 eatingaid.options.eatrawfood=Comer Comida Cruda: 
 eatingaid.options.prioritizefoodinhotbar=Priorizar Comida en B.A.R.: 
@@ -149,7 +149,7 @@ itemselector.error.enchant=No se puede cambiar items encantados en multijugador
 itemselector.error.empty=El inventario no tiene items seleccionables
 itemselector.options.tooltip=Te permite usar la rueda del ratón para coger items de tu inventario sin tener que abrirlo.
 itemselector.options.hotkey.tooltip=Mantén este botón mientras usas la rueda del ratón para seleccionar items
-itemselector.options.mode.tooltip=_lTodo_r: Selecciona items de todo tu inventario_p_lMisma Columna_r: Selecciona los items que estén en la misma columna que el item seleccionado en la barra de acceso rápido
+itemselector.options.mode.tooltip=§lTodo§r: Selecciona items de todo tu inventario_p§lMisma Columna§r: Selecciona los items que estén en la misma columna que el item seleccionado en la barra de acceso rápido
 itemselector.options.ticks=Ticks hasta fin tiempo: 
 itemselector.options.ticks.tooltip=Cuántos ticks de juego (20 ticks = 1 segundo) antes de que el item destacado se seleccione automáticamente
 

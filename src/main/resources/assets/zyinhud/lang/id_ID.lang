@@ -43,7 +43,7 @@ animalinfo.debug.color=Warna Kuda:
 animalinfo.debug.markings=Tanda Kuda:
 
 clock.name=Jam
-clock.options.mode.tooltip=_lStandar_r: Menunjukkan waktu Minecraft saat ini_p_lHitung Mundur_r: Timer sampai hari berikutnya_p_lGrafis_r: Menunjukkan waktu Minecraft
+clock.options.mode.tooltip=§lStandar§r: Menunjukkan waktu Minecraft saat ini_p§lHitung Mundur§r: Timer sampai hari berikutnya_p§lGrafis§r: Menunjukkan waktu Minecraft
 clock.mode.standard=Standar
 clock.mode.countdown=Hitungan mundur
 clock.mode.graphic=Grafis
@@ -74,12 +74,12 @@ distancemeasurer.far=jauh
 distancemeasurer.options.tooltip=Menekan hotkey akan menunjukkan seberapa jauh kamu dari blok yang terlihat saat ini: [max(x,y,z)]._pMenekannya sekali lagi akan membuatnya lebih detail: [x, y, z (jarak diagonal)]
 
 durabilityinfo.name=Info Ketahanan
-durabilityinfo.options.tooltip=Menunjukkan ketahanan armor yang kamu gunakan serta peralatan yang ada di hotbar. Mereka hanya akan terlihat ketika ketahanan mereka dibawah thresold spesifik(default 10%).
+durabilityinfo.options.tooltip=Menunjukkan ketahanan armor yang kamu gunakan serta peralatan yang ada di hotbar. Mereka hanya akan terlihat ketika ketahanan mereka dibawah thresold spesifik(default 10%%).
 durabilityinfo.options.showitemdurability=Tunjukkan Peralatan: 
 durabilityinfo.options.showarmordurability=Tunjukkan Armor: 
-durabilityinfo.options.itemdurabilitythreshold=Thresold Peralatan % : 
+durabilityinfo.options.itemdurabilitythreshold=Thresold Peralatan %% : 
 durabilityinfo.options.itemdurabilitythreshold.tooltip=Mengatur ini ke 1.00 akan selalu menunjukkan peralatanmu
-durabilityinfo.options.armordurabilitythreshold=Thresold Armor % : 
+durabilityinfo.options.armordurabilitythreshold=Thresold Armor %% : 
 durabilityinfo.options.armordurabilitythreshold.tooltip=Mengatur ini ke 1.00 akan selalu menunjukkan armormu
 durabilityinfo.options.autounequiparmor=Auto Lepas Armor: 
 durabilityinfo.options.autounequiparmor.tooltip=Secara otomatis melepaskan armor ketika hampir rusak
@@ -98,7 +98,7 @@ eatingaid.mode.basic=Basic
 eatingaid.mode.intelligent=Pintar
 eatingaid.nofood=Tidak ada makanan 
 eatingaid.options.tooltip=Membantu kamu makan ketika makanan tidak ada di hotbar, atau ada di hotbar tapi di terseleksi.
-eatingaid.options.mode.tooltip=_lBasic_r: Makan makanan yang paling mengenyangkan_p_lPintar_r: Makan makanan terbaik sesuai dengan tingkat kelaparan
+eatingaid.options.mode.tooltip=§lBasic§r: Makan makanan yang paling mengenyangkan_p§lPintar§r: Makan makanan terbaik sesuai dengan tingkat kelaparan
 eatingaid.options.eatgoldenfood=Makanan emas: 
 eatingaid.options.eatrawfood=Makanan Mentah: 
 eatingaid.options.prioritizefoodinhotbar=Prioritas makanan: 
@@ -149,7 +149,7 @@ itemselector.error.enchant=Tidak bisa menukar benda yang sudah ditingkatkan keti
 itemselector.error.empty=Inventory tidak memiliki benda untuk diseleksi
 itemselector.options.tooltip=Memperbolehkan kamu menyeleksi benda di inventory menggunakan roda mouse tanpa harus membukanya.
 itemselector.options.hotkey.tooltip=Tahan tombol ini ketika menggunakan roda mouse untuk menyeleksi benda
-itemselector.options.mode.tooltip=_lAll_r: Menyeleksi benda dari semua inventory_p_lSame Column_r: Seleksi benda hanya dari kolom yang sama seperti hotbar yang terseleksi saat ini
+itemselector.options.mode.tooltip=§lAll§r: Menyeleksi benda dari semua inventory_p§lSame Column§r: Seleksi benda hanya dari kolom yang sama seperti hotbar yang terseleksi saat ini
 itemselector.options.ticks=Ticks sampai timeout: 
 itemselector.options.ticks.tooltip=Seberapa banyak ticks dalam game (20 = 1 sec) sebelum benda yang dihighlight terseleksi
 

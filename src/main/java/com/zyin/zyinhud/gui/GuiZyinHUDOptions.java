@@ -411,7 +411,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(1, 1, new GuiButton(1105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
     	AddButtonAt(1, 2, new GuiNumberSlider(1106, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), GuiNumberSlider.Modes.PERCENT));
     	AddButtonAt(1, 3, new GuiButton(1112, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiptools", DurabilityInfo.AutoUnequipTools)));
-    	AddButtonAt(1, 4, new GuiButton(1110, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage)));
+    	AddButtonAt(1, 4, new GuiButton(1110, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_String("durabilityinfo.options.textmode", DurabilityInfo.TextMode.GetFriendlyName())));
 
     }
     private void DrawEnderPearlAidButtons()
@@ -508,6 +508,17 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		return Localization.get("gui.options.enabled") + EnumChatFormatting.GREEN + Localization.get("options.on") + EnumChatFormatting.WHITE;
     	else
     		return Localization.get("gui.options.enabled") + EnumChatFormatting.RED + Localization.get("options.off") + EnumChatFormatting.WHITE;
+    }
+    
+    /**
+     * Helper method to get the text for a button that displays text as a value.
+     * @param localizationString the text from the localization file to be used as the label for the button
+     * @param text string value to display
+     * @return a String to be used as the button label
+     */
+    private static String GetButtonLabel_String(String localizationString, String text)
+    {
+		return Localization.get(localizationString) + text;
     }
     
     /**
@@ -917,9 +928,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            case 1109:	//Vertical location
 	            	DurabilityInfo.SetVerticalLocation(((GuiNumberSlider)button).GetValueAsInteger());
 	            	break;
-	            case 1110:	//Show as Percent
-	            	DurabilityInfo.ToggleShowDamageAsPercent();
-	            	button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.showdamageaspercent", DurabilityInfo.ShowDamageAsPercentage);
+	            case 1110:	//Toggle Text Mode
+	            	button.displayString = GetButtonLabel_String("durabilityinfo.options.textmode", DurabilityInfo.ToggleTextMode().GetFriendlyName());
 	            	break;
 	            case 1111:	//Auto unequip Armor
 	            	DurabilityInfo.ToggleAutoUnequipArmor();
@@ -1215,7 +1225,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 1103: return Localization.get("durabilityinfo.options.armordurabilitythreshold.tooltip");
 			case 1104: return Localization.get("durabilityinfo.options.showindividualarmoricons.tooltip");
 			case 1106: return Localization.get("durabilityinfo.options.itemdurabilitythreshold.tooltip");
-			case 1110: return Localization.get("durabilityinfo.options.showdamageaspercent.tooltip");
+			case 1110: return Localization.get("durabilityinfo.options.textmode.tooltip");
 			case 1111: return Localization.get("durabilityinfo.options.autounequiparmor.tooltip");
 			case 1112: return Localization.get("durabilityinfo.options.autounequiptools.tooltip");
 			case 1200: return Localization.get("enderpearlaid.options.tooltip");

@@ -20,7 +20,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	public static boolean ShowTooltipButtonMouseoverEffect = true;
 	
 	/** Putting this string into a tooltip will cause a line break */
-    public String tooltipNewlineDelimeter = "_p";
+    public String tooltipNewlineDelimeter = "_p"; //"§p";	//the "§" symbol doesn't seem to work
     
     /** The amount of time in milliseconds until a tooltip is rendered */
 	public long tooltipDelay = 900;
@@ -211,7 +211,6 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	 */
 	protected String[] ParseTooltipArrayFromString(String s)
 	{
-		s = DecodeStringCodes(s);
 		String[] tooltipSections = s.split(tooltipNewlineDelimeter);
 		ArrayList<String> tooltipArrayList = new ArrayList<String>();
 		
@@ -241,37 +240,6 @@ public abstract class GuiTooltipScreen extends GuiScreen
 		tooltipArrayList.toArray(tooltipArray);
 		
 		return tooltipArray;
-	}
-	
-	/**
-	 * Decodes any font codes into something useable by the FontRenderer.
-	 * @param s E.x.: "Hello,_nI am your _ltooltip_r and you love me."
-	 * @return E.x. output (html not included): <br>"Hello,<br>I am your <b>tooltip</b> and you love me."
-	 */
-	private String DecodeStringCodes(String s)
-	{
-		return s.replace("_0", EnumChatFormatting.BLACK.toString())
-			.replace("_1", EnumChatFormatting.DARK_BLUE.toString())
-			.replace("_2", EnumChatFormatting.DARK_GREEN.toString())
-			.replace("_3", EnumChatFormatting.DARK_AQUA.toString())
-			.replace("_4", EnumChatFormatting.DARK_RED.toString())
-			.replace("_5", EnumChatFormatting.DARK_PURPLE.toString())
-			.replace("_6", EnumChatFormatting.GOLD.toString())
-			.replace("_7", EnumChatFormatting.GRAY.toString())
-			.replace("_8", EnumChatFormatting.DARK_GRAY.toString())
-			.replace("_9", EnumChatFormatting.BLUE.toString())
-			.replace("_a", EnumChatFormatting.GREEN.toString())
-			.replace("_b", EnumChatFormatting.AQUA.toString())
-			.replace("_c", EnumChatFormatting.RED.toString())
-			.replace("_d", EnumChatFormatting.LIGHT_PURPLE.toString())
-			.replace("_e", EnumChatFormatting.YELLOW.toString())
-			.replace("_f", EnumChatFormatting.WHITE.toString())
-			.replace("_k", EnumChatFormatting.OBFUSCATED.toString())
-			.replace("_l", EnumChatFormatting.BOLD.toString())
-			.replace("_m", EnumChatFormatting.STRIKETHROUGH.toString())
-			.replace("_n", EnumChatFormatting.UNDERLINE.toString())
-			.replace("_o", EnumChatFormatting.ITALIC.toString())
-			.replace("_r", EnumChatFormatting.RESET.toString());
 	}
 	
 	/***

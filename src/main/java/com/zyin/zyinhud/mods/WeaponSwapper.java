@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 
 import com.google.common.collect.Multimap;
 import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
 
@@ -52,13 +53,28 @@ public class WeaponSwapper extends ZyinHUDModBase
         InitializeListOfWeaponClasses();
         
 
-        int meleeWeaponSlot = GetMostDamagingWeaponSlot();
+        int meleeWeaponSlot = GetMostDamagingWeaponSlotFromHotbar();
         int rangedWeaponSlot = GetItemSlotFromHotbar(rangedWeaponClasses);
 
         if (meleeWeaponSlot < 0 && rangedWeaponSlot < 0)
         {
-            //we dont have a sword or a bow
-        	ZyinHUDRenderer.DisplayNotification(Localization.get("weaponswapper.noweaponsinhotbar"));
+            //we dont have a sword or a bow on the hotbar, so check our inventory
+
+            meleeWeaponSlot = GetMostDamagingWeaponSlotFromInventory();
+            if(meleeWeaponSlot < 0)
+            {
+                rangedWeaponSlot = GetItemSlotFromInventory(rangedWeaponClasses);
+                if(rangedWeaponSlot < 0)
+                	ZyinHUDRenderer.DisplayNotification(Localization.get("weaponswapper.noweapons"));
+                else
+                {
+                	InventoryUtil.Swap(InventoryUtil.GetCurrentlySelectedItemInventoryIndex(), rangedWeaponSlot);
+                }
+            }
+            else
+            {
+            	InventoryUtil.Swap(InventoryUtil.GetCurrentlySelectedItemInventoryIndex(), meleeWeaponSlot);
+            }
         }
         else if (meleeWeaponSlot >= 0 && rangedWeaponSlot < 0)
         {
@@ -87,30 +103,48 @@ public class WeaponSwapper extends ZyinHUDModBase
     }
     
     /**
-     * Gets the hotbar index of the most damaging melee weapon on the hotbar.
+     * Gets the inventory index of the most damaging melee weapon on the hotbar.
      * @return 0-9
      */
-    public static int GetMostDamagingWeaponSlot()
+    protected static int GetMostDamagingWeaponSlot(int minInventoryIndex, int maxInventoryIndex)
     {
         ItemStack[] items = mc.thePlayer.inventory.mainInventory;
-        double highestWeapopnDamage = -1;
-        int highestWeapopnDamageSlot = -1;
+        double highestWeaponDamage = -1;
+        int highestWeaponDamageSlot = -1;
         
-        for (int i = 0; i < 9; i++)
+        for (int i = minInventoryIndex; i <= maxInventoryIndex; i++)
         {
             ItemStack itemStack = items[i];
 
             if (itemStack != null)
             {
                 double weaponDamage = GetItemWeaponDamage(itemStack);
-                if(weaponDamage > highestWeapopnDamage)
+                if(weaponDamage > highestWeaponDamage)
                 {
-                	highestWeapopnDamage = weaponDamage;
-                	highestWeapopnDamageSlot = i;
+                	highestWeaponDamage = weaponDamage;
+                	highestWeaponDamageSlot = i;
                 }
             }
         }
-        return highestWeapopnDamageSlot;
+        return highestWeaponDamageSlot;
+    }
+
+    /**
+     * Gets the hotbar index of the most damaging melee weapon on the hotbar.
+     * @return 0-8, -1 if none found
+     */
+    public static int GetMostDamagingWeaponSlotFromHotbar()
+    {
+        return GetMostDamagingWeaponSlot(0, 8);
+    }
+
+    /**
+     * Gets the inventory index of the most damaging melee weapon in the inventory.
+     * @return 9-35, -1 if none found
+     */
+    public static int GetMostDamagingWeaponSlotFromInventory()
+    {
+        return GetMostDamagingWeaponSlot(9, 35);
     }
     
     /**
@@ -164,28 +198,6 @@ public class WeaponSwapper extends ZyinHUDModBase
      * @param item
      * @return
      */
-    /*
-	private static boolean IsMeleeWeapon(Item item)
-    {
-    	if(meleeWeaponClasses == null)
-    		return false;
-    	
-        for(int j = 0; j < meleeWeaponClasses.size(); j++)
-        {
-            if (meleeWeaponClasses.get(j).isInstance(item))
-            {
-                return true;
-            }
-        }
-		return false;
-	}
-    */
-    
-    /**
-     * Determines if an item is a melee weapon.
-     * @param item
-     * @return
-     */
     private static boolean IsRangedWeapon(Item item)
     {
     	if(rangedWeaponClasses == null)
@@ -221,11 +233,11 @@ public class WeaponSwapper extends ZyinHUDModBase
      * @param itemClasses the type of item to find (i.e. ItemSword.class, ItemBow.class)
      * @return 0 through 8, inclusive. -1 if not found.
      */
-    protected static int GetItemSlotFromHotbar(List<Class> itemClasses)
+    protected static int GetItemSlot(List<Class> itemClasses, int minInventoryIndex, int maxInventoryIndex)
     {
         ItemStack[] items = mc.thePlayer.inventory.mainInventory;
 
-        for (int i = 0; i < 9; i++)
+        for (int i = minInventoryIndex; i <= maxInventoryIndex; i++)
         {
             ItemStack itemStack = items[i];
 
@@ -244,5 +256,25 @@ public class WeaponSwapper extends ZyinHUDModBase
         }
             
         return -1;
+    }
+
+    /**
+     * Gets the index of an item that exists in the player's hotbar.
+     * @param itemClasses the type of item to find (i.e. ItemSword.class, ItemBow.class)
+     * @return 0 through 8, inclusive. -1 if not found.
+     */
+    public static int GetItemSlotFromHotbar(List<Class> itemClasses)
+    {
+    	return GetItemSlot(itemClasses, 0, 8);
+    }
+
+    /**
+     * Gets the index of an item that exists in the player's hotbar.
+     * @param itemClasses the type of item to find (i.e. ItemSword.class, ItemBow.class)
+     * @return 9 through 35, inclusive. -1 if not found.
+     */
+    public static int GetItemSlotFromInventory(List<Class> itemClasses)
+    {
+    	return GetItemSlot(itemClasses, 9, 35);
     }
 }
