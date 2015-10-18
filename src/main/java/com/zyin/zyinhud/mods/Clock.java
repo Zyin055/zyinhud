@@ -48,7 +48,17 @@ public class Clock extends ZyinHUDModBase
          */
         public static Modes ToggleMode()
         {
-        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        	return ToggleMode(true);
+        }
+        /**
+         * Sets the next availble mode for this mod if forward=true, or previous mode if false
+         */
+        public static Modes ToggleMode(boolean forward)
+        {
+        	if (forward)
+        		return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        	else
+        		return Mode = Mode.ordinal() > 0 ? Modes.values()[Mode.ordinal() - 1] : Modes.values()[Modes.values().length - 1];
         }
         
         /**
@@ -68,11 +78,14 @@ public class Clock extends ZyinHUDModBase
         }
     }
 	
-	private static long mobSpawningStartTime = 13187;
+	private static final long mobSpawningStartTime = 13187;
 	
 	//mobs stop spawning at: 22813
 	//mobs start to burn at: 23600
-	private static long mobSpawningStopTime = 23600;
+	private static final long mobSpawningStopTime = 23600;
+	
+	//mc.thePlayer.isDaytime() is not available on client, which is actually used to determine bedtime
+	private static final long bedTime = 12540;
 	
     /**
      * Calculates time
@@ -84,27 +97,35 @@ public class Clock extends ZyinHUDModBase
         {
         	if(Clock.Mode == Modes.STANDARD)
         	{
+                long time = (mc.theWorld.getWorldTime()) % 24000;
+
             	//0 game time is 6am, so add 6000
-                long time = (mc.theWorld.getWorldTime() + 6000) % 24000;
-                
-                long hours = time / 1000;
-                long seconds = (long)((time % 1000) * (60.0/1000.0));
+                long hours = (time + 6000) / 1000;
+                long seconds = (long)(((time + 6000) % 1000) * (60.0/1000.0));
 
                 if(IsNight())
         		{
+        			//night time
                     String nighttimeClockString = EnumChatFormatting.GRAY + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
                     return nighttimeClockString;
         		}
                 else
         		{
-                    String daytimeClockString = EnumChatFormatting.YELLOW + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
-                    return daytimeClockString;
+        			//day time
+                    String daytimeClockString = String.format("%02d", hours) + ":" + String.format("%02d", seconds);
+
+        			if(time < bedTime)
+        				daytimeClockString = EnumChatFormatting.YELLOW + daytimeClockString;
+        			else
+        				daytimeClockString = EnumChatFormatting.GOLD + daytimeClockString;
+        			
+        			return daytimeClockString;
         		}
         	}
         	else if(Clock.Mode == Modes.COUNTDOWN)
         	{
                 long time = (mc.theWorld.getWorldTime()) % 24000;
-                
+
         		if(IsNight())
         		{
         			//night time
@@ -113,8 +134,7 @@ public class Clock extends ZyinHUDModBase
         			long minutes = secondsTillDay / 60;
         			long seconds = secondsTillDay - minutes*60;
         			
-                    //String nighttimeCountdownString = FontCodes.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-        			String nighttimeCountdownString = EnumChatFormatting.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+                    String nighttimeCountdownString = EnumChatFormatting.GRAY + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
                     return nighttimeCountdownString;
         		}
         		else
@@ -129,8 +149,14 @@ public class Clock extends ZyinHUDModBase
         			long minutes = secondsTillNight / 60;
         			long seconds = secondsTillNight - minutes*60;
 
-                    String daytimeCountdownString = EnumChatFormatting.YELLOW + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-                    return daytimeCountdownString;
+                    String daytimeCountdownString = String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+                    
+        			if(time < bedTime)
+        				daytimeCountdownString = EnumChatFormatting.YELLOW + daytimeCountdownString;
+        			else
+        				daytimeCountdownString = EnumChatFormatting.GOLD + daytimeCountdownString;
+        			
+        			return daytimeCountdownString;
         		}
         	}
         	else if(Clock.Mode == Modes.GRAPHIC)

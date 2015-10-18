@@ -737,7 +737,8 @@ public class InventoryUtil
 	    List furanceSlots = mc.thePlayer.openContainer.inventorySlots;
 
 	    ItemStack inputStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
-	    ItemStack fueldStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
+	    ItemStack fuelStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
+	    ItemStack outputStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(2)).getStack();
 	    
 	    //check to see if we have an item in our cursor
 	    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
@@ -747,7 +748,7 @@ public class InventoryUtil
 		    {
 				LeftClickContainerSlot(0);
 		    }
-			else if(fueldStack != null && handStack.isItemEqual(fueldStack))
+			else if(fuelStack != null && handStack.isItemEqual(fuelStack))
 		    {
 				LeftClickContainerSlot(1);
 		    }
@@ -767,23 +768,32 @@ public class InventoryUtil
 			    {
 					DepositItemInFurance(i, 0);
 			    }
-				else if(fueldStack != null && itemStack.isItemEqual(fueldStack))
+				else if(fuelStack != null && itemStack.isItemEqual(fuelStack))
 			    {
 					DepositItemInFurance(i, 1);
 			    }
 			}
 	    }
 	    
-	    
-	    return false;
+	    //take the item from the output slot and put it in our inventory
+	    if(outputStack != null)
+	    {
+	    	int openSlot = GetFirstEmptyIndexInContainerInventory(outputStack);
+	    	if(openSlot > 0)
+	    		DepositItemInFurance(2, openSlot);	//'deposit' it from the output slot into an empty slot in our inventory
+	    }
+
+	    return true;
 	}
 	
 	private static boolean DepositItemInFurance(int srcIndex, int destIndex)
 	{
+		/*
 		if(destIndex < 0 || destIndex > 1)
 			return false;
 		if(srcIndex < 3 || srcIndex > 39)
 			return false;
+		*/
 		
 	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
 	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
@@ -818,6 +828,16 @@ public class InventoryUtil
 			    if(handStack != null)
 			    {
 			    	LeftClickContainerSlot(srcIndex);
+			    	
+			    	do
+			    	{
+			        	int openSlot = GetFirstEmptyIndexInContainerInventory(srcStack);
+			        	if(openSlot < 0)
+			        		break;
+			        	
+					    LeftClickContainerSlot(openSlot);
+					    handStack = mc.thePlayer.inventory.getItemStack();
+			    	} while(handStack != null);
 			    }
 			    return true;
 	    	}
@@ -1072,6 +1092,17 @@ public class InventoryUtil
 	 */
 	private static int GetFirstEmptyIndexInContainerInventory()
 	{
+		return GetFirstEmptyIndexInContainerInventory(null);
+	}
+
+	/**
+	 * Gets the index in the chest's player's inventory (bottom section of gui) of the first empty slot.
+	 * It prioritizes slots with partially filled stacks of items with 'itemStackToMatch'.
+	 * @param itemStackToMatch an ItemStack to count as an empty spot
+	 * @return 0,1-15,27,54. -1 if no empty spot
+	 */
+	private static int GetFirstEmptyIndexInContainerInventory(ItemStack itemStackToMatch)
+	{
 		List containerSlots = mc.thePlayer.openContainer.inventorySlots;
 		
 	    int numDisplayedSlots = containerSlots.size();
@@ -1082,18 +1113,32 @@ public class InventoryUtil
 	    int iStart = numContainerSlots;
 	    int iEnd = numDisplayedSlots;
 
-		//iterate over the player's inventory (16,27,54-53,63,90)
+	    int firstEmptyIndex = -1;
+	    int firstEmptyMatchingItemStackIndex = -1;
+
+		//iterate over the chest's inventory (0,1-15,27,54)
     	for (int i = iStart; i <= iEnd-1; i++)
         {
     		Slot slot = (Slot)containerSlots.get(i);
 			ItemStack itemStack = slot.getStack();
-			if(itemStack == null)
+			if(itemStack == null && firstEmptyIndex == -1)
 			{
-                return i;
+				firstEmptyIndex = i;
+			}
+			else if(itemStack != null && itemStackToMatch != null 
+					&& itemStack.isItemEqual(itemStackToMatch) 
+					&& itemStack.stackSize < itemStack.getMaxStackSize() 
+					&& firstEmptyMatchingItemStackIndex == -1)
+			{
+				firstEmptyMatchingItemStackIndex = i;
+				break;
 			}
         }
-
-        return -1;
+    	
+    	if(firstEmptyMatchingItemStackIndex != -1)
+    		return firstEmptyMatchingItemStackIndex;
+    	else
+    		return firstEmptyIndex;
 	}
 	
 	/**
@@ -1107,8 +1152,8 @@ public class InventoryUtil
 
 	/**
 	 * Gets the index in the chest's inventory (top section of gui) of the first empty slot.
-	 * It prioritizes slots with partially filled stacks of items with 'itemID'.
-	 * @param itemID an itemID to count as an empty spot
+	 * It prioritizes slots with partially filled stacks of items with 'itemStackToMatch'.
+	 * @param itemStackToMatch an ItemStack to count as an empty spot
 	 * @return 0,1-15,27,54. -1 if no empty spot
 	 */
 	private static int GetFirstEmptyIndexInContainer(ItemStack itemStackToMatch)
@@ -1127,7 +1172,7 @@ public class InventoryUtil
 	    	iStart = 2;	//the first index is the saddle slot, second index is the armor slot
 
 	    int firstEmptyIndex = -1;
-	    int firstEmptyMatchingItemIdStack = -1;
+	    int firstEmptyMatchingItemStackIndex = -1;
 
 		//iterate over the chest's inventory (0,1-15,27,54)
     	for (int i = iStart; i <= iEnd-1; i++)
@@ -1141,15 +1186,15 @@ public class InventoryUtil
 			else if(itemStack != null && itemStackToMatch != null 
 					&& itemStack.isItemEqual(itemStackToMatch) 
 					&& itemStack.stackSize < itemStack.getMaxStackSize() 
-					&& firstEmptyMatchingItemIdStack == -1)
+					&& firstEmptyMatchingItemStackIndex == -1)
 			{
-				firstEmptyMatchingItemIdStack = i;
+				firstEmptyMatchingItemStackIndex = i;
 				break;
 			}
         }
     	
-    	if(firstEmptyMatchingItemIdStack != -1)
-    		return firstEmptyMatchingItemIdStack;
+    	if(firstEmptyMatchingItemStackIndex != -1)
+    		return firstEmptyMatchingItemStackIndex;
     	else
     		return firstEmptyIndex;
 	}

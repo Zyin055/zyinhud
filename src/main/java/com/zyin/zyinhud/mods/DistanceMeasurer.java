@@ -90,7 +90,6 @@ public class DistanceMeasurer extends ZyinHUDModBase
     }
     
     
-    
 
     /**
      * Calculates the distance of the block the player is pointing at
@@ -100,7 +99,7 @@ public class DistanceMeasurer extends ZyinHUDModBase
     {
         //MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
     	MovingObjectPosition objectMouseOver = mc.thePlayer.func_174822_a(300, 1);	//friendly name is probably rayTrace()
-        
+    	
         if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
         {
             if (Mode == Modes.SIMPLE)
@@ -116,10 +115,6 @@ public class DistanceMeasurer extends ZyinHUDModBase
                 double deltaX;
                 double deltaY;
                 double deltaZ;
-
-                System.out.println("-----------------");
-                System.out.println("player="+playerX+", "+ playerY+", "+ playerZ);
-                System.out.println("block ="+blockX+", "+ blockY+", "+ blockZ);
 
                 if(playerX < blockX)
                 	deltaX = blockX - playerX;
@@ -144,11 +139,13 @@ public class DistanceMeasurer extends ZyinHUDModBase
                 
             	double farthestHorizontalDistance = Math.max(Math.abs(deltaX), Math.abs(deltaZ));
                 double farthestDistance = Math.max(Math.abs(deltaY), farthestHorizontalDistance);
+                
                 return EnumChatFormatting.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]";
             }
             else if (Mode == Modes.COORDINATE)
             {
             	BlockPos pos = objectMouseOver.func_178782_a(); //friendly name is probably getBlockPos()
+            	
                 return EnumChatFormatting.GOLD + "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
             }
             else
@@ -161,5 +158,4 @@ public class DistanceMeasurer extends ZyinHUDModBase
         	return EnumChatFormatting.GOLD + "["+Localization.get("distancemeasurer.far")+"]";
         }
     }
-    
 }

@@ -396,19 +396,19 @@ public class ZyinHUDConfig
         else
         	p.set(PotionTimers.Enabled);
 
+        p = config.get(CATEGORY_POTIONTIMERS, "DurabilityInfoTextMode", "COLORED");
+        p.comment = "Sets Potion Timer's text display mode.";
+        if(loadSettings)
+        	PotionTimers.TextMode = PotionTimers.TextModes.GetMode(p.getString());
+        else
+        	p.set(PotionTimers.TextMode.name());
+
         p = config.get(CATEGORY_POTIONTIMERS, "ShowPotionIcons", true);
         p.comment = "Enable/Disable showing the status effect of potions next to the timers.";
         if(loadSettings)
         	PotionTimers.ShowPotionIcons = p.getBoolean(true);
         else
         	p.set(PotionTimers.ShowPotionIcons);
-
-        p = config.get(CATEGORY_POTIONTIMERS, "UsePotionColors", true);
-        p.comment = "Enable/Disable using the potion type to determine the text color.";
-        if(loadSettings)
-        	PotionTimers.UsePotionColors = p.getBoolean(true);
-        else
-        	p.set(PotionTimers.UsePotionColors);
 
         p = config.get(CATEGORY_POTIONTIMERS, "PotionScale", 1.0);
         p.comment = "How large the potion timers are rendered, 1.0 being the normal size.";
@@ -762,10 +762,17 @@ public class ZyinHUDConfig
         else
         	p.set(QuickDeposit.BlacklistTorch);
 
-        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistWeapons", false);
+        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistTools", true);
+        p.comment = "Stop Quick Deposit from putting tools (picks, axes, shovels, shears) in chests?";
+        if(loadSettings)
+        	QuickDeposit.BlacklistTools = p.getBoolean(true);
+        else
+        	p.set(QuickDeposit.BlacklistTorch);
+
+        p = config.get(CATEGORY_QUICKDEPOSIT, "BlacklistWeapons", true);
         p.comment = "Stop Quick Deposit from putting swords and bows in chests?";
         if(loadSettings)
-        	QuickDeposit.BlacklistWeapons = p.getBoolean(false);
+        	QuickDeposit.BlacklistWeapons = p.getBoolean(true);
         else
         	p.set(QuickDeposit.BlacklistWeapons);
 
@@ -843,7 +850,7 @@ public class ZyinHUDConfig
         	p.set(HealthMonitor.Mode.name());
 
         p = config.get(CATEGORY_HEALTHMONITOR, "LowHealthSoundThreshold", 6);
-        p.comment = "A sound will start playingwhen you have less than this much health left.";
+        p.comment = "A sound will start playing when you have less than this much health left.";
         if(loadSettings)
         	HealthMonitor.SetLowHealthSoundThreshold(p.getInt(1));
         else
@@ -855,6 +862,13 @@ public class ZyinHUDConfig
         	HealthMonitor.PlayFasterNearDeath = p.getBoolean(false);
         else
         	p.set(HealthMonitor.PlayFasterNearDeath);
+
+        p = config.get(CATEGORY_HEALTHMONITOR, "HealthMonitorVolume", 1.0f);
+        p.comment = "Set the volume of the beeps [0..1]";
+        if(loadSettings)
+        	HealthMonitor.SetVolume((float)p.getDouble(1.0f));
+        else
+        	p.set(HealthMonitor.GetVolume());
         
         //CATEGORY_TORCHAID
         p = config.get(CATEGORY_TORCHAID, "EnableTorchAid", false);

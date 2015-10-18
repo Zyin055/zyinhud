@@ -340,6 +340,7 @@ public class SafeOverlay extends ZyinHUDModBase
         GL11.glEnd();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);	//puts blending back to normal, fixes bad HD texture rendering
+        GL11.glDisable(GL11.GL_BLEND);	//fixes [Journeymap] beacons being x-rayed as well
         GL11.glPopMatrix();
     }
     

@@ -3,18 +3,18 @@ package com.zyin.zyinhud.helper;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Vec3;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 
 import com.zyin.zyinhud.mods.PlayerLocator;
 
@@ -102,9 +102,9 @@ public class HUDEntityTrackerHelper {
             	
             	if(object == null)
             		continue;
-            	
+                
                 //only track entities that we are tracking (i.e. other players/wolves/witherskeletons)
-                if(!(object instanceof EntityOtherPlayerMP || 
+            	if(!(object instanceof EntityOtherPlayerMP || 
                 	 object instanceof EntityWolf ||
                 	 (object instanceof EntitySkeleton) && ((EntitySkeleton)object).getSkeletonType() == 1))
                     continue;

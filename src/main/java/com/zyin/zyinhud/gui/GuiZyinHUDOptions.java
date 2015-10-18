@@ -1,9 +1,14 @@
 package com.zyin.zyinhud.gui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
+import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -13,6 +18,7 @@ import com.zyin.zyinhud.ZyinHUDKeyHandlers;
 import com.zyin.zyinhud.gui.buttons.GuiHotkeyButton;
 import com.zyin.zyinhud.gui.buttons.GuiLabeledButton;
 import com.zyin.zyinhud.gui.buttons.GuiNumberSlider;
+import com.zyin.zyinhud.gui.buttons.GuiNumberSliderWithUndo;
 import com.zyin.zyinhud.keyhandlers.AnimalInfoKeyHandler;
 import com.zyin.zyinhud.keyhandlers.CoordinatesKeyHandler;
 import com.zyin.zyinhud.keyhandlers.DistanceMeasurerKeyHandler;
@@ -77,12 +83,24 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     public static final String HotkeyDescription = "key.zyinhud.zyinhudoptions";
 	
 	protected GuiScreen parentGuiScreen;
+	protected static GuiButton zyinHudOptionsButton;
     
     /** The title string that is displayed in the top-center of the screen. */
     protected String screenTitle;
 
     /** The button that was just pressed. */
     protected GuiButton selectedButton;
+    
+    
+    protected static final int[] rightClickableButtonsIDs = new int[] {
+    	202,	//Clock mode
+    	304,	//Coordinate mode
+    	1005,	//Potion Timers text mode
+    	1110,	//Durability info text mode
+    	1303,	//Eating Aid mode
+    	1704,	//Item Selector mode
+    	1802	//Health Monitor mode
+    	};
     
     protected Object[][] tabbedButtons = {
     		{2000, Localization.get("miscellaneous.name"), null},
@@ -156,6 +174,37 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         this.parentGuiScreen = parentGuiScreen;
         tabbedMaxPages = (int) Math.ceil((double)(tabbedButtons.length)/tabbedPageSize);
     }
+
+	/**
+	 * Used to insert buttons into the vanilla GuiOptions screen
+	 * @param event
+	 */
+    public static void InitGuiEventPost(InitGuiEvent.Post event)
+	{
+		int width = event.gui.width;
+		int height = event.gui.height;
+		
+		if(event.gui instanceof GuiOptions && Minecraft.getMinecraft().theWorld != null)
+		{
+			zyinHudOptionsButton = new GuiButton(1337, width / 2 + 5, height / 6 + 24 - 6, 150, 20, Localization.get("gui.override.options.buttons.options"));
+			event.buttonList.add(zyinHudOptionsButton);
+		}
+	}
+    
+    /**
+     * Used to capture when the "Zyin HUD..." button is clicked in the vanilla GuiOptions screen
+     * @param event
+     */
+	public static void ActionPerformedEventPost(ActionPerformedEvent.Post event)
+	{
+		if(event.gui instanceof GuiOptions)
+		{
+			if(event.button.id == zyinHudOptionsButton.id)
+			{
+				Minecraft.getMinecraft().displayGuiScreen(new GuiZyinHUDOptions(event.gui));
+			}
+		}
+	}
     
     /**
      * Adds the buttons (and other controls) to the screen in question.
@@ -187,7 +236,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         DrawAllButtons();
         
         //simulate a click on the last tabbed button that was clicked to re-open it
-        actionPerformed(currentlySelectedTabButton);
+        actionPerformed(currentlySelectedTabButton, 0);
     }
 
     protected void DrawAllButtons()
@@ -312,8 +361,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 0, new GuiButton(101, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
     	AddButtonAt(0, 1, new GuiButton(102, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
     	AddButtonAt(0, 2, new GuiButton(105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showcansnow", InfoLine.ShowCanSnow)));
-    	AddButtonAt(0, 6, new GuiNumberSlider(103, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsetx"), 1, width - 25, InfoLine.GetHorizontalLocation(), GuiNumberSlider.Modes.INTEGER));
-    	AddButtonAt(0, 7, new GuiNumberSlider(104, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 6, new GuiNumberSliderWithUndo(103, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsetx"), 1, width - 25, InfoLine.GetHorizontalLocation(), 1f, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 7, new GuiNumberSliderWithUndo(104, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), 1f, GuiNumberSlider.Modes.INTEGER));
     	
     }
     private void DrawClockButtons()
@@ -351,8 +400,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     {
     	AddButtonAt(0, 0, new GuiButton(701, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(SafeOverlay.Enabled)));
     	AddButtonAt(0, 1, new GuiHotkeyButton(702, 0, 0, buttonWidth, buttonHeight, SafeOverlayKeyHandler.HotkeyDescription));
-    	AddButtonAt(0, 2, new GuiNumberSlider(703, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.drawdistance"), SafeOverlay.minDrawDistance, SafeOverlay.maxDrawDistance, SafeOverlay.instance.GetDrawDistance(), GuiNumberSlider.Modes.INTEGER));
-    	AddButtonAt(0, 3, new GuiNumberSlider(704, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.transparency"), SafeOverlay.instance.GetUnsafeOverlayMinTransparency(), SafeOverlay.instance.GetUnsafeOverlayMaxTransparency(), SafeOverlay.instance.GetUnsafeOverlayTransparency(), GuiNumberSlider.Modes.PERCENT));
+    	AddButtonAt(0, 2, new GuiNumberSliderWithUndo(703, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.drawdistance"), SafeOverlay.minDrawDistance, SafeOverlay.maxDrawDistance, SafeOverlay.instance.GetDrawDistance(), SafeOverlay.defaultDrawDistance, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 3, new GuiNumberSliderWithUndo(704, 0, 0, buttonWidth, buttonHeight, Localization.get("safeoverlay.options.transparency"), SafeOverlay.instance.GetUnsafeOverlayMinTransparency(), SafeOverlay.instance.GetUnsafeOverlayMaxTransparency(), SafeOverlay.instance.GetUnsafeOverlayTransparency(), 0.3f, GuiNumberSlider.Modes.PERCENT));
     	AddButtonAt(0, 4, new GuiButton(705, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.displayinnether", SafeOverlay.instance.GetDisplayInNether())));
     	AddButtonAt(0, 5, new GuiButton(706, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("safeoverlay.options.seethroughwalls", SafeOverlay.instance.GetSeeUnsafePositionsThroughWalls())));
     	
@@ -361,7 +410,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     {
     	AddButtonAt(0, 0, new GuiButton(801, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(PlayerLocator.Enabled)));
     	AddButtonAt(0, 1, new GuiHotkeyButton(802, 0, 0, buttonWidth, buttonHeight, PlayerLocatorKeyHandler.HotkeyDescription));
-    	AddButtonAt(0, 2, new GuiNumberSlider(803, 0, 0, buttonWidth, buttonHeight, Localization.get("playerlocator.options.minviewdistance"), PlayerLocator.minViewDistanceCutoff, PlayerLocator.maxViewDistanceCutoff, PlayerLocator.viewDistanceCutoff, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 2, new GuiNumberSliderWithUndo(803, 0, 0, buttonWidth, buttonHeight, Localization.get("playerlocator.options.minviewdistance"), PlayerLocator.minViewDistanceCutoff, PlayerLocator.maxViewDistanceCutoff, PlayerLocator.viewDistanceCutoff, 0f, GuiNumberSlider.Modes.INTEGER));
     	AddButtonAt(0, 3, new GuiButton(804, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showdistancetoplayers", PlayerLocator.ShowDistanceToPlayers)));
     	AddButtonAt(0, 4, new GuiButton(805, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("playerlocator.options.showplayerhealth", PlayerLocator.ShowPlayerHealth)));
     	
@@ -375,9 +424,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	
     	AddButtonAt(0, 0, new GuiButton(901, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(AnimalInfo.Enabled)));
     	AddButtonAt(0, 1, new GuiHotkeyButton(902, 0, 0, buttonWidth, buttonHeight, AnimalInfoKeyHandler.HotkeyDescription));
-    	AddButtonAt(0, 2, new GuiNumberSlider(903, 0, 0, buttonWidth, buttonHeight, Localization.get("animalinfo.options.maxviewdistance"), AnimalInfo.minViewDistanceCutoff, AnimalInfo.maxViewDistanceCutoff, AnimalInfo.viewDistanceCutoff, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 2, new GuiNumberSliderWithUndo(903, 0, 0, buttonWidth, buttonHeight, Localization.get("animalinfo.options.maxviewdistance"), AnimalInfo.minViewDistanceCutoff, AnimalInfo.maxViewDistanceCutoff, AnimalInfo.viewDistanceCutoff, 8f, GuiNumberSlider.Modes.INTEGER));
     	AddButtonAt(0, 3, new GuiButton(907, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showtextbackground", AnimalInfo.ShowTextBackgrounds)));
-    	AddButtonAt(0, 4, new GuiNumberSlider(904, 0, 0, buttonWidth, buttonHeight, Localization.get("animalinfo.options.numdecimalsdisplayed"), AnimalInfo.minNumberOfDecimalsDisplayed, AnimalInfo.maxNumberOfDecimalsDisplayed, AnimalInfo.GetNumberOfDecimalsDisplayed(), GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 4, new GuiNumberSliderWithUndo(904, 0, 0, buttonWidth, buttonHeight, Localization.get("animalinfo.options.numdecimalsdisplayed"), AnimalInfo.minNumberOfDecimalsDisplayed, AnimalInfo.maxNumberOfDecimalsDisplayed, AnimalInfo.GetNumberOfDecimalsDisplayed(), 1f, GuiNumberSlider.Modes.INTEGER));
     	AddButtonAt(0, 5, new GuiButton(905, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsonf3menu", AnimalInfo.ShowHorseStatsOnF3Menu)));
     	AddButtonAt(0, 6, new GuiButton(906, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("animalinfo.options.showhorsestatsoverlay", AnimalInfo.ShowHorseStatsOverlay)));
     	
@@ -388,28 +437,28 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     private void DrawPotionTimerButtons()
     {
     	AddButtonAt(0, 0, new GuiButton(1001, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(PotionTimers.Enabled)));
-    	AddButtonAt(0, 1, new GuiButton(1002, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons)));
-    	AddButtonAt(0, 2, new GuiButton(1005, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors)));
+    	AddButtonAt(0, 1, new GuiButton(1005, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_String("potiontimers.options.textmode", PotionTimers.TextMode.GetFriendlyName())));
+    	AddButtonAt(0, 2, new GuiButton(1002, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons)));
     	AddButtonAt(0, 3, new GuiButton(1007, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.hidepotioneffectsininventory", PotionTimers.HidePotionEffectsInInventory)));
-    	AddButtonAt(0, 5, new GuiNumberSlider(1006, 0, 0, buttonWidth, buttonHeight, Localization.get("potiontimers.options.potionscale"), 1.0f, 4.0f, PotionTimers.PotionScale, GuiNumberSlider.Modes.PERCENT));
-    	AddButtonAt(0, 6, new GuiNumberSlider(1003, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), GuiNumberSlider.Modes.INTEGER));
-    	AddButtonAt(0, 7, new GuiNumberSlider(1004, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 5, new GuiNumberSliderWithUndo(1006, 0, 0, buttonWidth, buttonHeight, Localization.get("potiontimers.options.potionscale"), 0.5f, 4.0f, PotionTimers.PotionScale, 1f, GuiNumberSlider.Modes.PERCENT));
+    	AddButtonAt(0, 6, new GuiNumberSliderWithUndo(1003, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), 1f, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 7, new GuiNumberSliderWithUndo(1004, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), 16f, GuiNumberSlider.Modes.INTEGER));
     	
     }
     private void DrawDurabilityInfoButtons()
     {
     	AddButtonAt(0, 0, new GuiButton(1101, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(DurabilityInfo.Enabled)));
     	AddButtonAt(0, 1, new GuiButton(1102, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showarmordurability", DurabilityInfo.ShowArmorDurability)));
-    	AddButtonAt(0, 2, new GuiNumberSlider(1103, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForArmor(), GuiNumberSlider.Modes.PERCENT));
+    	AddButtonAt(0, 2, new GuiNumberSliderWithUndo(1103, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.armordurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForArmor(), 0.1f, GuiNumberSlider.Modes.PERCENT));
     	AddButtonAt(0, 3, new GuiButton(1111, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiparmor", DurabilityInfo.AutoUnequipArmor)));
     	AddButtonAt(0, 4, new GuiButton(1104, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showindividualarmoricons", DurabilityInfo.ShowIndividualArmorIcons)));
-    	AddButtonAt(0, 5, new GuiNumberSlider(1114, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.durabilityscale"), 1.0f, 4.0f, DurabilityInfo.DurabilityScale, GuiNumberSlider.Modes.PERCENT));
-    	AddButtonAt(0, 6, new GuiNumberSlider(1108, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, GuiNumberSlider.Modes.INTEGER));
-    	AddButtonAt(0, 7, new GuiNumberSlider(1109, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 5, new GuiNumberSliderWithUndo(1114, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.durabilityscale"), 0.5f, 4.0f, DurabilityInfo.DurabilityScale, 1.0f, GuiNumberSlider.Modes.PERCENT));
+    	AddButtonAt(0, 6, new GuiNumberSliderWithUndo(1108, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsetx"), 0, width - DurabilityInfo.toolX, DurabilityInfo.durabalityLocX, 30f, GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 7, new GuiNumberSliderWithUndo(1109, 0, 0, buttonWidth_double, buttonHeight, Localization.get("durabilityinfo.options.offsety"), 0, height - DurabilityInfo.toolY, DurabilityInfo.durabalityLocY, 20f, GuiNumberSlider.Modes.INTEGER));
     	
     	AddButtonAt(1, 0, new GuiButton(1113, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.usecolorednumbers", DurabilityInfo.UseColoredNumbers)));
     	AddButtonAt(1, 1, new GuiButton(1105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.showitemdurability", DurabilityInfo.ShowItemDurability)));
-    	AddButtonAt(1, 2, new GuiNumberSlider(1106, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), GuiNumberSlider.Modes.PERCENT));
+    	AddButtonAt(1, 2, new GuiNumberSliderWithUndo(1106, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), 0.1f, GuiNumberSlider.Modes.PERCENT));
     	AddButtonAt(1, 3, new GuiButton(1112, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiptools", DurabilityInfo.AutoUnequipTools)));
     	AddButtonAt(1, 4, new GuiButton(1110, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_String("durabilityinfo.options.textmode", DurabilityInfo.TextMode.GetFriendlyName())));
 
@@ -452,12 +501,13 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 3, new GuiButton(1604, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.closechestafterdepositing", QuickDeposit.CloseChestAfterDepositing)));
     	
     	AddButtonAt(1, 0, new GuiButton(1605, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklisttorch", QuickDeposit.BlacklistTorch)));
-    	AddButtonAt(1, 1, new GuiButton(1611, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistweapons", QuickDeposit.BlacklistWeapons)));
-    	AddButtonAt(1, 2, new GuiButton(1606, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistarrow", QuickDeposit.BlacklistArrow)));
-    	AddButtonAt(1, 3, new GuiButton(1607, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistfood", QuickDeposit.BlacklistFood)));
-    	AddButtonAt(1, 4, new GuiButton(1608, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistenderpearl", QuickDeposit.BlacklistEnderPearl)));
-    	AddButtonAt(1, 5, new GuiButton(1609, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistwaterbucket", QuickDeposit.BlacklistWaterBucket)));
-    	AddButtonAt(1, 6, new GuiButton(1610, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
+    	AddButtonAt(1, 1, new GuiButton(1612, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklisttools", QuickDeposit.BlacklistTools)));
+    	AddButtonAt(1, 2, new GuiButton(1611, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistweapons", QuickDeposit.BlacklistWeapons)));
+    	AddButtonAt(1, 3, new GuiButton(1606, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistarrow", QuickDeposit.BlacklistArrow)));
+    	AddButtonAt(1, 4, new GuiButton(1607, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistfood", QuickDeposit.BlacklistFood)));
+    	AddButtonAt(1, 5, new GuiButton(1608, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistenderpearl", QuickDeposit.BlacklistEnderPearl)));
+    	AddButtonAt(1, 6, new GuiButton(1609, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistwaterbucket", QuickDeposit.BlacklistWaterBucket)));
+    	AddButtonAt(1, 7, new GuiButton(1610, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("quickdeposit.options.blacklistclockcompass", QuickDeposit.BlacklistClockCompass)));
     	
     }
     private void DrawItemSelectorButtons()
@@ -465,7 +515,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
         AddButtonAt(0, 0, new GuiButton(1701, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(ItemSelector.Enabled)));
         AddButtonAt(0, 1, new GuiHotkeyButton(1702, 0, 0, buttonWidth, buttonHeight, ItemSelectorKeyHandler.HotkeyDescription));
         AddButtonAt(0, 2, new GuiButton(1704, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName())));
-        AddButtonAt(0, 3, new GuiNumberSlider(1703, 0, 0, buttonWidth, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), GuiNumberSlider.Modes.INTEGER));
+        AddButtonAt(0, 3, new GuiNumberSliderWithUndo(1703, 0, 0, buttonWidth, buttonHeight, Localization.get("itemselector.options.ticks"), ItemSelector.minTimeout, ItemSelector.maxTimeout, ItemSelector.GetTimeout(), 200f, GuiNumberSlider.Modes.INTEGER));
         AddButtonAt(0, 4, new GuiButton(1705, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("itemselector.options.sideButtons", ItemSelector.UseMouseSideButtons)));
 
     }
@@ -475,10 +525,11 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     	AddButtonAt(0, 0, new GuiButton(1801, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(HealthMonitor.Enabled)));
     	AddButtonAt(0, 1, new GuiButton(1802, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Mode(HealthMonitor.Mode.GetFriendlyName())));
     	AddButtonAt(0, 2, new GuiButton(1804, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("healthmonitor.options.playfasterneardeath", HealthMonitor.PlayFasterNearDeath)));
-    	AddButtonAt(0, 3, new GuiNumberSlider(1805, 0, 0, buttonWidth_double, buttonHeight, Localization.get("healthmonitor.options.lowhealthsoundthreshold"), 1, 20, HealthMonitor.GetLowHealthSoundThreshold(), GuiNumberSlider.Modes.INTEGER));
+    	AddButtonAt(0, 3, new GuiNumberSliderWithUndo(1805, 0, 0, buttonWidth_double, buttonHeight, Localization.get("healthmonitor.options.lowhealthsoundthreshold"), 1, 20, HealthMonitor.GetLowHealthSoundThreshold(), 6f, GuiNumberSlider.Modes.INTEGER));
 
     	AddButtonAt(1, 1, new GuiButton(1803, 0, 0, buttonWidth/2, buttonHeight, Localization.get("healthmonitor.options.mode.play")));
-    	
+    	AddButtonAt(1, 2, new GuiNumberSliderWithUndo(1806, 0, 0, buttonWidth, buttonHeight, Localization.get("healthmonitor.options.volume"), 0, 1, HealthMonitor.GetVolume(), 1f, GuiNumberSlider.Modes.PERCENT));
+
     }
     
     private void DrawTorchAidButtons()
@@ -542,21 +593,27 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
      */
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+    	//this part is mostly copy/pasted from GuiScreen.mouseClicked() because we need it to call our own actionPerformed() method, not the one in GuiScreen
     	//play a sound and fire the actionPerformed() method when a button is left clicked
-        if (mouseButton == 0)	//left click
-        {
+        //if (mouseButton == 0)	//left click
+        //{
             for (int l = 0; l < this.buttonList.size(); ++l)
             {
                 GuiButton guibutton = (GuiButton)this.buttonList.get(l);
-
-                if (guibutton.mousePressed(this.mc, mouseX, mouseY))
+                
+                if((mouseButton == 1 && (ArrayUtils.contains(rightClickableButtonsIDs, guibutton.id)))	//right click
+                	|| mouseButton == 0)	//left click
                 {
-                    selectedButton = guibutton;
-                    guibutton.playPressSound(this.mc.getSoundHandler());
-                    actionPerformed(guibutton);
+                    if (guibutton.mousePressed(this.mc, mouseX, mouseY))
+                    {
+                        selectedButton = guibutton;
+                        guibutton.playPressSound(this.mc.getSoundHandler());
+                        actionPerformed(guibutton, mouseButton);
+                    }
                 }
+
             }
-        }
+        //}
     }
     
     protected void mouseReleased(int mouseX, int mouseY, int state)
@@ -575,7 +632,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     		if(selectedButton != null && selectedButton instanceof GuiNumberSlider)
     		{
     			//continuously apply updates for any GuiNumberSlider buttons as they are being dragged
-    			actionPerformed(selectedButton);
+    			actionPerformed(selectedButton, clickedMouseButton);
     		}
     	}
     }
@@ -583,8 +640,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
     /**
      * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
      * In this method we handle every buttons action.
+     * @param button
+     * @param mouseButton 0 = left click, 1 = right click
      */
-    protected void actionPerformed(GuiButton button)
+    protected void actionPerformed(GuiButton button, int mouseButton)
     {
         if (button != null && button.enabled)
         {
@@ -669,7 +728,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	button.displayString = GetButtonLabel_Enabled(Clock.Enabled);
 	            	break;
 	            case 202:	//Mode
-	            	Clock.Mode.ToggleMode();
+	            	Clock.Mode.ToggleMode(mouseButton == 0);
 	            	button.displayString = GetButtonLabel_Mode(Clock.Mode.GetFriendlyName());
 	            	break;
 	
@@ -693,7 +752,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	HotkeyButtonClicked((GuiHotkeyButton)button);
 	            	break;
 	            case 304:	//Mode
-	            	Coordinates.Modes.ToggleMode();
+	            	Coordinates.Modes.ToggleMode(mouseButton == 0);
 	            	button.displayString = GetButtonLabel_Mode(Coordinates.Mode.GetFriendlyName());
 	            	break;
 	            case 305:	//Chunk coords
@@ -874,11 +933,13 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	PotionTimers.ToggleShowPotionIcons();
 	            	button.displayString = GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons);
 	            	break;
-	            case 1005:	//Show potion colors
-	            	PotionTimers.ToggleUsePotionColors();
-	            	button.displayString = GetButtonLabel_Boolean("potiontimers.options.usepotioncolors", PotionTimers.UsePotionColors);
+	            case 1005:	//Toggle text mode
+	            	System.out.println("MODE:"+PotionTimers.TextMode);
+	            	PotionTimers.TextMode.ToggleMode(mouseButton == 0);
+	            	System.out.println("MODE:"+PotionTimers.TextMode);
+	            	button.displayString = GetButtonLabel_String("potiontimers.options.textmode", PotionTimers.TextMode.GetFriendlyName());
 	            	break;
-	            case 1007:	//Hide default potion effects in inveotyr
+	            case 1007:	//Hide default potion effects in inventory
 	            	PotionTimers.ToggleHidePotionEffectsInInventory();
 	            	button.displayString = GetButtonLabel_Boolean("potiontimers.options.hidepotioneffectsininventory", PotionTimers.HidePotionEffectsInInventory);
 	            	break;
@@ -929,7 +990,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	DurabilityInfo.SetVerticalLocation(((GuiNumberSlider)button).GetValueAsInteger());
 	            	break;
 	            case 1110:	//Toggle Text Mode
-	            	button.displayString = GetButtonLabel_String("durabilityinfo.options.textmode", DurabilityInfo.ToggleTextMode().GetFriendlyName());
+	            	DurabilityInfo.TextMode.ToggleMode(mouseButton == 0);
+	            	button.displayString = GetButtonLabel_String("durabilityinfo.options.textmode", DurabilityInfo.TextMode.GetFriendlyName());
 	            	break;
 	            case 1111:	//Auto unequip Armor
 	            	DurabilityInfo.ToggleAutoUnequipArmor();
@@ -982,7 +1044,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	HotkeyButtonClicked((GuiHotkeyButton)button);
 	            	break;
 	            case 1303:	//Eating Mode
-	            	EatingAid.Modes.ToggleMode();
+	            	EatingAid.Modes.ToggleMode(mouseButton == 0);
 	            	button.displayString = GetButtonLabel_Mode(EatingAid.Mode.GetFriendlyName());
 	            	break;
 	            case 1304:	//Eat golden food
@@ -1087,6 +1149,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	QuickDeposit.ToggleBlacklistWeapons();
 	            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklistweapons", QuickDeposit.BlacklistWeapons);
 	            	break;
+	            case 1612:	//Blacklist tools
+	            	QuickDeposit.ToggleBlacklistTools();
+	            	button.displayString = GetButtonLabel_Boolean("quickdeposit.options.blacklisttools", QuickDeposit.BlacklistTools);
+	            	break;
 	            	
 
                 /////////////////////////////////////////////////////////////////////////
@@ -1108,7 +1174,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
                     ItemSelector.SetTimeout(itemSelectorTicks);
                     break;
                 case 1704:  //Mode
-                    ItemSelector.Modes.ToggleMode();
+                	ItemSelector.Modes.ToggleMode(mouseButton == 0);
                     button.displayString = GetButtonLabel_Mode(ItemSelector.Mode.GetFriendlyName());
                     break;
                 case 1705:  //Side buttons
@@ -1130,7 +1196,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	button.displayString = GetButtonLabel_Enabled(HealthMonitor.Enabled);
 	            	break;
 	            case 1802:	//Mode
-	            	HealthMonitor.Modes.ToggleMode();
+                	HealthMonitor.Modes.ToggleMode(mouseButton == 0);
 	            	HealthMonitor.PlayLowHealthSound();
 	            	button.displayString = GetButtonLabel_Mode(HealthMonitor.Mode.GetFriendlyName());
 	            	break;
@@ -1143,6 +1209,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 	            	break;
 	            case 1805:	//Low Health Sound Threshold
 	            	HealthMonitor.SetLowHealthSoundThreshold(((GuiNumberSlider)button).GetValueAsInteger());
+	            	break;
+	            case 1806:	//Volume
+	            	HealthMonitor.SetVolume(((GuiNumberSlider)button).GetValueAsFloat());
 	            	break;
 	                
 	                
@@ -1220,6 +1289,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen
 			case 916: return Localization.get("animalinfo.options.showbreedingicons.tooltip");
 			//case 917: return Localization.get("animalinfo.options.showbreedingtimers.tooltip");
 			case 1000: return Localization.get("potiontimers.options.tooltip");
+			case 1005: return Localization.get("potiontimers.options.textmode.tooltip");
 			case 1007: return Localization.get("potiontimers.options.hidepotioneffectsininventory.tooltip");
 			case 1100: return Localization.get("durabilityinfo.options.tooltip");
 			case 1103: return Localization.get("durabilityinfo.options.armordurabilitythreshold.tooltip");

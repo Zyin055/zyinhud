@@ -35,7 +35,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 public class ZyinHUDRenderer
 {
-	public static ZyinHUDRenderer instance = new ZyinHUDRenderer();
+	public static final ZyinHUDRenderer instance = new ZyinHUDRenderer();
 	private static Minecraft mc = Minecraft.getMinecraft();
 	
 	/**

@@ -1,6 +1,7 @@
 package com.zyin.zyinhud;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
 
@@ -15,6 +16,16 @@ public class ZyinHUDSound
 	public static void PlaySound(String name)
 	{
 		mc.getSoundHandler().playSound(PositionedSoundRecord.createPositionedSoundRecord(new ResourceLocation("zyinhud:" + name), 1.0F));
+	}
+	
+	/**
+	 * Plays a zyinhud sound with the given resource name the specified volume 
+	 * @param name
+	 * @param volume 0-100% (0.0F to 1.0F) cannot go above 100%
+	 */
+	public static void PlaySound(String name, float volume)
+	{
+		mc.getSoundHandler().playSound(new PositionedSoundRecord(new ResourceLocation("zyinhud:" + name), volume, 1.0F, (float)mc.thePlayer.posX, (float)mc.thePlayer.posY, (float)mc.thePlayer.posZ));
 	}
 	
 	/**

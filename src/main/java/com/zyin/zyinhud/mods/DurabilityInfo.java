@@ -63,11 +63,21 @@ public class DurabilityInfo extends ZyinHUDModBase
         }
 
         /**
-         * Sets the next availble mode for this mod
+         * Sets the next availble mode for text display
          */
         public static TextModes ToggleMode()
         {
-        	return TextMode = TextMode.ordinal() < TextModes.values().length - 1 ? TextModes.values()[TextMode.ordinal() + 1] : TextModes.values()[0];
+        	return ToggleMode(true);
+        }
+        /**
+         * Sets the next availble mode for text display if forward=true, or previous mode if false
+         */
+        public static TextModes ToggleMode(boolean forward)
+        {
+        	if (forward)
+        		return TextMode = TextMode.ordinal() < TextModes.values().length - 1 ? TextModes.values()[TextMode.ordinal() + 1] : TextModes.values()[0];
+        	else
+        		return TextMode = TextMode.ordinal() > 0 ? TextModes.values()[TextMode.ordinal() - 1] : TextModes.values()[TextModes.values().length - 1];
         }
         
         /**
@@ -584,14 +594,6 @@ public class DurabilityInfo extends ZyinHUDModBase
     public static boolean ToggleShowItemDurability()
     {
     	return ShowItemDurability = !ShowItemDurability;
-    }
-    /**
-     * Toggles showing percentages for item durability
-     * @return 
-     */
-    public static TextModes ToggleTextMode()
-    {
-    	return TextMode.ToggleMode();
     }
     /**
      * Toggles showing icons or an image for broken armor

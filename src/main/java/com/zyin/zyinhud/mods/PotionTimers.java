@@ -35,6 +35,58 @@ public class PotionTimers extends ZyinHUDModBase
     	return Enabled = !Enabled;
     }
     
+	/** The current mode for this mod */
+	public static TextModes TextMode;
+	
+	/** The enum for the different types of Modes this mod can have */
+    public static enum TextModes
+    {
+        WHITE(Localization.get("potiontimers.textmode.white")),
+        COLORED(Localization.get("potiontimers.textmode.colored")),
+        NONE(Localization.get("potiontimers.textmode.none"));
+        
+        private String friendlyName;
+        
+        private TextModes(String friendlyName)
+        {
+        	this.friendlyName = friendlyName;
+        }
+
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static TextModes ToggleMode()
+        {
+        	return ToggleMode(true);
+        }
+        /**
+         * Sets the next availble mode for this mod if forward=true, or previous mode if false
+         */
+        public static TextModes ToggleMode(boolean forward)
+        {
+        	if (forward)
+        		return TextMode = TextMode.ordinal() < TextModes.values().length - 1 ? TextModes.values()[TextMode.ordinal() + 1] : TextModes.values()[0];
+        	else
+        		return TextMode = TextMode.ordinal() > 0 ? TextModes.values()[TextMode.ordinal() - 1] : TextModes.values()[TextModes.values().length - 1];
+        }
+        
+        /**
+         * Gets the mode based on its internal name as written in the enum declaration
+         * @param modeName
+         * @return
+         */
+        public static TextModes GetMode(String modeName)
+        {
+        	try {return TextModes.valueOf(modeName);}
+        	catch (IllegalArgumentException e) {return values()[1];}
+        }
+        
+        public String GetFriendlyName()
+        {
+        	return friendlyName;
+        }
+    }
+    
     private static ResourceLocation inventoryResourceLocation = new ResourceLocation("textures/gui/container/inventory.png");
     
     public static boolean ShowPotionIcons;
@@ -84,10 +136,15 @@ public class PotionTimers extends ZyinHUDModBase
                 	if(ShowPotionIcons)
                 	{
                 		DrawPotionIcon(x, y, potion);
-                		DrawPotionDuration(x+10, y, potion, potionEffect);
+                		
+                		if(TextMode != TextModes.NONE)
+                			DrawPotionDuration(x+10, y, potion, potionEffect);
                 	}
                 	else
-                		DrawPotionDuration(x, y, potion, potionEffect);
+                	{
+                		if(TextMode != TextModes.NONE)
+                			DrawPotionDuration(x, y, potion, potionEffect);
+                	}
 
                 	y += 10;
                     i++;
@@ -110,10 +167,14 @@ public class PotionTimers extends ZyinHUDModBase
 	{
 		String durationString = Potion.getDurationString(potionEffect);
 		int potionDuration = potionEffect.getDuration();	//goes down by 20 ticks per second
-		int colorInt = 0xFFFFFF;
-		
-		if(UsePotionColors)
+		int colorInt;
+
+		if(TextMode == TextModes.COLORED)
 			colorInt = potion.getLiquidColor();
+		else if(TextMode == TextModes.WHITE)
+			colorInt = 0xFFFFFF;
+		else
+			colorInt = 0xFFFFFF;
 		
 		
 		boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
@@ -210,15 +271,6 @@ public class PotionTimers extends ZyinHUDModBase
     public static boolean ToggleShowPotionIcons()
     {
     	return ShowPotionIcons = !ShowPotionIcons;
-    }
-    
-    /**
-     * Toggles using potion colors
-     * @return 
-     */
-    public static boolean ToggleUsePotionColors()
-    {
-    	return UsePotionColors = !UsePotionColors;
     }
     
     /**

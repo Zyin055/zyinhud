@@ -20,6 +20,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.potion.Potion;
 
 import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
@@ -62,7 +63,17 @@ public class EatingAid extends ZyinHUDModBase
          */
         public static Modes ToggleMode()
         {
-        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        	return ToggleMode(true);
+        }
+        /**
+         * Sets the next availble mode for this mod if forward=true, or previous mode if false
+         */
+        public static Modes ToggleMode(boolean forward)
+        {
+        	if (forward)
+        		return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        	else
+        		return Mode = Mode.ordinal() > 0 ? Modes.values()[Mode.ordinal() - 1] : Modes.values()[Modes.values().length - 1];
         }
         
         /**

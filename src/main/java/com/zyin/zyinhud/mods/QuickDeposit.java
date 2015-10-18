@@ -13,11 +13,15 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.util.InventoryUtil;
+import com.zyin.zyinhud.util.ModCompatibility;
 
 /**
  * Quick Deposit allows you to inteligently deposit every item in your inventory quickly into a chest.
@@ -40,6 +44,7 @@ public class QuickDeposit extends ZyinHUDModBase
     public static boolean CloseChestAfterDepositing;
 
     public static boolean BlacklistTorch;
+    public static boolean BlacklistTools;
     public static boolean BlacklistWeapons;
     public static boolean BlacklistArrow;
     public static boolean BlacklistFood;
@@ -64,36 +69,43 @@ public class QuickDeposit extends ZyinHUDModBase
     		return;
     	}
     	
-    	
-    	if(mc.currentScreen instanceof GuiBeacon
-    			|| mc.currentScreen instanceof GuiCrafting
-    			|| mc.currentScreen instanceof GuiEnchantment
-    			|| mc.currentScreen instanceof GuiRepair)
+    	try
     	{
-    		//we don't support these
-    		return;
+	    	if(mc.currentScreen instanceof GuiBeacon
+	    			|| mc.currentScreen instanceof GuiCrafting
+	    			|| mc.currentScreen instanceof GuiEnchantment
+	    			|| mc.currentScreen instanceof GuiRepair)
+	    	{
+	    		//we don't support these
+	    		return;
+	    	}
+	    	else if(mc.currentScreen instanceof GuiMerchant)
+	    	{
+	    		InventoryUtil.DepositAllMatchingItemsInMerchant();
+	    	}
+	    	else if(mc.currentScreen instanceof GuiFurnace)
+	    	{
+	    		InventoryUtil.DepositAllMatchingItemsInFurance();
+	    	}
+	    	else if(mc.currentScreen instanceof GuiBrewingStand)
+	    	{
+	    		InventoryUtil.DepositAllMatchingItemsInBrewingStand();
+	    	}
+	    	else	//single chest, double chest, donkey/mules, hopper, dropper, dispenser
+	    	{
+	    		InventoryUtil.DepositAllMatchingItemsInContainer(onlyDepositMatchingItems, IgnoreItemsInHotbar);
+	        	
+	        	if(CloseChestAfterDepositing)
+	        		mc.thePlayer.closeScreen();
+	    	}
+	
+	    	ZyinHUDSound.PlayButtonPress();
     	}
-    	else if(mc.currentScreen instanceof GuiMerchant)
+    	catch (Exception e)
     	{
-    		InventoryUtil.DepositAllMatchingItemsInMerchant();
+    		//Quick Deposit has a bad history of causing unpredictable crashes, so just catch all exceptions
+    		e.printStackTrace();
     	}
-    	else if(mc.currentScreen instanceof GuiFurnace)
-    	{
-    		InventoryUtil.DepositAllMatchingItemsInFurance();
-    	}
-    	else if(mc.currentScreen instanceof GuiBrewingStand)
-    	{
-    		InventoryUtil.DepositAllMatchingItemsInBrewingStand();
-    	}
-    	else	//single chest, double chest, donkey/mules, hopper, dropper, dispenser
-    	{
-    		InventoryUtil.DepositAllMatchingItemsInContainer(onlyDepositMatchingItems, IgnoreItemsInHotbar);
-        	
-        	if(CloseChestAfterDepositing)
-        		mc.thePlayer.closeScreen();
-    	}
-
-    	ZyinHUDSound.PlayButtonPress();
     }
     
     /**
@@ -106,6 +118,7 @@ public class QuickDeposit extends ZyinHUDModBase
 		if(itemStack == null)
 			return false;
 		if((BlacklistTorch && itemStack.getItem() == Item.getItemFromBlock(Blocks.torch))
+				|| (BlacklistTools && itemStack.getItem() instanceof ItemTool || itemStack.getItem() instanceof ItemHoe || itemStack.getItem() instanceof ItemShears || ModCompatibility.TConstruct.IsTConstructHarvestTool(itemStack.getItem()))
 				|| (BlacklistWeapons && itemStack.getItem() instanceof ItemSword || itemStack.getItem() instanceof ItemBow)
 				|| (BlacklistArrow && itemStack.getItem() == Items.arrow)
 				|| (BlacklistEnderPearl && itemStack.getItem() == Items.ender_pearl)
@@ -143,6 +156,14 @@ public class QuickDeposit extends ZyinHUDModBase
     public static boolean ToggleBlacklistTorch()
     {
     	return BlacklistTorch = !BlacklistTorch;
+    }
+    /**
+     * Toggles blacklisting this item
+     * @return 
+     */
+    public static boolean ToggleBlacklistTools()
+    {
+    	return BlacklistTools = !BlacklistTools;
     }
     /**
      * Toggles blacklisting this item

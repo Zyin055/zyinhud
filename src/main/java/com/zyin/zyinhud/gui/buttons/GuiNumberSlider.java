@@ -8,6 +8,8 @@ import com.zyin.zyinhud.util.Localization;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.client.config.GuiUtils;
 
 public class GuiNumberSlider extends GuiButton
 {
@@ -31,7 +33,8 @@ public class GuiNumberSlider extends GuiButton
 
     private static DecimalFormat twoDecimals = new DecimalFormat("#.00");
     private static DecimalFormat zeroDecimals = new DecimalFormat("#");
-    
+
+	
     /** The display modes available that can be used to format the number */
     public static enum Modes
     {
@@ -53,6 +56,7 @@ public class GuiNumberSlider extends GuiButton
         this.sliderValue = (currentValue-minValue) / (maxValue-minValue);
         this.mode = mode;
 	}
+	
 
 	/**
 	 * Gets the decimal value of the slider.
@@ -68,7 +72,7 @@ public class GuiNumberSlider extends GuiButton
 	 */
 	public int GetValueAsInteger()
 	{
-		return (int) GetValueAsFloat();
+		return Math.round(GetValueAsFloat());
 	}
 	/**
 	 * Gets the decimal value of the slider.
@@ -98,7 +102,7 @@ public class GuiNumberSlider extends GuiButton
 	/**
 	 * Set the text displayed on this slider.
 	 */
-	protected void SetLabel()
+	protected void UpdateLabel()
 	{
 		displayString = GetLabel();
 	}
@@ -134,7 +138,7 @@ public class GuiNumberSlider extends GuiButton
                     sliderValue = 1.0F;
                 }
 
-                SetLabel();
+                UpdateLabel();
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -163,7 +167,7 @@ public class GuiNumberSlider extends GuiButton
                 sliderValue = 1.0F;
             }
 
-            SetLabel();
+            UpdateLabel();
             dragging = true;
             return true;
         }

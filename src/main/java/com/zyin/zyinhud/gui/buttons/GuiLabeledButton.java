@@ -3,6 +3,9 @@ package com.zyin.zyinhud.gui.buttons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
+/**
+ * A normal GuiButton but with label text to the left of the usual button text.
+ */
 public class GuiLabeledButton extends GuiButton
 {
 	public String buttonLabel = null;

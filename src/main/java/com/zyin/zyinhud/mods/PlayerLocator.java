@@ -1,6 +1,7 @@
 package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
@@ -16,6 +17,7 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
@@ -99,7 +101,7 @@ public class PlayerLocator extends ZyinHUDModBase
     private static final String ridingMessagePrefix = "    ";	//space for the saddle/minecart/boat/horse armor icon
 
     /** Don't render players that are closer than this */
-    public static int viewDistanceCutoff = 10;
+    public static int viewDistanceCutoff = 0;
     public static final int minViewDistanceCutoff = 0;
     public static final int maxViewDistanceCutoff = 130;	//realistic max distance the game will render entities: up to ~115 blocks away
 
@@ -118,8 +120,7 @@ public class PlayerLocator extends ZyinHUDModBase
     	if(numOverlaysRendered > maxNumberOfOverlays)
     		return;
     	
-        //if(!(entity instanceof EntityCow))	//for single player testing/debugging!
-        if (!(entity instanceof EntityOtherPlayerMP ||
+    	if (!(entity instanceof EntityOtherPlayerMP ||
         	  entity instanceof EntityWolf ||
         	  (entity instanceof EntitySkeleton) && ((EntitySkeleton)entity).getSkeletonType() == 1))
         {
@@ -149,9 +150,14 @@ public class PlayerLocator extends ZyinHUDModBase
             //calculate the color of the overlayMessage based on the distance from me
             int alpha = (int)(0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
         	
-        	if(entity instanceof EntityOtherPlayerMP)
+            if(entity instanceof EntityOtherPlayerMP)
         	{
         		overlayMessage = GetOverlayMessageForOtherPlayer((EntityOtherPlayerMP)entity, distanceFromMe);
+        		
+        		//format the string to be the same color as that persons team color
+        		ScorePlayerTeam team = (ScorePlayerTeam)((EntityPlayerSP)entity).getTeam();
+        		if(team != null)
+        			overlayMessage = team.formatString(overlayMessage);
         	}
         	else if(entity instanceof EntityWolf)
         	{

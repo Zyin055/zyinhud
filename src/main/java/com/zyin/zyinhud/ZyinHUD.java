@@ -27,10 +27,7 @@ package com.zyin.zyinhud;
 import java.io.File;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiIngameMenu;
-import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -42,11 +39,9 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.zyin.zyinhud.command.CommandFps;
 import com.zyin.zyinhud.command.CommandZyinHUDOptions;
-import com.zyin.zyinhud.gui.GuiOptionsOverride;
 import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.util.ModCompatibility;
@@ -55,12 +50,13 @@ import com.zyin.zyinhud.util.ModCompatibility;
 public class ZyinHUD
 {
 	/**
-	 * Version number must be changed in 3 spots before releasing a build:<br><ol>
+	 * Version number must be changed in 3 spots before releasing a build:
+	 * <br><ol>
 	 * <li>VERSION
 	 * <li>src/main/resources/mcmod.info:"version", "mcversion"
 	 * <li>build.gradle:version
 	 */
-	public static final String VERSION = "1.4.3";
+	public static final String VERSION = "1.4.5";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     
@@ -100,6 +96,7 @@ public class ZyinHUD
         //   MinecraftForge.EVENT_BUS.register()          --> is used for net.minecraftforge events
         //   FMLCommonHandler.instance().bus().register() --> is used for cpw.mods.fml events
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(ZyinHUDGuiEvents.instance);
         MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
     	MinecraftForge.EVENT_BUS.register(Miscellaneous.instance);
         FMLCommonHandler.instance().bus().register(Miscellaneous.instance);
@@ -132,19 +129,5 @@ public class ZyinHUD
         FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "VersionChecker", "addCurseCheck", compound);
     }
     
-    
-    /**
-     * Event fired before a GUI is opened.
-     * @param event
-     */
-    @SubscribeEvent
-    public void GuiOpenEvent(GuiOpenEvent event)
-    {
-    	//override the default Options screen with our custom one, which contains our custom "Zyin's HUD..." button
-    	if(event.gui instanceof GuiOptions && mc.theWorld != null)
-        {
-    		event.gui = new GuiOptionsOverride(new GuiIngameMenu(), mc.gameSettings);
-        }
-    }
 }
 

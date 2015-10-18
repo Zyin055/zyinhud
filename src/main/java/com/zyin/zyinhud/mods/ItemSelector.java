@@ -12,6 +12,7 @@ import org.lwjgl.opengl.EXTRescaleNormal;
 import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.mods.Coordinates.Modes;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 
@@ -50,13 +51,23 @@ public class ItemSelector extends ZyinHUDModBase
 			this.friendlyName = friendlyName;
 		}
 
-		/**
-		 * Sets the next availble mode for this mod
-		 */
-		public static Modes ToggleMode()
-		{
-			return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
-		}
+        /**
+         * Sets the next availble mode for this mod
+         */
+        public static Modes ToggleMode()
+        {
+        	return ToggleMode(true);
+        }
+        /**
+         * Sets the next availble mode for this mod if forward=true, or previous mode if false
+         */
+        public static Modes ToggleMode(boolean forward)
+        {
+        	if (forward)
+        		return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        	else
+        		return Mode = Mode.ordinal() > 0 ? Modes.values()[Mode.ordinal() - 1] : Modes.values()[Modes.values().length - 1];
+        }
 
 		/**
          * Gets the mode based on its internal name as written in the enum declaration
