@@ -114,17 +114,17 @@ public class ZyinHUDUtil
 
     public static Block GetMouseOveredBlock()
     {
-    	int x = mc.objectMouseOver.func_178782_a().getX();	//func_178782_a() friendly name is probably getBlockPos()
-    	int y = mc.objectMouseOver.func_178782_a().getY();
-    	int z = mc.objectMouseOver.func_178782_a().getZ();
+    	int x = mc.objectMouseOver.getBlockPos().getX();
+    	int y = mc.objectMouseOver.getBlockPos().getY();
+    	int z = mc.objectMouseOver.getBlockPos().getZ();
     	return GetBlock(x, y, z);
     }
     
     public static BlockPos GetMouseOveredBlockPos()
     {
-    	int x = mc.objectMouseOver.func_178782_a().getX();	//func_178782_a() friendly name is probably getBlockPos()
-    	int y = mc.objectMouseOver.func_178782_a().getY();
-    	int z = mc.objectMouseOver.func_178782_a().getZ();
+    	int x = mc.objectMouseOver.getBlockPos().getX();
+    	int y = mc.objectMouseOver.getBlockPos().getY();
+    	int z = mc.objectMouseOver.getBlockPos().getZ();
     	return new BlockPos(x, y, z);
     }
 

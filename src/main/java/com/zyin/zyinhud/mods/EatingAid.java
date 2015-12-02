@@ -405,7 +405,7 @@ public class EatingAid extends ZyinHUDModBase
                 else if (potionId == Potion.poison.id
                 		|| potionId == Potion.hunger.id
                         || potionId == Potion.confusion.id
-                        || FishType.getFishTypeForItemStack(itemStack) == FishType.PUFFERFISH) //FishType.func_150978_a(ItemStack) will probably have a friendly name like "getFishTypeFromItemStack()"
+                        || FishType.byItemStack(itemStack) == FishType.PUFFERFISH)
                 {
                 	saturationModifier = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
                 }
@@ -505,7 +505,7 @@ public class EatingAid extends ZyinHUDModBase
                 else if (potionId == Potion.poison.id
                 		|| potionId == Potion.hunger.id
                         || potionId == Potion.confusion.id
-                        || FishType.getFishTypeForItemStack(itemStack) == FishType.PUFFERFISH)	//Pufferfish has a Potion id of 0, but still adds posion+hunger+confusion
+                        || FishType.byItemStack(itemStack) == FishType.PUFFERFISH)
                 {
                     overeat = 998;	//setting the overeat value high will make it unappealing to the food selection algorithm
                 }

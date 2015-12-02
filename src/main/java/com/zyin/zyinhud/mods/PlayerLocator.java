@@ -167,8 +167,8 @@ public class PlayerLocator extends ZyinHUDModBase
         		
         		if(UseWolfColors)
         		{
-        			EnumDyeColor collarColor = ((EntityWolf)entity).func_175546_cu();
-        			float[] dyeRGBColors = EntitySheep.func_175513_a(collarColor);	//func_175513_a() friendly name is propabably "getHexColorsFromDye"
+        			EnumDyeColor collarColor = ((EntityWolf)entity).getCollarColor();
+        			float[] dyeRGBColors = EntitySheep.func_175513_a(collarColor);	//func_175513_a() friendly name is probably "getHexColorsFromDye"
 
 	                int r = (int)(dyeRGBColors[0]*255);
 	                int g = (int)(dyeRGBColors[1]*255);
@@ -196,7 +196,7 @@ public class PlayerLocator extends ZyinHUDModBase
         		overlayMessage = "    " + overlayMessage;	//make room for any icons we render
         	
             int overlayMessageWidth = mc.fontRendererObj.getStringWidth(overlayMessage);	//the width in pixels of the message
-            ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+            ScaledResolution res = new ScaledResolution(mc);
             int width = res.getScaledWidth();		//~427
             int height = res.getScaledHeight();		//~240
             
@@ -221,13 +221,13 @@ public class PlayerLocator extends ZyinHUDModBase
     		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             int color = (alpha << 24) + rgb;	//alpha:r:g:b, (alpha << 24) turns it into the format: 0x##000000
-            mc.fontRendererObj.func_175063_a(overlayMessage, x, y, color);
+            mc.fontRendererObj.drawStringWithShadow(overlayMessage, x, y, color);
             
             //also render whatever the player is currently riding on
             if (entity.ridingEntity instanceof EntityHorse)
             {
             	//armor is 0 when no horse armor is equipped
-            	int armor = ((EntityHorse)entity.ridingEntity).func_110241_cb();
+            	int armor = ((EntityHorse)entity.ridingEntity).getHorseArmorIndexSynced();
             	
             	if(armor == 1)
                 	RenderHorseArmorIronIcon(x, y);
@@ -260,15 +260,14 @@ public class PlayerLocator extends ZyinHUDModBase
                 int hpOverlayMessageWidth = mc.fontRendererObj.getStringWidth(hpOverlayMessage);
                 int offsetX = (overlayMessageWidth - hpOverlayMessageWidth - 9) / 2;
 
-                mc.fontRendererObj.func_175063_a(hpOverlayMessage, x+offsetX, y+10, (alpha << 24) + 0xFFFFFF);
+                mc.fontRendererObj.drawStringWithShadow(hpOverlayMessage, x+offsetX, y+10, (alpha << 24) + 0xFFFFFF);
                 
                 GL11.glColor4f(1f, 1f, 1f, ((float)alpha) / 0xFF);
                 ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);	//black outline of the heart icon
                 ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 52, 0, 9, 9, iconsResourceLocation, 1f);	//red interior of the heart icon
                 GL11.glColor4f(1f, 1f, 1f, 1f);
             }
-
-    		GL11.glDisable(GL11.GL_BLEND);
+            
     		numOverlaysRendered++;
         }
     }
@@ -282,7 +281,7 @@ public class PlayerLocator extends ZyinHUDModBase
     
 	private static String GetOverlayMessageForWitherSkeleton(EntitySkeleton witherSkeleton, float distanceFromMe)
 	{
-		String overlayMessage = "Wither " + witherSkeleton.getName();
+		String overlayMessage = "Wither " + witherSkeleton.getCommandSenderName();
 		
         //add distance to this wither skeleton into the message
         if (ShowDistanceToPlayers)
@@ -342,38 +341,32 @@ public class PlayerLocator extends ZyinHUDModBase
 	
 	private static void RenderBoatIcon(int x, int y)
 	{
-		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.boat), x, y - 4);
-		itemRenderer.func_180450_b(new ItemStack(Items.boat), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.boat), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderMinecartIcon(int x, int y)
 	{
-		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.minecart), x, y - 4);
-		itemRenderer.func_180450_b(new ItemStack(Items.minecart), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.minecart), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorDiamondIcon(int x, int y)
 	{
-		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.diamond_horse_armor), x, y - 4);
-		itemRenderer.func_180450_b( new ItemStack(Items.diamond_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI( new ItemStack(Items.diamond_horse_armor), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorGoldIcon(int x, int y)
 	{
-		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.golden_horse_armor), x, y - 4);
-		itemRenderer.func_180450_b(new ItemStack(Items.golden_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.golden_horse_armor), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorIronIcon(int x, int y)
 	{
-		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.iron_horse_armor), x, y - 4);
-		itemRenderer.func_180450_b(new ItemStack(Items.iron_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.iron_horse_armor), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderSaddleIcon(int x, int y)
 	{
-		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.saddle), x, y - 4);
-		itemRenderer.func_180450_b(new ItemStack(Items.saddle), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.saddle), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	
@@ -412,7 +405,7 @@ public class PlayerLocator extends ZyinHUDModBase
      */
     public static String CalculateMessageForInfoLine()
     {
-        if (Mode == Modes.OFF)
+        if (Mode == Modes.OFF || !PlayerLocator.Enabled)
         {
             return "";
         }

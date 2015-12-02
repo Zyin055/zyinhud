@@ -183,7 +183,7 @@ public class PotionTimers extends ZyinHUDModBase
 		//render the potion duration text onto the screen
 		if (potionDuration >= blinkingThresholds[blinkingThresholds.length - 1])	//if the text is not blinking then render it normally
 		{
-		    mc.fontRendererObj.func_175063_a(durationString, x, y, colorInt);
+		    mc.fontRendererObj.drawStringWithShadow(durationString, x, y, colorInt);
 		}
 		else //else if the text is blinking, have a chance to not render it based on the blinking variables
 		{
@@ -194,7 +194,7 @@ public class PotionTimers extends ZyinHUDModBase
 		        {
 		            if (potionDuration % blinkingSpeed[j] > blinkingDuration[j])
 		            {
-		                mc.fontRendererObj.func_175063_a(durationString, x, y, colorInt);
+		                mc.fontRendererObj.drawStringWithShadow(durationString, x, y, colorInt);
 		            }
 
 		            break;

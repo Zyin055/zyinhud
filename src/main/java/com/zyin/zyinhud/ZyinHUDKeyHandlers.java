@@ -76,27 +76,27 @@ public class ZyinHUDKeyHandlers
 		//if 2 KeyBindings have the same hotkey, only 1 will be flagged as "pressed" in getIsKeyPressed(),
 		//which one ends up getting pressed in that scenario is undetermined
 		
-		if(KEY_BINDINGS[0].getIsKeyPressed())
+		if(KEY_BINDINGS[0].isKeyDown())
 			AnimalInfoKeyHandler.Pressed(event);
 		//else if(keyBindings[1].getIsKeyPressed())
 			//CoordinatesKeyHandler.Pressed(event);		//THIS WILL NOT FIRE ON A GuiScreen
-		else if(KEY_BINDINGS[2].getIsKeyPressed())
+		else if(KEY_BINDINGS[2].isKeyDown())
 			DistanceMeasurerKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[3].getIsKeyPressed())
+		else if(KEY_BINDINGS[3].isKeyDown())
 			EatingAidKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[4].getIsKeyPressed())
+		else if(KEY_BINDINGS[4].isKeyDown())
 			EnderPearlAidKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[5].getIsKeyPressed())
+		else if(KEY_BINDINGS[5].isKeyDown())
 			PlayerLocatorKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[6].getIsKeyPressed())
+		else if(KEY_BINDINGS[6].isKeyDown())
 			PotionAidKeyHandler.Pressed(event);
 		//else if(keyBindings[7].getIsKeyPressed())
 			//QuickDepositKeyHandler.Pressed(event);	//THIS WILL NOT FIRE ON A GuiScreen
-		else if(KEY_BINDINGS[8].getIsKeyPressed())
+		else if(KEY_BINDINGS[8].isKeyDown())
 			SafeOverlayKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[9].getIsKeyPressed())
+		else if(KEY_BINDINGS[9].isKeyDown())
 			WeaponSwapperKeyHandler.Pressed(event);
-		else if(KEY_BINDINGS[10].getIsKeyPressed())
+		else if(KEY_BINDINGS[10].isKeyDown())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
 		else if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode() && !Keyboard.getEventKeyState())	//on key released
 			ItemSelectorKeyHandler.Released(event);
@@ -121,7 +121,7 @@ public class ZyinHUDKeyHandlers
     	//Mouse wheel scroll
         if(event.dwheel != 0)
         {
-        	if(KEY_BINDINGS[11].getIsKeyPressed())
+        	if(KEY_BINDINGS[11].isKeyDown())
         		ItemSelectorKeyHandler.OnMouseWheelScroll(event);
         }
 

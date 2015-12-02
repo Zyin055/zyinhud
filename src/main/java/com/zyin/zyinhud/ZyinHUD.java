@@ -55,8 +55,10 @@ public class ZyinHUD
 	 * <li>VERSION
 	 * <li>src/main/resources/mcmod.info:"version", "mcversion"
 	 * <li>build.gradle:version
+	 * </ol>
+	 * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
 	 */
-	public static final String VERSION = "1.4.6";
+	public static final String VERSION = "1.4.7";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     
@@ -125,7 +127,7 @@ public class ZyinHUD
     {
         NBTTagCompound compound = new NBTTagCompound();
         compound.setString("curseProjectName", "59953-zyins-hud");	//http://minecraft.curseforge.com/mc-mods/59953-zyins-hud
-        compound.setString("curseFilenameParser", "ZyinsHUD-(1.8)-v.[].jar");
+        compound.setString("curseFilenameParser", "ZyinsHUD-(1.8.8)-v.[].jar");
         FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "VersionChecker", "addCurseCheck", compound);
     }
     

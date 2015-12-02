@@ -230,11 +230,11 @@ public class InventoryUtil
 		//Blocks need to use the onPlayerRightClick() function to work properly
 		//return mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem(), mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
 		
-		boolean sendUseBlock = mc.playerController.func_178890_a(mc.thePlayer, 
+		boolean sendUseBlock = mc.playerController.onPlayerRightClick(mc.thePlayer,
 				mc.theWorld, 
 				mc.thePlayer.getHeldItem(), 
 				new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord), 
-				mc.objectMouseOver.field_178784_b, //EnumFacing
+				mc.objectMouseOver.sideHit,
 				mc.objectMouseOver.hitVec);
 		BlockPos pos = new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord);
 		return sendUseBlock;

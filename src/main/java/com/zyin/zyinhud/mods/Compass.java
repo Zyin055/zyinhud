@@ -96,7 +96,7 @@ public class Compass extends ZyinHUDModBase
             	}
             	
             	
-            	mc.fontRendererObj.func_175063_a(EnumChatFormatting.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
+            	mc.fontRendererObj.drawStringWithShadow(EnumChatFormatting.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
             	
             	return EnumChatFormatting.GRAY + brackets;
             }

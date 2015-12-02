@@ -1,8 +1,5 @@
 package com.zyin.zyinhud;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
@@ -11,12 +8,16 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.helper.HUDEntityTrackerHelper;
 import com.zyin.zyinhud.helper.RenderEntityTrackerHelper;
@@ -27,9 +28,6 @@ import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.ItemSelector;
 import com.zyin.zyinhud.mods.PotionTimers;
 import com.zyin.zyinhud.mods.SafeOverlay;
-
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 /**
  * This class is in charge of rendering things onto the HUD and into the game world.
  */
@@ -158,13 +156,13 @@ public class ZyinHUDRenderer
      * @param width
      * @param height
      */
-    public static void RenderBlockTexture(int x, int y, Block block, int width, int height)
+    /*public static void RenderBlockTexture(int x, int y, Block block, int width, int height)
     {
         TextureAtlasSprite textureAtlasSprite = mc.getBlockRendererDispatcher().func_175023_a().func_178122_a(block.getDefaultState());
         mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
         
         RenderTexture(x, y, textureAtlasSprite, width, height, 0);
-    }
+    }*/
 	
     
 
@@ -209,11 +207,22 @@ public class ZyinHUDRenderer
 	{
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.startDrawingQuads();
+        
+        //worldrenderer.startDrawingQuads();
+        worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181707_g);	//I have no clue what the DefaultVertexFormats are, but field_181707_g works
+        
+        worldrenderer.func_181662_b((double)(x), 			(double)(y + height), 	(double)zLevel).func_181673_a((double)textureAtlasSprite.getMaxU(), (double)textureAtlasSprite.getMaxV()).func_181675_d();
+        worldrenderer.func_181662_b((double)(x + width), 	(double)(y + height), 	(double)zLevel).func_181673_a((double)textureAtlasSprite.getMinU(), (double)textureAtlasSprite.getMaxV()).func_181675_d();
+        worldrenderer.func_181662_b((double)(x + width), 	(double)(y), 			(double)zLevel).func_181673_a((double)textureAtlasSprite.getMinU(), (double)textureAtlasSprite.getMinV()).func_181675_d();
+        worldrenderer.func_181662_b((double)(x), 			(double)(y), 			(double)zLevel).func_181673_a((double)textureAtlasSprite.getMaxU(), (double)textureAtlasSprite.getMinV()).func_181675_d();
+        
+        /* code from 1.8
         worldrenderer.addVertexWithUV((double)(x), 			(double)(y + height), 	(double)zLevel, (double)textureAtlasSprite.getMinU(), (double)textureAtlasSprite.getMaxV());
         worldrenderer.addVertexWithUV((double)(x + width), 	(double)(y + height), 	(double)zLevel, (double)textureAtlasSprite.getMaxU(), (double)textureAtlasSprite.getMaxV());
         worldrenderer.addVertexWithUV((double)(x + width), 	(double)(y), 			(double)zLevel, (double)textureAtlasSprite.getMaxU(), (double)textureAtlasSprite.getMinV());
         worldrenderer.addVertexWithUV((double)(x), 			(double)(y), 			(double)zLevel, (double)textureAtlasSprite.getMinU(), (double)textureAtlasSprite.getMinV());
+        */
+        
         tessellator.draw();
 	}
 	
@@ -291,13 +300,18 @@ public class ZyinHUDRenderer
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         	
             GL11.glDisable(GL11.GL_TEXTURE_2D);
-            worldrenderer.startDrawingQuads();
+            
+            //worldrenderer.startDrawingQuads();
+            worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181709_i);	//field_181707_g maybe?
+            
             int stringMiddle = textWidth / 2;
             GlStateManager.color(0.0F, 0.0F, 0.0F, 0.5F);
-            worldrenderer.addVertex(-stringMiddle - 1, -1 + 0, 0.0D);
-            worldrenderer.addVertex(-stringMiddle - 1, 8 + lineHeight*text.length-lineHeight, 0.0D);
-            worldrenderer.addVertex(stringMiddle + 1, 8 + lineHeight*text.length-lineHeight, 0.0D);
-            worldrenderer.addVertex(stringMiddle + 1, -1 + 0, 0.0D);
+            
+            worldrenderer.putPosition(-stringMiddle - 1, -1 + 0, 0.0D);
+            worldrenderer.putPosition(-stringMiddle - 1, 8 + lineHeight*text.length-lineHeight, 0.0D);
+            worldrenderer.putPosition(stringMiddle + 1, 8 + lineHeight*text.length-lineHeight, 0.0D);
+            worldrenderer.putPosition(stringMiddle + 1, -1 + 0, 0.0D);
+            
             tessellator.draw();
             GL11.glEnable(GL11.GL_TEXTURE_2D);
         }

@@ -162,12 +162,12 @@ public class Clock extends ZyinHUDModBase
         	else if(Clock.Mode == Modes.GRAPHIC)
         	{
         		int infoLineWidth = mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint);
-        		//itemRenderer.renderItemIntoGUI(mc.fontRendererObj, mc.renderEngine, new ItemStack(Items.clock), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);
-        		itemRenderer.func_180450_b(new ItemStack(Items.clock), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);	//func_180450_b() is renderItemAndEffectIntoGUI()
+        		
+        		itemRenderer.renderItemAndEffectIntoGUI(new ItemStack(Items.clock), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);
         		
         		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the RenderItem.renderItem() methods enable lighting
         		
-        		return "     ";	//about the length of the clock graphic
+        		return "    ";	//about the length of the clock graphic
         	}
         }
 
