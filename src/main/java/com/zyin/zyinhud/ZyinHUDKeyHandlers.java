@@ -98,6 +98,8 @@ public class ZyinHUDKeyHandlers
 			WeaponSwapperKeyHandler.Pressed(event);
 		else if(KEY_BINDINGS[10].isKeyDown())
 			ZyinHUDOptionsKeyHandler.Pressed(event);
+		else if(KEY_BINDINGS[11].isKeyDown())
+			ItemSelectorKeyHandler.Pressed(event);
 		else if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode() && !Keyboard.getEventKeyState())	//on key released
 			ItemSelectorKeyHandler.Released(event);
 		

@@ -58,7 +58,7 @@ public class ZyinHUD
 	 * </ol>
 	 * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
 	 */
-	public static final String VERSION = "1.4.7";
+	public static final String VERSION = "1.4.8";
     public static final String MODID = "zyinhud";
     public static final String MODNAME = "Zyin's HUD";
     

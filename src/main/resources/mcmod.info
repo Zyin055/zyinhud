@@ -2,9 +2,9 @@
 {
   "modid": "zyinhud",
   "name": "Zyin's HUD",
-  "description": "Adds various utilities and enhancements to make your life easier. Designed with the advanced Minecrafter in mind",
-  "version": "1.4.7",
-  "mcversion": "1.8",
+  "description": "Adds various utilities and hotkeys to make your life easier. Designed with the advanced Minecrafter in mind",
+  "version": "1.4.8",
+  "mcversion": "1.8.8",
   "url": "http://minecraft.curseforge.com/projects/zyins-hud",
   "updateUrl": "http://minecraft.curseforge.com/projects/zyins-hud/files",
   "authorList": ["Zyin"],

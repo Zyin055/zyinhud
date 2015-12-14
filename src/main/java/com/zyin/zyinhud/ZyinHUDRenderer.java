@@ -296,24 +296,35 @@ public class ZyinHUDRenderer
         
         if(renderBlackBackground)
         {
+            int stringMiddle = textWidth / 2;
+            
             Tessellator tessellator = Tessellator.getInstance();
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         	
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            //GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GlStateManager.disableTexture2D();
             
+            /* OLD 1.8 rendering code
             //worldrenderer.startDrawingQuads();
             worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181709_i);	//field_181707_g maybe?
             
-            int stringMiddle = textWidth / 2;
             GlStateManager.color(0.0F, 0.0F, 0.0F, 0.5F);
-            
             worldrenderer.putPosition(-stringMiddle - 1, -1 + 0, 0.0D);
             worldrenderer.putPosition(-stringMiddle - 1, 8 + lineHeight*text.length-lineHeight, 0.0D);
             worldrenderer.putPosition(stringMiddle + 1, 8 + lineHeight*text.length-lineHeight, 0.0D);
             worldrenderer.putPosition(stringMiddle + 1, -1 + 0, 0.0D);
+            */
+            
+            //This code taken from 1.8.8 net.minecraft.client.renderer.entity.Render.renderLivingLabel()
+            worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181706_f);
+            worldrenderer.func_181662_b(-stringMiddle - 1, -1 + 0, 0.0D).func_181666_a(0.0F, 0.0F, 0.0F, 0.25F).func_181675_d();
+            worldrenderer.func_181662_b(-stringMiddle - 1, 8 + lineHeight*text.length-lineHeight, 0.0D).func_181666_a(0.0F, 0.0F, 0.0F, 0.25F).func_181675_d();
+            worldrenderer.func_181662_b(stringMiddle + 1, 8 + lineHeight*text.length-lineHeight, 0.0D).func_181666_a(0.0F, 0.0F, 0.0F, 0.25F).func_181675_d();
+            worldrenderer.func_181662_b(stringMiddle + 1, -1 + 0, 0.0D).func_181666_a(0.0F, 0.0F, 0.0F, 0.25F).func_181675_d();
             
             tessellator.draw();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            //GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GlStateManager.enableTexture2D();
         }
         
         int i = 0;

@@ -239,7 +239,7 @@ safeoverlay.distance.default=default
 
 torchaid.name=Torch Aid
 ;torchaid.notorches=No torches
-torchaid.options.tooltip=Place torches without keeping them on your hotbar by right clicking while holding an axe, pickaxe, shovel, or when you have nothing in your hand._p_pNote: Using torches from inventory is somewhat buggy so keep some torches on the hotbar for a better experience.
+torchaid.options.tooltip=Place torches without keeping them on your hotbar by right clicking while holding an tool._p_pNote: Using torches from inventory is somewhat buggy so keep some torches on the hotbar for a better experience.
 
 weaponswapper.name=Weapon Swapper
 weaponswapper.noweapons=No weapons

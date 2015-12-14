@@ -1,7 +1,11 @@
 package com.zyin.zyinhud.keyhandlers;
 
+import org.lwjgl.input.Keyboard;
+
 import net.minecraftforge.client.event.MouseEvent;
 
+import com.zyin.zyinhud.ZyinHUDSound;
+import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.mods.ItemSelector;
 
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -29,6 +33,16 @@ public class ItemSelectorKeyHandler implements ZyinHUDKeyHandlerBase
         ItemSelector.SideButton(direction);
         event.setCanceled(true);
     }
+    
+	public static void Pressed(KeyInputEvent event) 
+	{
+		if (mc.currentScreen != null)
+        {
+            return;    //don't activate if the user is looking at a GUI or has a modifier pressed
+        }
+        
+		ItemSelector.OnHotkeyPressed();
+	}
 	
 	public static void Released(KeyInputEvent event)
 	{
